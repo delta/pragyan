@@ -1,0 +1,41 @@
+<html>
+<head>
+	<title>Tooltips, Popups, Javascript, Dhtml - BoxOver</title>
+	<script src="calendar.js"></script>
+	<style>
+	input {border:1px solid #ABABAB}
+	</style>
+</head>
+<body style="font:14px/20px Verdana">
+
+<DIV style="BORDER: #558844 1px solid;WIDTH:300px;padding:20px; color:#ABABAB">
+<p>The form below doesn't actually do anything, but demonstrates the purpose of the calendar.</p>
+
+<p>Click on the "Date of birth" text field to see the calendar in action.</p>
+</DIV>
+
+<form action="">
+<table style="font:bold 14px/20px Verdana" cellpadding="5px">
+<tr>
+<td>
+Name
+</td>
+<td>
+<input type="text">
+</td>
+</tr>
+<tr>
+<td>
+Date of birth
+</td>
+<td>
+   <input type="text" value="dd/mm/yy" onfocus="this.select();lcs(this)" onclick="event.cancelBubble=true;this.select();lcs(this)">
+   </td>
+  </tr>
+</table>
+<input type="submit" value="A test submit button">
+</form>
+
+<a href="http://calendar.swazz.org">Swazz javascript calendar home</a>
+</body>
+</html>

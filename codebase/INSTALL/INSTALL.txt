@@ -1,0 +1,13 @@
+1) Make sure the FollowSymLinks feature is included in the Options directive of the <Directory "..."> corresponding to your install location.
+	For this,
+	a) Go the configuration directory of your web server. (Usually, it is named httpd.conf, check your web server documentation to find it's location)
+	b) Search for the <Directory "..."> directive which includes the location where you will install the CMS
+	c) Search for the line containing the "Options" directive. (It's just a line starting with the word "Options")
+	d) Make sure it has either "All", or "FollowSymLinks" included in the list of included features.
+	 
+2) Unzip the source code in the root of your http server or from wherever you want to serve up the site.
+
+3) Open INSTALL/install.php from your browser and follow the instructions.
+   
+4) Done!
+
