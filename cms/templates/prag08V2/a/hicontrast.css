@@ -1,0 +1,296 @@
+/*------------------------------------------------------------
+Styles for high contrast version
+author:	Dan Jackson
+email:	d.jackson@city.ac.uk
+------------------------------------------------------------*/
+
+/* =General settings & positioning
+----------------------------------------------- */
+body {
+  margin:0;
+  padding:20px 5px;
+  font:small Verdana,Sans-serif;
+  line-height:1.7em;
+  text-align:center;
+  background-image:none;
+  background-color:#123;
+  color:#fff;
+  }
+
+#outer_wrapper {
+  max-width:50em;
+  width:auto;
+  margin:0 auto;
+  text-align:left;
+  border:0;
+  font-size:130%;
+  background-color:#123;
+  color:#fff;
+  float:left;
+  }
+
+#skip {
+font-size:1.3em;
+}
+
+#skip a, #skip a:hover, #skip a:visited{
+position:static;
+width:auto;
+height:auto;
+overflow:visible;
+}
+
+#skip a:active {
+position:static;
+width:auto;
+height:auto;
+}
+
+#header, #search, #block_1, #block_2 p, #block_2, #block_3, #footer, #block_2 .breakout p, #block_1 ul, #block_1 li, #related_links, .side_title, #related_links p, .side_title p, #left_content {
+color:#fff;
+background-color:#123;
+background-image:none;
+border:0;
+}
+
+/* get rid of green bg on leftnav of homepage */
+#block_1 .bt, #block_1 .bt div, #block_1 .bb, #block_1 .bb div, #block_1 .i2, #block_1 .i3{
+background-image:none;
+background-color:#123;
+border:0;
+}
+
+/* =header
+----------------------------------------------- */
+#header a#homeLink {
+display:block;
+width:339px;
+height:66px;
+background-image:url("../images/logo_inverted.gif");
+float:left;
+}
+
+#header a#homeLink img {
+display:none;
+}
+
+#search #sButton {
+background-color:#FFCC00;
+color:#000;
+margin-left:3px;
+}
+
+#header p#siteLinks {
+width:20em;
+}
+
+/* =H numbers
+----------------------------------------------- */
+#block_2 h1, #block_1 h1, #block_2 h3, #block_2 h4, #block_2 h5, #block_2 h6 {
+  color:#fff;
+  }
+
+#block_2 h1 {
+line-height:1.1em;
+}
+
+#block_2 h2, #block_1 h2 {
+  color:#cfc;
+  background-color:transparent;
+  background-image:none;
+}
+
+#block_2 div.info h2 {
+color:#fff !important;
+} 
+
+#block_2 h3 {
+  line-height:1.3em;
+  }
+
+#block_1 #related_links h3, #block_1 .side_title h3 {
+color:#fff;
+font-size:1.4em;
+line-height:1.1em;
+font-weight:bold;
+background-image:none;
+}
+
+#block_1 h4 {
+color:#cfc;
+font-size:1.1em;
+}
+
+/* =Links
+----------------------------------------------- */
+#skip a:link, #block_2 a:link, #block_3 a:link, #footer a:link, p#breadcrumb a:link, .side_title a:link, #related_links a:link, p#notices a:link, p#siteLinks a:link{
+  color:#fc3;
+  background-image:none;
+  }
+
+#skip a:visited, #block_2 a:visited, #block_1 a:visited, #block_3 a:visited, #footer a:visited, p#breadcrumb a:visited, .side_title a:visited, #related_links a:visited, p#notices a:visited, p#siteLinks a:visited{
+  color:#fcf;
+  }
+  
+#skip a:hover, #skip a:focus, #block_2 a:hover, #block_2 a:focus, #block_1 a:hover, #block_1 a:focus, #block_3 a:hover, #block_3 a:focus, #footer a:hover, #footer a:focus, p#breadcrumb a:hover, p#breadcrumb a:focus, p#notices a:hover, p#notices a:focus, p#siteLinks a:hover, p#siteLinks a:focus{
+  background-color:#bdf;
+  color:#000;
+  }
+
+#block_2 #course a:link, #block_2 #course a:visited{
+	border-right: 1px solid #ffcc00;
+	border-bottom: 1px solid #ffcc00;
+	border-top: 1px solid #ffcc00;
+	color: #fff;
+}
+
+#block_2 #course a:hover, #block_2 #course a:active {
+	color: #000;
+	background-color: #fff;
+}
+
+/* keeps tab links on course pages clear of element below */
+#block_2 ul#course {
+height:4em;
+}
+
+p#breadcrumb em {
+color:#fff;
+}
+
+/* =Left column (#block_1)
+----------------------------------------------- */
+ul#left_nav li#current {
+background-color:#009900;
+}
+
+#block_1 ul#left_nav li a{
+background-color:#234;
+color:#fff;
+font-weight:bold;
+border-bottom:1px dashed #ffcc00;
+background:url("../images/bullet_white.gif") no-repeat 10px 50%;
+line-height:1.2em;
+letter-spacing:0.1em;
+}
+
+/* give IE5.x lower font-size than other browsers */
+#block_1 ul#left_nav li a {
+font-size:1.2em !important;
+font-size /**/:1em;
+}
+
+#block_1 ul#subNav {
+font-size:0.9em;
+}
+
+#block_1 ul#subNav li a{
+color:#F5F5F5;
+}
+
+#block_1 ul#left_nav a:hover, #block_1 ul#subNav a:hover {
+text-decoration:underline;
+background:url("../images/bullet_white.gif") no-repeat 10px 50%;
+}
+
+ul#left_nav, ul#left_nav li, #block_1 #related_links, #block_1 .side_title, #block_1 #related_links ul, #block_1 #related_links li, #block_1 .side_title ul, #block_1 .side_title li, #block_1 #related_links p, #block_1 .side_title p, #block_1 .side_title ol, #block_1 .side_title ol, #block_1 #related_links ol, #block_1 #related_links ol{
+background-color:#234;
+}
+
+
+/* =Right column - homepage(#block_3)
+----------------------------------------------- */
+ul#rightnav_list li a{
+font-size:0.9em;
+}
+
+dl.news_whatson, .news_whatson dt, .news_whatson dd
+{
+background-color:#234;
+}
+
+ul#rightnav_list li a:link {
+background-color:#123;
+color:#fff;
+}
+
+ul#rightnav_list li a:visited {
+background-color:#123;
+color:#fff;
+}
+
+ul#rightnav_list li a:hover, ul#rightnav_list li a:focus {
+background-color:#123;
+}
+
+#block_3 ul#rightnav_list li a.active{
+background-color:#ccffcc;
+color:#000;
+}
+
+/* =Tables
+----------------------------------------------- */
+table {
+  width:100%;
+  font-size:100%;
+  }
+th, td {
+  padding:.5em .5em .5em 0;
+  vertical-align:top;
+  text-align:left;
+  }
+
+/* =Expandable boxes
+----------------------------------------------- */
+.bt, .bt div, .bb, .bb div, .i1, .i2, .i3 { 
+background:none;
+} 
+
+/* =Misc
+----------------------------------------------- */
+
+#block_2 q {
+background-color:#FFFF99;
+}
+
+/* =Tabs on course pages
+----------------------------------------------- */
+#block_2 ul#course li {
+	background-color:#003399;
+}
+
+/* =DPS pages
+----------------------------------------------- */
+p.dps_asset a{
+font-size:0.9em;
+}
+
+p.dps_asset strong {
+color:#fff;
+}
+
+#block_2 p.dps_asset em {
+color:#ccffcc;
+}
+
+/* =Footer
+----------------------------------------------- */
+#footer {
+font-size:1.1em;
+}
+
+#footer, #footer h3, #footer dt{
+  color:#cde;
+  background-color:#123;
+  }
+
+ /* =Legal links (bottom of page)
+----------------------------------------------- */  
+p#notices {
+	text-align:left;
+	color:#cde;
+	font-size:1.2em;
+	float:left;
+	clear:left;
+	width:90%;
+	}

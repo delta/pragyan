@@ -1,0 +1,152 @@
+/* Copyright 2008. All Rights Reserved - Pragyan 2008 Team */
+/* it is important to zero out the margin on body to avoid a jump when hovering over links in the right column */
+* { margin: 0;	padding: 0;}
+body {	margin:0;	background: #FFF;	color: #111;	font-family: Verdana, Arial,Helvetica, sans-serif;	font: normal helvetica, arial, sans-serif;}
+p {	padding:0 1em 0.5em 0.65em;}
+/*h1 {margin-bottom: 4px;}
+h1,h2,h3 {color: #654;padding-top: 6px;}*/
+/*h1,h2,h3 {margin:10px 15px}*/
+code {color:#66f}
+.registrationform { margin-right:10%; margin-left:10%;}
+.registrationform fieldset{background:#FAFAFA;padding:10px 5em 1em 0px; text-align:left;padding-left:20px;}
+.registrationform legend{font-size:1.1em; font-weight:bold; color:#333;padding-bottom:15px;margin-left:10px;padding:3px 10px 4px 10px;border:1px dotted #000; background:#FAFAFA repeat-x bottom;}
+.registrationform fieldset label{text-align:right;font-weight:bold;padding-right:2em;padding-bottom:3px; vertical-align:top;}
+.registrationform textarea{width:50%;height:8em;}
+input:enabled{font-size:100%;background: #FFFFFF url(img/inputbg.gif) repeat-x scroll center top !important; border: 1px solid #666666;margin: 2px; padding:1px;}
+input:disabled{background: #F0F0F0 !important; opacity: 0.55 !important;}
+.registrationform input{border: 1px solid #000;}
+.registrationform input[type=radio]{border:none;}
+.registrationform input[type=checkbox]{border:none;}
+img {border:0}
+a {color: #963;}
+a:hover {color: #C60;}
+/*#sidebar img {float:right}*/
+ol {margin:0 0 0 32px;padding:0}
+ul {margin:0 0 0 32px;padding:0}
+.hank {cursor:default;font-weight:bold}
+.note {font-size:.75em}
+.thanks {border-top:1px dotted #999;margin-top:20px}
+.notSoImportant {color:#999}
+/*a:link,a:visited {color:#c30;text-decoration:none}*/
+/*a:hover,a:focus {background-color:#ffc}*/
+
+/* LAYOUT STUFF */
+/* The 100% width in #outer_wrapper is used to prevent an IE bug regarding backgound painting, but this also creates a gap between #footer and #outer_wrapper. To remove that gap, the same declaration is added to #footer */
+/* structure */
+.container {background: #FFF;margin: 0 auto;width: 100%;}
+#outer_wrapper {min-width:770px;width:100%;}
+/* to avoid a background-painting bug in IE Win, we need to give layout to this element. "zoom" takes care of IE 6, but fails in IE 5. To fix both versions at once it is better to use "height:0" inside a Conditional Comment */
+/*#wrapper {	background:url(images/background_right.gif) repeat-y right;zoom:1	}	*/
+/* we use the 2 rules below to make sure there is no gap between #wrapper and #header in IE5 Win */
+#header { background: url(img/bgheader-3.gif) repeat-x;	height: 99px;	margin: 0 auto;	width: 100%;}
+#header p {margin-top:0}
+
+#main {	min-height: 450px;}
+/*
+#sidebar { 	background:#fff url(images/background_right.gif) repeat-y  right; }
+#left { background:#fff url(images/background_left.gif) repeat-y left; }
+*/
+
+/* navigation */
+#navigation {	background: #FFF url(img/bgnavigation3.jpg) repeat-x;	font: bold 0.8em Myriad-Pro,sans-serif;	line-height: 30px;	margin: 0 auto;	width: 100%;}
+#navigation a {	color:#333333;	bottom: 0px;	padding:0px 15px 0px 15px;	position:relative;	text-decoration:none;}
+#navigation a:hover, #navigation .navcurrent {	background: url(img/bgnavigation3-hover.jpg) repeat-x;	color:#FFFFFF;	padding: 6px 15px 6px 15px;}
+
+/* sub navigation */
+.sidenav {	float: right;	width: 19%;	display:inline;	position: relative;}
+.menuhead {	background: #BCB39F url(img/bgheader4.gif) repeat-x;	font: bold 0.8em Myriad-Pro,sans-serif;	height: 22px; border-top: 0px solid #CCC;	color: #DDD;	padding-top: 4px;	margin: 0;	padding-left: 12px;}
+.menuitem {	border-bottom: 1px solid #AAA;/*	border-top: 1px solid #DDC;*/	background: #e3e0e0;	list-style: none;	font: bold 0.75em Myriad-Pro,sans-serif;	color: #555;	display: block;	padding: 1px 2px 2px 11px;}
+.menuitem li a {background: #DDD;	color: #554;	display: block;	padding: 8px 4px 8px 12px;	text-decoration: none;}
+/*To remove underlines from ie and opera */
+.menu a { 	text-decoration: none;}
+.menuitem:hover{background: #444; 	color: #EEE; /*border-left:2px solid;*/}
+
+#container { background: #FFF url(img/pragyan_logo.png) no-repeat;	min-height: 500px;	background-position: 75% 20%;	border: 0.3px solid #DDD;}
+#content {	font-size: 80%;		padding-left:10px;	margin-top:10px;}
+#content img{padding-right: 10px;}
+
+#content h1, h2, h3, h4{color:#000;}
+
+.half {	float:left;	width:55%;	position:relative;	margin-left: 9px;}
+
+/* news items*/
+.newsitem {	cursor: pointer;	background-color: #F1F1F1;	border-bottom:1px solid #DDD;	margin:0px 10px 0px 0px;	padding:0px;	height:111px;	text-align:justify;}
+.newsitem:hover {	background-color: #e8e8f1;}
+.newsitem h1 {color:#EF037F;font-size: 1.2em;font-weight:bold;margin:0pt 0pt 0em 135px;text-align:left;}
+.newsitem.item1 img {float:left;border-left:15px solid #EF037F; margin:10px 0px 10px 10px;}
+/*.newsitem.item2 img {float:left;border-left:15px solid #EF037F;margin-right:10px;}
+.newsitem.item3 img {float:left;border-left:15px solid #EF037F;margin-right:10px;}
+.newsitem.item4 img {float:left;border-left:15px solid #EF037F;margin-right:10px;}*/
+/*****News items *************/
+.newsitem a {	color:#000;	text-decoration:none;}
+.itemlinks{	position:relative;	margin-left:139px;}
+.itemlink1{	border-top:1px solid #F1F1F1;	border-left:1px solid #F1F1F1;	float:left;	width:49%;	background-color: #E9E9EE;	font-size:1em;}
+.itemlink2full{	width:99%;	padding:0.7em 0;}
+.itemlink2fulllast{	border-bottom:1px solid #F1F1F1;}
+.itemlink3full{	width:99%;	padding:0.33em 0;}
+.itemlink3fulllast{	border-bottom:1px solid #F1F1F1;}
+.itemlink4half{	padding:0.7em 0;}
+.itemlink4halflast{	border-bottom:1px solid #F1F1F1;}
+.itemlink5half{	padding:0.33em 0;}
+.itemlink5fulllast{	width:98.5%;	border-bottom:1px solid #F1F1F1;}
+.itemlink6half{	padding:0.33em 0;}
+.itemlink6halfbottom{	border-bottom:1px solid #F1F1F1;}
+.itemlink7full{	border-bottom:1px solid #F1F1F1;	width:98.5%;	text-align:center;}
+.itemlink1:hover{background-color: #BDBDEE/*#BBE;#BAE*/}
+/*****News items end*************/
+
+
+/* top right header */
+.title {	display:inline;	float:right;	position:absolute;	right:0px;	top:0px;	z-index:1;}
+.title_page {	padding: 0px;	z-index:-1;	display: inline;}
+.title h1 {	color: #E4DBCF;	font: normal 1.4em "Lucida Sans Unicode","Trebuchet MS",sans-serif;}
+
+/* footer */
+#footerbar {clear:both;	background: url(img/bgfooter1.gif) repeat-x;	color: #FFF;	font-size: 0.6em;	line-height: 40px;	height: 40px;	margin: 0 auto;	text-align: left;	width: 100%;border-top:1px solid #b0b0b0;border-bottom:1px solid #b0b0b0;}
+#footerbar a {	color: #FFD;	text-decoration: none;}
+#footerbar a:hover {	color: #FFF;	text-decoration: underline;}
+#footerbar .left, #footerbar .right {padding: 0 12px;}
+
+.subfooter{text-align: center;}
+
+.clearing {height:0;clear:both}
+.left {float: left;}
+.right {float: right;}
+.clearer {clear: both; line-height:0;height:0;}
+
+
+/*Events*/
+#event p{	text-align: justify;}
+.event_heading{ 	}
+.event_imageholder{	padding-left: 0px;	clear: both;	float: right;	position: relative;	padding-right: 10px;	width: 230px;}
+.event_imagespacer{	float: right;	display: inline;	padding-left: 5px;}
+.event_totalprize{	clear: both;	float: right;	font-weight: bold;	position: relative;	top: -45px;	color: #990000;	padding-right: 10px;	width: 250px;	display: none;}
+.event_sponsor{	clear:right;	float: right;	position: relative;	top: -35px;	color: #990000;	font-weight: bold;	padding-right: 40px;	display:none;}
+.event_sponsorimage{	clear:both;	float: right;	position: relative;	top: -35px;	padding-right: 10px;	padding-bottom: 20px;	padding-left: 5px;	display:none;}
+.event_image{	clear: both;	float: right;	position: relative;	top: -30px;	padding-right: 10px;	padding-left: 5px;	padding-bottom: 10px;}
+#event_contacts event_contactList{ 	}
+#event_prizes {	display: none;}
+#event_registration {	display: none;}
+#event_schedule {	display: none;}
+
+/**
+*For action bar and breadcrumbs
+*/
+div#actionbarModule, div#actionbarPage{	background-color: #FFF;	font-size: x-small;	display: inline;	float: right;	position: relative;	top: -1.6em;	}
+.actionbarPageItem, .actionbarModuleItem{	padding: 0px 5px 0px 5px;	border-left: 1px dotted #cccccc;	}
+.actionbarPageItem:hover , .actionbarModuleItem:hover{	background-color: #FFF;	}
+.actionbarPageItem *:hover , .actionbarModuleItem *:hover{	background-color: #FFF;	}
+div#breadcrumb *:hover{	border:	solid #D5D5DD 1px;background-color: #E5E5EE;	}
+div#breadcrumb *{	border:	solid #f5f5ff 1px;	}
+div#actionbarModule {	border-right: 1px dotted #999999;	margin-left: 68%;	}
+div#breadcrumb {	font: bold 0.7em Myriad-Pro,sans-serif;	font-size: small;	padding-right: 32%;	border-bottom: 1px solid #eeeeee;	border-top: 1px solid #eeeeee;	}
+
+/**
+* For Sponsor box on the right menu
+*/
+.sponsor{border: 1px solid #333;}
+/**
+ * For grant pages, for formatting checkboxes
+ */
+ul.choicelist li {display: inline;	margin-left: 8px;}
+.fValidator-msg{color:#0000ee;margin-left:15px;font-family:arial;}

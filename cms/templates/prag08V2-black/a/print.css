@@ -1,0 +1,180 @@
+/*------------------------------------------------------------
+Styles for print version
+author:	Dan Jackson
+email:	d.jackson@city.ac.uk
+------------------------------------------------------------*/
+
+body, #outer_wrapper, #wrapper, #header, #block_1, #block_3, #flashcontent {
+float:none !important;
+width:auto !important;
+margin:0 !important;
+padding:0 !important;
+border:0 !important;
+background-image:none !important;
+background-color:#fff !important;
+color:#000 !important;
+font-size:12pt !important;
+}
+
+body {
+margin:0 1pt;
+}
+
+#skip, #search, ul#left_nav, #related_links, #footer, p#notices, ul#rightnav_list, p#siteLinks {
+display:none !important;
+}
+
+#header img {
+border:0;
+float:none;
+}
+
+#block_2:before
+{
+display: none;
+background: none;
+padding: 0 !important;
+margin: 0 !important;
+height: 0;
+}
+
+#block_1 .breakout, #block_1 .breakout img, .element, .right {
+float:none;
+}
+
+#block_1 h1, #block_1 h2, #block_1 h3, #block_1 h4, #block_1 h5, #block_1 h6 {
+color:#000;
+}
+
+#block_1 a:link, #block_1 a:visited {
+background:transparent;
+color:#000;
+text-decoration:underline;
+}
+
+#block_2 ul li {
+list-style:disc;
+list-style-position:outside;
+list-style-type:disc;
+}
+
+p#breadcrumb, p#summary, #block_1 .breakout {
+width:auto;
+}
+
+p#breadcrumb em, p#summary {
+color:#000;
+}
+
+/* ------------------------------------*/
+/* right-nav tabs on homepage */
+.rightnav {
+margin:0;
+width:auto;
+}
+
+dl.news_whatson
+{
+width: auto;
+margin:0;
+height:auto;
+border:0;
+padding:0;
+}
+
+.news_whatson dt, .news_whatson dd {
+width:auto;
+}
+
+.news_whatson dt a {
+color:#000;
+}
+
+.news_whatson dd
+{
+width: auto;
+margin: 0 0 1em 0;
+padding:0 0 5px 0;
+border:0;
+}
+
+#newsDiv:before {
+content:'Latest news';
+margin-bottom:5px;
+}
+
+#whatsonDiv:before {
+content:'What\'s On';
+margin-bottom:5px;
+}
+
+/* #list3 is for accordian content on CFA pages */
+#newsDiv, #whatsonDiv, #list3 div div{
+height: auto !important; 
+opacity: 1 !important; 
+visibility: visible !important;
+display: block !important; 
+}
+/* end right-nav tabs on homepage */
+/* ------------------------------------*/
+
+/* CFA course pages */
+/* ------------------------------------*/
+#cfa_search, #enrol, .right table caption {display:none !important;}
+.right table {width:100% !important;}
+/* end CFA course pages */
+/* ------------------------------------*/
+
+/* quicklinks (on website, these are image-replaced links on homepage & gateway pages */
+/* ------------------------------------*/
+ul#quicklinks {
+padding-left:10px;
+display:block;
+}
+
+ul#quicklinks li{
+text-indent:0;
+background-image:none;
+width:100%;
+}
+
+ul#quicklinks, ul#quicklinks li a {
+height:auto;
+text-decoration:underline;
+margin:0;
+}
+
+ul#quicklinks li a {
+width:100%;
+}
+/* end quicklinks (on website, these are image-replaced links on homepage & gateway pages */
+/* ------------------------------------*/
+
+
+/* ------------------------------------*/
+/* start footer */
+#footer h3 {
+clear:both;
+padding:10px 0;
+color:#000;
+}
+
+#footer dt, #footer dd {
+float:none;
+color:#000;
+}
+
+/* end footer */
+/* ------------------------------------*/
+
+
+/* styles to display link URL's in decent browsers */
+/* ------------------------------------*/
+#header a[href]:after, #block_1 a[href]:after, #block_2 a[href]:after, #block_3 a[href]:after, #footer a[href]:after {
+content: " (" attr(href) ")";
+font-size:90%;
+}
+
+#header a[href^="/"]:after, #block_1 a[href]:after, #block_2 a[href^="/"]:after, #footer a[href^="/"]:after {
+content: " (http://www.city.ac.uk" attr(href) ") ";
+}

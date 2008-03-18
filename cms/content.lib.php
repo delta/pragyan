@@ -1,0 +1,163 @@
+<?php
+
+/**
+ * Find page type, and module component id. See if the module is consistent with standards.
+ * Give the action and module component id to module.
+ */
+
+ /**TODO: Make sure a newly created page or renamed page does not have a . in its name. -> clashes with .php, .jpg etc
+  *
+  *Actions which are taken care of from here only : login, logout, profile
+  *Actions in "page" module : login, logout, profile, admin, groupadmin, settings, grant
+  */
+function getContent($pageId, $action, $userId, $permission, $recursed=0) {
+	if($action=="login") {
+		if($userId==0) {
+			require_once("login.lib.php");
+			$newUserId = login();
+			if(is_numeric($newUserId))
+				return getContent($pageId, "view", $newUserId, getPermissions($newUserId,$pageId,"view"), 0);
+			else
+				return $newUserId; ///<The login page
+		} else
+			displayinfo("You are already logged in ".getUserName($userId)."! Click <a href=\"./+logout\">here</a> to logout.");
+		return getContent($pageId, "view", $userId, getPermissions($userId,$pageId,"view"), $recursed=0);
+	}
+	if($action=="profile") {
+		if($userId != 0) {
+			require_once("profile.lib.php");
+	 		return profile($userId);
+		} else
+			displayinfo("You need to <a href=\"./+login\">login</a> to view your profile.!");
+	}
+	if($action=="logout") {
+		if($userId!=0) {
+			$newUserId=resetAuth();
+			displayinfo("You have been logged out!");
+			return getContent($pageId, "view", $newUserId, getPermissions($newUserId,$pageId,"view"), 0);
+		} else
+			displayinfo("You need to <a href=\"./+login\">login</a> first to logout!");
+	}
+	if($action=="admin") {  //---> if no user with this permissions exists, will create, otherwise will check $permission
+		require_once("admin.lib.php");
+		return admin();
+	}
+	if($permission!=true) {
+		if($userId==0) $suggestion = "(Try <a href=\"./+login\">logging in?</a>)";
+		else $suggestion = "";
+		displayerror("You do not have the permissions to view this page. $suggestion<br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
+		return '';
+	}
+
+	if($action=="groupadmin") {///<done here because we needed to check if the page exists for sure.
+		require_once("groupadmin.lib.php");
+		return groupadmin($userId);
+	}
+	///default actions also to be defined here (and not outside)
+	/// Coz work to be done after these actions do involve the page
+
+	$pagetype_query = "SELECT page_module, page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id=".$pageId;
+	$pagetype_result = mysql_query($pagetype_query);
+	$pagetype_values = mysql_fetch_assoc($pagetype_result);
+	if(!$pagetype_values) {
+		displayerror("The requested page does not exist.");
+		return "";
+	}
+	$moduleType = $pagetype_values['page_module'];
+	$moduleComponentId = $pagetype_values['page_modulecomponentid'];
+	if($action=="settings") {///<done here because we needed to check if the page exists for sure.
+		require_once("pagesettings.lib.php");
+		return pagesettings($pageId,$userId);
+	}
+	if($recursed==0) {
+		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id=".$pageId;
+		$pagetypeupdate_result = mysql_query($pagetypeupdate_query);
+		if(!$pagetype_result)
+			return '<div class="error">Error No. 563 - An error has occured. Contact the site administators.</div>';
+	}
+	if($moduleType=="link")
+		return getContent($moduleComponentId,$action,$userId,true,1);
+	if($action=="grant") {
+		return grantPermissions($userId, $pageId);
+	}
+	if($moduleType=="menu")
+		return getContent(getParentPage($pageId),$action,$userId,true,1);
+	if($moduleType=="external") {
+		$query = "SELECT `page_extlink` FROM `".MYSQL_DATABASE_PREFIX."external` WHERE `page_modulecomponentid` =
+					(SELECT `page_modulecomponentid` FROM `pragyanV2_pages` WHERE `page_id`= ".$pageId.")";
+		$result = mysql_query($query);
+		$values = mysql_fetch_array($result);
+		$link=$values[0];
+		header("Location: $link");
+	}
+	global $sourceFolder;
+	global $moduleFolder;
+	require_once($sourceFolder."/".$moduleFolder."/".$moduleType.".lib.php");
+	$page = new $moduleType();
+	if(!($page instanceof module)){
+		displayerror("The module \"$moduleType\" does not implement the inteface module</div>");
+		return "";
+	}
+
+	$createperms_query = " SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action = 'create' AND page_module = '".$moduleType."'";
+	$createperms_result = mysql_query($createperms_query);
+	if(mysql_num_rows($createperms_result)<1) {
+		displayerror("The action \"create\" does not exist in the module \"$moduleType\"</div>");
+		return "";
+	}
+
+	$availableperms_query = "SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action != 'create' AND page_module = '".$moduleType."'";
+	$availableperms_result = mysql_query($availableperms_query);
+	$permlist = array();
+	while ($value=mysql_fetch_assoc($availableperms_result))	{
+		array_push($permlist,$value['perm_action']);
+	}
+	array_push($permlist,"view");
+	$class_methods = get_class_methods($moduleType);
+	foreach($permlist as $perm) {
+		if(!in_array("action".ucfirst($perm),$class_methods))
+		{
+			displayerror("The action \"$perm\" does not exist in the module \"$moduleType\"</div>");
+			return "";
+		}
+	}
+	return $page->getHtml($userId, $moduleComponentId, $action);
+}
+
+/**
+ * To get title bar text
+ */
+function getTitle($pageId,$action) {
+	if($action=="login")	return "Login";
+	if($action=="logout")	return "Logout";
+	$pagetitle_query = "SELECT page_title,page_module,page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id=".$pageId;
+	$pagetitle_result = mysql_query($pagetitle_query);
+	if(!$pagetitle_result)
+		return "";
+	$pagetitle_values = mysql_fetch_assoc($pagetitle_result);
+	//if($pagetitle_values['page_module']=="link")	return getTitle($pagetitle_values['page_modulecomponentid'],$action);
+	//A link has its own page title, page menurank, display menubar property
+	if($action=="grant")	return $pagetitle_values['page_title']." - Grant Permissions";
+	if($action=="settings")	return $pagetitle_values['page_title']." - Page Settings";
+	return $pagetitle_values['page_title'];
+}
+
+/**
+ * The interface to be followed by each module. In addition to this, each module needs to have
+ * a function with the name actionAction for each action. (eg: actionView, actionEdit named functions)
+ */
+interface module {
+	public function getHtml($userId, $moduleComponentId, $action);
+	public function deleteModule($moduleComponentId);
+	public function copyModule($moduleComponentId);
+	public function createModule(&$moduleComponentId);
+}
+
+interface fileuploadable {
+	/**
+	 * Should return true in case file viewing allowed, false if not allowed
+	 */
+	public static function getFileAccessPermission($pageId,$moduleComponentId,$userId,$fileName);
+}
+
+?>

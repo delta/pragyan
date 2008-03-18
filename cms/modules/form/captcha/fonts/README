@@ -1,0 +1,8 @@
+You need some fonts to use this class!
+
+You can either get the font-package [1] or some other fonts [2].
+When you got one or more fonts, just put them into the 
+font directory and they will be used randomly.
+
+[1] http://www.pascal-rehfeldt.com/getfile.php?file=fonts.tar.gz
+[2] http://www.1001fonts.com/

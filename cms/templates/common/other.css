@@ -1,0 +1,45 @@
+/**
+*For action bar and breadcrumbs
+*/
+
+div#actionbarModule, div#actionbarPage{
+	background-color: #f5f5ff;
+	font-size: x-small;
+	display: inline;
+	float: right;
+	position: relative;
+	top: -1.6em;
+	}
+.actionbarPageItem, .actionbarModuleItem{
+	padding: 0px 5px 0px 5px;
+	border-left: 1px dotted #cccccc;
+	}
+.actionbarPageItem:hover , .actionbarModuleItem:hover{
+	background-color: #E5E5EE;
+	}
+.actionbarPageItem *:hover , .actionbarModuleItem *:hover{
+	background-color: #E5E5EE;
+	}
+div#breadcrumb *:hover{
+	border:	solid #D5D5DD 1px;background-color: #E5E5EE;
+	}
+div#breadcrumb *{
+	border:	solid #f5f5ff 1px;
+	}
+div#actionbarModule {
+	border-right: 1px dotted #999999;
+	margin-left: 68%;
+	}
+div#breadcrumb {
+	background-color: #f5f5ff;
+	font-size: small;
+	padding-right: 32%;
+	border-bottom: 1px solid #eeeeee;
+	border-top: 1px solid #eeeeee;
+	}
+/**
+* For the page as such
+*/
+#main {
+	min-height: 450px;
+}

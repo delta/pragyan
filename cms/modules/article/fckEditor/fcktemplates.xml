@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * This is the sample templates definitions file. It makes the "templates"
+ * command completely customizable.
+ *
+ * See FCKConfig.TemplatesXmlPath in the configuration file.
+-->
+<Templates imagesBasePath="fck_template/images/">
+	<Template title="Pragyan Events" image="template1.gif">
+		<Description>Template for Pragyan Events.</Description>
+		<Html>
+			<![CDATA[
+
+<div id="event">
+	<h1 class="event_heading">Event Name</h1>
+	<div class="event_imageholder">
+	<div class="event_totalprize">
+		Prizes worth <span class="prize_amount">Rs.20000</span> to be won.
+	</div>
+
+	<div class="event_sponsor">Sponsored By</div>
+	<div class="event_sponsorimage"> <img src="avaya.gif" /></div>
+	<img class="event_image" width="200" height="180" alt="" src="/pragyanv2/home/events/managementevents/arthashastra/Dennis.jpg" /></div>
+	<p>General Description</p>
+	<p><b>DO NOT Delete any section here even if you dont have information for it. In case of any missing info put "Details to be put up soon".
+		In case any info (ex: schedule) is not to be shown now, do not delete it manually. It will automatically be not shown if it is supposed to be hidden.</b></p>
+
+	<p>
+	Replace General Content of the event here..
+	<p>DO NOT change any styling...or add any other styling information like font size and color or justify,left,right.</p>
+
+	<p>Upload an image of width=200px and height=180px and change the name of the image by going into the source(by clicking "Source button" on the 	top left of the editor) of this page and replacing the image name over there..</p>
+	</p>
+
+	<h2 class="event_rules event_heading2">Rules and Regulations</h2>
+	<p>Replace Rules and regulations here and using "numbered/bulleted" list. For Example:
+	<p>Following are the rules:</p>
+	<ul>
+		<li>This is rule 1</li>
+		<li>This is rule 2</li>
+	</ul>
+	<ol>
+		<li>This is rule 1</li>
+		<li>This is rule 2</li>
+	</ol>
+
+	<h2 class="event_heading2">Other headings</h2>
+	<p>For all other informations, subsections, copy and paste this heading and line and replace the text.</p>
+	<h3 class="event_heading3">Other headings</h3>
+	<p>content</p>
+		<h4 class="event_heading4">Other headings</h4>
+		<p>content</p>
+
+	<div id="event_schedule">
+		<h2 class="event_heading2">Schedule of the Event</h2>
+		<p>Replace the schedule of your event like this: </p>
+		<p>Prelims: Online, a month before Pragyan, last week of January.</p>
+		<p>Finals:- On all Pragyan days.</p>
+	</div>
+
+	<div id="event_prizes">
+		<h2 class="event_heading2">Prizes</h2>
+		<p>Give detailed prize descripton over here.(splitup for 1st,2nd,3rd and consolation prizes)</p>
+	</div>
+
+	<div id="event_registration">
+		<h2 class="event_heading2">Registration</h2>
+		<p>Give registration details here...date on which reg will start.</p>
+		Prior registration is required for this event. Please click <a href="./"register">here</a> to register.
+	</div>
+
+	<div id="event_contacts">
+		<h2 class="event_heading2">Contacts</h2>
+		<p>Put your contact details here by copying the content from the following example.</p>
+		<p>Do not put more than one email id. Put your events mail id only.
+		<ul id="event_cotactList">
+		<address>Sahil Ahuja (+91 94867 55087)</address>
+		<address>Sahil Ahuja (+91 94867 55087)</address>
+		<address>Sahil Ahuja (+91 94867 55087)</address>
+		<address>[tex]event@pragyan.org[/tex]</address>
+		</ul>
+	</div>
+
+	<p><a href="#event">Top</a></p>
+</div>
+
+			]]>
+		</Html>
+	</Template>
+
+	<Template title="Newitembox" image="template1.gif">
+		<Description>The events box used in pragyan.</Description>
+		<Html>
+			<![CDATA[
+<div class="newsitem item1" onmouseover="blurOthers(this)" onclick="window.location='./events'"><img alt="events" src="/08/home/events.jpg" style="border-color: rgb(157, 10, 15);" />
+<h1 style="color: rgb(157, 10, 15);">Events</h1>
+<div class="itemlinks">
+	<a href="./events/coding" class="itemlink1">Coding</a>
+	<a href="./events/robovigyan" class="itemlink1">Robovigyan</a>
+	<a href="./events/innovation" class="itemlink1">Innovation</a>
+	<a href="./events/informals" class="itemlink1">Informals</a>
+	<a href="./events/brainwork" class="itemlink1">Brainwork</a>
+	<a href="./events/management" class="itemlink1">Management</a>
+	<a href="./events/engsc" class="itemlink1 itemlink7full">Engineering Sciences</a></div>
+</div>
+</div>
+			]]>
+		</Html>
+	</Template>
+
+
+	<Template title="Image and Title" image="template1.gif">
+		<Description>One main image with a title and text that surround the image.</Description>
+		<Html>
+			<![CDATA[
+				<img style="MARGIN-RIGHT: 10px" height="100" alt="" width="100" align="left"/>
+				<h3>Type the title here</h3>
+				Type the text here
+			]]>
+		</Html>
+	</Template>
+	<Template title="Strange Template" image="template2.gif">
+		<Description>A template that defines two colums, each one with a title, and some text.</Description>
+		<Html>
+			<![CDATA[
+				<table cellspacing="0" cellpadding="0" width="100%" border="0">
+					<tbody>
+						<tr>
+							<td width="50%">
+							<h3>Title 1</h3>
+							</td>
+							<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+							<td width="50%">
+							<h3>Title 2</h3>
+							</td>
+						</tr>
+						<tr>
+							<td>Text 1</td>
+							<td>&nbsp;</td>
+							<td>Text 2</td>
+						</tr>
+					</tbody>
+				</table>
+				More text goes here.
+			]]>
+		</Html>
+	</Template>
+	<Template title="Text and Table" image="template3.gif">
+		<Description>A title with some text and a table.</Description>
+		<Html>
+			<![CDATA[
+				<table align="left" width="80%" border="0" cellspacing="0" cellpadding="0"><tr><td>
+					<h3>Title goes here</h3>
+					<p>
+					<table style="FLOAT: right" cellspacing="0" cellpadding="0" width="150" border="1">
+						<tbody>
+							<tr>
+								<td align="center" colspan="3"><strong>Table title</strong></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+					Type the text here</p>
+				</td></tr></table>
+			]]>
+		</Html>
+	</Template>
+</Templates>

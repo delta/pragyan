@@ -1,0 +1,140 @@
+  * Top
+  * Requirements
+  * Introduction
+  * Features
+  * Installation
+  * Configuration
+  * Credits
+
+Pragyan CMS 2.5.1 Documentation
+
+  * phpMyAdmin homepage
+  * SourceForge phpMyAdmin project page
+  * Official phpMyAdmin wiki
+  * Local documents:
+      + Version history: ChangeLog
+      + General notes: README
+      + License: LICENSE
+  * Documentation version: $Id: Documentation.html 11151 2008-03-01 11:59:07Z
+    lem9 $
+
+Requirements :
+
+  * PHP
+      + You need PHP 4.2.0 or newer, with session support (see FAQ 1.31)
+      + You need GD2 support in PHP to display inline thumbnails of JPEGs
+        ("image/jpeg: inline") with their original aspect ratio
+      + You need PHP 4.3.0 or newer to use the "text/plain: external"
+        MIME-based transformation
+      + When using the "cookie" authentication method, the mcrypt extension is
+        strongly suggested for most users and is required for 64?bit machines.
+        Not using mcrypt will cause phpMyAdmin to load pages significantly
+        slower.
+  * MySQL 3.23.32 or newer (details);
+  * Web browser with cookies enabled.
+
+Introduction :
+
+phpMyAdmin can manage a whole MySQL server (needs a super-user) as well as a
+single database. To accomplish the latter you'll need a properly set up MySQL
+user who can read/write only the desired database. It's up to you to look up
+the appropriate part in the MySQL manual.
+
+Features :
+
+  * Multi-user open source content management system
+  * Used to organize and facilitate collaborative content creation and updation
+  * Handy tools to manage permissions for groups and users
+  * Modules article, gallery, quiz,	form and forum
+
+Installation :
+See INSTALL/INSTALL
+
+Configuration :
+
+configuration text
+
+Credits :
+
+Pragyan CMS - Credits
+=====================
+
+CREDITS, in chronological order
+-------------------------------
+
+- The Architects
+	Sahil Ahuja
+	Abhilash R
+	Anshu Prateek
+	Ankit Srivastava
+
+- Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+    * creator of the pragyan CMS project
+    * maintainer and Project Manager from 2007 to summer 2008
+    * architecture and working of the CMS
+    * authentication
+    * article
+    * forms
+    * uploads
+    * menu
+    * lots of things here and there.
+
+- Abhilash R <abhithekid[at]users.sourceforge.net>
+    * url Parsing
+    * permissions
+    * group management
+    * directory tree
+    * forms
+    * AJAX suggestion box
+    * quiz timer
+    * billing module
+    * pr module
+
+- Anshu Prateek <anshprat[at]users.sourceforge.net>
+    * article
+    * forum
+    * forms module
+    * hospi module
+    * uploads
+
+- Ankit Srivastava <ansh2201[at]users.sourceforge.net>
+    * Designer
+    * forms
+    * news module
+    * qaos module
+    * copy and move for pages
+    * breadcrumbs
+
+- Mrinal Kumar <mrinalkumar123[at]gmail.com>
+    * forum
+
+- Harini A <scistu[at]gmail.com>
+    * gallery
+
+And also to the following people who have contributed minor changes,
+enhancements, bugfixes or support for a new language since version 2.1.0:
+M. Surya Sankar, Sapna Shukla, Shruti J, Ashwathi Krishnan, K.R Arvind,
+T.V. Karthik
+
+Original Credits of Version 1
+-----------------------------
+
+    This work is based on Parijat Mukherjee's Pragyan CMS v1. It was his idea
+    to create a web-based interface to MySQL using PHP4. Although I have not
+    used any of his source-code, there are some concepts I've borrowed from
+    him. Pragyan CMS v2 was created to make up for the shortcomings of 
+    Pragyan CMS v1.
+    
+    Thanks go to [in chronological order]
+    - Sahil Ahuja <sahilahuja[at]gmail.com> who created the form and quiz
+      module in Pragyan CMS v1 and contributed to its design.
+    - Abhishek Verma <vermaabhishekp[at]gmail.com> who created the form and quiz
+      module in Praygan CMS v1.
+    - Vishal Patel <vkp_patel[at]yahoo.co.in> made the gallery module.
+    The following people have contributed minor changes, enhancements, bugfixes
+    or support for a new language:
+    Ankit Srivastava, Aishwarya T, Srikanth M
+
+    And thanks to everyone else who sent me email with suggestions, bug-reports
+    and or just some feedback.
+
