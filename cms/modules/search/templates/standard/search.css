@@ -1,0 +1,113 @@
+/*Search page body */
+body {background-color:#FFFFFF; font-family:arial,sans-serif; font-size: 13px; }
+
+/*Top categories*/
+.main_cat1 {font-size: 16px; font-weight: bold; color:#0000FF}
+.main_cat2 {font-size: 12px; font-weight: bold; color:#0000FF}
+.cat1:visited {font-size: 16px; font-weight: bold; color:#5555AA}
+
+/*Small urls*/
+.url {color: #115599}
+
+
+a:visited{color:#5555AA}
+/*hr{color:#000066}*/
+
+/*Page descriptions*/
+.description{font-size: 13px;}
+
+/* */
+td {font-family:arial,sans-serif; font-size: 13px; }
+
+/* Title/link of pages */
+.title{color:#0000FF; font-size:15px}
+
+
+
+.searchBox{border:1px solid #113377;}
+
+#result_report {
+	text-align:center ;
+	padding:3px;
+	background-color:#e5ecf9; 
+	font-weight: bold;
+	margin-bottom:14px;
+}
+
+.catBanner {
+	padding:3px;
+	margin-top:15px;
+	background-color:#e5ecf9; 
+	font-weight: bold
+}
+.webPageBanner {
+	padding:3px;
+	margin-top:20px;
+	background-color:#e5ecf9; 
+	font-weight: bold
+}
+
+hr{color:#000066;}
+hr.powered{width:550; color: #000066}
+
+/*main results table */
+#results{width: 780;}
+
+h1 {
+	text-align: center;
+	font-family: Verdana, Ariel;
+	font-size:24px;
+	color: #000066;
+	}
+
+#other_pages {
+	text-align:center;
+}
+
+#powered_by {
+	margin:0 auto;
+	margin-top:20px;
+	padding-top:10px;
+	font-size:10px;
+	text-align:center;
+	vertical-align: center;
+}
+
+#common_report {
+		text-align:center;
+}
+
+#cat_table {
+		width:600px;
+		margin-top:20px;
+		padding-top:10px;
+		padding-bottom:20px;
+		border-top:1px solid #AAAAAA;
+		border-bottom:1px solid #AAAAAA;
+
+}
+
+#cat_main {
+	font-weight: bold;
+}
+
+.divline{
+	margin-top:20px;
+	margin-bottom:-5px;
+	border-bottom:1px solid #DDDDDD;
+}
+
+#sub_cat {
+	font-size:12px;
+}
+
+.idented {
+	margin-left:30px;
+}
+
+#did_you_mean {
+	font-size: 14px; 
+	text-align:center ;
+	margin:10px;
+
+}

@@ -1,0 +1,159 @@
+/* Pagination list styles */
+ul.fdtablePaginater
+{
+    display: table;
+    list-style: none;
+    padding: 0px;
+    margin: 0px auto;
+    text-align: center;
+    height: 2em;
+    width: auto;
+    margin-bottom: 2em;
+}
+
+ul.fdtablePaginater li
+{
+    display: table-cell;
+    padding-right: 4px;
+    color: #666;
+    list-style: none;
+
+    -moz-user-select: none;
+    -khtml-user-select: none;
+}
+
+ul.fdtablePaginater li a.currentPage
+{
+    border-color: #a84444 !important;
+    color: #000;
+}
+
+ul.fdtablePaginater li a:active
+{
+	border-color:#222 !important;
+    color:#222;
+}
+
+ul.fdtablePaginater li a,
+ul.fdtablePaginater li div
+{
+	display:block;
+	width:2em;
+	font-size:1em;
+	color:#666;
+	padding:0;
+	margin:0;
+	text-decoration:none;
+	outline:none;
+	border:1px solid #ccc;
+	font-family:georgia, serif;
+}
+ul.fdtablePaginater li div
+{
+    cursor:normal;
+    opacity:.5;
+    filter:alpha(opacity=50);
+}
+ul.fdtablePaginater li a span,
+ul.fdtablePaginater li div span
+{
+    display:block;
+    line-height:2em;
+    border:1px solid #fff;
+    background:#fff url(./images/gradient.gif) repeat-x 0 -20px;
+}
+ul.fdtablePaginater li a
+{
+    cursor:pointer;
+}
+ul.fdtablePaginater li a:focus
+{
+    color:#333;
+    text-decoration:none;
+    border-color:#aaa;
+}
+.fdtablePaginaterWrap
+{
+    text-align:center;
+    clear:both;
+    text-decoration:none;
+}
+ul.fdtablePaginater li .next-page span,
+ul.fdtablePaginater li .previous-page span,
+ul.fdtablePaginater li .first-page span,
+ul.fdtablePaginater li .last-page span
+{
+    font-weight:bold !important;
+}
+/* Keep the table columns an equal size during pagination */
+td.sized1
+{
+    width:16em;
+    text-align:left;
+}
+td.sized2
+{
+    width:10em;
+    text-align:left;
+}
+td.sized3
+{
+	width:7em;
+	text-align:left;
+}
+tfoot td
+{
+    text-align:right;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+#visibleTotal
+{
+    text-align:center;
+    letter-spacing:auto;
+}
+* html ul.fdtablePaginater li div span,
+* html ul.fdtablePaginater li div span
+{
+    background:#eee;
+}
+
+table.sortable tr {
+	background-color: #6a6a6a;
+}
+
+table.sortable tr.alt
+{
+	background-color: #808080;
+}
+
+table.sortable td.alt
+{
+	background-color: #434345;
+}
+
+table.sortable tr th a
+{
+	text-decoration: none;
+	font-color:black;
+}
+
+table.sortable tr.invisibleRow
+{
+    display:none;
+}
+
+table.sortable th.sortable, th.sortable-text, th.sortable-date, th.sortable-keep, th.sortable-date-dmy, th.sortable-numeric, th.sortable-currency, th.sortable-sortByTwelveHourTimestamp, th.sortable-sortIPAddress, th.sortable-sortEnglishLonghandDateFormat, th.sortable-sortScientificNotation, th.sortable-sortImage, th.sortable-sortFileSize, th.sortable-sortAlphaNumeric, th.sortable-sortEnglishDateTime {
+	background:#cccccc url(./images/bg_header_sortable.jpg) no-repeat scroll 0 0;
+	cursor:pointer;
+	padding:8px 12px 4px 16px;
+}
+
+table.sortable th.forwardSort {
+	background:#cccccc url(./images/bg_header_down.jpg) no-repeat scroll 0 0;
+}
+
+table.sortable th.reverseSort {
+	background:#cccccc url(./images/bg_header_up.jpg) no-repeat scroll 0 0;
+}
