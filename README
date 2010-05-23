@@ -1,0 +1,68 @@
+Pragyan CMS - Readme
+====================
+
+ A CMS to facilitate collaborative content creation and updation
+
+  Version 2.5.3
+  --------------
+  http://www.pragyan.org
+
+    Copyright (C) 2008-2009 Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+    						Anshu Prateek<anshprat[at]users.sourceforge.net>
+    						Ankit Srivastav<ansh2201[at]users.sourceforge.net>
+    						Abhilash R<abhithekid[at]users.sourceforge.net>
+						[check Documentation.txt file for more details]
+					 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  Requirements:
+    php 5.2.4 or later
+    MySQL 5.0.45 or later
+    a web-browser (duh!)
+
+  Summary:
+    Pragyan CMS is used to handle the creation, updation and administration of a website.
+    For a summary of features, please see the Documentation.txt file.
+
+  Download:
+    You can get the newest version at http://sf.net/projects/pragyan
+
+  Credits:
+    Please see the INSTALL/Documentation.txt file.
+
+  Installation:
+    Please see the INSTALL/INSTALL.txt file.
+
+  ChangeLog:
+    Now in ChangeLog
+
+  Documentation:
+    Basic documentation available in INSTALL/Documentation.txt
+
+  Support:
+    See reference about support forums under http://sf.net/forum/?groupid=220286
+
+  Pragyan CMS Links:
+
+   * Pragyan CMS homepage					http://pragyan.sf.net/
+   * SourceForge Pragyan CMS project page	http://sf.net/projects/pragyan
+   * Local documents:
+      + Version history: 	ChangeLog
+      + General notes: 		README
+      + License: 			LICENSE
+   * Documentation : 		INSTALL/Documentation.txt
+   * Developer Notes : 		INSTALL/DeverloperNotes.txt
+
+    Enjoy!
+        The Pragyan CMS Development team
