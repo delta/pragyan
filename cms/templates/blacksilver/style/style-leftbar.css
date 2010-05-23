@@ -1,0 +1,19 @@
+#main
+{
+	margin-left: 150px;
+	width:auto;
+}
+#left
+{
+/*	background:#fff url(images/background_left.gif) repeat-y left;*/
+	float: left;
+	width:150px;
+	display:inline;
+}
+/**For the left border*/
+#main {
+	border-left: 1px solid gray;
+}
+#left {
+	border-right: 1px solid gray;
+	}

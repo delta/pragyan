@@ -1,0 +1,35 @@
+fieldset {
+	border-style  : solid;
+	border-width : 1px;
+	border-color : #000;
+	color : #000;
+	background-color : #D0D0D0;
+}
+fieldset fieldset {
+	border-style  : solid;
+	border-width : 1px;
+	border-color : #000;
+	color : #000;
+	background-color : #C0C0C0;
+}
+fieldset fieldset fieldset{
+	border-style  : solid;
+	border-width : 1px;
+	border-color : #000;
+	color : #000;
+	background-color : #B0B0B0;
+}
+table.userlisttable {
+	border-style : solid;
+	border-width : 1px;
+	border-color : #000;
+}
+table.userlisttable th {
+	background-color : #BBB;
+}
+table tr.evenrow	{
+	background-color : #EFEFEF;
+}
+table tr.oddrow	{
+	background-color : #DEDEDE;
+}
