@@ -1,0 +1,125 @@
+<br/>
+<?php 
+extract($search_results);
+?>
+
+<?php if ($search_results['did_you_mean']){?>
+	<div id="did_you_mean">
+	<?php echo $sph_messages['DidYouMean'];?>: <a href="<?php print 'search.php?query='.quote_replace(addmarks($search_results['did_you_mean'])).'&search=1'?>"><?php print $search_results['did_you_mean_b']; ?></a>?
+    </div>
+<?php  }?>	
+
+<?php if ($search_results['ignore_words']){?>
+	<div id="common_report">
+	<?php while ($thisword=each($ignore_words)) {
+		$ignored .= " ".$thisword[1];
+	}		
+	$msg = str_replace ('%ignored_words', $ignored, $sph_messages["ignoredWords"]); 
+	echo $msg; ?>
+    </div>
+<?php  }?>	
+
+
+<?php if ($search_results['total_results']==0){?>
+	<div id ="result_report">
+		<?php 
+		$msg = str_replace ('%query', $ent_query, $sph_messages["noMatch"]);
+		echo $msg;
+		?>
+	</div>
+<?php  }?>	
+
+
+<?php if ($total_results != 0 && $from <= $to){?>
+	<div id ="result_report">
+	<?php  
+	$result = $sph_messages['Results'];
+	$result = str_replace ('%from', $from, $result);
+	$result = str_replace ('%to', $to, $result);
+	$result = str_replace ('%all', $total_results, $result);
+	$matchword = $sph_messages["matches"];
+	if ($total_results== 1) {
+		$matchword= $sph_messages["match"];
+	} else {
+		$matchword= $sph_messages["matches"];
+	}
+
+	$result = str_replace ('%matchword', $matchword, $result);	 
+	$result = str_replace ('%secs', $time, $result);
+	echo $result;
+	?>
+	</div>
+<?php  }?>	
+
+
+<?php if (isset($qry_results)) {
+?>
+
+<div id="results">
+
+<!-- results listing -->
+
+	<?php foreach ($qry_results as $_key => $_row){
+		$last_domain = $domain_name;
+		extract($_row);
+		if ($show_query_scores == 0) {
+			$weight = '';
+		} else {
+			$weight = "[$weight%]"; 
+		}
+		?>
+		<?php  if ($domain_name==$last_domain && $merge_site_results == 1 && $domain == "") {?>
+		<div class="idented">
+		<?php }?>
+		<b><?php print $num?>.</b> <?php print $weight?>
+		<a href="<?php print $url?>" class="title">	<?php print ($title?$title:$sph_messages['Untitled'])?></a><br/>
+		<div class="description"><?php print $fulltxt?></div>
+		<div class="url"><?php print $url2?> - <?php print $page_size?></div>
+		<?php  if ($domain_name==$last_domain && $merge_site_results == 1 && $domain == "") {?>
+			[ <a href="<?php print 'search.php?query='.quote_replace(addmarks($query)).'&search=1&results='.$results_per_page.'&domain='.$domain_name?>">More results from <?php print $domain_name?></a> ]
+			</div class="idented">
+		<?php }?>
+		<br/>
+	<?php  }?>
+ </div>
+<?php }?>
+
+<!-- links to other result pages-->
+<?php if (isset($other_pages)) {
+	if ($adv==1) {
+		$adv_qry = "&adv=1";
+	}
+	if ($type != "") {
+		$type_qry = "&type=$type";
+	}
+?>
+	<div id="other_pages">
+	<?php print $sph_messages["Result page"]?>:
+	<?php if ($start >1){?>
+				<a href="<?php print 'search.php?query='.quote_replace(addmarks($query)).'&start='.$prev.'&search=1&results='.$results_per_page.$type_qry.$adv_qry.'&domain='.$domain?>"><?php print $sph_messages['Previous']?></a>
+	<?php  }?>	
+
+	<?php  foreach ($other_pages as $page_num) {
+				if ($page_num !=$start){?>
+					<a href="<?php print 'search.php?query='.quote_replace(addmarks($query)).'&start='.$page_num.'&search=1&results='.$results_per_page.$type_qry.$adv_qry.'&domain='.$domain?>"><?php print $page_num?></a>
+				<?php } else {?>	
+					<b><?php print $page_num?></b>
+				<?php  }?>	
+	<?php  }?>
+
+	<?php if ($next <= $pages){?>	
+			<a href="<?php print 'search.php?query='.quote_replace(addmarks($query)).'&start='.$next.'&search=1&results='.$results_per_page.$type_qry.$adv_qry.'&domain='.$domain?>"><?php print $sph_messages['Next']?></a>
+	<?php  }?>	
+
+	</div>
+
+<?php }?>
+
+
+<div class="divline">
+</div>
+<div id="powered_by">
+<!--If you want to remove this, please donate to the project at http://www.sphider.eu/donate.php--> 		
+<?php poweredby()?>
+</div>
+
