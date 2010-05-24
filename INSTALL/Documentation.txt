@@ -1,0 +1,121 @@
+  * Top
+  * Requirements
+  * Introduction
+  * Features
+  * Configuration
+  * Credits
+
+Requirements :
+
+  * PHP 4.3.0 or newer, with session support
+  * MySQL 3.23.32 or newer (details);
+  * Web browser with cookies enabled.
+
+Introduction :
+
+Pragyan CMS is a multi user based cms to organize & facilitate collaborative content 
+creation & updation on a website, written in PHP and MySql. It provides tools to manage
+permissions for users and groups and modules like article, form, quiz, forums etc.
+
+Features :
+
+  * Multi-user open source content management system
+  * Used to organize and facilitate collaborative content creation and updation
+  * Handy tools to manage permissions for groups and users
+  * Modules article, gallery, quiz,	form and forum
+
+Configuration :
+
+Run the installation (INSTALL/INSTALL.txt) to know about the config options
+
+Credits :
+
+Pragyan CMS - Credits
+=====================
+
+- The Architects
+	Abhishek Shrivastava
+	Sahil Ahuja
+	Abhilash R
+	Anshu Prateek
+	Ankit Srivastava
+
+- Abhishek Shrivastava <abhishekdelta[at]users.sourceforget.net>
+    * version 3.0 release
+    * page-specific templates
+    * new user management
+    * new CKEditor 3.1
+    * global settings
+
+- Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+    * creator of the pragyan CMS project
+    * maintainer and Project Manager from 2007 to summer 2008
+    * architecture and working of the CMS
+    * authentication
+    * article
+    * forms
+    * uploads
+    * menu
+
+- Abhilash R <abhithekid[at]users.sourceforge.net>
+    * url Parsing
+    * permissions
+    * group management
+    * directory tree
+    * forms
+    * AJAX suggestion box
+    * quiz timer
+    * billing module
+    * pr module
+
+- Anshu Prateek <anshprat[at]users.sourceforge.net>
+    * article
+    * forum
+    * forms module
+    * hospi module
+    * uploads
+
+- Ankit Srivastava <ansh2201[at]users.sourceforge.net>
+    * Designer
+    * forms
+    * news module
+    * qaos module
+    * copy and move for pages
+    * breadcrumbs
+
+- Mrinal Kumar <mrinalkumar123[at]gmail.com>
+    * forum
+
+- Harini A <scistu[at]gmail.com>
+    * gallery
+
+And also to the following people who have contributed minor changes,
+enhancements, bugfixes or support for a new language since version 2.1.0:
+M. Surya Sankar, Sapna Shukla, Shruti J, Ashwathi Krishnan, K.R Arvind,
+T.V. Karthik
+
+Templates: 
+ Blue : Nitin Kumar
+
+Original Credits of Version 1
+-----------------------------
+
+    This work is based on Parijat Mukherjee's Pragyan CMS v1. It was his idea
+    to create a web-based interface to MySQL using PHP4. Although I have not
+    used any of his source-code, there are some concepts I've borrowed from
+    him. Pragyan CMS v2 was created to make up for the shortcomings of 
+    Pragyan CMS v1.
+    
+    Thanks go to [in chronological order]
+    - Sahil Ahuja <sahilahuja[at]gmail.com> who created the form and quiz
+      module in Pragyan CMS v1 and contributed to its design.
+    - Abhishek Verma <vermaabhishekp[at]gmail.com> who created the form and quiz
+      module in Praygan CMS v1.
+    - Vishal Patel <vkp_patel[at]yahoo.co.in> made the gallery module.
+    The following people have contributed minor changes, enhancements, bugfixes
+    or support for a new language:
+    Ankit Srivastava, Aishwarya T, Srikanth M
+
+    And thanks to everyone else who sent me email with suggestions, bug-reports
+    and or just some feedback.
+
