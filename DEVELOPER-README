@@ -1,0 +1,9 @@
+Pragyan CMS v3.0 - Developer's Guide
+========================================
+
+For those who have downloaded a nightly build of Pragyan CMS v3, please follow the following steps before you install the CMS :
+
+1) Delete all the contents of the cms/config.lib.php file
+2) Delete the .htaccess file in the root directory of Pragyan CMS
+3) Rename the htaccess-dist file to .htaccess in the root directory
+
