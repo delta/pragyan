@@ -81,7 +81,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	/// Coz work to be done after these actions do involve the page
 
 	$pagetype_query = "SELECT page_module, page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id=".$pageId;
-	$pagetype_result = mysql_query($pagetype_query);
+	$pagetype_result = mysql_query(escape($pagetype_query));
 	$pagetype_values = mysql_fetch_assoc($pagetype_result);
 	if(!$pagetype_values) {
 		displayerror("The requested page does not exist.");
@@ -95,7 +95,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	}
 	if($recursed==0) {
 		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id=".$pageId;
-		$pagetypeupdate_result = mysql_query($pagetypeupdate_query);
+		$pagetypeupdate_result = mysql_query(escape($pagetypeupdate_query));
 		if(!$pagetype_result)
 			return '<div class="cms-error">Error No. 563 - An error has occured. Contact the site administators.</div>';
 	}
@@ -109,7 +109,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	if($moduleType=="external") {
 		$query = "SELECT `page_extlink` FROM `".MYSQL_DATABASE_PREFIX."external` WHERE `page_modulecomponentid` =
 					(SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`= ".$pageId.")";
-		$result = mysql_query($query);
+		$result = mysql_query(escape($query));
 		$values = mysql_fetch_array($result);
 		$link=$values[0];
 		header("Location: $link");
@@ -124,14 +124,14 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	}
 
 	$createperms_query = " SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action = 'create' AND page_module = '".$moduleType."'";
-	$createperms_result = mysql_query($createperms_query);
+	$createperms_result = mysql_query(escape($createperms_query));
 	if(mysql_num_rows($createperms_result)<1) {
 		displayerror("The action \"create\" does not exist in the module \"$moduleType\"</div>");
 		return "";
 	}
 
 	$availableperms_query = "SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action != 'create' AND page_module = '".$moduleType."'";
-	$availableperms_result = mysql_query($availableperms_query);
+	$availableperms_result = mysql_query(escape($availableperms_query));
 	$permlist = array();
 	while ($value=mysql_fetch_assoc($availableperms_result))	{
 		array_push($permlist,$value['perm_action']);
@@ -158,7 +158,7 @@ function getTitle($pageId,$action, &$heading) {
 	}
 
 	$pagetitle_query = "SELECT `page_title`, `page_module`, `page_modulecomponentid`, `page_displaypageheading` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
-	$pagetitle_result = mysql_query($pagetitle_query);
+	$pagetitle_result = mysql_query(escape($pagetitle_query));
 	if (!$pagetitle_result)
 		return false;
 	$pagetitle_values = mysql_fetch_assoc($pagetitle_result);
@@ -190,5 +190,4 @@ interface fileuploadable {
 	 */
 	public static function getFileAccessPermission($pageId,$moduleComponentId,$userId,$fileName);
 }
-
 
