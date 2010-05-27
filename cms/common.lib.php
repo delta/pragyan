@@ -121,7 +121,7 @@ function displaywarning($error_desc) {
 function getUserName($userId) {
 	if($userId <= 0) return "Anonymous";
 	$query = "SELECT `user_name` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId";
-	$result = mysql_query($query);
+	$result = mysql_query(escape($query));
 	$row = mysql_fetch_row($result);
 	return $row[0];
 }
@@ -134,7 +134,7 @@ function getUserName($userId) {
 function getUserFullName($userId) {
 	if($userId <= 0) return "Anonymous";
 	$query = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId";
-	$result = mysql_query($query);
+	$result = mysql_query(escape($query));
 	$row = mysql_fetch_row($result);
 	return $row[0];
 }
@@ -147,7 +147,7 @@ function getUserFullName($userId) {
 function getUserEmail($userId) {
 	if($userId <= 0) return 'Anonymous';
 	$query="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId";
-	$result = mysql_query($query);
+	$result = mysql_query(escape($query));
 	$row= mysql_fetch_row($result);
 	return $row[0];
 }
@@ -160,7 +160,7 @@ function getUserEmail($userId) {
 function getUserIdFromEmail($email) {
 	if(strtolower($email) == 'anonymous') return 0;
 	$query = 'SELECT `user_id` FROM `'.MYSQL_DATABASE_PREFIX."users` WHERE `user_email` = '$email'";
-	$result = mysql_query($query);
+	$result = mysql_query(escape($query));
 	$row = mysql_fetch_row($result);
 	return $row[0];
 }
@@ -203,7 +203,7 @@ function getPagePath($pageid) {
 
 	while($pageid != 0) {
 		$pathQuery = "SELECT `page_parentid`, `page_name` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = $pageid";
-		$pathResult = mysql_query($pathQuery);
+		$pathResult = mysql_query(escape($pathQuery));
 		$pathResultRow = mysql_fetch_row($pathResult);
 
 		$pageid = $pathResultRow[0];
@@ -215,13 +215,13 @@ function getPagePath($pageid) {
 
 function getPageModule($pageId) {
 	$pagemodule_query = "SELECT `page_module` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
-	$pagemodule_result = mysql_query($pagemodule_query);
+	$pagemodule_result = mysql_query(escape($pagemodule_query));
 	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
 	return $pagemodule_row['page_module'];
 }
 function getPageTitle($pageId) {
 	$pagemodule_query = "SELECT `page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
-	$pagemodule_result = mysql_query($pagemodule_query);
+	$pagemodule_result = mysql_query(escape($pagemodule_query));
 	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
 	return $pagemodule_row['page_title'];
 }
@@ -235,32 +235,32 @@ function getPageTitle($pageId) {
  */
 function getParentPage($pageid) {
 	$pageparent_query = "SELECT `page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
-	$pageparent_result = mysql_query($pageparent_query);
+	$pageparent_result = mysql_query(escape($pageparent_query));
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {
 	$pageparent_query = "SELECT `page_id`,`page_name`,`page_parentid`,`page_title`,`page_module`,`page_modulecomponentid`,`page_menurank`,`page_inheritedinfoid`,`page_displayinmenu`,`page_displaymenu`,`page_displaysiblingmenu` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
-	$pageparent_result = mysql_query($pageparent_query);
+	$pageparent_result = mysql_query(escape($pageparent_query));
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row;
 }
 function getPageModuleComponentId($pageid) {
 	$pageparent_query = "SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
-	$pageparent_result = mysql_query($pageparent_query);
+	$pageparent_result = mysql_query(escape($pageparent_query));
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row['page_modulecomponentid'];
 }
 function getPageIdFromModuleComponentId($moduleName,$moduleComponentId) {
 	$moduleid_query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module` = '$moduleName' AND `page_modulecomponentid` = $moduleComponentId";
-	$moduleid_result = mysql_query($moduleid_query);
+	$moduleid_result = mysql_query(escape($moduleid_query));
 	$moduleid_row = mysql_fetch_assoc($moduleid_result);
 	return $moduleid_row['page_id'];
 }
 
 function getModuleComponentIdFromPageId($pageId, $moduleName) {
 	$moduleIdQuery = 'SELECT `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '$moduleName' AND `page_id` = $pageId";
-	$moduleIdResult = mysql_query($moduleIdQuery);
+	$moduleIdResult = mysql_query(escape($moduleIdQuery));
 	$moduleIdRow = mysql_fetch_row($moduleIdResult);
 	return $moduleIdRow[0];
 }
@@ -274,7 +274,7 @@ function logInfo ($userEmail, $userId, $pageId, $pagePath, $permModule, $permAct
 	if(isset($_GET['fileget']))	return false;
 
 	$updateQuery = "SELECT `log_no` FROM `".MYSQL_DATABASE_PREFIX."log` WHERE `log_no` = 1";
-	$result = mysql_query($updateQuery);
+	$result = mysql_query(escape($updateQuery));
 	
 	if(!$result || mysql_num_rows($result) == 0)
 		$updateQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."log` (`log_no`, `user_email`, `user_id`, `page_id`, `page_path`, `perm_module`, `perm_action`, `user_accessipaddress`)
@@ -283,7 +283,7 @@ function logInfo ($userEmail, $userId, $pageId, $pagePath, $permModule, $permAct
     	$updateQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."log` (`log_no`, `user_email`, `user_id`, `page_id`, `page_path`, `perm_module`, `perm_action`, `user_accessipaddress`)
     	( SELECT (MAX(log_no)+1)  , '$userEmail', $userId, $pageId, '$pagePath', '$permModule', '$permAction', '$accessIpAddress' FROM  `".MYSQL_DATABASE_PREFIX."log`);";
     
-    if(!mysql_query($updateQuery))
+    if(!mysql_query(escape($updateQuery)))
     	displayerror ("Error in logging info.");
     return true;
 }
@@ -302,7 +302,7 @@ SUBDATE( SUBTIME(NOW(),CURTIME()),(
 		)%10 
 		)
 LIMIT 0,1";
-	$requiredResult = mysql_query($requiredQuery);
+	$requiredResult = mysql_query(escape($requiredQuery));
 	if($requiredResult!=NULL && mysql_num_rows($requiredResult) == 0) { 
 		return true;
 	}
@@ -377,7 +377,7 @@ function updateUserPassword($user_email,$user_passwd) {
 
 function getUserInfo($user_email) {
 	$query = "SELECT `user_id`,`user_password`,`user_name`,`user_activated`,`user_lastlogin`,`user_loginmethod` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` = '" . $user_email . "'";
-	$result = mysql_query($query) or die(mysql_error() . " in function getUserInfo : common.lib.php");
+	$result = mysql_query(escape($query)) or die(mysql_error() . " in function getUserInfo : common.lib.php");
 	return mysql_fetch_assoc($result);
 }
 
@@ -430,7 +430,7 @@ class messenger {
 function getAvailableTemplates()
 {
 	$query="SELECT template_name FROM `".MYSQL_DATABASE_PREFIX."templates`";
-	$result=mysql_query($query);
+	$result=mysql_query(escape($query));
 	$templates=array();
 	$i=0;
 	while($row=mysql_fetch_row($result))
@@ -445,7 +445,7 @@ function getAvailableTemplates()
 function getTableFieldsName($tablename)
 {
 	$query="SELECT * FROM ".MYSQL_DATABASE_PREFIX.$tablename;
-	$result=mysql_query($query);
+	$result=mysql_query(escape($query));
 	$numfields=mysql_num_fields($result);
 	$fields=array();
 	$i=0;
@@ -464,7 +464,7 @@ function getTableFieldsName($tablename)
 function getNextUserId()
 {
 	$query="SELECT max(user_id) FROM ".MYSQL_DATABASE_PREFIX."users";
-	$result=mysql_query($query);
+	$result=mysql_query(escape($query));
 	$row=mysql_fetch_row($result);
 	return $row[0]+1;
 }

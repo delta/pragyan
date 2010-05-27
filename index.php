@@ -45,7 +45,7 @@ if(isset($_GET['page']))
 else $pageFullPath = "home";
 
 if(isset($_GET['action']))
-	$action = strtolower($_GET['action']);
+	$action = strtolower(escape($_GET['action']));
 else	$action = "view";
 
 if ($action == 'keepalive')
