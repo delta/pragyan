@@ -149,7 +149,7 @@ ADMINPAGE;
 			$op .= admin_editRegistrants(); 
 		elseif (isset ($_GET['id'])) $op .= admin_userAdmin();
 		elseif (isset ($_GET['movePermId'])){ $op .= admin_changePermRank(); $ophead="Changing Permissions Rank"; }
-		elseif (isset ($_GET['module'])){ $op .= admin_changePermRank($_GET['module']); $ophead="Changing Permissions Rank for module '{$_GET['module']}'"; }
+		elseif (isset ($_GET['module'])){ $op .= admin_changePermRank(escape($_GET['module'])); $ophead="Changing Permissions Rank for module '".escape($_GET['module'])."'"; }
 	}
 	if($op!="")
 	{
@@ -458,7 +458,7 @@ LINKS;
 			return null;
 		}
 		$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` (`user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password` ,`user_regdate` ,`user_lastlogin` ,`user_activated`)VALUES ('$user_id' ,'$user_name' ,'$user_email' ,'$user_fullname' , MD5('$user_password') ,CURRENT_TIMESTAMP , '', '$user_activated')";
-		$result = mysql_query(escape($query)) or die(mysql_error());
+		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_affected_rows()) {
 			displayinfo("User Created");
 			$user_Id = $_POST['user_id'];
@@ -471,10 +471,10 @@ LINKS;
 	if(isset($_GET['userDel'])){
 
 //		displaywarning("You are going to delete user $_GET[userDel] <a href=\"./+admin&userDel=$_GET[userDel]&id=$_GET[id]&confirmed\"><I>continue</I></a> Cancel");
-		$userId = $_GET['id'];
-		$userName = $_GET['userDel'];
+		$userId = escape($_GET['id']);
+		$userName = escape($_GET['userDel']);
 		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId AND `user_name`='$userName'";
-		$resultDel=mysql_query(escape($query)) or displayerror(mysql_error());
+		$resultDel=mysql_query($query) or displayerror(mysql_error());
 		if($resultDel)displayinfo("User $userId $userName deleted");
 		else displayerror("$resultDel Failed to delete user $userName");
 		return null;
@@ -484,13 +484,13 @@ LINKS;
 	if ((isset ($_GET['id']))) {
 		if (($_GET['id'] != 'new') && ($_GET['id'] != 'search') && ($_POST['userAdminAction'] != 'Search')&&(!isset($_GET['userDel']))) {
 
-			$user_Id = $_GET['id'];
+			$user_Id = escape($_GET['id']);
 			if ($user_Id == '')
 				$user_Id = $_POST['user_id'];
 			$user_Id = $user_Id;
 			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id`=$user_Id";
 			{
-				$result = mysql_query(escape($query));
+				$result = mysql_query($query);
 				if (mysql_num_rows($result) > 0) {
 					$temp = mysql_fetch_assoc($result);
 					$readonly = "readonly";
@@ -515,7 +515,7 @@ CHG;
 					$chngPasswd = "`user_password`='$user_password',";
 				}
 				$querySave = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_name`='$user_name',`user_email`='$user_email',`user_fullname`='$user_fullname',$chngPasswd`user_activated`='$user_activated',`user_loginmethod`='$user_loginmethod' WHERE `user_id`=$user_id";
-				$resultSave = mysql_query(escape($querySave)) or die(mysql_error());
+				$resultSave = mysql_query($querySave) or die(mysql_error());
 				if (!mysql_error())
 					displayinfo("User data saved");
 				else

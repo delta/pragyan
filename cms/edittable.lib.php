@@ -10,7 +10,7 @@
  * @param array $primaryField Array of names of primary fields
  */
 function editDb($tablename, $page_modulecomponentid, $primaryField,$allowDelete, $allowEdit) {
-	$query = "SELECT * FROM $tablename LIMIT 0,1 ";
+	$query = "SELECT * FROM ".escape($tablename)." LIMIT 0,1 ";
 	$result = mysql_query($query);
 	$table =<<<TAB
 			<html>
@@ -32,8 +32,8 @@ TAB;
 	}
 	$table .= "</tr>";
 
-	$query = "SELECT * FROM $tablename WHERE
-	page_modulecomponentid=$page_modulecomponentid ";
+	$query = "SELECT * FROM ".escape($tablename)." WHERE
+	page_modulecomponentid=".escape($page_modulecomponentid);
 	$result = mysql_query($query);
 	$even = "even";
 	while ($temp = mysql_fetch_array($result, MYSQL_ASSOC)) {
