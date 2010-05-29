@@ -49,12 +49,12 @@ function profile($userId, $forEditRegistrant = false) {
 			$updates = array();
 
 			if (isset($_POST['user_name']) && $_POST['user_name'] != '' && $_POST['user_name'] != $userName) {
-				$updates[] = "`user_name` = '{$_POST['user_name']}'";
-				$newUserName = $_POST['user_name'];
+				$updates[] = "`user_name` = '".escape($_POST['user_name'])."'";
+				$newUserName = escape($_POST['user_name']);
 			}
 			if (isset($_POST['user_fullname']) && $_POST['user_fullname'] != '' && $_POST['user_fullname'] != $userFullname) {
-				$updates[] = "`user_fullname` = '{$_POST['user_fullname']}'";
-				$newUserFullname = $_POST['user_fullname'];
+				$updates[] = "`user_fullname` = '".escape($_POST['user_fullname'])."'";
+				$newUserFullname = escape($_POST['user_fullname']);
 			}
 			$errors = true;
 			if (!$forEditRegistrant && $_POST['user_newpassword'] != '') {
@@ -68,7 +68,7 @@ function profile($userId, $forEditRegistrant = false) {
 					displayerror('Error! The old and new passwords are the same.');
 				}
 				else {
-					$updates[] = "`user_password` = MD5('{$_POST['user_newpassword']}')";
+					$updates[] = "`user_password` = MD5('".escape($_POST['user_newpassword'])."')";
 					$errors = false;
 				}
 			}
@@ -246,7 +246,7 @@ function getProfileFormEditForm() {
 	/// Check $_GET['subaction'] to determine whether something must be done to the profile form
 	/// if there is no subaction, and a $_POST['submittedform_desc'] is set, submit the profile form
 	if (isset($_GET['subaction'])) {
-		$subAction = $_GET['subaction'];
+		$subAction = escape($_GET['subaction']);
 		require_once("$sourceFolder/$moduleFolder/form/editformelement.php");
 
 		if (
@@ -255,17 +255,17 @@ function getProfileFormEditForm() {
 			isset($_POST['txtElementDesc']) && isset($_POST['selElementType']) &&
 			isset($_POST['txtToolTip']) && isset($_POST['txtElementName'])
 		) {
-			submitEditFormElementDescData($moduleComponentId, $_POST['elementid']);
+			submitEditFormElementDescData($moduleComponentId, escape($_POST['elementid']));
 		}
 		elseif ( isset($_GET['elementid']) && ctype_digit($_GET['elementid']) ) {
 			if ($_GET['subaction'] == 'editformelement') {
-				return generateEditFormElementDescBody($moduleComponentId, $_GET['elementid'], 'admin&subsubaction=editprofileform');
+				return generateEditFormElementDescBody($moduleComponentId, escape($_GET['elementid']), 'admin&subsubaction=editprofileform');
 			}
 			elseif ($_GET['subaction'] == 'deleteformelement') {
-				deleteFormElement($moduleComponentId, $_GET['elementid']);
+				deleteFormElement($moduleComponentId, escape($_GET['elementid']));
 			}
 			elseif ($_GET['subaction'] == 'moveUp' || $_GET['subaction'] == 'moveDown') {
-				moveFormElement($moduleComponentId, $_GET['subaction'], $_GET['elementid']);
+				moveFormElement($moduleComponentId, escape($_GET['subaction']), escape($_GET['elementid']));
 			}
 		}
 	}
@@ -284,11 +284,11 @@ function deleteUserAccount($userId) {
 function getProfileViewRegistrantsForm() {
 	if(isset($_GET['subsubaction'])) {
 		if($_GET['subsubaction'] == 'editregistrant' && (isset($_GET['useremail']) || isset($_POST['useremail']))) {
-			$email = isset($_GET['useremail']) ? $_GET['useremail'] : $_POST['useremail'];
+			$email = isset($_GET['useremail']) ? escape($_GET['useremail']) : escape($_POST['useremail']);
 			return profile(getUserIdFromEmail($email), true);
 		}
 		elseif($_GET['subsubaction'] == 'deleteregistrant' && isset($_GET['useremail'])) {
-			deleteUserAccount(getUserIdFromEmail($_GET['useremail']));
+			deleteUserAccount(getUserIdFromEmail(escape($_GET['useremail'])));
 		}
 	}
 
@@ -303,13 +303,13 @@ function getProfileRegistrantsList($showEditButtons = false) {
 	$sortField = 'useremail';
 	$sortOrder = 'asc';
 	if(isset($_GET['sortfield'])) {
-		$sortField = $_GET['sortfield'];
+		$sortField = escape($_GET['sortfield']);
 	}
 	if(isset($_GET['sortorder']) && ($_GET['sortorder'] == 'asc' || $_GET['sortorder'] == 'desc')) {
-		$sortOrder = $_GET['sortorder'];
+		$sortOrder = escape($_GET['sortorder']);
 	}
 
-	$action = './+admin&subaction=' . $_GET['subaction'];
+	$action = './+admin&subaction=' . escape($_GET['subaction']);
 
 	$columnList['useremail'] = 'User Email';
 	$columnList['username'] = 'Username';

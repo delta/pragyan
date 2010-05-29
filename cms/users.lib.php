@@ -81,11 +81,12 @@ USERFORM;
 }
 function handleUserMgmt()
 {
-	
+	$_GET['userid']=escape($_GET['userid']);
+	if(isset($_POST['editusertype'])) $_POST['editusertype']=escape($_POST['editusertype']);
 	if(isset($_POST['user_activate']))
 	{
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id={$_GET['userid']}";
-		if(mysql_query(escape($query)))
+		if(mysql_query($query))
 			displayInfo("User Successfully Activated!");
 		else displayerror("User Not Activated!");
 		return registeredUsersList($_POST['editusertype'],"edit",false);
@@ -94,7 +95,7 @@ function handleUserMgmt()
 	{
 		
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1";
-		if(mysql_query(escape($query)))
+		if(mysql_query($query))
 			displayInfo("All users activated successfully!");
 		else displayerror("Users Not Deactivated!");
 		
@@ -108,7 +109,7 @@ function handleUserMgmt()
 			return registeredUsersList($_POST['editusertype'],"edit",false);
 		}
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id={$_GET['userid']}";
-		if(mysql_query(escape($query)))
+		if(mysql_query($query))
 			displayInfo("User Successfully Deactivated!");
 		else displayerror("User Not Deactivated!");
 		
@@ -118,7 +119,7 @@ function handleUserMgmt()
 	{
 		
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id != ".ADMIN_USERID;
-		if(mysql_query(escape($query)))
+		if(mysql_query($query))
 			displayInfo("All users deactivated successfully except Administrator!");
 		else displayerror("Users Not Deactivated!");
 		
@@ -133,7 +134,7 @@ function handleUserMgmt()
 			return registeredUsersList($_POST['editusertype'],"edit",false);
 		}
 		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId";
-		if(mysql_query(escape($query)))
+		if(mysql_query($query))
 			displayinfo("User Successfully Deleted!");
 		else displayerror("User Not Deleted!");
 		return registeredUsersList($_POST['editusertype'],"edit",false);
@@ -145,13 +146,13 @@ function handleUserMgmt()
 		{
 			$updates = array();
 			$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`={$_GET['userid']}";
-			$row=mysql_fetch_assoc(mysql_query(escape($query)));
+			$row=mysql_fetch_assoc(mysql_query($query));
 			$errors = false;
 			
 			if(isset($_POST['user_name']) && $row['user_name']!=$_POST['user_name'])
 			{
-				$chkquery="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_name`='{$_POST['user_name']}'";
-				$result=mysql_query(escape($chkquery)) or die("failed  : $chkquery");
+				$chkquery="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_name`='".escape($_POST['user_name'])."'";
+				$result=mysql_query($chkquery) or die("failed  : $chkquery");
 				if(mysql_num_rows($result)>0) 
 				{
 					displayerror("User Name already exists in database!");
@@ -162,15 +163,15 @@ function handleUserMgmt()
 			
 			
 			if (isset($_POST['user_name']) && $_POST['user_name'] != ''  && $_POST['user_name']!=$row['user_name']) {
-				$updates[] = "`user_name` = '{$_POST['user_name']}'";
+				$updates[] = "`user_name` = '".escape($_POST['user_name'])."'";
 				
 			}
 			if (isset($_POST['user_email']) && $_POST['user_email'] != ''  && $_POST['user_email']!=$row['user_email']) {
-				$updates[] = "`user_email` = '{$_POST['user_email']}'";
+				$updates[] = "`user_email` = '".escape($_POST['user_email'])."'";
 				
 			}
 			if (isset($_POST['user_fullname']) && $_POST['user_fullname'] != ''  && $_POST['user_fullname']!=$row['user_fullname']) {
-				$updates[] = "`user_fullname` = '{$_POST['user_fullname']}'";
+				$updates[] = "`user_fullname` = '".escape($_POST['user_fullname'])."'";
 				
 			}
 			
@@ -185,11 +186,11 @@ function handleUserMgmt()
 				}
 			}
 			if (isset($_POST['user_regdate']) && $_POST['user_regdate'] != ''  && $_POST['user_regdate']!=$row['user_regdate']) {
-				$updates[] = "`user_regdate` = '{$_POST['user_regdate']}'";
+				$updates[] = "`user_regdate` = '".escape($_POST['user_regdate'])."'";
 				
 			}
 			if (isset($_POST['user_lastlogin']) && $_POST['user_lastlogin'] != ''  && $_POST['user_lastlogin']!=$row['user_lastlogin']) {
-				$updates[] = "`user_lastlogin` = '{$_POST['user_lastlogin']}'";
+				$updates[] = "`user_lastlogin` = '".escape($_POST['user_lastlogin'])."'";
 				
 			}
 			if ($_GET['userid']!=ADMIN_USERID && (isset($_POST['user_activated'])?1:0)!=$row['user_activated']) {
@@ -198,9 +199,9 @@ function handleUserMgmt()
 				
 			}
 			if (isset($_POST['user_loginmethod']) && $_POST['user_loginmethod'] != ''  && $_POST['user_loginmethod']!=$row['user_loginmethod']) 	{
-				$updates[] = "`user_loginmethod` = '{$_POST['user_loginmethod']}'";
+				$updates[] = "`user_loginmethod` = '".escape($_POST['user_loginmethod'])."'";
 				if($_POST['user_loginmethod']!='db')
-				displaywarning("Please make sure ".strtoupper($_POST['user_loginmethod'])." is configured properly, otherwise the user will not be able to login to the website.");
+				displaywarning("Please make sure ".strtoupper(escape($_POST['user_loginmethod']))." is configured properly, otherwise the user will not be able to login to the website.");
 			}
 
 			if(!$errors && count($updates) > 0) {
@@ -218,7 +219,7 @@ function handleUserMgmt()
 			
 		}
 		$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`={$_GET['userid']}";
-		$row=mysql_fetch_assoc(mysql_query(escape($query)));
+		$row=mysql_fetch_assoc(mysql_query($query));
 		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");
 		$userinfo="<fieldset><legend>Edit User Information</legend><form name='user_info_edit' action='./+admin&subaction=useradmin&userid={$_GET['userid']}' method='post'>";
 		
@@ -278,7 +279,7 @@ function handleUserMgmt()
 			{
 				if ($first == false)
 					$qstring .= ($_POST['user_search_op']=='and')?" AND ":" OR ";
-				$val=$_POST[$field];
+				$val=escape($_POST[$field]);
 				if($field=='user_activated') ${$field.'_lastval'}=$val=isset($_POST[$field])?1:0;
 				else ${$field.'_lastval'}=$val;
 				$qstring .= "`$field` LIKE CONVERT( _utf8 '%$val%'USING latin1 ) ";
@@ -288,7 +289,7 @@ function handleUserMgmt()
 		if($qstring!="")
 		{
 			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE $qstring ";
-			$resultSearch = mysql_query(escape($query));
+			$resultSearch = mysql_query($query);
 			if (mysql_num_rows($resultSearch) > 0) {
 				$num = mysql_num_rows($resultSearch);
 				
@@ -349,14 +350,14 @@ function handleUserMgmt()
 					$incomplete=true;
 					break;
 				}
-				${$field}=$_POST[$field];
+				${$field}=escape($_POST[$field]);
 			}
 			if(!$incomplete)
 			{
 				$user_id=$_GET['userid'];
 				$chkquery="SELECT COUNT(user_id) FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`=$user_id OR `user_name`='$user_name' OR `user_email`='$user_email'";
 			
-				$result=mysql_query(escape($chkquery));
+				$result=mysql_query($chkquery);
 				$row=mysql_fetch_row($result);
 			
 				if($row[0]>0) displayerror("Another user with the same name or email already exists!");
@@ -365,7 +366,7 @@ function handleUserMgmt()
 				{
 					if(isset($_POST['user_activated'])) $user_activated=1;
 					$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` (`user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password` ,`user_regdate` ,`user_lastlogin` ,`user_activated`,`user_loginmethod`)VALUES ('$user_id' ,'$user_name' ,'$user_email' ,'$user_fullname' , MD5('$user_password') ,CURRENT_TIMESTAMP , '', '$user_activated','$user_loginmethod')";
-					$result = mysql_query(escape($query)) or die(mysql_error());
+					$result = mysql_query($query) or die(mysql_error());
 					if (mysql_affected_rows()) displayinfo("User $user_fullname Successfully Created!");
 					else displayerror("Failed to create user");
 				}

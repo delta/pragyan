@@ -39,8 +39,9 @@ displayinfo($pageId.$userId.$fileName);
 	}
 
 	//return the file the particular page id.
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '$fileName' AND `page_module` = '$moduleType' AND `page_modulecomponentid` = '$moduleComponentId'";
-	$result = mysql_query(escape($query)) or die(mysql_error() . "upload L:85");
+	
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
+	$result = mysql_query($query) or die(mysql_error() . "upload L:85");
 	$row = mysql_fetch_assoc($result);
 
 	$fileType = $row['upload_filetype'];

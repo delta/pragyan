@@ -110,6 +110,7 @@ function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
  * @return array Array of arrays of page id, page name, page title, large image and small image
  */
 function getChildren($pageId, $userId) {
+	$pageId=escape($pageId);
 	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 	$childrenResult = mysql_query($childrenQuery);
 	$children = array();

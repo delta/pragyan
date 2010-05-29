@@ -35,6 +35,7 @@ function getCreatablePageTypes($userid, $pageid) {
  * @return String containing HTML of the generated form, or a null string if required data could not be found
  */
 function getSettingsForm($pageId, $userId) {
+	$pageId=escape($pageId);
 	$page_query = "SELECT `page_name`, `page_title`, `page_displaymenu`, `page_displayinmenu`, `page_displaysiblingmenu` , `page_module`, `page_displaypageheading`,`page_template` " .
 	"FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id`=" . $pageId;
 	$page_result = mysql_query($page_query);
@@ -398,7 +399,12 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	$updateQuery = '';
 	$updates = array ();
 	$errors = '';
-
+	$pageId=escape($pageId);
+	$userId=escape($userId);
+	$pageName=escape($pageName);
+	$pageTitle=escape($pageTitle);
+	$page_template=escape($page_template);
+	
 	if ($pageId == 0) {
 		if (is_bool($showInMenu)) {
 			$updates[] = '`page_displayinmenu` = ' . ($showInMenu == true ? 1 : 0);
@@ -421,7 +427,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		if(preg_match('/^[a-zA-Z][\_a-zA-Z0-9]*$/', $pageName)) {
 			$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_name` = '$pageName' AND `page_id` != $pageId AND `page_parentid` = " .
 								"(SELECT `page_parentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = $pageId)";
-			$result = mysql_query(escape($query));
+			$result = mysql_query($query);
 			if (mysql_num_rows($result) > 0) {
 				$errors = 'A page with the same name already exists in the folder.<br />';
 			} else {
@@ -444,14 +450,14 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	}
 	if (count($updates) > 0) {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = $pageId;";
-		mysql_query(escape($updateQuery));
+		mysql_query($updateQuery);
 	}
 
 	if (is_array($visibleChildList) && count($visibleChildList) > 0) {
 		$visibleChildList = "'" . join($visibleChildList, "', '") . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 1 WHERE ' .
 		"`page_name` IN ($visibleChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
-		mysql_query(escape($updateQuery));
+		mysql_query($updateQuery);
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 0 WHERE ' .
 		"`page_name` NOT IN ($visibleChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
 	} else {
@@ -459,19 +465,21 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
 	}
 
-	mysql_query(escape($updateQuery));
+	mysql_query($updateQuery);
 
 	return $errors;
 }
 function setChildTemplateFromParentID($parentId,$page_template)
 {
+	$parentId=escape($parentId);
+	$page_template=escape($page_template);
 	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
 	$result=mysql_query($query);
 	while($row=mysql_fetch_row($result))
 	{
 		$childPageId=$row[0];
 		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_template`='$page_template' WHERE `page_id`=$childPageId";
-		mysql_query(escape($query));
+		mysql_query($query);
 		setChildTemplateFromParentID($childPageId,$page_template);
 	}
 }
@@ -485,6 +493,8 @@ function setChildTemplateFromParentID($parentId,$page_template)
  */
 function pagesettings($pageId, $userId) {
 	//($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showMenuBar, $showSiblingMenu, $visibleChildList)
+	$pageId=escape($pageId);
+	$userId=escape($userId);
 	global $sourceFolder;
 	require_once($sourceFolder."/tree.lib.php");
 
@@ -497,24 +507,24 @@ function pagesettings($pageId, $userId) {
 	if (isset ($_GET['subaction']))	 {
 		if($_GET['subaction']=="pagesettings") {
 
-			$childPageName=$_GET['pageName'];
+			$childPageName=escape($_GET['pageName']);
 			if(isset($_POST['btnSubmit'])) {
 				$visibleChildList = array();
 
 				if(isset($_POST['menubarshowchildren']) && is_array($_POST['menubarshowchildren'])) {
 					for($i = 0; $i < count($_POST['menubarshowchildren']); $i++) {
-						$visibleChildList[] = $_POST['menubarshowchildren'][$i];
+						$visibleChildList[] = escape($_POST['menubarshowchildren'][$i]);
 					}
 				}
 
 				$pageInfoRow = getPageInfo($pageId);
 				if(isset($_POST['default_template']))
 					$page_template=DEF_TEMPLATE;
-				else $page_template=$_POST['page_template'];
+				else $page_template=escape($_POST['page_template']);
 	
 				$template_propogate=isset($_POST['template_propogate'])?true:false;
 
-				$updateErrors = updateSettings($pageId, $userId, $_POST['pagename'], $_POST['pagetitle'], isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate);
+				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate);
 
 				
 
@@ -539,7 +549,7 @@ function pagesettings($pageId, $userId) {
 					$comparison=">=";
 					$sortOrder="ASC";
 				}
-				$childPageName=$_GET['pageName'];
+				$childPageName=escape($_GET['pageName']);
 				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_name`='$childPageName' AND `page_id` != $pageId ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
 				$result=mysql_query($query);
 				$temp=mysql_fetch_assoc($result);
@@ -570,7 +580,7 @@ function pagesettings($pageId, $userId) {
 			if(isset($_POST['deletePage']))
 			{
 				if(isset($_GET['pageName']) || $_GET['pageName']=="") {
-					$childPageName=$_GET['pageName'];
+					$childPageName=escape($_GET['pageName']);
 					$query="SELECT `page_id` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_name`='$childPageName'";
 					$result=mysql_query($query);
 					$temp=mysql_fetch_assoc($result);
@@ -590,8 +600,8 @@ function pagesettings($pageId, $userId) {
 				global $sourceFolder;
 				require_once($sourceFolder."/parseurl.lib.php");
 				$pageIdArray = array();
-				$parentId = parseUrlReal($_POST['parentpagepath'], $pageIdArray);
-				$updateErrors = move_page($userId,$pageId, $parentId, $_POST['destinationpagetitle'], $_POST['destinationpagename'],isset( $_POST['deleteoriginalpage']));
+				$parentId = parseUrlReal(escape($_POST['parentpagepath']), $pageIdArray);
+				$updateErrors = move_page($userId,$pageId, $parentId, escape($_POST['destinationpagetitle']), escape($_POST['destinationpagename']),isset( $_POST['deleteoriginalpage']));
 			}
 
 			if ($updateErrors != '') {
@@ -612,26 +622,26 @@ function pagesettings($pageId, $userId) {
 
 				if(isset($_POST['default_template']))
 					$page_template=DEF_TEMPLATE;
-				else $page_template=$_POST['page_template'];
+				else $page_template=escape($_POST['page_template']);
 
 				$maxquery="SELECT MAX( page_id ) AS MAX FROM ".MYSQL_DATABASE_PREFIX."pages";
 				$maxqueryresult = mysql_query($maxquery);
 				$maxqueryrow = mysql_fetch_array($maxqueryresult);
 				$maxpageid = $maxqueryrow[0]+1;
 
-				$alreadyexistquery="SELECT page_name FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_parentid='$pageId' AND page_name='".$_POST['childpagename']."'";
-				$alreadyexistqueryresult = mysql_query(escape($alreadyexistquery));
+				$alreadyexistquery="SELECT page_name FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_parentid='$pageId' AND page_name='".escape($_POST['childpagename'])."'";
+				$alreadyexistqueryresult = mysql_query($alreadyexistquery);
 				$alreadyexistquerynumrows = mysql_num_rows($alreadyexistqueryresult);
-				$childPageName = str_replace(' ', '_', strtolower($_POST['childpagename']));
-				$childPageTitle = $_POST['childpagename'];
+				$childPageName = str_replace(' ', '_', escape(trtolower($_POST['childpagename'])));
+				$childPageTitle = escape($_POST['childpagename']);
 				if(!preg_match('/^[a-z][\_a-z0-9]*$/',  $childPageName))
 					displayerror("Invalid page name.");
 				elseif($alreadyexistquerynumrows>=1)
 					displayerror("A page with the given name already exists at this location.");
 				elseif($_POST['childpagetype']=="menu") {
 					$menuquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '".$childPageName."', '$pageId', '".$childPageTitle."', '".$_POST['childpagetype']."', '0', '$page_template', '$maxpageid')";
-					mysql_query(escape($menuquery));
+							"VALUES ('$maxpageid', '".$childPageName."', '$pageId', '".$childPageTitle."', '".escape($_POST['childpagetype'])."', '0', '$page_template', '$maxpageid')";
+					mysql_query($menuquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
 				}
@@ -639,11 +649,11 @@ function pagesettings($pageId, $userId) {
 					global $sourceFolder;
 					require_once($sourceFolder."/parseurl.lib.php");
 					$pageIdArray = array();
-					$parentId = parseUrlReal($_POST['childpagelink'], $pageIdArray);
+					$parentId = parseUrlReal(escape($_POST['childpagelink']), $pageIdArray);
 					if(getPermissions($userId, $parentId, "settings")) {
 					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '{$_POST['childpagetype']}', '$parentId', '$page_template', '$maxpageid')";
-					mysql_query(escape($linkquery));
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid')";
+					mysql_query($linkquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
 					}
@@ -657,19 +667,19 @@ function pagesettings($pageId, $userId) {
 					$extpageid = $extqueryrow[0]+1;
 
 					$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."external` (`page_modulecomponentid`,`page_extlink`) " .
-							"VALUES('$extpageid','".$_POST['externallink']."')";
-					if(!($result = mysql_query(escape($query)))) {
+							"VALUES('$extpageid','".escape($_POST['externallink'])."')";
+					if(!($result = mysql_query($query))) {
 						displayerror("Unable to create a new page.");
 						return false;
 					}
 					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-						"VALUES ('$maxpageid', '".$_POST['childpagename']."', '$pageId', '".ucfirst($_POST['childpagename'])."', '".$_POST['childpagetype']."', '$extpageid', '$page_template' ,'$maxpageid')";
-					mysql_query(escape($linkquery));
+						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escapae(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid')";
+					mysql_query($linkquery);
 					if (mysql_affected_rows() != 1)
 						displayerror( 'Unable to create a new page');
 				}
 				else {
-					$moduleType = $_POST['childpagetype'];
+					$moduleType = escape($_POST['childpagetype']);
 					global $sourceFolder;
 					global $moduleFolder;
 					require_once($sourceFolder."/".$moduleFolder."/".$moduleType.".lib.php");
@@ -680,8 +690,8 @@ function pagesettings($pageId, $userId) {
 						displayerror("Unable to create a new page of type $moduleType");
 					else {
 						$createquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".$_POST['childpagetype']."', '$newModuleComponentId', '$page_template', '$maxpageid')";
-						mysql_query(escape($createquery));
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$newModuleComponentId', '$page_template', '$maxpageid')";
+						mysql_query($createquery);
 							if (mysql_affected_rows() != 1)
 								displayerror( 'Unable to create a new page.');
 					}
@@ -691,7 +701,7 @@ function pagesettings($pageId, $userId) {
 				displayerror("One or more parameters not set.");
 		}
 		else if($_GET['subaction'] == 'editinheritedinfo') {
-			updatePageInheritedInfo($pageId, $_POST['txtInheritedInfo']);
+			updatePageInheritedInfo($pageId, escape($_POST['txtInheritedInfo']));
 		}
 	}
 	if ($settingsForm = getSettingsForm($pageId, $userId))
@@ -819,7 +829,7 @@ function move_page($userId,$pageId, $parentId, $pagetitle,$pagename,$deleteorigi
 //if the deleteoriginal entry is not set then the page is COPIED from the original location to the new location.
 	else {
 		$recursive= false;
-		if(isset($_POST['recursivelycopypage'])) $recursive = true;
+		if(isset(escape($_POST['recursivelycopypage']))) $recursive = true;
 		if(copyPage($userId,$pageId,$parentId,$pagetitle,$pagename,$recursive))
 			displayinfo("Page copied successfully!");
 	}

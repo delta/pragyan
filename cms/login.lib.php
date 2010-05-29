@@ -31,11 +31,11 @@ RESET;
 		return $resetPasswd;
 	}
 	elseif(!isset($_GET['key'])) {
-						$user_email = $_GET['user_email'];
-						if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $_POST['user_email']))
+						$user_email = escape($_GET['user_email']);
+						if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", escape($_POST['user_email'])))
 							displayerror("Invalid Email Id. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 						else {
-							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='$_POST[user_email]' ";
+							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST[user_email])."' ";
 							$result = mysql_query($query);
 							$temp = mysql_fetch_assoc($result);
 							if (mysql_num_rows($result) == 0)
@@ -69,8 +69,8 @@ echo "SERVER: $server, urlRequestRoot: $urlRequestRoot<br />\n";
 						}
 	}
 	else {
-					$key = $_GET['key'];
-					$user_email = $_GET['resetPasswd'];
+					$key = escape($_GET['key']);
+					$user_email = escape($_GET['resetPasswd']);
 					$password = rand();
 					$dbpassword = md5($password);
 					$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . $user_email . "'";
@@ -168,8 +168,8 @@ LOGIN;
 				if ((($_POST['user_email']) == "") || (($_POST['user_password']) == ""))
 					displayerror("Blank e-mail or password NOT allowed. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 				else {
-					$user_email = $_POST['user_email'];
-					$user_passwd = $_POST['user_password'];
+					$user_email = escape($_POST['user_email']);
+					$user_passwd = escape($_POST['user_password']);
 					$login_method = '';
 					
 					if($temp = getUserInfo($user_email)) { // chk if existsInDB

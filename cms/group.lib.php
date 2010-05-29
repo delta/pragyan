@@ -36,7 +36,7 @@ This is what grant will have :
  * @return Associative array containing the fields in that particular row
  */
 function getGroupRow($groupName) {
-	$groupQuery = 'SELECT * FROM `'.MYSQL_DATABASE_PREFIX.'groups` WHERE `group_name` = \''.$groupName.'\'';
+	$groupQuery = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_name` = '".escape($groupName)."'";
 	$groupResult = mysql_query($groupQuery);
 	return mysql_fetch_assoc($groupResult);
 }
@@ -53,7 +53,7 @@ function getGroupIdFromName($groupName) {
  	if($formId == 0) {
  	  return false;
  	}
-	$query = "SELECT `group_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `form_id`=$formId";
+	$query = "SELECT `group_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `form_id`=".escape($formId);
 	$result = mysql_query($query);
 	if(mysql_num_rows($result)>0){
 		$array = mysql_fetch_assoc($result);
@@ -68,7 +68,7 @@ function getGroupIdFromName($groupName) {
  * Returns the form id of the given group id
  */
 function getFormIdFromGroupId($groupId){
-	$query = "SELECT `form_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_id`=$groupId";
+	$query = "SELECT `form_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_id`=".escape($groupId);
 	$result = mysql_query($query);
 	if(mysql_num_rows($result)>0){
 		$array = mysql_fetch_assoc($result);
@@ -87,6 +87,9 @@ function getFormIdFromGroupId($groupId){
  * @return Boolean, true indicating success, false indicating failure
  */
 function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPriority, $shiftNeighbours = true) {
+	$userId=escape($userId);
+	$direction=escape($direction);
+	$userMaxPriority=escape($userMaxPriority);
 	$groupRow = getGroupRow($groupName);
 	if(!$groupRow) {
 		return false;
@@ -98,7 +101,7 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 	$op = ($direction == 'up' ? '+' : '-');
 	$rel = ($direction == 'up' ? '>' : '<');
 	$order = ($direction == 'up' ? 'asc' : 'desc');
-
+	
 	$groupsTable = MYSQL_DATABASE_PREFIX . 'groups';
 	$usergroupTable = MYSQL_DATABASE_PREFIX . 'usergroup';
 

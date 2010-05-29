@@ -269,8 +269,8 @@ function getUploadedFilePreviewDeleteForm($moduleComponentId, $moduleName, $dele
 
 	if(isset($_POST['file_deleted']) && ($_POST['file_deleted'] == "form_$uploadedFormNumber")) {
 		if(isset($_GET['deletefile'])) {
-			if(deleteFile($moduleComponentId,$moduleName,$_GET['deletefile']))
-				displayinfo("The file ".$_GET['deletefile']." has been removed");
+			if(deleteFile($moduleComponentId,$moduleName,escape($_GET['deletefile'])))
+				displayinfo("The file ".escape($_GET['deletefile'])." has been removed");
 			else
 				displayinfo("Unable to remove the file.");
 		}
