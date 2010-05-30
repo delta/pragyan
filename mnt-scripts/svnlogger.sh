@@ -15,6 +15,7 @@ if($1 ~ /^r[0-9]*/)
 else
 {
  print "Revision " revno " : " $1 " by " username " on " date
+ print "---------------------------------------------------------------"
 } 
 }
 END{
