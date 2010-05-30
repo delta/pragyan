@@ -53,11 +53,12 @@ function globalSettingsForm()
 {
 	global $pageFullPath;
 	global $CMSTEMPLATE;
-	list($db_cms_title,$db_cms_email,,$upload_limit,$default_mailverify,$allow_pagespecific_header,$allow_pagespecific_template,$activate_useronreg)=getGlobalSettings();
+	list($db_cms_title,$db_cms_email,,$upload_limit,$default_mailverify,$allow_pagespecific_header,$allow_pagespecific_template,$activate_useronreg,$breadcrumb_submenu)=getGlobalSettings();
 	$allow_pagespecific_header=$allow_pagespecific_header==0?"":"checked";
 	$allow_pagespecific_template=$allow_pagespecific_template==0?"":"checked";
 	$activate_useronreg=$activate_useronreg==0?"":"checked";
 	$default_mailverify=$default_mailverify==0?"":"checked";
+	$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
 	
 
 	$globalform=<<<globalform
@@ -88,6 +89,10 @@ function globalSettingsForm()
 	<tr>
 	<td>Send Mail on Registration ?</td>
 	<td><input name='send_mail_on_reg' type='checkbox' $default_mailverify></td>
+	</tr>
+	<tr>
+	<td>Show Breadcrumbs Submenu ?</td>
+	<td><input name='breadcrumb_submenu' type='checkbox' $breadcrumb_submenu></td>
 	</tr>
 	<tr>
 	<td>Default template :</td>
@@ -188,13 +193,14 @@ function updateGlobalSettings()
 	$allow_pagespecific_template=isset($_POST['allow_page_template'])?1:0;
 	$activate_useronreg=isset($_POST['activate_useronreg'])?1:0;
 	$send_mail_on_reg=isset($_POST['send_mail_on_reg'])?1:0;
+	$breadcrumb_submenu=isset($_POST['breadcrumb_submenu'])?1:0;
 
 	$cms_title=$_POST['cms_title'];
 	$def_template=$_POST['default_template'];
 	$cms_email=$_POST['cms_email'];
 	$upload_limit=$_POST['upload_limit'];
 
-	setGlobalSettings($cms_title,$cms_email,$def_template,$upload_limit,$send_mail_on_reg,$allow_pagespecific_header,$allow_pagespecific_template,$activate_useronreg);
+	setGlobalSettings($cms_title,$cms_email,$def_template,$upload_limit,$send_mail_on_reg,$allow_pagespecific_header,$allow_pagespecific_template,$activate_useronreg,$breadcrumb_submenu);
 
 	displayinfo("Global Settings successfully updated! Changes will come into effect on next page reload.");
 	

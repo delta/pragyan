@@ -50,7 +50,7 @@ function reloadTemplates()
 
 function getGlobalSettings()
 {
-	$query="SELECT `cms_title`, `cms_email`, `default_template`, `upload_limit`, `default_mail_verify`, `allow_pagespecific_header`, `allow_pagespecific_template`, `default_user_activate` FROM `".MYSQL_DATABASE_PREFIX."global`";
+	$query="SELECT `cms_title`, `cms_email`, `default_template`, `upload_limit`, `default_mail_verify`, `allow_pagespecific_header`, `allow_pagespecific_template`, `default_user_activate`, `breadcrumb_submenu` FROM `".MYSQL_DATABASE_PREFIX."global`";
 	$result=mysql_query($query);
 	$row=mysql_fetch_row($result);
 	return $row;
@@ -58,10 +58,10 @@ function getGlobalSettings()
 
 /** To set Global Settings in Database */
 
-function setGlobalSettings($cms_title,$cms_email,$def_template,$upload_limit,$def_mail_verify,$allow_page_header,$allow_page_template,$default_user_activate)
+function setGlobalSettings($cms_title,$cms_email,$def_template,$upload_limit,$def_mail_verify,$allow_page_header,$allow_page_template,$default_user_activate,$breadcrumb_submenu)
 {
 	
-	$query="UPDATE `".MYSQL_DATABASE_PREFIX."global` SET `cms_title`='".escape($cms_title)."', `cms_email`='".escape($cms_email)."', `default_template`='".escape($def_template)."', `upload_limit`=".escape($upload_limit).", `default_mail_verify`=".escape($def_mail_verify).", `allow_pagespecific_header`=$allow_page_header, `allow_pagespecific_template`=$allow_page_template, `default_user_activate`=$default_user_activate";
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."global` SET `cms_title`='".escape($cms_title)."', `cms_email`='".escape($cms_email)."', `default_template`='".escape($def_template)."', `upload_limit`=".escape($upload_limit).", `default_mail_verify`=".escape($def_mail_verify).", `allow_pagespecific_header`=$allow_page_header, `allow_pagespecific_template`=$allow_page_template, `default_user_activate`=$default_user_activate, `breadcrumb_submenu`=$breadcrumb_submenu";
 	mysql_query($query);
 }
 
@@ -472,5 +472,7 @@ function getNextUserId()
 
 function showBreadcrumbSubmenu()
 {
-	return false;
+	$query="SELECT `breadcrumb_submenu` FROM `".MYSQL_DATABASE_PREFIX."global`";
+	$result = mysql_fetch_array(mysql_query($query));
+	return $result['breadcrumb_submenu'];
 }

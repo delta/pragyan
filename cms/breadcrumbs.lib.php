@@ -38,6 +38,8 @@ function breadcrumbs($pageIdArray) {
 		$selectedId = 0;
                 $children = getChildren(0, $userId);
 	}
+	
+	$showSubmenu = showBreadcrumbSubmenu();
 
 	for ($i = 0; $i < $pageCount; ++$i) {
 		if ($i) {
@@ -48,12 +50,15 @@ function breadcrumbs($pageIdArray) {
 		$str .= '<li class="cms-breadcrumbItem';
 		if ($i == $selectedId)
 			$str .= ' selected';
-		$str .= '" rel="' . $parentPath . '"><a href="' . $hrefString . '">' . $sqlOutputArray[$pageIdArray[$i]][1] . '</a></li>';
+		$str .= '" rel="' . $parentPath . '"><span><a href="' . $hrefString . '">' . $sqlOutputArray[$pageIdArray[$i]][1] . '</a></span>';
+		if($showSubmenu)
+			$str .= generateSubmenu($pageIdArray[$i],$hrefString);
+		$str .= '</li>';
 	}
 
 	$str .= '</ul></div>';
 
-	if(showBreadcrumbSubmenu())
+/*	if()
 	{
 		$childCount = count($children);
 		$childHtml = "";
@@ -62,6 +67,16 @@ function breadcrumbs($pageIdArray) {
 		$childHtml = "<ul>$childHtml</ul>";
 
 		$str .= '<div id="cms-breadcrumbsubmenu">' . $childHtml . '<div class="clearer"></div></div>';
-	}
+	}*/
 	return $str;
+}
+function generateSubmenu($pageId, $parentPath) {
+	$ret = '<div id="cms-breadcrumbsubmenu"><ul>';
+	global $userId;
+	$children = getChildren($pageId,$userId);
+	foreach($children as $child)
+		$ret .= "<li><span><a href='{$parentPath}{$child[1]}'>{$child[2]}</a></span></li><br>";
+	$ret .= '</ul></div>';
+	
+	return $ret;
 }

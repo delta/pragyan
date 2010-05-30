@@ -344,6 +344,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_global` (
   `upload_limit` int(11) NOT NULL,
   `default_user_activate` int(11) NOT NULL,
   `default_mail_verify` int(11) NOT NULL,
+  `breadcrumb_submenu` int(11) NOT NULL,
    PRIMARY KEY(`cms_email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
