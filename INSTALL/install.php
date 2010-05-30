@@ -279,7 +279,7 @@ function importDatabase() {
 	}
 	$DEFAULT_USER_ACTIVATE=(DEFAULT_USER_ACTIVATE=="true"?1:0);
 	$SEND_MAIL_ON_REGISTRATION=(SEND_MAIL_ON_REGISTRATION=="true"?1:0);
-	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."global` (`cms_title`, `cms_email`, `allow_pagespecific_header`, `allow_pagespecific_template`, `default_template`, `default_user_activate`, `default_mail_verify`, `upload_limit`) VALUES ('".CMS_TITLE."', '".CMS_EMAIL."', 0, 0, '".CMS_TEMPLATE."', ".$DEFAULT_USER_ACTIVATE.", ".$SEND_MAIL_ON_REGISTRATION.",".UPLOAD_LIMIT.")";
+	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."global` (`cms_title`, `cms_email`, `allow_pagespecific_header`, `allow_pagespecific_template`, `default_template`, `default_user_activate`, `default_mail_verify`, `upload_limit`, `breadcrumb_submenu`) VALUES ('".CMS_TITLE."', '".CMS_EMAIL."', 0, 0, '".CMS_TEMPLATE."', ".$DEFAULT_USER_ACTIVATE.", ".$SEND_MAIL_ON_REGISTRATION.",".UPLOAD_LIMIT.",0)";
 	mysql_query($query);
 	
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (

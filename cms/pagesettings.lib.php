@@ -632,7 +632,7 @@ function pagesettings($pageId, $userId) {
 				$alreadyexistquery="SELECT page_name FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_parentid='$pageId' AND page_name='".escape($_POST['childpagename'])."'";
 				$alreadyexistqueryresult = mysql_query($alreadyexistquery);
 				$alreadyexistquerynumrows = mysql_num_rows($alreadyexistqueryresult);
-				$childPageName = str_replace(' ', '_', escape(trtolower($_POST['childpagename'])));
+				$childPageName = str_replace(' ', '_', escape(strtolower($_POST['childpagename'])));
 				$childPageTitle = escape($_POST['childpagename']);
 				if(!preg_match('/^[a-z][\_a-z0-9]*$/',  $childPageName))
 					displayerror("Invalid page name.");
