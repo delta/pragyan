@@ -829,7 +829,7 @@ function move_page($userId,$pageId, $parentId, $pagetitle,$pagename,$deleteorigi
 //if the deleteoriginal entry is not set then the page is COPIED from the original location to the new location.
 	else {
 		$recursive= false;
-		if(isset(escape($_POST['recursivelycopypage']))) $recursive = true;
+		if(isset($_POST['recursivelycopypage'])) $recursive = true;
 		if(copyPage($userId,$pageId,$parentId,$pagetitle,$pagename,$recursive))
 			displayinfo("Page copied successfully!");
 	}
