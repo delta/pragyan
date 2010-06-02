@@ -165,7 +165,7 @@
 				<tr>
 					<td>Form Header:</td>
 					<td>
-						<textarea name="txtHeaderText" rows="10" cols="60">$headerText</textarea>
+						<textarea style="width:98%"  name="txtHeaderText" rows="10" cols="60">$headerText</textarea>
 					</td>
 				</tr>
 
@@ -205,7 +205,7 @@
 				<tr>
 					<td>Form Footer:</td>
 					<td>
-						<textarea name="txtFooterText" rows="8" cols="60">$footerText</textarea>
+						<textarea style="width:98%" name="txtFooterText" rows="8" cols="60">$footerText</textarea>
 					</td>
 				</tr>
 				<tr ><td colspan="2"><b>Settings for viewing registrants :</b> </td></tr>
