@@ -9,7 +9,7 @@ pre {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
 #bbeditor .full-header {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #ddd;background-color : #444;padding : 10px;}
 #bbeditor .footer {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;border : 1px solid #ccc;padding : 5px;}
 #bbeditor .button {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;height : 20px;border : 1px solid #ccc;margin-top : 2px;}
-#bbeditor .textbox {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f8f8f8;border : 1px solid #ccc;}
+#bbeditor .textbox {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f8f8f8;border : 1px solid #ccc; width:100%;}
 #bbeditor .main-body {font-size : 11px;color : #555;background-color : #fff;padding : 4px 0px 5px 0px;}
 #bbeditor .side-body {font-size : 10px;color : #777;background-color : #f6f6f6;padding : 4px;}
 #bbeditor .main-bg {color : #555;background-color : #fff;padding : 10px 5px 10px 5px;}

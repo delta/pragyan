@@ -982,7 +982,7 @@ PRE;
 	
 	private function forumLastVisit() {
 		global $userId;
-		//to check last visit to the forum
+	/*	//to check last visit to the forum
 		if(!isset($_SESSION['forum_lastVisit'])){
 		$table_visit = "forum_visits";
 		$query_checkvisit = "SELECT * from `$table_visit` WHERE `user_id`=$userId AND `page_modulecomponentid`=$this->moduleComponentId";
@@ -1011,7 +1011,7 @@ PRE;
 		else {
 			$forum_lastViewed = $_SESSION['forum_lastVisit'];
 		}
-		return $forum_lastViewed;
+		return $forum_lastViewed;*/
 		//
 	}
 	public function returnThread($threadID)
