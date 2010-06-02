@@ -19,5 +19,5 @@ else
 } 
 }
 END{
-print "Log generated using svnlogger v0.1 by abhishekdelta"
+print "Log generated using svnlogger v0.1 by abhishekdelta [http://code.google.com/p/svnlogger]"
 }' > $2

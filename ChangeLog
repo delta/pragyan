@@ -1,3 +1,5 @@
+Revision 17  : ChangeLog updated by  abhishekdelta  on  2010-05-31 02:17:2
+---------------------------------------------------------------
 Revision 16  : Patch by Chakra applied : Breadcrumb Submenu by  abhishekdelta  on  2010-05-31 01:56:4
 ---------------------------------------------------------------
 Revision 15  : Fixed a bug in pagesettings.lib.php by  abhishekdelta  on  2010-05-31 01:36:4
@@ -28,4 +30,4 @@ Revision 3  : Deleting the old Repo by  abhishekdelta  on  2010-05-24 00:57:5
 ---------------------------------------------------------------
 Revision 2  : Added project by  sahilahuja  on  2008-03-19 00:27:2
 ---------------------------------------------------------------
-Log generated using svnlogger v0.1 by abhishekdelta
+Log generated using svnlogger v0.1 by abhishekdelta [http://code.google.com/p/svnlogger]

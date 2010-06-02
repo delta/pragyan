@@ -4,7 +4,7 @@ RewriteEngine Off
 IndexIgnore *
 
 ##Enable magic quotes in PHP, in case it is turned off in php.ini
-php_flag magic_quotes_gpc on
+php_flag magic_quotes_gpc off
 
 #Register Global Must ALWAYS BE TURNED OFF. Else it will pose security risks.
 php_flag register_globals off
