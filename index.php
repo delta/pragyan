@@ -82,7 +82,8 @@ if(isset($_GET['fileget'])) {
 }
 
 $permission = getPermissions($userId, $pageId, $action);
-
+require_once($sourceFolder."/template.lib.php");
+define("TEMPLATE", getPageTemplate($pageId));
 require_once($sourceFolder."/content.lib.php");
 $CONTENT = getContent($pageId, $action, $userId, $permission);
 if (getTitle($pageId, $action, $TITLE))
@@ -127,8 +128,8 @@ if($debugSet == "on") {
 }
 
 	setcookie("cookie_support", "enabled", 0, "/"); ///<used to check in subsequent requests if cookies are supported or not
-	require_once($sourceFolder."/template.lib.php");
-	define("TEMPLATE", getPageTemplate($pageId));
+	
+	
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
 
 disconnect();
