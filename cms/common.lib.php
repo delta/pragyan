@@ -27,6 +27,13 @@ function escape($query)
 	return $query;
 }
 
+/** To prevent XSS attacks  */
+
+function safe_html($html)
+{
+	return strip_tags($html); /* I'm working on a better solution - abhishek*/
+}
+
 /** Load Templates into the database */
 
 function reloadTemplates()

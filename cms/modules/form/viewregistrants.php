@@ -279,7 +279,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	    </script>
 JAVASCRIPTBODY;
 
-	$editRegistrantsView .= '<br />';
+	$editRegistrantsView = '<br />';
 	if($action == 'editregistrants') {
 		$editRegistrantsView .= <<<EDITREGISTRANTSVIEW
 			<form name="addusertoformform" method="POST" action="./+editregistrants">

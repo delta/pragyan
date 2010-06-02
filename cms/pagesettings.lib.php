@@ -139,7 +139,7 @@ INHERITEDINFO;
 			$dereferencePagePath .= $info['page_name']."/";
 		}
 		global $urlRequestRoot;
-		$createdPageSettingsText = "Please use the <a href='".$urlRequestRoot."/home".$dereferencePagePath."+settings'>linked page settings</a> to create a child page.";
+		$createdPageSettingsText = "Please use the <a href='".$urlRequestRoot."/".$dereferencePagePath."+settings'>linked page settings</a> to create a child page.";
 	}
 	else if(getPageModule($pageId)=="external") {
 		$createdPageSettingsText = "You cannot create a child page of a page of type \"external link\".";
@@ -673,7 +673,7 @@ function pagesettings($pageId, $userId) {
 						return false;
 					}
 					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escapae(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid')";
+						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid')";
 					mysql_query($linkquery);
 					if (mysql_affected_rows() != 1)
 						displayerror( 'Unable to create a new page');

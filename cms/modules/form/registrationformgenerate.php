@@ -197,7 +197,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			}
 			else
 				$sizeText = 'rows="5" cols="20"';
-			$htmlOutput .= '<textarea '.$sizeText.' name="'.$elementName.'" id="'.$elementName.'" title="'.$elementTooltip."\"".$validCheck.'>' . $value . '</textarea>';
+			$htmlOutput .= '<textarea style="width:100%" '.$sizeText.' name="'.$elementName.'" id="'.$elementName.'" title="'.$elementTooltip."\"".$validCheck.'>' . $value . '</textarea>';
 			return true;
 		}
 		/// PASSWORD
