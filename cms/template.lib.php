@@ -8,7 +8,7 @@
 function getPageTemplate($pageId)
 {
  	
- 	$query="SELECT `allow_pagespecific_template` FROM `".MYSQL_DATABASE_PREFIX."global`";
+ 	$query="SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute`='allow_pagespecific_template'";
 	$result=mysql_query($query);
 	$row=mysql_fetch_row($result);
  	if($row[0]==0)

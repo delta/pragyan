@@ -120,7 +120,16 @@ INSERT IGNORE INTO `article_content` (`page_modulecomponentid`, `article_content
 -- Dumping data for table `pragyanV3_global`
 --
 
-
+INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
+('cms_title', 'Pragyan CMS v3'),
+('cms_email', 'no-reply@localhost'),
+('allow_pagespecific_header', '0'),
+('allow_pagespecific_template', '1'),
+('default_template', 'crystalx'),
+('upload_limit', '50000000'),
+('default_user_activate', '1'),
+('default_mail_verify', '0'),
+('breadcrumb_submenu', '0');
 
 --
 -- Dumping data for table `pragyanV3_groups`

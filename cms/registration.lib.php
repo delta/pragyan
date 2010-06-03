@@ -199,9 +199,13 @@ FORM;
 			$passwd = md5($_POST['user_password']);
 			$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
 					"(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`) " .
-					"VALUES ('".escape($_POST['user_name'])."', '".escape($_POST['user_email'])."', '".escape($_POST['user_fullname'])."', '$passwd', 1)";
+					"VALUES ('".escape($_POST['user_name'])."', '".escape($_POST['user_email'])."', '".escape($_POST['user_fullname'])."', '$passwd', ".ACTIVATE_USER_ON_REG.")";
 			if (mysql_query($query))
-				displayinfo("You have been successfully registered. You can now <a href=\"./+login\">log in</a>.");
+			{
+				if(ACTIVATE_USER_ON_REG)
+					displayinfo("You have been successfully registered. You can now <a href=\"./+login\">log in</a>.");
+				else displayinfo("Your registration was successful but your account is not activated yet. Kindly check your email, or wait for the website administrator to activate you.");
+			}
 
 /*
 			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` LIKE '" . $umail . "'";

@@ -29,7 +29,8 @@ require_once($sourceFolder."/common.lib.php");
 
 if(!defined("ADMIN_USERID") )
 {
-	echo "Welcome to Pragyan CMS v3.0. <a href='./INSTALL/'>Click Here</a> to goto installation page.";
+	echo "Welcome to Pragyan CMS v3.0. <a href='./INSTALL/'>Click Here</a> to goto installation page.<br/><br/>
+	<b>NOTE:</b>If you're not using the <a href='http://sourceforge.net/projects/pragyan'>official package</a> of the Pragyan CMS or you're installing for the second time, then please make sure that the 'RewriteEngine' property is set to 'Off' in the .htaccess file present in the root folder of Pragyan for the above link to work correctly.";
 	exit();
 }
 
@@ -53,13 +54,16 @@ if ($action == 'keepalive')
 
 checkInstallation($pageFullPath,$action);
 
-list($cms_title,$cms_email,$default_template,$upload_limit,$mail_verify)=getGlobalSettings();
+$globals=getGlobalSettings();
+foreach($globals as $var=>$val) 
+	$$var=$val;
 
 define("CMS_TITLE", $cms_title);
 define("DEF_TEMPLATE",$default_template);
 define("UPLOAD_SIZE_LIMIT", $upload_limit);
-define("SEND_MAIL_ON_REGISTRATION",($mail_verify==0)?false:true);
+define("SEND_MAIL_ON_REGISTRATION",($default_mail_verify==0)?false:true);
 define("CMS_EMAIL",$cms_email);
+define("ACTIVATE_USER_ON_REG",$default_user_activate);
 
 require_once($sourceFolder."/parseurl.lib.php");
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
