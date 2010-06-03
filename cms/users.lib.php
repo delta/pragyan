@@ -81,7 +81,8 @@ USERFORM;
 }
 function handleUserMgmt()
 {
-	$_GET['userid']=escape($_GET['userid']);
+	if(isset($_GET['userid']))
+	 $_GET['userid']=escape($_GET['userid']);
 	if(isset($_POST['editusertype'])) $_POST['editusertype']=escape($_POST['editusertype']);
 	if(isset($_POST['user_activate']))
 	{

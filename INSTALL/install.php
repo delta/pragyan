@@ -12,7 +12,9 @@ $installFolder = '.';
 $cmsFolder = "../$sourceFolder";
 $templateFolder = "$cmsFolder/templates/crystalx";
 
+require_once($cmsFolder."/common.lib.php");
 define('CMS_SETUP', true);
+
 
 $installPageNumber = 2;
 $prerequisiteText = CheckPrerequisites();
@@ -70,13 +72,6 @@ HTTPDCONF;
 
 include_once('template.php');
 
-function escape($query)
-{
-	if (!get_magic_quotes_gpc()) {
-	    $query = addslashes($query);
-	}
-	return $query;
-}
 
 /**
  * Install the CMS
@@ -229,6 +224,7 @@ WHATEVER;
 	}
 	return '';
 }
+
 function importDatabase() {
 	global $installFolder;
 
@@ -279,20 +275,28 @@ function importDatabase() {
 	}
 	$DEFAULT_USER_ACTIVATE=(DEFAULT_USER_ACTIVATE=="true"?1:0);
 	$SEND_MAIL_ON_REGISTRATION=(SEND_MAIL_ON_REGISTRATION=="true"?1:0);
-	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."global` (`cms_title`, `cms_email`, `allow_pagespecific_header`, `allow_pagespecific_template`, `default_template`, `default_user_activate`, `default_mail_verify`, `upload_limit`, `breadcrumb_submenu`) VALUES ('".CMS_TITLE."', '".CMS_EMAIL."', 0, 0, '".CMS_TEMPLATE."', ".$DEFAULT_USER_ACTIVATE.", ".$SEND_MAIL_ON_REGISTRATION.",".UPLOAD_LIMIT.",0)";
-	mysql_query($query);
+	
+	setGlobalSettingByAttribute("cms_title",CMS_TITLE);
+	setGlobalSettingByAttribute("cms_email",CMS_EMAIL);
+	setGlobalSettingByAttribute("default_template",CMS_TEMPLATE);
+	setGlobalSettingByAttribute("default_user_activate",$DEFAULT_USER_ACTIVATE);
+	setGlobalSettingByAttribute("default_mail_verify",$SEND_MAIL_ON_REGISTRATION);
+	setGlobalSettingByAttribute("upload_limit",UPLOAD_LIMIT);	
 	
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (
 	1,'".ADMIN_USERNAME."','".ADMIN_EMAIL."','".ADMIN_FULLNAME."','".md5(ADMIN_PASSWORD)."',NOW(),'',1,'db')";
 	mysql_query($query);
 	global $cmsFolder;
 	$templates=scandir($cmsFolder.'/templates');
+
 	foreach($templates as $tdir)
 	{
+
 		if(is_dir($cmsFolder.'/templates/'.$tdir) && $tdir[0]!='.' && $tdir!="common")
 		{
+
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."templates` (`template_name`) VALUES ('$tdir')";
-			mysql_query(escape($query));
+			mysql_query($query);
 		}
 	}
 	

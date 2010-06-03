@@ -30,7 +30,7 @@ function setAuth($user_id) {
 }
 
 function checkCookieSupport() {
-	if(isset($_COOKIE['PHPSESSID']) || $_COOKIE['cookie_support']=="enabled" ) {
+	if(isset($_COOKIE['PHPSESSID']) || (isset($_COOKIE['cookie_support']) && $_COOKIE['cookie_support']=="enabled") ) {
 		return true;
 	} else
 		return false;
@@ -103,9 +103,12 @@ function getGroupIds($userId) {
 /**Resets cookie info */
 function resetAuth() {
 	global $userId;
-	unset($_SESSION['userId']);
-	unset($_SESSION['data']);
-	unset($_SESSION['forum_lastVisit']);
+	if(isset($_SESSION))
+	{
+		unset($_SESSION['userId']);
+		unset($_SESSION['data']);
+		unset($_SESSION['forum_lastVisit']);
+	}
 	$userId = 0;
 	return $userId;
 }

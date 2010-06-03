@@ -186,14 +186,14 @@ LOGIN;
 							}
 						else $user_name = $user_email;
 
-						if($user_domain==$authmethods['imap']['user_domain']) {
+						if(isset($user_domain) && $user_domain==$authmethods['imap']['user_domain']) {
 							if($login_status = checkLogin('imap',$user_name,$user_email,$user_passwd)) $login_method='imap';
 							}
-						elseif($user_domain==$authmethods['ads']['user_domain']) {
+						elseif(isset($user_domain) && $user_domain==$authmethods['ads']['user_domain']) {
 							if($login_status = checkLogin('ads',$user_name,$user_email,$user_passwd)) $login_method='ads';
 						}
 						
-						elseif($user_domain==$authmethods['ldap']['user_domain']) {
+						elseif(isset($user_domain) && $user_domain==$authmethods['ldap']['user_domain']) {
 							if(($login_status = checkLogin('ldap',$user_name,$user_email,$user_passwd))) $login_method='ldap';
 						}
 						
@@ -205,7 +205,7 @@ LOGIN;
 								"VALUES (DEFAULT, '{$user_name}', '{$user_email}', '{$user_fullname}', '{$user_md5passwd}', '{$login_method}', '1')";
 								mysql_query($query) or die(mysql_error() . " creating new user !");
 						}
-						else displaywarning("Incorrect username and/or password for <b>".$user_domain."</b> domain!");
+						else displaywarning("Incorrect username and/or password for <b>".(isset($user_domain)?$user_domain."</b> domain!":$user_name."</b> user"));
 					}
 				
 					if($login_status) {

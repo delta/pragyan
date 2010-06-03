@@ -336,17 +336,11 @@ CREATE TABLE IF NOT EXISTS `poll_questions` (
 --
 
 CREATE TABLE IF NOT EXISTS `pragyanV3_global` (
-  `cms_title` varchar(100) NOT NULL,
-  `cms_email` varchar(100) NOT NULL,
-  `allow_pagespecific_header` int(11) NOT NULL,
-  `allow_pagespecific_template` int(11) NOT NULL,
-  `default_template` varchar(50) NOT NULL,
-  `upload_limit` int(11) NOT NULL,
-  `default_user_activate` int(11) NOT NULL,
-  `default_mail_verify` int(11) NOT NULL,
-  `breadcrumb_submenu` int(11) NOT NULL,
-   PRIMARY KEY(`cms_email`)
+  `attribute` varchar(50) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`attribute`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 
 -- --------------------------------------------------------
 

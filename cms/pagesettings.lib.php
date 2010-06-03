@@ -56,7 +56,7 @@ function getSettingsForm($pageId, $userId) {
 	$showsiblingmenu = $page_values['page_displaysiblingmenu'] == 1 ? 'checked="checked" ' : '';
 	$showheading = ($page_values['page_displaypageheading'] == 1 ? 'checked="checked"' : '');
 	$dbPageTemplate = $page_values['page_template'];
-	
+	$templates = getAvailableTemplates();
 	$page_query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = $pageId AND `page_parentid` != `page_id` ORDER BY `page_menurank` ASC  ";
 	$page_result = mysql_query($page_query) or die(mysql_error());
 	$childList ="";
@@ -150,7 +150,7 @@ INHERITEDINFO;
 		foreach (getCreatablePageTypes($userId, $pageId) as $creatableType) {
 			$creatableTypesText .= "<option value=\"$creatableType\">".ucfirst($creatableType)."</option>";
 		}
-		$templates = getAvailableTemplates();
+		
 		$createdPageSettingsText =<<<CREATE
 		    <form name="pagesettings" action="./+settings&subaction=create" onsubmit="return childOnSubmit();" method="POST">
 		    <script type="text/javascript" language="javascript">
@@ -423,7 +423,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		$updates[] = '`page_displaypageheading` = ' . ($showHeading == true ? 1 : 0);
 	}
 
-	if ($pageId != 0 && isset ($pageName) && isset ($pageTitle)) {
+	if ($pageId != 0 && isset ($pageName) && $pageName!="" && isset ($pageTitle) && $pageTitle!="") {
 		if(preg_match('/^[a-zA-Z][\_a-zA-Z0-9]*$/', $pageName)) {
 			$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_name` = '$pageName' AND `page_id` != $pageId AND `page_parentid` = " .
 								"(SELECT `page_parentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = $pageId)";
@@ -523,7 +523,8 @@ function pagesettings($pageId, $userId) {
 				else $page_template=escape($_POST['page_template']);
 	
 				$template_propogate=isset($_POST['template_propogate'])?true:false;
-
+				$_POST['pagename']=isset($_POST['pagename'])?$_POST['pagename']:"";
+				$_POST['pagetitle']=isset($_POST['pagetitle'])?$_POST['pagetitle']:"";
 				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate);
 
 				
