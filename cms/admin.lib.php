@@ -61,7 +61,7 @@ function globalSettingsForm()
 	$activate_useronreg=$default_user_activate==0?"":"checked";
 	$default_mailverify=$default_mail_verify==0?"":"checked";
 	$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
-	
+	$templates = getAvailableTemplates();
 
 	$globalform=<<<globalform
 	<form name='admin_page_form' method='POST' action='./+admin&subaction=global'>
@@ -101,7 +101,7 @@ function globalSettingsForm()
 	<td><select name='default_template' >
 globalform;
 
-	$templates=getAvailableTemplates();
+	
 	for($i=0; $i<count($templates); $i++)
 	{
 		if($templates[$i]==DEF_TEMPLATE)
@@ -128,22 +128,87 @@ $globalform.=<<<globalform
 globalform;
 	return $globalform;
 }
+function templateManagementForm()
+{
+	$templates = getAvailableTemplates();
+	$templatesList = "<select id='templates'>";
+	
+	foreach($templates as $template)
+		$templatesList .= "<option value='" . $template . "'>" . $template . "</option>";
+	$templatesList .= "</select>";
 
+	require_once("upload.lib.php");
+	$form=<<<FORM
+	<script type="text/javascript">
+	function delconfirm() {
+		if(confirm("Are you sure want to delete '" + document.getElementById('templates').value + "' template?"))
+			window.location = './+admin&subaction=template&subsubaction=uninstalldeltemplate=' + document.getElementById('templates').value;
+	}
+	</script>
+	<form name='template' method='POST' action='./+admin&subaction=template&subsubaction=' enctype="multipart/form-data">
+	<fieldset>
+	<legend>Template Management</legend>
+	Add new Template (select a ZIP file containing template): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
+	<br/><br/>Delete Existing Template: {$templatesList}<input type='button' name='btn_uninstall' value='Uninstall' onClick='delconfirm()'>
+	</fieldset>
+	</form>
+FORM;
+	return $form;
+}
+
+function extension($file) {
+	$start = strrpos($file,".");
+	$len = strlen($file);
+	return substr($file,$start,$len-$start);
+}
+
+function delDir($dirname) {
+	if (is_dir($dirname))
+		$dir_handle = opendir($dirname);
+	if (!isset($dir_handle) || !$dir_handle)
+		return false;
+	while($file = readdir($dir_handle)) {
+		if ($file != "." && $file != "..") {
+			if (!is_dir($dirname."/".$file))
+				unlink($dirname."/".$file);
+			else
+				delDir($dirname.'/'.$file); 		
+		}
+	}
+	closedir($dir_handle);
+	rmdir($dirname);
+	return true;
+}
 function admin() {
+
 	$str = <<<ADMINPAGE
 	<fieldset>
 	<legend>Website Administration</legend>
-	<input type='button' onclick='window.open("./+admin&subaction=global","_top")' value='Global Settings' />
-	<input type='button' onclick='window.open("./+admin&subaction=useradmin","_top")' value='User Management' />
-	<input type='button' onclick='window.open("./+admin&subaction=expert","_top")' value='Experts Only' />
+	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=global","_top")' value='Global Settings' />
+	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=useradmin","_top")' value='User Management' />
+	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=template","_top")' value='Templates Management' />
+	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=expert","_top")' value='Experts Only' />
 	</fieldset>
 ADMINPAGE;
-	
+        if(isset($_GET['subaction']) && $_GET['subaction']=='template')
+	{ 
+		;
+		if(isset($_GET['subsubaction']))
+		{
+			require_once("template.lib.php"); 
+			$op=handleTemplateMgmt();
+			if($op!="") return $op;
+			else return $str.templateManagementForm();
+		}
+		else return $str.templateManagementForm();
+	}
+	global $sourceFolder;	
 	if(!isset($_GET['subaction'])) return $str;
 	require_once("users.lib.php");
 	$op="";$ophead="";
 	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
 		if ($_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
+		
 		else if ($_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="User Management"; }
 		else if ($_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="Checking Permissions Consistency"; }
 		elseif ($_GET['subaction'] == 'checkAdminUser'){ $op .= admin_checkAdminUser(); $ophead="Checking Administrator User"; }
@@ -170,7 +235,7 @@ ADMINPAGE;
 		
 		$str .= userManagementForm();
 	}
-	else
+	else 
 	{
 		$str .= "<fieldset><legend>Experts Only</legend>";
 		$str .= '<a href="./+admin&subaction=checkPerm">Check Permission List</a><br />';

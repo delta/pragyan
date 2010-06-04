@@ -1,3 +1,11 @@
+Revision 21  : Changed structure of global table and many bugfixes by  abhishekdelta  on  2010-06-04 02:40:3
+---------------------------------------------------------------
+Revision 20  : Fixed few bugs in form and pagesettings by  abhishekdelta  on  2010-06-03 00:35:5
+---------------------------------------------------------------
+Revision 19  : Made forum in working condition by  abhishekdelta  on  2010-06-02 11:24:1
+---------------------------------------------------------------
+Revision 18  : Turned off magic quotes gpc permanently by  abhishekdelta  on  2010-06-02 10:27:4
+---------------------------------------------------------------
 Revision 17  : ChangeLog updated by  abhishekdelta  on  2010-05-31 02:17:2
 ---------------------------------------------------------------
 Revision 16  : Patch by Chakra applied : Breadcrumb Submenu by  abhishekdelta  on  2010-05-31 01:56:4
