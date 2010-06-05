@@ -135,7 +135,7 @@ function saveConfigurationSettings() {
 			'txtADSNetworkName' => 'AUTH_ADS_NETWORK',
 			'txtADSUserDomain' => 'AUTH_ADS_DOMAIN',
 	);
-
+	
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
 		if (substr($postVariableName, 0, 3) == "opt") {
 			${$configVariableName} = (isset($_POST[$postVariableName]) && $_POST[$postVariableName] == "Yes") ? 'true' : 'false';
@@ -143,6 +143,7 @@ function saveConfigurationSettings() {
 		else {
 			${$configVariableName} = isset($_POST[$postVariableName]) ? $_POST[$postVariableName] : '';
 		}
+			
 	}
 
 	global $cmsFolder;
@@ -158,11 +159,12 @@ function saveConfigurationSettings() {
 
 	$c = 0;
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
+
 		define ($configVariableName, ${$configVariableName});
 		if (++$c == 15)
 			break;
 	}
-
+	
 	return '';
 }
 
@@ -172,12 +174,13 @@ function checkDatabaseAccess() {
 			<p>To create a database and a user with all priviliges to that database, run the following queries after replacing <b>pragyandatabase</b>, <b>localhost</b>, <b>pragyanuser</b> and <b>pragyanpassword</b> as required. </p>
 			<pre>CREATE DATABASE `pragyandatabase`;
 CREATE USER 'pragyanuser'@'localhost' IDENTIFIED BY 'pragyanpassword';
-GRANT ALL PRIVILEGES ON `pragyan\_v2` . * TO 'pragyanuser'@'localhost';</pre>
+GRANT ALL PRIVILEGES ON `pragyan\_v3` . * TO 'pragyanuser'@'localhost';</pre>
 			<p>After you run these queries successfully in your MySQL client, please run this install script again.</p>
 WHATEVER;
 
 	$dbhost=MYSQL_SERVER;
 	$dbname=MYSQL_DATABASE;
+
 	$dbuser=MYSQL_USERNAME;
 	$dbpasswd=MYSQL_PASSWORD;
 	$dblink=mysql_connect($dbhost,$dbuser,$dbpasswd);
@@ -335,6 +338,23 @@ function CheckPrerequisites() {
 		 	$prereq.="<pre>chown -R <httpd process user> uploads;</pre>";
 		 	$prereq.="<b>OR</b><br /><pre>chmod -R 777 uploads</pre></li>";
 	}
+	
+	
+	$testFolder=@fopen($cmsfolder."/templates/testperms", 'w');
+	if(!$testFolder)
+	{
+		$prereq="<li>Please check the permissions of the <b>$sourceFolder/templates/</b> folder. It should be writable by your webserver user<br>";
+		$prereq.="On a <i>linux</i> server, after going inside the $sourceFolder folder run the following commands as root<br>";
+		$prereq.="<pre>chown -R &lt;httpd-process-user&gt; templates</pre>";
+		$prereq.="<b>OR</b><br /><pre>chmod -R 777 templates</pre></li>";
+		$prereq.="<br>NOTE: &lt;httpd-process-user&gt; is the default user for your webserver process. In most cases, it is 'www-data' or 'apache'.";
+	}
+	else {
+		fclose($testFolder);
+		unlink("$cmsfolder/templates/testperms");
+		$prereq = '';
+	}
+	
 
 	if (!is_writable('../.htaccess')) {
 		$prereq .= <<<HTACCESS

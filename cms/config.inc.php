@@ -17,11 +17,11 @@ define("MYSQL_USERNAME","pragyan");
 define("MYSQL_PASSWORD","pragyan");
 
 // defining the name of the database to connect to.
-define("MYSQL_DATABASE","pragyanv3");
+define("MYSQL_DATABASE","pragyan");
 
 // defining the prefix which is appended to every table of Pragyan CMS.
 // this feature allows you to have multiple websites using the same database.
-define("MYSQL_DATABASE_PREFIX","v3_");
+define("MYSQL_DATABASE_PREFIX","pragyanV3_");
 
 // defining the user id of the administrator. WARNING: Only experts should alter this.
 define("ADMIN_USERID",1);
@@ -36,7 +36,7 @@ define("ADMIN_USERID",1);
  * 4 - Report all PHP errors (bitwise 63 may be used in PHP 3)
  * 5 - Report all PHP errors (bitwise 63 may be used in PHP 3) + Pragyan CMS Debugging Mode
  */
-$error_level = 4;
+$error_level = 1;
 switch($error_level) {
 	case 0 : $error_text = 0; break;
 	case 1 : $error_text = E_ERROR | E_WARNING | E_PARSE; break;

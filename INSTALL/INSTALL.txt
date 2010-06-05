@@ -11,6 +11,3 @@
    
 4) Done!
 
- Now login with the following username and password
-	username:admin@pragyan.sf.net
-	password:admin
