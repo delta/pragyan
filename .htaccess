@@ -61,6 +61,8 @@ RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
 RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
 RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
 RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
+RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
+RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
 
 ############################################################################
 ##The previous rewritecond is there because the -d option even disables the current directory
