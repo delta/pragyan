@@ -140,16 +140,21 @@ function templateManagementForm()
 	require_once("upload.lib.php");
 	$form=<<<FORM
 	<script type="text/javascript">
-	function delconfirm() {
+	function delconfirm(obj) {
 		if(confirm("Are you sure want to delete '" + document.getElementById('templates').value + "' template?"))
-			window.location = './+admin&subaction=template&subsubaction=uninstalldeltemplate=' + document.getElementById('templates').value;
+		{
+			obj.form.action += "uninstall&deltemplate=" + document.getElementById('templates').value;
+			return true;
+		}
+		return false;
+		
 	}
 	</script>
 	<form name='template' method='POST' action='./+admin&subaction=template&subsubaction=' enctype="multipart/form-data">
 	<fieldset>
 	<legend>Template Management</legend>
 	Add new Template (select a ZIP file containing template): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
-	<br/><br/>Delete Existing Template: {$templatesList}<input type='button' name='btn_uninstall' value='Uninstall' onClick='delconfirm()'>
+	<br/><br/>Delete Existing Template: {$templatesList}<input type='submit' name='btn_uninstall' value='Uninstall' onClick='delconfirm(this)'>
 	</fieldset>
 	</form>
 FORM;

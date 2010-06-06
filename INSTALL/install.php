@@ -343,7 +343,7 @@ function CheckPrerequisites() {
 	$testFolder=@fopen($cmsfolder."/templates/testperms", 'w');
 	if(!$testFolder)
 	{
-		$prereq="<li>Please check the permissions of the <b>$sourceFolder/templates/</b> folder. It should be writable by your webserver user<br>";
+		$prereq.="<li>Please check the permissions of the <b>$sourceFolder/templates/</b> folder. It should be writable by your webserver user<br>";
 		$prereq.="On a <i>linux</i> server, after going inside the $sourceFolder folder run the following commands as root<br>";
 		$prereq.="<pre>chown -R &lt;httpd-process-user&gt; templates</pre>";
 		$prereq.="<b>OR</b><br /><pre>chmod -R 777 templates</pre></li>";
@@ -352,7 +352,7 @@ function CheckPrerequisites() {
 	else {
 		fclose($testFolder);
 		unlink("$cmsfolder/templates/testperms");
-		$prereq = '';
+		
 	}
 	
 
