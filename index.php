@@ -89,11 +89,11 @@ $permission = getPermissions($userId, $pageId, $action);
 require_once($sourceFolder."/template.lib.php");
 define("TEMPLATE", getPageTemplate($pageId));
 require_once($sourceFolder."/content.lib.php");
-$CONTENT = getContent($pageId, $action, $userId, $permission);
 if (getTitle($pageId, $action, $TITLE))
 	$TITLE = CMS_TITLE . " - $TITLE";
 else
 	$TITLE = CMS_TITLE;
+$CONTENT = getContent($pageId, $action, $userId, $permission);
 
 require_once($sourceFolder."/inheritedinfo.lib.php");
 $INHERITEDINFO = inheritedinfo($pageIdArray);

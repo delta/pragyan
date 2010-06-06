@@ -76,7 +76,6 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		require_once("admin.lib.php");
 		return admin();
 	}
-		
 	///default actions also to be defined here (and not outside)
 	/// Coz work to be done after these actions do involve the page
 
@@ -96,7 +95,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	if($recursed==0) {
 		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id=".escape($pageId);
 		$pagetypeupdate_result = mysql_query($pagetypeupdate_query);
-		if(!$pagetype_result)
+		if(!$pagetypeupdate_result)
 			return '<div class="cms-error">Error No. 563 - An error has occured. Contact the site administators.</div>';
 	}
 	if($moduleType=="link")
@@ -122,7 +121,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		displayerror("The module \"$moduleType\" does not implement the inteface module</div>");
 		return "";
 	}
-
+	
 	$createperms_query = " SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action = 'create' AND page_module = '".$moduleType."'";
 	$createperms_result = mysql_query($createperms_query);
 	if(mysql_num_rows($createperms_result)<1) {
@@ -145,6 +144,30 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 			return "";
 		}
 	}
+	
+	if($action=="pdf")
+	{
+		global $TITLE;
+		global $sourceFolder;
+		require_once("$sourceFolder/modules/pdf/html2fpdf.php");
+		$pdf=new HTML2FPDF();
+		$pdf->AddPage();
+		$pdf->WriteHTML($page->getHtml($userId,$moduleComponentId,"view"));
+		$filePath = $sourceFolder . "/uploads/temp/" . $TITLE . ".pdf";
+		while(file_exists($filePath))
+			$filePath = $sourceFolder . "/uploads/temp/" . rand() . ".pdf";
+		$pdf->Output($filePath);
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false); 
+		header("Content-Type: application/pdf");
+		header("Content-Disposition: attachment; filename=\"".basename($filePath)."\";" );
+		header("Content-Transfer-Encoding: binary");
+		header("Content-Length: ".filesize($filePath));
+		readfile("$filePath");
+		displayinfo("wow!");
+	}	
 	return $page->getHtml($userId, $moduleComponentId, $action);
 }
 

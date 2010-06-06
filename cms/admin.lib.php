@@ -143,6 +143,7 @@ function templateManagementForm()
 	function delconfirm(obj) {
 		if(confirm("Are you sure want to delete '" + document.getElementById('templates').value + "' template?"))
 		{
+			document.getElementById("file").value="";
 			obj.form.action += "uninstall&deltemplate=" + document.getElementById('templates').value;
 			return true;
 		}
@@ -154,7 +155,7 @@ function templateManagementForm()
 	<fieldset>
 	<legend>Template Management</legend>
 	Add new Template (select a ZIP file containing template): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
-	<br/><br/>Delete Existing Template: {$templatesList}<input type='submit' name='btn_uninstall' value='Uninstall' onClick='delconfirm(this)'>
+	<br/><br/>Delete Existing Template: {$templatesList}<input type='submit' name='btn_uninstall' value='Uninstall' onclick='return delconfirm(this);'>
 	</fieldset>
 	</form>
 FORM;
