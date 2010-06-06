@@ -221,7 +221,7 @@ function reportIssues($templatePath,&$issues) {
 				break;
 			default:
 				addissue($issues,"$var is more than once",$id);
-				
+				$j = 1;
 				$id++;
 		}
 	foreach($nreqd as $var)
@@ -255,6 +255,8 @@ function mycount($content,$find) {
 
 function handleTemplateMgmt()
 {
+
+
 	global $sourceFolder;
 	if(isset($_POST['btn_install']))
 	{
@@ -292,22 +294,36 @@ function handleTemplateMgmt()
 	}
 	else if(isset($_POST['btn_uninstall']))		
 	{
+		if(!isset($_GET['deltemplate']) || $_GET['deltemplate']=="") return "";
+		
 		$query="SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . escape($_GET['deltemplate']) . "'";
 		
 		if($row = mysql_fetch_array(mysql_query($query)))
 		{
 			$query="DELETE FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . escape($_GET['deltemplate']) . "'";
 			mysql_query($query);
+			$templateDir = $sourceFolder . "/templates/" . escape($_GET['deltemplate']) . "/";
+			if(file_exists($templateDir))
+				delDir($templateDir);
+			displayinfo("Template ".safe_html($_GET['deltemplate'])." uninstalled!");
+			return "";
 		}
-		$templateDir = $sourceFolder . "/templates/" . escape($_GET['deltemplate']) . "/";
-		if(file_exists($templateDir))
-			delDir($templateDir);
-		displayinfo("Template ".safe_html($_GET['deltemplate'])." uninstalled!");
+		displayerror("Template uninstallation failed!");
 		return "";
 	} 
 	else if(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'finalize') 
 	{		
 	
+		$issues = "";
+		$ret = reportIssues(escape($_POST['path']),$issues);
+		if($ret[0] == 1) 
+		{
+			displayerror("Your template is still not compatible with Pragyan CMS. Please fix the reported issues during installation.");
+			delDir(escape($_POST['del']));
+			unlink(escape($_POST['file']));
+			return "";
+		}
+			
 		$templates=getAvailableTemplates();
 		$flag=false;
 		foreach ($templates as $template) 
@@ -316,7 +332,7 @@ function handleTemplateMgmt()
 				$flag=true;
 				break;
 			}
-		if($_POST['template']=="common" || $flag) 
+		if($_POST['template']=="common" || $flag || file_exists($sourceFolder . "/templates/" . escape($_POST['template']) . "/")) 
 		{
 			displayerror("Template Installation failed : A folder by the template name already exists.");
 			$templatePath=safe_html($_POST['del']);

@@ -32,7 +32,7 @@ class article implements module, fileuploadable {
 		$fileTypesArray = array('jpg','jpeg','png','doc','pdf','gif','bmp','css','js','html','xml','ods','odt','oft','pps','ppt','tex','tiff','txt','chm','mp3','mp2','wave','wav','mpg','ogg','mpeg','wmv','wma','wmf','rm','avi','gzip','gz','rar','bmp','psd','bz2','tar','zip','swf','fla','flv','eps','xcf','xls','exe','7z');
 		$maxFileSizeInBytes = 30*1024*1024;
 	}
-
+	
 	public function actionView($text="") {
 		if($text=="") {
 			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
@@ -52,7 +52,6 @@ class article implements module, fileuploadable {
 		$render = new render();
 		return $render->transform($text);
 	}
-
 	public function actionEdit() {
 		global $sourceFolder;
 		//require_once("$sourceFolder/diff.lib.php");
