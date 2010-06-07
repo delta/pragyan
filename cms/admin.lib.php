@@ -216,6 +216,8 @@ ADMINPAGE;
 		if ($_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
 		
 		else if ($_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="User Management"; }
+		else if ($_GET['subaction'] == 'reloadtemplates'){ $op .= reloadTemplates(); $ophead="Reloading Templates"; }
+		
 		else if ($_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="Checking Permissions Consistency"; }
 		elseif ($_GET['subaction'] == 'checkAdminUser'){ $op .= admin_checkAdminUser(); $ophead="Checking Administrator User"; }
 		elseif ($_GET['subaction'] == 'checkAdminPerms'){ $op .= admin_checkAdminPerms(); $ophead="Checking Administrator Permissions"; }
@@ -251,7 +253,8 @@ ADMINPAGE;
 		$str .= '<a href="./+admin&subaction=changePermRank">Change Perm Ranks</a><br />';
 		$str .= '<a href="./+admin&subaction=editprofileform">Edit User Profile Form</a><br />';
 		$str .= '<a href="./+admin&subaction=viewsiteregistrants">View Users Registered to the Website</a><br />';
-		$str .= '<a href="./+admin&subaction=editsiteregistrants">Edit Registrants</a><br /></fieldset>';
+		$str .= '<a href="./+admin&subaction=editsiteregistrants">Edit Registrants</a><br />';
+		$str .= '<a href="./+admin&subaction=reloadtemplates">Reload Templates</a><br /></fieldset>';
 		
 	}
 	

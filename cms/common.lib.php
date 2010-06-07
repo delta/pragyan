@@ -40,8 +40,8 @@ function reloadTemplates()
 {
 	global $sourceFolder;
 	global $templateFolder;
-	echo $sourceFolder."|".$templateFolder;
 	$templates=scandir($sourceFolder.'/'.$templateFolder);
+	$res="<table>";
 	foreach($templates as $tdir)
 	{
 		$tdir=escape($tdir);
@@ -49,8 +49,12 @@ function reloadTemplates()
 		{
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."templates` (`template_name`) VALUES ('$tdir')";
 			mysql_query($query);
+			if(mysql_affected_rows())
+				$res.="<tr><td>$tdir</td><td><b>NOT IN DB! FIXED!</b></td></tr>";
+			else $res.="<tr><td>$tdir</td><td>OK</td></tr>";
 		}
 	}
+	return $res."</table>";
 }
 
 /** To retrieve Global Settings from Database */

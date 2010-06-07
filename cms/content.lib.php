@@ -165,8 +165,8 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		header("Content-Disposition: attachment; filename=\"".basename($filePath)."\";" );
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Length: ".filesize($filePath));
-		readfile("$filePath");
-		displayinfo("wow!");
+		@readfile("$filePath");
+		unlink($filePath);
 	}	
 	return $page->getHtml($userId, $moduleComponentId, $action);
 }
