@@ -71,7 +71,70 @@ class sqlquery implements module {
 		}
 
 		$editPageContent .= $this->getQueryEditForm($paramPageTitle, $paramSqlQuery, $useParams);
-		return $editPageContent;
+		
+		$helptext = "";
+		if(isset($_POST['btnListTables']))
+		{
+			$helptext .="<table><tr><th>Tables of Database ".MYSQL_DATABASE."</th></tr>";
+			$query="SHOW TABLES";
+			$res=mysql_query($query);
+			while($row=mysql_fetch_row($res))
+			{
+				$helptext .="<tr><td>{$row[0]}</td></tr>";
+			}
+			$helptext .="</table>";
+		}
+		if(isset($_POST['btnListRows']) && $_POST['tablename']!="")
+		{
+			$tablename=escape(safe_html($_POST['tablename']));
+			$query="SELECT * FROM $tablename";
+			$res=mysql_query($query);
+			$numfields=mysql_num_fields($res);
+			$helptext .="<table><tr><th colspan=".$numfields.">Rows of Table $tablename</th></tr>";
+			$helptext .="<tr>";
+			
+			for($i=0;$i<$numfields;$i++)
+			{
+				 $name = mysql_field_name($res, $i);
+				    if (!$name) {
+					displayerror("Field name could not be retrieved");
+					break;
+				    }
+				 $helptext.="<th>$name</th>";
+			}
+			$helptext .="</tr>";
+			
+			
+			while($row=mysql_fetch_row($res))
+			{
+				$helptext .="<tr>";
+				for($i=0;$i<$numfields;$i++)
+					$helptext .="<td>{$row[$i]}</td>";
+				$helptext .="</tr>";
+			}
+			$helptext .="</table>";
+		}
+		if(isset($_POST['btnListColumns']) && $_POST['tablename']!="")
+		{
+			$tablename=escape(safe_html($_POST['tablename']));
+			$helptext .="<table><tr><th colspan=6>Column Information of Table $tablename</th></tr>";
+			$helptext .="<tr><th>Column Name</th><th>Column Type</th><th>Maximum Length</th><th>Default Value</th><th>Not Null</th><th>Primary Key</th></tr>";
+			$query="SELECT * FROM $tablename LIMIT 1";
+			$res=mysql_query($query);
+			for($i=0;$i<mysql_num_fields($res);$i++)
+			{
+				 $meta = mysql_fetch_field($res, $i);
+				    if (!$meta) {
+					displayerror("Field information could not be retrieved");
+					break;
+				    }
+				 $helptext.="<tr><td>{$meta->name}</td><td>{$meta->type}</td><td>{$meta->max_length}</td><td>{$meta->def}</td><td>{$meta->not_null}</td><td>{$meta->primary_key}</td></tr>";
+			}
+			$helptext .="</table>";
+		}
+		
+		if($helptext!="") $helptext="<fieldset><legend>Database Information</legend>$helptext</fieldset>";
+		return $editPageContent.$helptext;
 	}
 
 	private function getQueryEditForm($pageTitle = '', $sqlQuery = '', $useParams = false) {
@@ -90,7 +153,8 @@ class sqlquery implements module {
 			$pageTitle = $defaultValueRow[0];
 			$sqlQuery = $defaultValueRow[1];
 		}
-
+		$dbname=MYSQL_DATABASE;
+		$dbprefix=MYSQL_DATABASE_PREFIX;
 		$queryEditForm = <<<QUERYEDITFORM
 		<fieldset><legend>Custom SQL Query</legend>
 		<form method="POST" action="./+edit">
@@ -100,6 +164,20 @@ class sqlquery implements module {
 			</table>
 			<input type="submit" name="btnSubmitQueryData" value="Save Changes" />
 			<input type="submit" name="btnPreviewResults" value="Preview Result Page" />
+			Need help ? Use the Database Information form below.
+		</form>
+		</fieldset>
+		<fieldset>
+		<legend>Database Information</legend>
+		<table>
+		<form method="POST" action="./+edit&subaction=help">
+		<tr><td>Database Name</td><td>$dbname</td></tr>
+		<tr><td>Tables Prefix</td><td>$dbprefix</td></tr>
+		<tr><td colspan="2"><input style="width:100%" type="submit" name="btnListTables" value="List All Tables"/></td></tr>
+		<tr><td>Enter a Table Name </td><td><input type="text" name="tablename"/></td>
+		<tr><td><input type="submit" name="btnListRows" value="View Rows Information"/></td><td><input type="submit" name="btnListColumns" value="View Columns Information"/></td></tr>
+		
+		</table>
 		</form>
 		</fieldset>
 QUERYEDITFORM;
