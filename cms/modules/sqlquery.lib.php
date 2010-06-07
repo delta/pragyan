@@ -92,7 +92,7 @@ class sqlquery implements module {
 		}
 
 		$queryEditForm = <<<QUERYEDITFORM
-
+		<fieldset><legend>Custom SQL Query</legend>
 		<form method="POST" action="./+edit">
 			<table>
 				<tr><td>Page Title:</td><td><input id="pagetitle" name="pagetitle" type="text" value="$pageTitle" /></td></tr>
@@ -101,6 +101,7 @@ class sqlquery implements module {
 			<input type="submit" name="btnSubmitQueryData" value="Save Changes" />
 			<input type="submit" name="btnPreviewResults" value="Preview Result Page" />
 		</form>
+		</fieldset>
 QUERYEDITFORM;
 		return $queryEditForm;
 	}

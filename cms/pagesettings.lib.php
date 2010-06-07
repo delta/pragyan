@@ -90,9 +90,10 @@ function getSettingsForm($pageId, $userId) {
 			$inheritedPagePath .= ' (Browse to this page to edit the inherited information.)';
 	}
 	$inheritedInfoText = <<<INHERITEDINFO
+	<a name="inheritinfoform"></a>
 		<fieldset style="padding: 8px">
 			<legend>Inherited Information</legend>
-
+			
 			<form name="pagesettings" action="./+settings&subaction=editinheritedinfo" method="POST">
 				<table>
 					<tr>
@@ -192,8 +193,10 @@ INHERITEDINFO;
 				}
 			-->
 		</script>
+		  <a name="childpageform"></a>
 	 <fieldset>
         <legend>Create Child Page</legend>
+      
         <table>
         	<tr>
         		<td valign="top">
@@ -258,8 +261,10 @@ CREATE;
 		-->
 	</script>
 	<form name="pagesettings" action="./+settings&subaction=move" onsubmit="return moveOnSubmit()" method="POST">
+	  <a name="copymovepageform"></a>
 	 <fieldset>
         <legend>Copy or Move Page</legend>
+      
 		<table border="1">
 			<tr>
 				<td valign="top">
@@ -322,8 +327,20 @@ MOVECOPY;
 
 
         	<br />
+        <a name="topquicklinks"></a>
+        <fieldset>
+        <legend>Quick Links</legend>
+        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#pageinfoform'" value="Page Info Form"/>
+        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#childpageform'" value="Create Child Page"/>
+        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#copymovepageform'" value="Copy or Move page"/>
+        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#inheritinfoform'" value="Inherited Information"/>
+        
+        </fieldset>
+        
+        <a name="pageinfoform"></a>
       	<fieldset>
         	<legend>Page Information</legend>
+        	
 	        <table border="1" cellpadding="2px" cellspacing="2px">
 				<tr><td>Page path:</td><td>$pageFullPath</td></tr>
 	        	<tr><td>Page name:</td><td><input type="text" id="pagename" name="pagename" value="{$page_values['page_name']}" $modifiers/></td></tr>
@@ -372,13 +389,17 @@ FORMDISPLAY;
 
     		<input type="submit" name="btnSubmit" value="Submit" />&nbsp;&nbsp;<input type="reset" name="btnReset" value="Reset" />
       	</fieldset>
+      	<a href="#topquicklinks">Top</a>
     </form>
-    	<br /><br />
+    	<br/><br/>
 		$createdPageSettingsText
-		<br /><br />
+		<a href="#topquicklinks">Top</a>
+	<br/><br/>
 		$movecopyPageSettingsText
-    	<br /><br />
+		<a href="#topquicklinks">Top</a>
+<br/><br/>
     	$inheritedInfoText
+    	<a href="#topquicklinks">Top</a>
 	</div>
 FORMDISPLAY;
 	return $formDisplay;
