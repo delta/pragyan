@@ -1,3 +1,9 @@
+Revision 25  : Added PDF module : patch by Chakra applied by  abhishekdelta  on  2010-06-06 22:30:3
+--------------------------------------------------------------
+Revision 24  : fixed a bug in template installation by  abhishekdelta  on  2010-06-06 21:13:5
+--------------------------------------------------------------
+Revision 23  : Minor bugfixes by  abhishekdelta  on  2010-06-05 11:38:4
+--------------------------------------------------------------
 Revision 22  : Added Template Installation Module : patch by Chakra by  abhishekdelta  on  2010-06-04 23:22:5
 --------------------------------------------------------------
 Revision 21  : Changed structure of global table and many bugfixes by  abhishekdelta  on  2010-06-04 02:40:3
