@@ -102,8 +102,7 @@ done
 #
 # Generate Log
 #
-
-if [ -z "$HTML" || $TEXT == "true" ] ;
+if [ -z "$HTML" ] || [ $TEXT -eq "true" ] ;
 then
  echo "Generating text log ..... "
  generate_text_log;

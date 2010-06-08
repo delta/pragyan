@@ -1,9 +1,118 @@
 Pragyan CMS v3.0 - Developer's Guide
-========================================
+=======================================================================
 
-For those who have downloaded a nightly build of Pragyan CMS v3, please follow the following steps before you install the CMS :
+:::::::::::::::::::::::::::::::: Index ::::::::::::::::::::::::::::::::
+
+1) Installation Instructions
+2) Coding Guidelines
+	+ Uniformity
+	+ Security
+	+ Portability
+	+ Optimization
+
+
+
+______________________________________________________________________
+
++++++++++ INSTALLATION INSTRUCTIONS ++++++++++++++++++++++++++++++++++
+______________________________________________________________________
+
+For those who have downloaded a nightly build of Pragyan CMS v3,
+please follow the following steps before you install the CMS :
 
 1) Delete all the contents of the cms/config.inc.php file
 2) Delete the .htaccess file in the root directory of Pragyan CMS
-3) Rename the htaccess-dist file to .htaccess in the root directory
+3) Rename the htaccess-dist file to .htaccess in the root directory 
+(If you're using Windows, use Notepad++ to save the file as .htaccess)
+4) Follow the instructions in the INSTALL/install.txt file.
 
+
+______________________________________________________________________
+
++++++++++ CODING GUIDELINES ++++++++++++++++++++++++++++++++++++++++++
+______________________________________________________________________
+	
+	Please follow the following rules strictly while coding for 
+	Pragyan CMS
+	______________________________________________________________
+	
+	::::::::::::::::::::::::: SECURITY :::::::::::::::::::::::::::
+	______________________________________________________________
+	
+	
+	* Dangerous Variables = $_GET, $_POST, $_REQUEST
+	
+	* Protection Function = escape(), safe_html() 
+	(definitions are available in common.lib.php)
+
+	===== RULE 1 =====
+	
+	Use the escape() function for every dangerous variable
+	in any assignment operation i.e. when a PHP variable is being 
+	assigned a value of a dangerous variable using '=' operator. 
+	Something like $var=$_GET['hi'] should be made to 
+	$var=escape($_GET['hi'])
+
+
+	===== RULE 2 =====
+	
+	Don't use escape() function when a dangerous variable 
+	is used in a conditional operation i.e in a IF, FOR, WHILE or
+	'?:' condition statement.
+
+
+	===== RULE 3 =====
+	
+	In a MySQL query, put the table name and column names
+	within ` ` escape quotes. e.g. "SELECT apple FROM tree WHERE 
+	apple=2" should be "SELECT `apple` FROM `tree` WHERE `apple`=2"
+
+
+	===== RULE 4 =====
+	
+	Use the safe_html() function whenever a dangerous variable 
+	is directly or indirectly being echoed or printed onto the 
+	screen. This is to prevent XSS attack. e.g. echo $_GET['hi'];
+	should be echo safe_html($_GET['hi']);
+
+	===== EXAMPLES ===== 
+
+	Bad Code : 
+
+	if(isset($_GET['hello']))
+		$var = $_GET['hello'];
+	$apple = $_POST['bye'];
+	echo $var.$apple.$_GET['me'];
+	$safe = $_REQUEST['me'];
+	$query = "SELECT * FROM $var WHERE column = $safe 
+	AND ".$_GET['wow']." = '{$_POST['next']}'";
+	
+	mysql_query($query);
+	echo $query;
+
+
+	Secure Code : 
+
+	if(isset($_GET['hello']))
+		$var = escape($_GET['hello']);
+	$apple = escape($_POST['bye']); 
+	echo safe_html($var.$apple.$_GET['me']);
+	$safe = escape($_REQUEST['me']);
+	$query = "SELECT * FROM `$var` WHERE `column` = $safe AND `".
+	escape($_GET['wow'])."` = '".escape($_POST['next'])."'";
+	mysql_query($query);
+	echo safe_html($query);
+	
+	
+	______________________________________________________________
+	
+	::::::::::::::::::::::: PORTABILITY ::::::::::::::::::::::::::
+	______________________________________________________________
+	
+	===== RULE 1 =====
+	
+	When creating Templates, don't use the PHP echo short form,
+	use the entire echo statement. For example - <?=$HELLO?>
+	should be converted to <? echo $HELLO; ?>
+	
+	
