@@ -6,19 +6,18 @@
 	$pageStyle="";
 	if($MENUBAR!="")	$pageStyle=" <link rel=\"stylesheet\" href=\"$TEMPLATEBROWSERPATH/style/style-bothbars.css\" />";
 	else $pageStyle=" <link rel=\"stylesheet\" href=\"$TEMPLATEBROWSERPATH/style/style-rightbar.css\" />";
-	
  ?>
-  <title><?= $TITLE ?></title>
-  <link rel="stylesheet" href="<?= $TEMPLATEBROWSERPATH ?>/style/style.css" />
-  <link rel="stylesheet" href="<?= $TEMPLATEBROWSERPATH ?>/style/admin.css" />
-  <link rel="stylesheet" href="<?= $TEMPLATEBROWSERPATH ?>/style/error.css" />
-  <?= $pageStyle ?>
-  <link rel="stylesheet" href="<?= $TEMPLATEBROWSERPATH ?>/style/other.css" />
+  <title><? echo  $TITLE ?></title>
+  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/style.css" />
+  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/admin.css" />
+  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/error.css" />
+  <? echo  $pageStyle; ?>
+  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/other.css" />
 
-  <script language='javascript' src="<?= $TEMPLATEBROWSERPATH ?>>/scripts/ajaxbasic.js" ></script>
+  <script language='javascript' src="<? echo  $TEMPLATEBROWSERPATH; ?>>/scripts/ajaxbasic.js" ></script>
 
 </head>
-<body onload='<?= $STARTSCRIPTS ?>'>
+<body onload='<? echo  $STARTSCRIPTS ?>'>
   <div id="outer_wrapper">
     <div id="wrapper">
       <div id="header">
@@ -26,29 +25,29 @@
       </div><!-- /header -->
       <div id="container">
         <div id="left">
-          <?=$MENUBAR?>
+          <? echo $MENUBAR;?>
         </div><!-- /left -->
 
         <div id="main">
       	   <div id="breadcrumbs">
-	           	<?= $BREADCRUMB ?>
+	           	<? echo  $BREADCRUMB; ?>
 	           	<?php
 	           		global $userId;
 	           		if($userId == 0) {
 	           			echo "<div id=\"cms-actionbarPage\"><span class=\"cms-actionbarPageItem\"><a href=\"./+login\">Login</a></span></div>";
 	           		}
 	           	?>
-	           		<?=(($userId==0)?"":$ACTIONBARPAGE)?>
-	           		<?=(($userId==0)?"":$ACTIONBARMODULE)?>
+	           		<? echo (($userId==0)?"":$ACTIONBARPAGE);?>
+	           		<? echo (($userId==0)?"":$ACTIONBARMODULE);?>
 				
 				
             </div>
           <div id="content">
-          <div id="pageheading">          <?= $TITLE ?></div>
-            <?=$INFOSTRING?>
-	          <?=$WARNINGSTRING?>
-	          <?=$ERRORSTRING?>
-	          <?= $CONTENT ?>
+          <div id="pageheading">          <? echo  $TITLE; ?></div>
+            <? echo $INFOSTRING;?>
+	          <? echo $WARNINGSTRING;?>
+	          <? echo $ERRORSTRING;?>
+	          <? echo  $CONTENT; ?>
           
 	
 	

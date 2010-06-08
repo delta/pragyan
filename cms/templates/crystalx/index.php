@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title><?= $TITLE ?></title>
+    <title><? echo  $TITLE; ?></title>
     <meta name="description" content="The official website of the Rotaract Club of NIT Trichy" />
     <meta name="keywords" content="Rotaract Club, National Institute of Technology, Tiruchirappalli, Trichy" />
 	<?global $urlRequestRoot;	global $PAGELASTUPDATED;
@@ -10,16 +10,16 @@
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
 	?>
     <link rel="index" href="./" title="Home" />
-    <link rel="stylesheet" media="screen,projection" type="text/css" href="<?= $TEMPLATEBROWSERPATH ?>/css/main.css" />
-    <link rel="stylesheet" media="print" type="text/css" href="<?= $TEMPLATEBROWSERPATH ?>/css/print.css" />
-    <link rel="stylesheet" media="aural" type="text/css" href="<?= $TEMPLATEBROWSERPATH ?>/css/aural.css" />
-    <link rel="stylesheet" type="text/css" href="<?= $TEMPLATEBROWSERPATH ?>/css/other.css" />
-    <link rel="stylesheet" type="text/css" href="<?= $TEMPLATEBROWSERPATH ?>/../common/error.css" />
+    <link rel="stylesheet" media="screen,projection" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/main.css" />
+    <link rel="stylesheet" media="print" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/print.css" />
+    <link rel="stylesheet" media="aural" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/aural.css" />
+    <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/other.css" />
+    <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
 
 	<script language="javascript" type="text/javascript">
 		//defined here for use in javascript
-		var templateBrowserPath = "<?=$TEMPLATEBROWSERPATH ?>";
-		var urlRequestRoot = "<?=$urlRequestRoot?>";
+		var templateBrowserPath = "<? echo $TEMPLATEBROWSERPATH ?>";
+		var urlRequestRoot = "<? echo $urlRequestRoot?>";
 	</script>
 </head>
 
@@ -31,7 +31,7 @@
     <!-- Header -->
     <div id="header">
         <!-- Logotyp -->
-        <h1 id="logo"><?= $TITLE ?></h1>
+        <h1 id="logo"><? echo  $TITLE; ?></h1>
       
     </div> <!-- /header -->
 
@@ -41,10 +41,10 @@
         <div id="strip" class="box noprint">
             <!-- Breadcrumbs -->
             <div id="breadcrumbs">
-	           	<?= $BREADCRUMB ?>
+	           	<? echo  $BREADCRUMB; ?>
 
-				<?=$ACTIONBARPAGE?>
-				<?=$ACTIONBARMODULE?>
+				<? echo $ACTIONBARPAGE;?>
+				<? echo $ACTIONBARMODULE;?>
             </div>
             <hr class="noscreen" />
             
@@ -55,10 +55,10 @@
 
             <!-- Article -->
             <div class="article">
-              <?=$INFOSTRING?>
-	          <?=$WARNINGSTRING?>
-	          <?=$ERRORSTRING?>
-	          <?= $CONTENT ?>
+              <? echo $INFOSTRING;?>
+	          <? echo $WARNINGSTRING;?>
+	          <? echo $ERRORSTRING;?>
+	          <? echo  $CONTENT; ?>
             </div> <!-- /article -->
         </div> <!-- /content -->
 
@@ -66,7 +66,7 @@
         <div id="col" class="noprint">
             <div id="col-in">
                 <!-- Category -->
-				<?=$MENUBAR?>
+				<? echo $MENUBAR;?>
 
 				<hr class="noscreen" />
 				<h3><span>Links</span></h3>

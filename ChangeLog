@@ -1,3 +1,9 @@
+Revision 28  : Added SQL query helper for sqlquery module by  abhishekdelta  on  2010-06-07 22:42:1
+--------------------------------------------------------------
+Revision 27  : Added quicklinks in Pagesettings by  abhishekdelta  on  2010-06-07 19:38:4
+--------------------------------------------------------------
+Revision 26  : Minor bugfixes by  abhishekdelta  on  2010-06-07 15:35:1
+--------------------------------------------------------------
 Revision 25  : Added PDF module : patch by Chakra applied by  abhishekdelta  on  2010-06-06 22:30:3
 --------------------------------------------------------------
 Revision 24  : fixed a bug in template installation by  abhishekdelta  on  2010-06-06 21:13:5
