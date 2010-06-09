@@ -54,6 +54,7 @@ displayinfo($pageId.$userId.$fileName);
 	$upload_fileid = $row['upload_fileid'];
 	$filename = str_repeat("0", (10 - strlen((string) $upload_fileid))) . $upload_fileid . "_" . $fileName;
 	$file = $sourceFolder . "/" . $uploadFolder . "/" . $moduleType . "/" . $filename;
+	
 	disconnect();
 
 	$filePointer = @fopen($file, 'r') ;
@@ -62,8 +63,9 @@ displayinfo($pageId.$userId.$fileName);
 		echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
 			 "<p>The requested URL ".$_SERVER['SCRIPT_URL']." was not found on this server.</p><hr>" .
 			 "$_SERVER[SERVER_SIGNATURE]</body></html>";
-		exit;
+		exit();
 	}
+	
 	elseif ($fileType == 'image/jpeg')
 		header("Content-Type: image/jpg");
 	elseif ($fileType == 'image/gif')
@@ -76,19 +78,21 @@ displayinfo($pageId.$userId.$fileName);
 		header("Content-Type: image/svg+xml");
 	else
 		header("Content-Type: application/force-download");
-	//yslow anshu
+	
 	header("Expires: Sat, 23 Jan 2010 20:53:35 +0530"); // . date('r', strtotime('+1 year')));
-	//	header();
+
 	$last_modified_time = filemtime($file);
 	header('Date: ' . date('r'));
 	header('Last-Modified: ' . date('r', strtotime($row['upload_time'])));
 	$etag = md5_file($file);
 	header("ETag: $etag");
-	if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time ||
-	    trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
+	if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time || 
+	    (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) ) {
 	  header("HTTP/1.1 304 Not Modified");
-	  exit;
+	  exit();
 	}
+	
+	
 	//yslow ends
 
 /*	$fileSize = filesize($file);
