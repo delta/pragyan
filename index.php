@@ -76,7 +76,7 @@ if ($pageId === false) { ///<Following also used in download.lib.php
 	echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
 		 "<p>The requested URL ".$_SERVER['SCRIPT_URL']." was not found on this server.</p><hr>" .
 		 "$_SERVER[SERVER_SIGNATURE]</body></html>";
-	exit;
+	exit();
 }
 
 if(isset($_GET['fileget'])) {
