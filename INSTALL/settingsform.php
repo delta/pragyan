@@ -6,8 +6,8 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 
+
 $settingsForm = <<<SETTINGSFORM
-<form name="SettingsForm" method="POST" action="./install.php">
 <script type="text/javascript" language="javascript">
 	function toggleImap(b) {
 		document.getElementById('txtIMAPServerAddress').disabled =
@@ -26,6 +26,187 @@ $settingsForm = <<<SETTINGSFORM
 		document.getElementById('txtADSNetworkName').disabled =
 		document.getElementById('txtADSUserDomain').disabled = b;
 	}
+	
+	function trim(str)
+	{
+	  return str.replace(/^\s+|\s+$/g, '');
+	}		
+	function validate_domain(field)
+	{
+		var val = field.value;
+		var check = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/; //IP Address
+		var check2 = /^[A-Za-z\.\s]*$/; //Domain Name
+		if(val.length != 0)
+		{
+			if(!check.test(val) && !check2.test(val))
+			{
+			alert("Enter a valid server address !");
+			field.focus();
+			field.select();
+			}
+		}
+	}
+	
+	function validate_name(field)
+	{
+		var val = trim(field.value);
+		var check = /^[A-Za-z\.\s]*$/;
+	
+		if(val.length != 0)
+		{
+			if(!check.test(val))
+			{
+				alert("Enter a valid name !");
+				field.focus();
+				field.select();
+			}
+		}
+	}
+
+	function validate_num(field)
+	{
+		var val = trim(field.value);
+		var check = /^\d*$/;
+	
+		if(val.length != 0)
+		{	
+			if(!check.test(val))
+			{
+			alert("Enter a valid numeric value");
+			field.focus();
+			field.select();
+			}
+		}
+	}
+
+	function validate_username(field)
+	{
+		var val = trim(field.value);
+		var a = val.indexOf(" ")
+		var check = /^[A-Za-z\d]*$/;
+	
+		if(val.length != 0)
+		{
+			if(a != -1)
+			{
+				alert("Dont leave space in between characters !");
+				field.focus();
+				field.select();
+			}
+	
+			else if(!check.test(val))
+			{
+				alert("Entry not valid ! The Username should contain only characters and numbers .");
+				field.focus();
+				field.select();
+			}
+		}
+	}
+
+	function validate_email(field)
+	{
+		var val = trim(field.value);
+		var check = /^[A-Za-z0-9][a-z0-9._-]+(\.[a-z0-9_\+-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*\.([a-z]{2,4})$/;
+	
+		if(val.length != 0)
+		{
+			if(!check.test(val))
+			{
+			alert("Email Id not valid ! Check for the following : Start with Alphabets or Numbers, Special Characters allowed : '.' , '_' , '-' and Special characters should not occur in succession");
+			field.focus();
+			field.select();
+			}
+		}
+	}
+
+	function validate_port(field)
+	{
+		var val = trim(field.value);
+		var check = /^\d{1,5}$/;
+	
+		if(val.length != 0)
+		{	
+			if(!check.test(val))
+			{
+			alert("Enter a valid Port number");
+			field.focus();
+			field.select();
+			}
+		}
+	}
+
+	function validate_form()
+	{
+		var txtMySQLServer      = trim(document.SettingsForm.txtMySQLServer.value);
+		var txtMySQLUsername    = trim(document.SettingsForm.txtMySQLUsername.value);
+		var txtMySQLPassword    = trim(document.SettingsForm.txtMySQLPassword.value);
+		var txtMySQLDatabase    = trim(document.SettingsForm.txtMySQLDatabase.value);
+		var txtMySQLTablePrefix = trim(document.SettingsForm.txtMySQLTablePrefix.value);
+
+		var txtAdminUsername    = trim(document.SettingsForm.txtAdminUsername.value);
+		var txtAdminEmail	= trim(document.SettingsForm.txtAdminEmail.value);
+		var txtAdminFullname	= trim(document.SettingsForm.txtAdminFullname.value);
+		var txtAdminPassword	= trim(document.SettingsForm.txtAdminPassword.value);
+		var txtAdminPassword2	= trim(document.SettingsForm.txtAdminPassword2.value);
+
+		var txtCMSTitle	        = trim(document.SettingsForm.txtCMSTitle.value);
+		var txtCMSMailId	= trim(document.SettingsForm.txtCMSMailId.value);
+
+		var txtUploadLimit	= trim(document.SettingsForm.txtUploadLimit.value);
+		var txtCookieTimeout	= trim(document.SettingsForm.txtCookieTimeout.value);
+
+		var txtIMAPServerAddress= trim(document.SettingsForm.txtIMAPServerAddress.value);
+		var txtIMAPPort	        = trim(document.SettingsForm.txtIMAPPort.value);
+		var txtIMAPUserDomain	= trim(document.SettingsForm.txtIMAPUserDomain.value);
+
+		var txtLDAPServerAddress= trim(document.SettingsForm.txtLDAPServerAddress.value);
+		var txtLDAPSearchGroup  = trim(document.SettingsForm.txtLDAPSearchGroup.value);
+		var txtLDAPUserDomain	= trim(document.SettingsForm.txtLDAPUserDomain.value);
+
+		var txtADSServerAddress	= trim(document.SettingsForm.txtADSServerAddress.value);
+		var txtADSNetworkName	= trim(document.SettingsForm.txtADSNetworkName.value);
+		var txtADSUserDomain	= trim(document.SettingsForm.txtADSUserDomain.value);
+
+		var empty = 0;
+
+		if(txtADSUserDomain.length == 0) empty++;
+		if(txtADSNetworkName.length == 0) empty++;
+		if(txtADSServerAddress.length == 0) empty++;
+
+		if(txtLDAPUserDomain.length == 0) empty++;
+		if(txtLDAPSearchGroup.length == 0) empty++;
+		if(txtLDAPServerAddress.length == 0) empty++;
+
+		if(txtIMAPUserDomain.length == 0) empty++;
+		if(txtIMAPPort.length == 0) empty++;
+		if(txtIMAPServerAddress.length == 0) empty++;
+
+		if(txtCookieTimeout.length == 0) empty++;
+		if(txtUploadLimit.length == 0) empty++;
+
+		if(txtCMSMailId.length == 0) empty++;
+		if(txtCMSTitle.length == 0) empty++;
+
+		if(txtAdminPassword2.length == 0) empty++;
+		if(txtAdminPassword.length == 0) empty++;
+		if(txtAdminFullname.length == 0) empty++;
+		if(txtAdminEmail.length == 0) empty++;
+		if(txtAdminUsername.length == 0) empty++;
+
+		if(txtMySQLTablePrefix.length == 0) empty++;
+		if(txtMySQLDatabase.length == 0) empty++;
+		if(txtMySQLPassword.length == 0) empty++;
+		if(txtMySQLUsername.length == 0) empty++;
+		if(txtMySQLServer.length == 0) empty++;
+		
+	
+	
+		if(empty) alert("You have left "+empty+" required field(s) Empty !");
+	
+		document.SettingsForm.txtMySQLUsername.focus();
+	
+		return (empty == 0);
+	}
 	function checkForm()
 	{
 		if(document.getElementById('txtAdminPassword').value!=document.getElementById('txtAdminPassword2').value)
@@ -33,21 +214,26 @@ $settingsForm = <<<SETTINGSFORM
 			alert("Administrator Passwords do not match");
 			return false;
 		}
-		return true;
+		return validate_form();
 	}
 
+
 </script>
+
+<form name="SettingsForm" method="POST" action="./install.php">
+
+
 
 <fieldset name="DatabaseSettings">
 	<legend>Database Settings</legend>
 	<table border="0" width="580px">
 		<tr>
 			<td width="210px"><label for="txtMySQLServer">MySQL Server:</label></td>
-			<td><input type="text" name="txtMySQLServer" id="txtMySQLServer" value="localhost" /></td>
+			<td><input type="text" name="txtMySQLServer" id="txtMySQLServer" value="localhost" onblur="validate_domain(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtMySQLUsername">Username:</label></td>
-			<td><input type="text" name="txtMySQLUsername" id="txtMySQLUsername" value="" /></td>
+			<td><input type="text" name="txtMySQLUsername" id="txtMySQLUsername" value="" onblur="validate_username(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtMySQLPassword">Password:</label></td>
@@ -69,15 +255,15 @@ $settingsForm = <<<SETTINGSFORM
 	<table border="0" width="580px">
 		<tr>
 			<td width="210px"><label for="txtAdminUsername">Administrator Username:</label></td>
-			<td><input type="text" name="txtAdminUsername" id="txtAdminUsername" value="admin" /></td>
+			<td><input type="text" name="txtAdminUsername" id="txtAdminUsername" value="admin" onblur="validate_username(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtAdminEmail">Administrator Email:</label></td>
-			<td><input type="text" name="txtAdminEmail" id="txtAdminEmail" value="" /></td>
+			<td><input type="text" name="txtAdminEmail" id="txtAdminEmail" value="" onblur="validate_email(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtAdminFullname">Administrator Full Name:</label></td>
-			<td><input type="text" name="txtAdminFullname" id="txtAdminFullname" value="" /></td>
+			<td><input type="text" name="txtAdminFullname" id="txtAdminFullname" value="" onblur="validate_name(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtAdminPassword">Administrator Password:</label></td>
@@ -123,11 +309,11 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtCMSMailId">Website Email Id:</label></td>
-			<td><input type="text" name="txtCMSMailId" id="txtCMSMailId" value="no-reply@pragyan.org" /></td> 
+			<td><input type="text" name="txtCMSMailId" id="txtCMSMailId" value="no-reply@pragyan.org" onblur="validate_email(this)" /></td> 
 		</tr>
 		<tr>
 			<td><label for="txtUploadLimit">Upload Limit (bytes):</label></td>
-			<td><input type="text" name="txtUploadLimit" id="txtUploadLimit" value="50000000" /></td>
+			<td><input type="text" name="txtUploadLimit" id="txtUploadLimit" value="50000000" onblur="validate_num(this)" /></td>
 		</tr>
 		
 		<tr>
@@ -162,11 +348,11 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtIMAPServerAddress">Server Address:</label></td>
-			<td><input type="text" id="txtIMAPServerAddress" name="txtIMAPServerAddress" value="10.0.0.2" /></td>
+			<td><input type="text" id="txtIMAPServerAddress" name="txtIMAPServerAddress" value="10.0.0.2" onblur="validate_domain(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtIMAPPort">Port:</label></td>
-			<td><input type="text" id="txtIMAPPort" name="txtIMAPPort" value="143" /></td>
+			<td><input type="text" id="txtIMAPPort" name="txtIMAPPort" value="143" onblur="validate_port(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtIMAPUserDoman">User Domain:</label></td>
@@ -202,7 +388,7 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtADSServerAddress">Server Address:</label></td>
-			<td><input type="text" id="txtADSServerAddress" name="txtADSServerAddress" value="10.0.0.2" /></td>
+			<td><input type="text" id="txtADSServerAddress" name="txtADSServerAddress" value="10.0.0.2" onblur="validate_domain(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtADSNetworkName">Network Name:</label></td>
