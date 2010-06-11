@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `article_content` (
   `page_modulecomponentid` int(11) NOT NULL,
   `article_content` text NOT NULL,
   `article_lastupdated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `allowComments` tinyint(1) NOT NULL,
   PRIMARY KEY (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -40,6 +41,21 @@ CREATE TABLE IF NOT EXISTS `article_contentbak` (
   `user_id` int(11) NOT NULL,
   KEY `page_mdulecomponentid` (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `article_comments`
+--
+
+CREATE TABLE IF NOT EXISTS `article_comments` (
+  `comment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_modulecomponentid` int(11) NOT NULL,
+  `user` varchar(200) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `comment` text NOT NULL,
+  PRIMARY KEY (`comment_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 

@@ -33,7 +33,67 @@ class article implements module, fileuploadable {
 		$maxFileSizeInBytes = 30*1024*1024;
 	}
 	
+	function isCommentsEnabled() {
+		$result = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
+		return $result['allowComments'];
+	}
+	
+	function setCommentEnable($val) {
+		mysql_query("UPDATE `article_content` SET `allowComments` = $val WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'");
+	}
+	
+	function renderComment($id,$user,$timestamp,$comment,$delete=0) {
+	if($delete==1)
+	{
+		global $urlRequestRoot,$cmsFolder,$templateFolder;
+		$delete  = "<a href='./+edit&delComment=$id'> <img style=\"padding:0px\; \" align=right src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/32x32/actions/edit-delete.png\" alt=\"Delete\" /> </a>";
+	}
+		
+		$ret = <<<RET
+<div class="articlecomment">
+<span class="articlecomment_info">
+Posted By: $user on $timestamp
+</span>
+<br/><span class="articlecomment_content">
+$comment
+</span>
+$delete
+</div>
+RET;
+		return $ret;
+	}
+	
+	function commentBox() {
+		global $cmsFolder;
+		require_once("$cmsFolder/common.lib.php");
+		$user = getUserName($this->userId);
+		$ret = <<<RET
+<fieldset><legend>New Comment</legend>
+<form method=POST action='./+view&subaction=postcomment'>
+<table width=100%>
+<tr><td>Posted By:</td><td><input type=text disabled="disabled" value="$user"></td></tr>
+<tr><td>Comment:</td><td><textarea name=comment rows=4 cols=50>Enter your comment here...</textarea></td>
+</table>
+<input type=submit name=btnSubmit value=Post>
+</form>
+</fieldset>
+RET;
+		return $ret;
+	}
+	
 	public function actionView($text="") {
+		
+		if($this->isCommentsEnabled() && isset($_POST['btnSubmit'])) {
+			$id = mysql_fetch_array(mysql_query("SELECT MAX(`comment_id`) AS MAX FROM `article_comments`"));
+			$id = $id['MAX'] + 1;
+			$user = getUserName($this->userId);
+			$comment = escape(safe_html($_POST['comment']));
+			mysql_query("INSERT INTO `article_comments`(`comment_id`,`page_modulecomponentid`,`user`,`comment`) VALUES('$id','{$this->moduleComponentId}','$user','$comment')");
+			if(mysql_affected_rows())
+				displayinfo("Post successful");
+			else
+				displayerror("Error in posting comment");
+		}
 		if($text=="") {
 			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
 			$result = mysql_query($query);
@@ -50,13 +110,31 @@ class article implements module, fileuploadable {
 		if (get_magic_quotes_gpc())
 			$text = stripslashes($text);
 		$render = new render();
-		return $render->transform($text);
+		$ret = $render->transform($text);
+		if($this->isCommentsEnabled()) {
+			$comments = mysql_query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
+			if(mysql_num_rows($comments)>0)
+				$ret .= "<fieldset><legend>Comments</legend>";
+			while($row = mysql_fetch_array($comments))
+				$ret .= $this->renderComment($row['comment_id'],$row['user'],$row['timestamp'],$row['comment']);
+			if(mysql_num_rows($comments)>0)
+				$ret .= "</fieldset>";
+			$ret .= $this->commentBox();
+		}
+		return $ret;
 	}
 	public function actionEdit() {
 		global $sourceFolder;
 		//require_once("$sourceFolder/diff.lib.php");
 		require_once($sourceFolder."/upload.lib.php");
 		submitFileUploadForm($this->moduleComponentId,"article",$this->userId,UPLOAD_SIZE_LIMIT);
+		if(isset($_GET['delComment']) && $this->userId == 1) {
+			mysql_query("DELETE FROM `article_comments` WHERE `comment_id` = '".escape($_GET['delComment'])."'");
+			if(mysql_affected_rows())
+				displayinfo("Comment deleted!");
+			else
+				displayerror("Error in deleting comment");
+		}
 		if (isset($_GET['preview']) && isset ($_POST['CKEditor1'])) {
 			return "<div id=\"preview\" class=\"warning\"><a name=\"preview\">Preview</a></div>".$this->actionView(stripslashes($_POST[CKEditor1])).$this->getCkBody(stripslashes($_POST[CKEditor1]));
 		}
@@ -97,7 +175,39 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 				displayerror("Unable to update the article");
 			return $this->actionView();
 		}
-		return $this->getCkBody();
+		$fulleditpage = $this->getCkBody();
+		
+		$commentsedit = "<fieldset><legend><a name='comments'>Comments</a></legend>";
+		
+		if($this->isCommentsEnabled()) {
+			$comments = mysql_query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
+			if(mysql_num_rows($comments)==0)
+				$commentsedit.= "No comments have been posted !";
+			
+			
+			while($row = mysql_fetch_array($comments))
+			{
+				$commentsedit .= $this->renderComment($row['comment_id'],$row['user'],$row['timestamp'],$row['comment'],1);
+				
+			}
+
+		}
+		else $commentsedit .= "Comments are disabled for this page! You can allow comments from <a href='./+settings'>pagesettings</a>.";
+		$commentsedit .="</fieldset>";
+		$top="<a href='#topquicklinks'>Top</a>";
+		$fulleditpage .= $commentsedit.$top;
+		
+		$header = <<<HEADER
+		<fieldset><legend><a name='topquicklinks'>Quicklinks</a></legend>
+		 <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#editor'" value="Edit Page"/>
+        	<input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#files'" value="Manage Uploaded Files"/>
+        	        	<input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#revisions'" value="View Page Revisions"/>
+        	<input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#comments'" value="Edit Comments"/>
+        
+		</fieldset><br/><br/>
+HEADER;
+		
+		return $header.$fulleditpage;
 
 	}
 
@@ -208,9 +318,11 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 
 			$CkForm =<<<Ck
 						<form action="./+edit" method="post">
+						<a name="editor"></a>
 						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)">
                         To upload files and images, go to the <a href="#files">files section</a>.
 Ck;
+			$top ="<a href='#topquicklinks'>Top</a>";
 			$oCKEditor = new CKeditor();
 			$oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor/";
 			$oCKEditor->config['width'] = '100%';
@@ -231,6 +343,7 @@ Ck;
 					    		butt.form.submit();
 					    	}
 					    </script><br />
+					    $top
 					    <fieldset>
 					        <legend><a name="files">Files :</a></legend>
 							Uploaded Files : <br />
@@ -254,7 +367,7 @@ Ck1;
 		$query = "SELECT article_revision,article_updatetime,user_id FROM `article_contentbak` where page_modulecomponentid = $this->moduleComponentId ORDER BY article_revision LIMIT $start,$count";
 		$result = mysql_query($query);
 		$revisionTable = "<fieldset>
-					        <legend>Archive : </legend>" .
+					        <legend><a name='revisions'>Archive : </a></legend>" .
 					        		"<table border='1'><tr><td>Revision Number</td><td>Date Updated</td><td>User Email</td></tr>";
 		while ($row = mysql_fetch_assoc($result)) {
 			$revisionTable .= "<tr><td><a href=\"./+edit&version=".$row['article_revision']."#preview\">".$row['article_revision']."</a></td><td>".$row['article_updatetime']."</td><td>".getUserEmail($row['user_id'])."</td></tr>";
@@ -267,8 +380,8 @@ Ck1;
 				"</fieldset>";
 
 		/* Revisions end*/
-
-		return  $CkForm . $Ckbody . $CkFooter.$revisionTable;
+		
+		return  $CkForm . $Ckbody . $CkFooter.$top.$revisionTable.$top;
 	}
 
 	public function createModule(&$moduleComponentId) {

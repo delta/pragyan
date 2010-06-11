@@ -16,3 +16,7 @@ div.cms-menuitem {display:block; padding:3px 0 3px 22px; background:url("../desi
 div.cms-menuitem:hover {background-color:#D3DFF8; color:#192666;}
 #col ul#category li#category-active a {background:#E0E8FA url("../design/ico_archive2.gif") 5px 50% no-repeat; font-weight:bold;}
 
+div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
+span.articlecomment_info { font-size : 90%; font-style : italic; }
+
+
