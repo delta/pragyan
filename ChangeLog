@@ -1,3 +1,9 @@
+Revision 31  : Added Installation Forms Check : patch for Ticket 1 by Mohsin by  abhishekdelta  on  2010-06-10 23:30:5
+--------------------------------------------------------------
+Revision 30  : Fixed bug specified in Ticket 19 by  abhishekdelta  on  2010-06-10 01:00:2
+--------------------------------------------------------------
+Revision 29  : Fixed php shortforms bugs and updated DEVELOPER-README by  abhishekdelta  on  2010-06-08 23:25:1
+--------------------------------------------------------------
 Revision 28  : Added SQL query helper for sqlquery module by  abhishekdelta  on  2010-06-07 22:42:1
 --------------------------------------------------------------
 Revision 27  : Added quicklinks in Pagesettings by  abhishekdelta  on  2010-06-07 19:38:4

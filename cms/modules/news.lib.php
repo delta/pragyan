@@ -77,19 +77,8 @@ RSSOUTPUT;
 		$i=0;
 		while($news=mysql_fetch_assoc($result)){
 			foreach($news as $var=>$val)
-			{
-
-				$newsArray[$i][$var]=$val;//Anshu
-
-
-/*
-				if ($var=='title') {$newsArray[$i]['title']=$val; }
-				elseif ($var=='feed'){$newsArray[$i]['description']=$val;}
-				elseif ($var=='link'){$newsArray[$i]['link']=$val;}
-				elseif($var=='news_id'){$newsArray[$i]['id']=$val;}*/
-//				elseif
-			}
-			$i=$i+1;
+				$newsArray[$i][$var]=$val;
+			$i++;
 		}
 
 		return $newsArray;
@@ -108,18 +97,12 @@ RSSOUTPUT;
 					$query1 = "SELECT * FROM `news_data` WHERE `news_id`={$_GET['newsid']} AND `page_modulecomponentid` = $this->moduleComponentId";
 					$result = mysql_query($query1);
 					$row = mysql_fetch_assoc($result);
-					$query2 = "INSERT INTO `news_bk` VALUES({$row['news_id']},{$row['news_title']},{$row['news_date']},{$row['news_link']},{$row['news_description']})";
-					$result = mysql_query($query2);
+					
 					$query = "DELETE FROM `news_data` WHERE `news_id`='{$_GET['newsid']}' AND `page_modulecomponentid`='$this->moduleComponentId'";
 					$result = mysql_query($query);
 					displayinfo('News feed has been successfully deleted.');
 				}
 				elseif($_GET['subaction'] == 'editnews') {
-					if(isset($_POST['btnSaveChanges'])) {
-					$query = "INSERT INTO `news_bk` (`news_id`, `news_title`,`news_link`,`news_descrition`) VALUES('{$_POST['newsid']}','{$_POST['title']}','{$_POST['link']}','{$_POST['feed']}')";		
-					$result = mysql_query($query3) or die(mysql_error() . '<br />' . $query3);
-					}
-					else{
 					$query = "SELECT * FROM `news_data` WHERE `news_id`={$_GET['newsid']} AND `page_modulecomponentid` = $this->moduleComponentId";
 					$result = mysql_query($query);
 					$row = mysql_fetch_assoc($result);
@@ -135,7 +118,6 @@ RSSOUTPUT;
 EDITFORM;
 
 					return $editForm;
-					}
 				}
 			}
 			elseif($_GET['subaction'] == 'addnews') {
@@ -148,8 +130,6 @@ EDITFORM;
 						$news_id = $resultArray[0] +1;
 					$query2 = "INSERT INTO `news_data` (`page_modulecomponentid`, `news_id`, `news_title`, `news_feed`, `news_rank`,`news_link`) VALUES('$this->moduleComponentId','$news_id','{$_POST['title']}','{$_POST['feed']}','{$_POST['rank']}','{$_POST['link']}')";
 		 			$result = mysql_query($query2) or die(mysql_error() . '<br />' . $query2);
-					$query3 = "INSERT INTO `news_bk` (`news_id`, `news_title`,`news_link`,`news_descrition`) VALUES('$this->$news_id','{$_POST['title']}','{$_POST['link']}','{$_POST['feed']}')";		
-					$result = mysql_query($query3) or die(mysql_error() . '<br />' . $query3);				
 				}
 				else {
 					$addnews='<form action="./+edit&subaction=addnews" method="POST">
@@ -201,9 +181,10 @@ CHECKDEL;
 			$news .= "<td>{$row['news_id']}</td><td>{$row['news_title']}</td><td>{$row['news_feed']}</td><td>{$row['news_rank']}</td><td>{$row['news_date']}</td><td><a href=\"$row[news_link]\">{$row['news_link']}</a></td></tr>\n";
 			++$i;
 		}
-		$news .= "</table>\n";
-		$addImage = '<img src="' . "$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/list-add.png" . '"alt="Add New Question" style="padding:0px" />';
-		$news .= '<br /><br /><a href="./+edit&subaction=addnews">' . $addImage . 'Add News</a><br /><br />';
+		$news .= <<<END
+</table>
+<br /><input type=button value='Add News' onClick='window.location="./+edit&subaction=addnews"'> <input type=button value='View News' onClick='window.location="./+view"'>
+END;
 		return $news;
 	}
 
@@ -211,11 +192,11 @@ CHECKDEL;
 
 	public function createModule(&$moduleComponentId) {
 		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `news_data` ";
-		$result = mysql_query($query) or die(mysql_error() . "newws.lib L:73");
+		$result = mysql_query($query) or die(mysql_error() . "news.lib L:73");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 
-		$query = "INSERT INTO `news_data` (`page_modulecomponentid` ,`news_title`,`news_feed`)VALUES ('$compId', 'New news!')";
+		$query = "INSERT INTO `news_data` (`page_modulecomponentid` ,`news_title`,`news_feed`)VALUES ('$compId', 'New news!', '')";
 		$result = mysql_query($query); // or die(mysql_error()."article.lib L:76");
 		if (mysql_affected_rows()) {
 			$moduleComponentId = $compId;
@@ -225,25 +206,37 @@ CHECKDEL;
 
 	}
 	public function deleteModule($moduleComponentId){
-
+		mysql_query("DELETE FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
+		if(mysql_affected_rows())
+			return true;
+		return false;
 	}
 
 
 
 	public function copyModule($moduleComponentId){
-
+		$result = mysql_query("SELECT MAX(page_modulecomponentid) as MAX FROM `news_data`") or die(mysql_error() . " news.lib L:74");
+		$row = mysql_fetch_array($result);
+		$compId = $row['MAX'] + 1;
+		
+		$result = mysql_query("SELECT * FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
+		while($row = mysql_fetch_array($result))
+			mysql_query("INSERT INTO `news_data` (`page_modulecomponentid` ,`news_title`,`news_feed`,`news_rank`,`news_date`,`news_link`)VALUES ('$compId', '{$row['news_title']}', '{$row['news_feed']}', '{$row['news_rank']}', '{$row['news_date']}', '{$row['news_link']}')");
+		
+		return $compId;
 	}
 
 	public function actionView()
 	{
 		$moduleCompId=$this->moduleComponentId;
 		$newsId=isset($_GET['id'])?$_GET['id']:"";
+		$newsView = "";
 		if($newsId=='')
 		{
-			$query="SELECT `news_title` FROM `news_data` WHERE `page_modulecomponentid`=$moduleCompId ORDER BY `news_rank`, `news_id`";
-			$result=mysql_query($query) or die(mysql_error()."news.libL247");
-			$temp=mysql_fetch_assoc($result);
-			$newsView.="<h1>$temp[news_title]</h1><br>";
+			$query="SELECT `page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module`='news' AND `page_modulecomponentid`=$moduleCompId";
+			$result=mysql_query($query) or die(mysql_error()."news.lib L247");
+			$temp=mysql_fetch_row($result);
+			$newsView.="<h1>$temp[0]</h1><br>";
 			$cond="";
 
 
