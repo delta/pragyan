@@ -297,6 +297,10 @@ MOVECOPY;
 	global $pageFullPath;
 	$parentPath = ($pageId==0?'':'<a href="../+settings">Parent page link.</a>');
 	$pageType=$page_values['page_module'];
+	$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
+	$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
+	$row = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
+	$allowComments = $row['allowComments'] == 1 ? 'checked="checked" ' : '';
 	$formDisplay =<<<FORMDISPLAY
 
 	<div id="page_settings">
@@ -357,7 +361,7 @@ MOVECOPY;
 				</tr>
 	        	
 				<tr><td >Page type: </td><td>$pageType</td></tr>
-
+				<tr><td>Allow comments: </td><td><input type='checkbox' id='allowComments' name='allowComments' $allowComments></td></tr>
 				<tr>
 					<td>Use Default Template ?</td>
 					<td><input type='checkbox' name='default_template' value='yes' onchange="toggleSelTemplate2()" $dbPageDefTemplate /></td>
@@ -546,6 +550,10 @@ function pagesettings($pageId, $userId) {
 				$template_propogate=isset($_POST['template_propogate'])?true:false;
 				$_POST['pagename']=isset($_POST['pagename'])?$_POST['pagename']:"";
 				$_POST['pagetitle']=isset($_POST['pagetitle'])?$_POST['pagetitle']:"";
+				$var = (isset($_POST['allowComments'])?1:0);
+				$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
+				$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
+				mysql_query("UPDATE `article_content` SET `allowComments` = $var WHERE `page_modulecomponentid` = '{$modulecomponentid}'");
 				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate);
 
 				

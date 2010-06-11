@@ -5,6 +5,8 @@
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
+ 
+//NOTE (by Abhishek) : I've deliberately not used safe_html in NEWS module so as to give the user the freedom to use HTML tags to specify stuff like highlight news,colored news, images, etc ... 
 
  class news implements module {
 	private $userId;
@@ -91,14 +93,45 @@ RSSOUTPUT;
 	}
 //I have edited this but wasnt able to check its working 
 	public function actionEdit() {
+	
+	
+	$validateScript=<<<VALSCRIPT
+	<script type="text/javascript">
+	function trim(str)
+		{
+			 return str.replace(/^\s+|\s+$/g, '');
+		}
+
+	function validate_empty()
+		{
+			var empty = 0;
+			var title = trim(document.AddNews.title.value);
+			var feed  = trim(document.AddNews.feed.value);
+	
+			if(title.length == 0)
+				{
+					empty++;
+					alert("The title should not be left blank");
+					document.AddNews.title.focus();
+				}
+			else if(feed.length == 0)
+				{
+					empty++;
+					alert("Enter a Description of the News");
+					document.AddNews.feed.focus();
+				}
+			return (empty == 0);
+		}
+	</script>
+VALSCRIPT;
 		if(isset($_GET['subaction'])) {
 			if(isset($_GET['newsid']) && ctype_digit($_GET['newsid'])) {
 				if($_GET['subaction'] == 'deletenews') {
-					$query1 = "SELECT * FROM `news_data` WHERE `news_id`={$_GET['newsid']} AND `page_modulecomponentid` = $this->moduleComponentId";
+					$query1 = "SELECT * FROM `news_data` WHERE `news_id`=".escape($_GET['newsid'])." AND `page_modulecomponentid` = $this->moduleComponentId";
 					$result = mysql_query($query1);
 					$row = mysql_fetch_assoc($result);
-					
-					$query = "DELETE FROM `news_data` WHERE `news_id`='{$_GET['newsid']}' AND `page_modulecomponentid`='$this->moduleComponentId'";
+	
+					$query = "DELETE FROM `news_data` WHERE `news_id`=".escape($_GET['newsid'])." AND `page_modulecomponentid`='$this->moduleComponentId'";
 					$result = mysql_query($query);
 					displayinfo('News feed has been successfully deleted.');
 				}
@@ -107,9 +140,10 @@ RSSOUTPUT;
 					$result = mysql_query($query);
 					$row = mysql_fetch_assoc($result);
 					$editForm = <<<EDITFORM
-					 	<form action="./+edit" method="POST">
-							Title of News Item  <input type="text" name="title" size="50" value="{$row['news_title']}"><br /><br />
-							News Description  <br><textarea name="feed" cols="50" rows="10">{$row['news_feed']}</textarea><br />
+						$validateScript
+					 	<form name="AddNews" action="./+edit" method="POST" onsubmit="return validate_empty();">
+							Title of News Item  <input type="text" name="title" id="title" size="50" value="{$row['news_title']}"><br /><br />
+							News Description  <br><textarea name="feed" id="feed" cols="50" rows="10">{$row['news_feed']}</textarea><br />
 							Rank/Importance of Feed  <input type="text" name="rank" size="10" value="{$row['news_rank']}" /><br /><br />
 							Relative link  <input type="text" name="link" size=40 value="{$row['news_link']}" ><br><br>
 							<input type="submit" value="Save Changes" name="btnSaveChanges"/>
@@ -128,23 +162,27 @@ EDITFORM;
 					$news_id = 1;
 					if(!is_null($resultArray[0]))
 						$news_id = $resultArray[0] +1;
-					$query2 = "INSERT INTO `news_data` (`page_modulecomponentid`, `news_id`, `news_title`, `news_feed`, `news_rank`,`news_link`) VALUES('$this->moduleComponentId','$news_id','{$_POST['title']}','{$_POST['feed']}','{$_POST['rank']}','{$_POST['link']}')";
+					$query2 = "INSERT INTO `news_data` (`page_modulecomponentid`, `news_id`, `news_title`, `news_feed`, `news_rank`,`news_link`) VALUES('$this->moduleComponentId','$news_id','".escape($_POST['title'])."','".escape($_POST['feed'])."','".escape($_POST['rank'])."','".escape($_POST['link'])."')";
 		 			$result = mysql_query($query2) or die(mysql_error() . '<br />' . $query2);
 				}
 				else {
-					$addnews='<form action="./+edit&subaction=addnews" method="POST">
-								Title of News Item  <input type="text" name="title" size=50><br><br>
-								News Description  <br><textarea name="feed" cols="50" rows="10"> </textarea><br>
-								Rank/Importance of Feed <input type="text" name="rank" size=10><br><br>' .
-										'Relative link  <input type="text" name="link" size=40><br><br>
-								<input type="submit" name="btnAddNews" value="Submit News Feed">
-								</form>';
+				
+					$addnews=<<<NEWS
+$validateScript
+<form name="AddNews" action="./+edit&subaction=addnews" method="POST" onsubmit="return validate_empty()">
+								Title of News Item  <input type="text" name="title" id="title" size=50 /><br><br>
+								News Description  <br><textarea name="feed" id="feed" cols="50" rows="10"> </textarea><br>
+								Rank/Importance of Feed <input type="text" name="rank" size=10 /><br><br>' .
+										'Relative link  <input type="text" name="link" size=40 /><br><br>
+								<input type="submit" name="btnAddNews" value="Submit News Feed" />
+								</form>
+NEWS;
 					return $addnews;
 				}
 			}
 		}
 		elseif(isset($_POST['btnSaveChanges']) && isset($_POST['newsid'])) {
-			$query = "UPDATE `news_data` SET `news_title`='{$_POST['title']}',`news_feed`='{$_POST['feed']}',`news_rank`='{$_POST['rank']}',`news_link`='{$_POST['link']}' WHERE `news_id`={$_POST['newsid']} AND `page_modulecomponentid`=$this->moduleComponentId";
+			$query = "UPDATE `news_data` SET `news_title`='".escape($_POST['title'])."',`news_feed`='".escape($_POST['feed'])."',`news_rank`='".escape($_POST['rank'])."',`news_link`='".escape($_POST['link'])."' WHERE `news_id`=".escape($_POST['newsid'])." AND `page_modulecomponentid`=$this->moduleComponentId";
 			$result = mysql_query($query);
 			displayinfo("News feed has been successfully updated.");
 		}
@@ -191,7 +229,7 @@ END;
 
 
 	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `news_data` ";
+		$query = "SELECT MAX(`page_modulecomponentid`) as MAX FROM `news_data` ";
 		$result = mysql_query($query) or die(mysql_error() . "news.lib L:73");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
