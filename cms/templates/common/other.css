@@ -46,3 +46,11 @@ div#cms-breadcrumb {
 #content,#sidebarcontent {
 	font-size: small;
 }
+
+/**
+For Gallery
+*/
+div.galleryimagebox {
+border : 1px solid #B7CAF6; float : left; 
+}
+div.pragyangallery{margin:10px;}
