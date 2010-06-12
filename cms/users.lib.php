@@ -38,9 +38,12 @@ USERFORM;
 		{
 			if($i+$j<count($usertablefields))
 			{
+				$checked="";
 				if(isset($_POST['not_first_time']))
 					$checked=isset($_POST[$usertablefields[$i+$j].'_sel'])?"checked":"";
-				else $checked="checked";
+				else if($usertablefields[$i+$j]=="user_name" || $usertablefields[$i+$j]=="user_fullname" || $usertablefields[$i+$j]=="user_email" || $usertablefields[$i+$j]=="user_lastlogin" || $usertablefields[$i+$j]=="user_activated")
+					$checked="checked";
+				
 				$usermgmtform.="<td>{$userfieldprettynames[$i+$j]}</td><td><input type='checkbox' name='{$usertablefields[$i+$j]}_sel' $checked /></td>";
 			}
 		}
@@ -446,7 +449,7 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		
 	}
 	
-	
+	global $urlRequestRoot,$cmsFolder;
 	$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");
 	$userlisttdids=array("user_id","user_name","user_email","user_fullname","user_password","user_regdate","user_lastlogin","user_activated","user_loginmethod");
 	$userfieldvars=array("userId","userName","userEmail","userFullName","userPassword","userRegDate","userLastLogin","userActivated","userLoginMethod");
@@ -458,8 +461,23 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		$userlist.="<input type='hidden' name='editusertype' value='$type' />";
 		$columns+=3;
 	}
-
+	
 	$userlist.=<<<USERLIST
+	<style type="text/css" title="currentStyle">
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+	</style>
+	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() {
+			oTable = $('#userstable').dataTable({
+				"bJQueryUI": true,
+				"sPaginationType": "full_numbers"
+			});
+		} );
+	</script>
 	<script language="javascript">
 	function checkDelete(butt,userDel,userId)
 	{
@@ -470,7 +488,8 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		else return false;
 	}
 	</script>
-	<a name='userlist'></a><table class="userlisttable" border="1">
+	<a name='userlist'></a><table class="userlisttable display" border="1" id='userstable'>
+	<thead>
 	<tr><th colspan="$columns">Users Registered on the Website</th></tr>
 	<tr>
 USERLIST;
@@ -495,7 +514,7 @@ USERLIST;
 	{
 		$userlist.="<th>De/Activate</th><th>Edit User Information</th><th>Delete User</th>";
 	}
-	$userlist.="</tr>";
+	$userlist.="</tr></thead><tbody>";
 	$rowclass="oddrow";
 	$flag=false;
 	$usercount=0;
@@ -525,7 +544,7 @@ USERLIST;
 		$rowclass=$rowclass=="evenrow"?"oddrow":"evenrow";
 		$usercount++;
 	}
-	$userlist.="</table>";
+	$userlist.="</tbody></table>";
 	if($act=="edit") $userlist.="</form>";
 	if($usercount>0)
 		displayinfo("<a href='#userlist'>Click Here to view the $usercount users found.</a>");
