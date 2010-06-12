@@ -19,4 +19,7 @@ div.cms-menuitem:hover {background-color:#D3DFF8; color:#192666;}
 div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
 span.articlecomment_info { font-size : 90%; font-style : italic; }
 
-
+div.galleryimagebox {
+border : 1px solid #B7CAF6; float : left; margin : 5px; padding : 10px; width: 200px;
+}
+span.pragyangallery {margin:10px;}
