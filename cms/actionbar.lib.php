@@ -39,6 +39,7 @@ function getActionbarPage($userId, $pageId) {
 function getActionbarModule($userId, $pageId) {
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE perm_action != 'create' AND page_module = '".getEffectivePageModule($pageId)."'";
 	$action_result = mysql_query($action_query);
+	$actionbarPage = array();
 	while($action_row = mysql_fetch_assoc($action_result))
 		if(getPermissions($userId, $pageId, $action_row['perm_action']))
 			$actionbarPage[$action_row['perm_action']]=$action_row['perm_text'];

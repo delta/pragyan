@@ -175,7 +175,7 @@ MSG;
 			return false;
 		}
 
-		$submitData = trim($_POST[$postVarName]);
+		$submitData = escape(trim($_POST[$postVarName]));
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
 		$textResult = mysql_query($textQuery);
@@ -236,7 +236,7 @@ MSG;
 		elseif(!isset($_POST[$postVarName]) && !$elementIsRequired) {
 			return true;
 		}
-		$submitData = trim($_POST[$postVarName]);
+		$submitData = escape(trim($_POST[$postVarName]));
 
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
@@ -269,7 +269,7 @@ MSG;
 		$textResult = mysql_query($textQuery);
 		if (!$textResult) {	displayerror('E73 : Invalid query: ' . mysql_error()); 	return false; 	}
 
-		$optionNumber = $_POST[$postVarName];
+		$optionNumber = escape($_POST[$postVarName]);
 		$options = explode("|",$elementTypeOptions);
 
 		if(count($options)<($optionNumber+1)){
@@ -344,7 +344,7 @@ MSG;
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
 		$textResult = mysql_query($textQuery);
 		if (!$textResult) {	displayerror('E64 : Invalid query: ' . mysql_error()); 	return false; 	}
-		$optionNumber = $_POST[$postVarName];
+		$optionNumber = escape($_POST[$postVarName]);
 		$options = explode("|",$elementTypeOptions);
 
 		if(count($options)<($optionNumber+1)){
@@ -378,13 +378,13 @@ MSG;
 		if (!$textResult) {	displayerror('E234 : Invalid query: ' . mysql_error()); 	return false; 	}
 
 		if(mysql_num_rows($textResult)>0) {
-			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$_POST[$postVarName]."' ".
+			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".escape($_POST[$postVarName])."' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
 			$textUpdateResult = mysql_query($textUpdateQuery);
 			if (!$textUpdateResult) {	displayerror('E39 : Invalid query: ' . mysql_error()); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
-								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $_POST[$postVarName] . "')";
+								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . escape($_POST[$postVarName]) . "')";
 			$textInsertResult = mysql_query($textInsertQuery);
 			if (!$textInsertResult) {	displayerror('E42 : Invalid query: ' . mysql_error()); 	return false; 	}
 		}
@@ -441,20 +441,20 @@ MSG;
 			return false;
 		}
 		if(!$elementIsRequired && $_POST[$postVarName]=="") return true;
-		if(!verifyDate($_POST[$postVarName])) return false;
+		if(!verifyDate(escape($_POST[$postVarName]))) return false;
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 							"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
 		$textResult = mysql_query($textQuery);
 		if (!$textResult) {	displayerror('E134 : Invalid query: ' . mysql_error()); 	return false; 	}
 
 		if(mysql_num_rows($textResult)>0) {
-			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$_POST[$postVarName]."' ".
+			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".escape($_POST[$postVarName])."' ".
 									"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
 			$textUpdateResult = mysql_query($textUpdateQuery);
 			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . mysql_error()); 	return false; 	}
 		} else {
 				$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
-									"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $_POST[$postVarName] . "')";
+									"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . escape($_POST[$postVarName]) . "')";
 				$textInsertResult = mysql_query($textInsertQuery);
 				if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . mysql_error()); 	return false; 	}
 		}
@@ -468,7 +468,7 @@ MSG;
 			return false;
 		}
 		if(!$elementIsRequired && $_POST[$postVarName]=="") return true;
-		$strdatetime=$_POST[$postVarName];
+		$strdatetime=escape($_POST[$postVarName]);
 		$pos=strpos($strdatetime," ");
 		$date=substr($strdatetime,0,($pos));
 		$time=substr($strdatetime,$pos+1,strlen($strdatetime));
@@ -482,13 +482,13 @@ MSG;
 		if (!$textResult) {	displayerror('E234 : Invalid query: ' . mysql_error()); 	return false; 	}
 
 		if(mysql_num_rows($textResult)>0) {
-			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$_POST[$postVarName]."' ".
+			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".escape($_POST[$postVarName])."' ".
 									"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
 			$textUpdateResult = mysql_query($textUpdateQuery);
 			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . mysql_error()); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
-								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $_POST[$postVarName] . "')";
+								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . escape($_POST[$postVarName]) . "')";
 			$textInsertResult = mysql_query($textInsertQuery);
 			if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . mysql_error()); 	return false; 	}
 		}

@@ -79,11 +79,11 @@ require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
 		if(getPermissions($userId,$pageId,"editregistrants")||getPermissions($userId,$pageId,"viewregistrants")) {
 			return true;
 		}
-		$uploadedQuery = "SELECT d.form_elementdata
+		$uploadedQuery = "SELECT `d.form_elementdata`
 FROM `form_elementdata` d
-	JOIN `form_elementdesc` e ON (d.page_modulecomponentid = e.page_modulecomponentid
+	JOIN `form_elementdesc` e ON (`d.page_modulecomponentid` = `e.page_modulecomponentid`
 		AND d.form_elementid = e.form_elementid )
-WHERE d.page_modulecomponentid = $moduleComponentId AND d.user_id = $userId AND d.form_elementdata = \"$fileName\"";
+WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId AND `d.form_elementdata` = \"$fileName\"";
 		$uploadedResult = mysql_query($uploadedQuery) or displayerror(mysql_error() . "form.lib L:181");
 		if(mysql_num_rows($uploadedResult)>0 && getPermissions($userId, $pageId, "view"))
 			return true;
@@ -200,18 +200,18 @@ WHERE d.page_modulecomponentid = $moduleComponentId AND d.user_id = $userId AND 
 			isset($_POST['txtElementDesc']) && isset($_POST['selElementType']) &&
 			isset($_POST['txtToolTip']) && isset($_POST['txtElementName'])
 			)
-			submitEditFormElementDescData($this->moduleComponentId,$_POST['elementid']);
+			submitEditFormElementDescData($this->moduleComponentId,escape($_POST['elementid']));
 		if(
 			isset($_GET['subaction']) && ($_GET['subaction']=='editformelement')&&
 			isset($_GET['elementid']) && ctype_digit($_GET['elementid'])
 			)
-			return generateEditFormElementDescBody($this->moduleComponentId,$_GET['elementid']);
+			return generateEditFormElementDescBody($this->moduleComponentId,escape($_GET['elementid']));
 		if(isset($_POST['addformelement_descsubmit']))
 			addDefaultFormElement($this->moduleComponentId);
 		if(isset($_GET['subaction'])&&($_GET['subaction']=='deleteformelement')&&isset($_GET['elementid']))
-			deleteFormElement($this->moduleComponentId,$_GET['elementid']);
+			deleteFormElement($this->moduleComponentId,escape($_GET['elementid']));
 		if(isset($_GET['subaction'])&&(($_GET['subaction']=='moveUp')||($_GET['subaction']=='moveDown'))&&isset($_GET['elementid']))
-			moveFormElement($this->moduleComponentId,$_GET['subaction'],$_GET['elementid']);
+			moveFormElement($this->moduleComponentId,escape($_GET['subaction']),escape($_GET['elementid']));
 
 		return generateFormDescBody($this->moduleComponentId).generateFormElementDescBody($this->moduleComponentId);
 	}
@@ -222,9 +222,9 @@ WHERE d.page_modulecomponentid = $moduleComponentId AND d.user_id = $userId AND 
 		$sortField = 'registrationdate'; /// Default Values
 		$sortOrder = 'asc';
 		if(isset($_GET['sortfield']))
-			$sortField = $_GET['sortfield'];
+			$sortField = escape($_GET['sortfield']);
 		if(isset($_GET['sortorder']) && ($_GET['sortorder'] == 'asc' || $_GET['sortorder'] == 'desc'))
-			$sortOrder = $_GET['sortorder'];
+			$sortOrder = escape($_GET['sortorder']);
 		return generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder);
 	}
 
@@ -250,36 +250,36 @@ WHERE d.page_modulecomponentid = $moduleComponentId AND d.user_id = $userId AND 
 		if(isset($_GET['subaction']) && isset($_GET['useremail'])) {
 			if($_GET['subaction'] == 'edit') {
 				if(isset($_POST['submitreg_form_' . $this->moduleComponentId])) {
-					submitRegistrationForm($this->moduleComponentId, getUserIdFromEmail($_GET['useremail']), true, true);
+					submitRegistrationForm($this->moduleComponentId, getUserIdFromEmail(escape($_GET['useremail'])), true, true);
 				}
 
 				return (
 						'<a href="./+editregistrants">&laquo; Back</a><br />' .
-						generateRegistrationForm($this->moduleComponentId, $this->userId, './+editregistrants&subaction=edit&useremail=' . $_GET['useremail'], true) .
+						generateRegistrationForm($this->moduleComponentId, $this->userId, './+editregistrants&subaction=edit&useremail=' . escape($_GET['useremail']), true) .
 						'<br /><a href="./+editregistrants">&laquo; Back</a><br />'
 				);
 			}
 			elseif($_GET['subaction'] == 'delete') {
 				if($_GET['useremail']=="Anonymous")
-					$userIdTemp = $_GET['registrantid'];
+					$userIdTemp = escape($_GET['registrantid']);
 				else
-					$userIdTemp = getUserIdFromEmail($_GET['useremail']);
+					$userIdTemp = getUserIdFromEmail(escape($_GET['useremail']));
 				if(!unregisterUser($this->moduleComponentId, $userIdTemp))
-					displayerror('Error! User with the given e-mail ' . $_GET['useremail'] . ' was not found.');
+					displayerror('Error! User with the given e-mail ' . escape($_GET['useremail']) . ' was not found.');
 			}
 		}
 		elseif(isset($_GET['subaction']) && $_GET['subaction'] == 'getsuggestions' && isset($_GET['forwhat'])) {
-			echo $this->getUnregisteredUsersFromPattern($_GET['forwhat']);
+			echo $this->getUnregisteredUsersFromPattern(escape($_GET['forwhat']));
 			disconnect();
 			exit();
 		}
 		elseif(isset($_POST['btnAddUserToForm']) && isset($_POST['useremail'])) {
 			$hyphenPos = strpos($_POST['useremail'], '-');
 			if($hyphenPos >= 0) {
-				$userEmail = trim(substr($_POST['useremail'], 0, $hyphenPos - 1));
+				$userEmail = escape(trim(substr($_POST['useremail'], 0, $hyphenPos - 1)));
 			}
 			else {
-				$userEmail = $_POST['useremail'];
+				$userEmail = escape($_POST['useremail']);
 			}
 
 			$targetUserId = getUserIdFromEmail($userEmail);
@@ -307,16 +307,16 @@ WHERE d.page_modulecomponentid = $moduleComponentId AND d.user_id = $userId AND 
 		$sortField = 'registrationdate'; /// Default Values
 		$sortOrder = 'asc';
 		if(isset($_GET['sortfield']))
-			$sortField = $_GET['sortfield'];
+			$sortField = escape($_GET['sortfield']);
 		if(isset($_GET['sortorder']) && ($_GET['sortorder'] == 'asc' || $_GET['sortorder'] == 'desc'))
-			$sortOrder = $_GET['sortorder'];
+			$sortOrder = escape($_GET['sortorder']);
 
 		return generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder, 'editregistrants');
 	}
 	
 	public function actionReports() {
 		 global $userId,$urlRequestRoot;
-		 $query = "SELECT page_id, page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_module='form'";
+		 $query = "SELECT `page_id`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module`='form'";
 		 $resource = mysql_query($query);
 		 $report=<<<CSS
 		  <style type="text/css">
@@ -344,7 +344,7 @@ CSS;
 				$formTitle = getPageTitle($pageId);
 				$formInfo = $parentTitle.'_'.$formTitle;
 				$formPath = getPagePath($pageId);
-				$query = "SELECT count(distinct(user_id)) FROM form_regdata WHERE page_modulecomponentid=$result[page_modulecomponentid]";
+				$query = "SELECT count(distinct(`user_id`)) FROM `form_regdata` WHERE `page_modulecomponentid`=$result[page_modulecomponentid]";
 				$resource2 = mysql_query($query) ;//or die(mysql_error());
 				$result2 = mysql_fetch_row($resource2);
 				
@@ -373,7 +373,7 @@ CSS;
 		else {
 			$registeredUserArray = '0';
 		}
-		$suggestionsQuery = "SELECT IF(user_email LIKE \"$pattern%\", 1, " .
+		$suggestionsQuery = "SELECT IF(`user_email` LIKE \"$pattern%\", 1, " .
 			"IF(`user_fullname` LIKE \"$pattern%\", 2, " .
 			"IF(`user_fullname` LIKE \"% $pattern%\", 3, " .
 			"IF(`user_email` LIKE \"%$pattern%\", 4, " .
@@ -428,7 +428,7 @@ CSS;
 
 	public function copyModule($moduleComponentId){
 		// Select the new module component id
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `form_desc` ";
+		$query = "SELECT MAX(`page_modulecomponentid`) as MAX FROM `form_desc` ";
 		$result = mysql_query($query) or displayerror(mysql_error() . "form.lib L:181");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;

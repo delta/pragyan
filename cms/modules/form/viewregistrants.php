@@ -114,7 +114,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 
 	function getColumnList($moduleCompId, $showUserEmail, $showUserFullName, $showRegistrationDate, $showLastUpdateDate, $showUserProfileData) {
 		$columns = array();
-
+		
 		if($showUserEmail)
 			$columns['useremail'] = 'User Email';
 		if($showUserFullName)
@@ -137,6 +137,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 
 		while($columnRow = mysql_fetch_assoc($columnResult)) {
 			$columns['elementid_' . $columnRow['form_elementid']] = $columnRow['form_elementname'];
+			
 		}
 
 		return $columns;
@@ -228,10 +229,10 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	$columnList = getColumnList($moduleComponentId, $showUserEmail, $showUserFullName, $showRegistrationDate, $showLastUpdateDate, $showUserProfileData);
 	$columnNames = array();
 
-	$normalImage = "<img alt=\"Sort by this field\" height=\"12\" width=\"12\" style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/view-refresh.png\" />";
+	/*$normalImage = "<img alt=\"Sort by this field\" height=\"12\" width=\"12\" style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/view-refresh.png\" />";
 	$orderedImage = "<img alt=\"Sort by this field\" height=\"12\" width=\"12\" style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/go-" . ($sortOrder == 'asc' ? 'up' : 'down') . ".png\" />";
 
-	$tableCaptions = "<tr>\n<th nowrap=\"nowrap\" class=\"sortable-numeric\">S. No.</th>\n";
+	$tableCaptions = "<thead><tr>\n<th nowrap=\"nowrap\" class=\"sortable-numeric\">S. No.</th>\n";
 	if($showEditButtons) {
 		$tableCaptions .= '<th nowrap="nowrap">Edit</th><th nowrap="nowrap">Delete</th>';
 	}
@@ -239,15 +240,43 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 		$tableCaptions .= "<th nowrap=\"nowrap\" class=\"sortable-text\">$columnTitle</th>\n";
 		$columnNames[] = $columnName;
 	}
-	$tableCaptions .= "</tr>\n";
-
+	$tableCaptions .= "</tr></thead>\n";*/
+	$tableCaptions = "<thead><tr>\n<th>S. No.</th>\n";
+	$toggleColumns = "<fieldset><legend>Select Columns</legend><table><tr>";
+	$tableJqueryStuff = "";
+	$c=0;
+	if($showEditButtons) {
+		$tableCaptions .= '<th>Actions</th>';
+		$tableJqueryStuff = "null,";
+		$c++;
+	}
+	foreach($columnList as $columnName => $columnTitle) {
+		$tableCaptions .= "<th>$columnTitle</th>\n";
+		$columnNames[] = $columnName;
+		
+		$c=$c+1;
+		$checked="checked";
+		if($columnName=="useremail" || $columnName=="registrationdate" || $columnName=="lastupdated")
+		{
+			$tableJqueryStuff.="/* $columnTitle */ { \"bVisible\": false },";
+			$checked="";
+		}
+		else $tableJqueryStuff.="null,";
+		if($c-2==($showEditButtons?3:2))
+		 $toggleColumns.="</tr><tr>";
+		$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide($c);' $checked />$columnTitle <br/></td>";
+	}
+	
+	$tableCaptions .= "</tr></thead>\n";
+	$toggleColumns .= "</tr></table></fieldset>";
+	
 	$userIds = getDistinctRegistrants($moduleComponentId, $sortField, $sortOrder);
 	$userCount = count($userIds);
 
 	$editImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/apps/accessories-text-editor.png\" alt=\"Edit\" />";
 	$deleteImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Delete\" />";
 
-	$tableBody = '';
+	$tableBody = '<tbody>';
 	for($i = 0; $i < $userCount; $i++) {
 		$tableBody .= '<tr><td>'.($i + 1).'</td>';
 		if($showEditButtons) {
@@ -255,19 +284,46 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 				$tableBody .= '<td align="center">&nbsp;</td>';
 			}
 			else {
-				$tableBody .= '<td align="center"><a href="./+editregistrants&subaction=edit&useremail='.getUserEmail($userIds[$i]).'" />' . $editImage . '</a></td>';
+				$tableBody .= '<td align="center"><a title="Edit" href="./+editregistrants&subaction=edit&useremail='.getUserEmail($userIds[$i]).'" />' . $editImage . '</a>';
 			}
 			if($userIds[$i] <= 0) {
-				$tableBody .= '<td align="center"><a style="cursor:pointer" onclick="return gotopage(\'./+editregistrants&subaction=delete&&useremail='.getUserEmail($userIds[$i]).'&registrantid='.$userIds[$i].'\',\''.getUserEmail($userIds[$i]).'\')" />' . $deleteImage . '</a></td>';
+				$tableBody .= '<a style="cursor:pointer" title="Delete" onclick="return gotopage(\'./+editregistrants&subaction=delete&&useremail='.getUserEmail($userIds[$i]).'&registrantid='.$userIds[$i].'\',\''.getUserEmail($userIds[$i]).'\')" />' . $deleteImage . '</a></td>';
 			}
 			else {
-				$tableBody .= '<td align="center"><a style="cursor:pointer" onclick="return gotopage(\'./+editregistrants&subaction=delete&useremail='.getUserEmail($userIds[$i]).'\',\''.getUserEmail($userIds[$i]).'\')" />' . $deleteImage . '</a></td>';
+				$tableBody .= '<a style="cursor:pointer" title="Delete" onclick="return gotopage(\'./+editregistrants&subaction=delete&useremail='.getUserEmail($userIds[$i]).'\',\''.getUserEmail($userIds[$i]).'\')" />' . $deleteImage . '</a></td>';
 			}
 		}
 		$tableBody .= '<td>' . join(generateFormDataRow($moduleComponentId, $userIds[$i], $columnNames, $showUserProfileData), '</td><td>') . "</td></tr>\n";
 	}
-
+	$tableBody.="</tbody>";
+	
+	
 	$javascriptBody = <<<JAVASCRIPTBODY
+		<style type="text/css" title="currentStyle">
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
+		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				oTable = $('#registrantstable').dataTable({
+					"bJQueryUI": true,
+					"sPaginationType": "full_numbers",
+					"aoColumns": [ 
+							/* S. No. */ null,
+							$tableJqueryStuff
+						]
+				});
+			} );
+			function fnShowHide( iCol )
+			{
+				var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+				oTable.fnSetColumnVis( iCol, bVis ? false : true );
+			}
+
+		</script>
 		<link rel="stylesheet" type="text/css" href="$urlRequestRoot/$cmsFolder/$moduleFolder/form/tablesort/sortstyles.css" />
 		<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/form/tablesort/tablesort.js"></script>
 		<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/form/tablesort/paginate.js"></script>
@@ -278,18 +334,18 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 			}
 	    </script>
 JAVASCRIPTBODY;
-
+	$imagesFolder=$urlRequestRoot."/".$cmsFolder."/templates/common/images";
 	$editRegistrantsView = '<br />';
 	if($action == 'editregistrants') {
 		$editRegistrantsView .= <<<EDITREGISTRANTSVIEW
-			<form name="addusertoformform" method="POST" action="./+editregistrants">
+			<form name="addusertoformform" method="POST" action="./+editregistrants" style="float:left">
 				<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts/ajaxsuggestionbox.js">
 				</script>
 
 				<input type="text" name="useremail" id="userEmail" autocomplete="off" style="width: 256px" />
 				<div id="suggestionsBox" class="suggestionbox"></div>
 
-				<br />
+				
 				<input type="submit" name="btnAddUserToForm" value="Add User to Form" />
 				<script language="javascript" type="text/javascript">
 				<!--
@@ -301,7 +357,8 @@ JAVASCRIPTBODY;
 			<br /><br />
 EDITREGISTRANTSVIEW;
 	}
-	$editRegistrantsView .= $javascriptBody.'<table border="1" id="registrantstable" class="paginate-20 max-pages-5 no-arrow rowstyle-alt colstyle-alt sortable">' . $tableCaptions . $tableBody . '</table><br />';
+	//$editRegistrantsView .= $javascriptBody.'<table border="1" id="registrantstable" class="paginate-20 max-pages-5 no-arrow rowstyle-alt colstyle-alt sortable display">' . $tableCaptions . $tableBody . '</table><br />';
+	$editRegistrantsView .= $javascriptBody.$toggleColumns.'<table border="1" id="registrantstable" class="display">' . $tableCaptions . $tableBody . '</table><br />';
 	if($action == 'editregistrants') {
 		$editRegistrantsView .= '<form name="emptyregistrants" method="POST" action="./+editregistrants" onsubmit="return confirm(\'Are you sure you wish to remove all registrants from this form? This will also remove the users from any groups associated with this form.\')">' .
 			'<input type="submit" name="btnEmptyRegistrants" value="Delete All Registrants" title="Deletes all registrations to this form" />' .

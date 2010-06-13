@@ -24,7 +24,7 @@
 			$updates = array();
 
 			if(isset($_POST['txtFormHeading'])) {
-				$updates[] = "`form_heading` = '{$_POST['txtFormHeading']}'";
+				$updates[] = "`form_heading` = '".escape($_POST['txtFormHeading'])."'";
 			}
 			if(isset($_POST['optLoginRequired'])) {
 				if($associatedGroupId > 0) {
@@ -38,10 +38,10 @@
 				}
 			}
 			if(isset($_POST['txtHeaderText'])) {
-				$updates[] = "`form_headertext` = '{$_POST['txtHeaderText']}'";
+				$updates[] = "`form_headertext` = '".escape($_POST['txtHeaderText'])."'";
 			}
 			if(isset($_POST['txtFormExpiry'])) {
-				$updates[] = "`form_expirydatetime` = '{$_POST['txtFormExpiry']}'";
+				$updates[] = "`form_expirydatetime` = '".escape($_POST['txtFormExpiry'])."'";
 			}
 			if(isset($_POST['optSendConfirmation'])) {
 				$updates[] = '`form_sendconfirmation` = ' . ($_POST['optSendConfirmation'] == 'yes' ? 1 : 0);
@@ -79,7 +79,7 @@
 				$updates[] = '`form_showlastupdatedate` = ' . ($_POST['optLastUpdate'] == 'yes' ? 1 : 0);
 			}
 			if(isset($_POST['txtFooterText'])) {
-				$updates[] = "`form_footertext` = '{$_POST['txtFooterText']}'";
+				$updates[] = "`form_footertext` = '".escape($_POST['txtFooterText'])."'";
 			}
 			if(count($updates) > 0) {
 				$updateQuery = 'UPDATE `form_desc` SET ' . join($updates, ', ') .
@@ -246,7 +246,7 @@
 				</tr>
 				</table>
 			<input type="submit" name="submittedform_desc" value="Update Form" />
-		</form>
+		</form><br/>
 BODY;
 		return $formDescBody;
 	}
@@ -273,21 +273,15 @@ BODY;
 		<form id="formentries" action="./+$action" method="POST">
 			<table cellpadding="1" cellspacing="1" border="1">
 				<tr>
-					<th>Up</th>
-					<th>Down</th>
-					<th>Edit</th>
-					<th>Delete</th>
+					<th>Actions</th>
+					
 					<th>Name</th>
 					<th>Description</th>
 					<th>Type</th>
-					<th>Size</th>
 					<th>Tooltip</th>
 					<th title="Only in the case of radio, check or select element type">Extra options*</th>
-					<th>Default Value</th>
-					<th title="Only in the case that the entered element should be a number">Check Number*</th>
-					<th title="Can be used to enter the minimum date or number">Min Value*</th>
-					<th title="Can be used to enter the maximum date or number">Max Value*</th>
-					<th>Required?</th>
+					<th>Other Information</th>
+				
 				</tr>
 					$elementData
 				</tr>
