@@ -97,29 +97,49 @@
 				unset($this->elementId);
 		}
 		else {
-			$this->elementId = $_POST['elementid'];
+			$this->elementId = escape($_POST['elementid']);
 		}
-
-		$this->elementName = $_POST['txtElementName'];
-		$this->elementDescription = $_POST['txtElementDesc'];
-		$this->elementType = $_POST['selElementType'];
-		$this->elementSize = $_POST['txtElementSize'];
-		$this->typeOptions = isset($_POST['txtElementTypeOptions']) ? $_POST['txtElementTypeOptions'] : '';
-		$this->defaultValue = $_POST['txtDefaultValue'];
-		$this->checkInteger = $_POST['optCheckNumber'] == 'yes' ? true : false;
-		$this->moreThan = isset($_POST['txtMinValue']) ? $_POST['txtMinValue'] : '';
-		$this->lessThan = isset($_POST['txtMaxValue']) ? $_POST['txtMaxValue'] : '';
-		$this->toolTipText = $_POST['txtToolTip'];
-		$this->isRequired = $_POST['optRequired'] == 'yes' ? true : false;
+		
+		$this->elementName = escape($_POST['txtElementName']);
+		$this->elementDescription = escape($_POST['txtElementDesc']);
+		$this->elementType = escape($_POST['selElementType']);
+		$this->elementSize = escape($_POST['txtElementSize']);
+		$this->typeOptions = isset($_POST['txtElementTypeOptions']) ? escape($_POST['txtElementTypeOptions']) : '';
+		$this->defaultValue = escape($_POST['txtDefaultValue']);
+		$this->checkInteger = (isset($_POST['optCheckNumber']) && $_POST['optCheckNumber'] == 'yes') ? true : false;
+		$this->moreThan = isset($_POST['txtMinValue']) ? escape($_POST['txtMinValue']) : '';
+		$this->lessThan = isset($_POST['txtMaxValue']) ? escape($_POST['txtMaxValue']) : '';
+		$this->toolTipText = escape($_POST['txtToolTip']);
+		$this->isRequired = escape($_POST['optRequired']) == 'yes' ? true : false;
 	}
 
+	
+				
 	/**
 	 * Returns element properies as a row in an HTML table
 	 */
 	public function toHtmlTableRow($imagePath, $action='editform') {
-		$checkNumber = $this->checkInteger == true ? 'Yes' : 'No';
-		$required = $this->isRequired == true ? 'Yes' : 'No';
-
+		$checkNumber = $this->checkInteger == true ? 'Integer Only' : '';
+		$required = $this->isRequired == true ? 'Required' : 'Not Required';
+		$requiredClass = $this->isRequired == true ? 'formfieldred' : 'formfieldgreen';
+	
+	
+		$otherInfo="<div class=\"formfieldextrainfo $requiredClass\">$required</div>";
+		if($this->elementSize!=0)
+			$otherInfo.="<div class=\"formfieldextrainfo formfieldinfo\"><span>Size</span><br/>{$this->elementSize}</div>";
+		if($this->defaultValue!="")
+			$otherInfo.="<div class=\"formfieldextrainfo formfieldinfo\"><span>Default</span><br/>{$this->defaultValue}</div>";
+		if($checkNumber!="")
+			$otherInfo.="<div class=\"formfieldextrainfo formfieldred\" title=\"Only in the case that the entered element should be a number\">$checkNumber</div>";
+		if($this->checkInteger==true || $this->elementType=="date" || $this->elementType=="datetime")
+			$otherInfo.="<div class=\"formfieldextrainfo formfieldinfo\" title=\"Minimum and Maximum value of date or number\"><span>Range</span><br/>{$this->moreThan}-{$this->lessThan}</div>";
+		else if($this->elementType=="file")
+			$otherInfo.="<div class=\"formfieldextrainfo formfieldred\" title=\"Maximum value of uploaded file\"><span>Upload Limit</span><br/>{$this->lessThan}</div>";
+		
+	
+	
+		
+		
 		$rowString = <<<ROWSTRING
 		<script language="javascript">
 			function gotopage(pagepath) {
@@ -130,38 +150,32 @@
 		<tr>
 			<td>
 				<a href="./+$action&subaction=moveUp&elementid={$this->elementId}">
-					<img src="$imagePath/common/icons/16x16/actions/go-up.png" alt="Move Up"/>
+					<img src="$imagePath/common/icons/16x16/actions/go-up.png" alt="Move Up" title="Move Up"/>
 				</a>
-			</td>
-			<td>
+			
 				<a href="./+$action&subaction=moveDown&elementid={$this->elementId}">
-					<img src="$imagePath/common/icons/16x16/actions/go-down.png" alt="Move Down" />
+					<img src="$imagePath/common/icons/16x16/actions/go-down.png" alt="Move Down" title="Move Down"/>
 				</a>
-			</td>
-			<td>
+			
 				<a href="./+$action&subaction=editformelement&elementid={$this->elementId}">
-					<img src="$imagePath/common/icons/16x16/apps/accessories-text-editor.png" alt="Edit" />
+					<img src="$imagePath/common/icons/16x16/apps/accessories-text-editor.png" alt="Edit" title="Edit" />
 				</a>
-			</td>
-			<td>
+			
 				<a style="cursor:pointer" onclick="return gotopage('./+$action&subaction=deleteformelement&elementid={$this->elementId}')">
-					<img src="$imagePath/common/icons/16x16/actions/edit-delete.png" alt="Delete" />
+					<img src="$imagePath/common/icons/16x16/actions/edit-delete.png" alt="Delete" title="Delete" />
 					</a>
 				</td>
 				<td>{$this->elementName}</td>
 				<td>{$this->elementDescription}</td>
 				<td>{$this->elementType}</td>
-				<td>{$this->elementSize}</td>
 				<td>{$this->toolTipText}</td>
 				<td>{$this->typeOptions}</td>
-				<td>{$this->defaultValue}</td>
-				<td>$checkNumber</td>
-				<td>{$this->moreThan}</td>
-				<td>{$this->lessThan}</td>
-				<td>$required</td>
+				<td>
+				$otherInfo
+				</td>
 			</tr>
 ROWSTRING;
-
+	
 			return $rowString;
 		}
 
@@ -287,7 +301,7 @@ ROWSTRING;
 					<td nowrap="nowrap">Name of the variable:</td><td><input type="text" name="txtElementName" value="{$this->elementName}" /></td>
 				</tr>
 				<tr>
-					<td>Text displayed before this field:</td><td><textarea name="txtElementDesc" rows="5" cols="50">{$this->elementDescription}</textarea></td>
+					<td>Text displayed before this field:</td><td><textarea style="width:98%;" name="txtElementDesc" rows="5" cols="50">{$this->elementDescription}</textarea></td>
 				</tr>
 				<tr>
 					<td>Element Type:</td>
@@ -331,7 +345,7 @@ ROWSTRING;
 
 				<tr>
 					<td>Tooltip Text:</td>
-					<td><textarea name="txtToolTip" rows="5" cols="50">{$this->toolTipText}</textarea></td>
+					<td><textarea style="width:98%;" name="txtToolTip" rows="5" cols="50">{$this->toolTipText}</textarea></td>
 				</tr>
 
 				<tr>

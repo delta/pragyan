@@ -22,12 +22,12 @@
 	 */
 	function generateRegistrationForm($moduleCompId,$userId,$action="", $disableCaptcha = false) {
 		if($action != '')
-			$userId = getUserIdFromEmail($_GET['useremail']);
+			$userId = getUserIdFromEmail(escape($_GET['useremail']));
 		else
 			$action = './+view';
 
 		if(!isset($userId)) {
-			displayerror('Could not load information for user with e-mail address ' . $_GET['useremail']);
+			displayerror('Could not load information for user with e-mail address ' . safe_html(escape($_GET['useremail'])));
 			return '';
 		}
 
