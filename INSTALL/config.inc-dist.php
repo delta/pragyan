@@ -131,4 +131,25 @@ ini_set('session.save_path', \$sessdir);
 ?>
 CONFIGFILETEXT;
 
+$searchConfigFileText =<<<SEARCHCONFIGFILETEXT
+<?php
+	\$database="$MYSQL_DATABASE";
+	\$mysql_user = "$MYSQL_USERNAME";
+	\$mysql_password = "$MYSQL_PASSWORD"; 
+	\$mysql_host = "$MYSQL_SERVER";
+	\$mysql_table_prefix = "";
+
+
+
+	\$success = mysql_pconnect (\$mysql_host, \$mysql_user, \$mysql_password);
+	if (!\$success)
+		die ("<b>Cannot connect to database, check if username, password and host are correct.</b>");
+    \$success = mysql_select_db (\$database);
+	if (!\$success) {
+		print "<b>Cannot choose database, check if database name is correct.";
+		die();
+	}
+?>
+SEARCHCONFIGFILETEXT;
+
 ?>
