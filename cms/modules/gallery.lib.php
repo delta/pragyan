@@ -158,6 +158,8 @@ GALFORM;
 			for ($i = 0; $i < count($fileArray); $i++) {
 				$galleryFilename = $fileArray[$i]['upload_filename'];
 				$galleryComment = $fileArray[$i]['gallery_filecomment'];
+				$galleryComment = $galleryComment!=""?$galleryComment:"< No Comments >";
+				
 				$content2 .= "<div class='galleryimagebox'><form name=\"edit\" method=\"POST\" action=\"./+edit\">";
 				$content2 .=<<<IMGFORM
 				<span style="float:left">

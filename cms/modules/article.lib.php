@@ -345,8 +345,8 @@ Ck;
 					    </script><br />
 					    $top
 					    <fieldset>
-					        <legend><a name="files">Files :</a></legend>
-							Uploaded Files : <br />
+					        <legend><a name="files">Uploaded Files</a></legend>
+							
 Ck1;
 		$CkFooter .= getUploadedFilePreviewDeleteForm($this->moduleComponentId,"article",'./+edit');
 		$CkFooter .= '<br />Upload files : <br />'.getFileUploadForm($this->moduleComponentId,"article",'./+edit',UPLOAD_SIZE_LIMIT,5).'</fieldset>';
@@ -402,7 +402,11 @@ Ck1;
 		$query = "DELETE FROM `article_content` WHERE `page_modulecomponentid`=$moduleComponentId";
 		$result = mysql_query($query);
 		if ((mysql_affected_rows()) >= 1)
+		{
+			$query = "DELETE FROM `article_comments` WHERE `page_modulecomponentid`=$moduleComponentId";
+			$result = mysql_query($query);
 			return true;
+		}
 		else
 			return false;
 

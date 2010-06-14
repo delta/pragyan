@@ -291,7 +291,8 @@ function getUploadedFilePreviewDeleteForm($moduleComponentId, $moduleName, $dele
 		</tr>
 UPLOADEDFILESSTRING;
 	}
-
+	global $urlRequestRoot;
+	global $cmsFolder;
 	if(count($uploadedFiles)>0) {
 		$uploadedFilesString =<<<UPLOADEDFILESSTRING
 	<form action="$deleteFormAction" method="POST" name="deleteFile">
@@ -310,42 +311,66 @@ UPLOADEDFILESSTRING;
 				else
 					return false;
 			}
+			
 	    </script>
+	    	<style type="text/css" title="currentStyle">
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		</style>
+		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
+		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				oTable = $('#filestable').dataTable({
+					"bJQueryUI": true,
+					"sPaginationType": "full_numbers"
+				});
+			} );
+		</script>
 		<table border="1" width="100%">
+				<tr>
+					
+
+					<td  height="100" width="100%" style="overflow:scroll">
+					<center>Preview (only for images)</center>
+					<iframe name="previewIframe_$uploadedFormNumber" width="100%" style="min-height:200px" ></iframe>
+					</td>
+					
+				</tr>
 			<tr>
-				<td width="40%">
+				<td>
 					<b>Click</b> for preview
 				</td>
-				<td>
-					<center>Preview (only for images)</center>
-				</td>
+				
 			</tr>
 			<tr>
 				<td>
-					<table border="1" width="100%">
+					<table class="display" id="filestable" border="1" width="100%">
+						<thead>
 						<tr>
 							<th>File</th>
 							<th>Uploaded By</th>
 							<th>Upload Time</th>
 							<th>Delete</th>
 						</tr>
+						</thead>
+						<tbody>
 						$uploadedFilesString
+						</tbody>
 					</table>
 
 				</td>
 
-				<td  height="100" width="100%" style="overflow:scroll">
-					<iframe name="previewIframe_$uploadedFormNumber" width="100%" style="min-height:280px" ></iframe>
-				</td>
+				
 			</tr>
 			<tr>
 				<td align="right">Path for file (move mouse over name):
-				</td>
-				<td>
+				
 					<input type="text" style="width:97%" readonly="readonly" id="preview_uploadedfile_$uploadedFormNumber" value="Copy the path from here" />
-						</td>
-					</tr>
-				</table>
+				</td>
+			</tr>
+			</table>
 				<input type="hidden" name="file_deleted" value="form_$uploadedFormNumber">
 			</form>
 UPLOADEDFILESSTRING;
