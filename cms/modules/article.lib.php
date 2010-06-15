@@ -173,6 +173,16 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			$result = mysql_query($query);
 			if(mysql_affected_rows() < 1)
 				displayerror("Unable to update the article");
+			else {
+				
+				/* Index the page by sphider */
+				$serveruri=$_SERVER['REQUEST_URI'];
+				$uri=substr($serveruri,0,stripos($serveruri,"+edit"));
+				$page = "http://" . $_SERVER['HTTP_HOST'] . $uri;
+				global $cmsFolder;
+				require_once("$cmsFolder/modules/search/admin/spider.php");
+				index_url($page, 0, 0, '', 0, 0, 1);
+			}
 			return $this->actionView();
 		}
 		$fulleditpage = $this->getCkBody();
@@ -405,17 +415,46 @@ Ck1;
 		{
 			$query = "DELETE FROM `article_comments` WHERE `page_modulecomponentid`=$moduleComponentId";
 			$result = mysql_query($query);
-			return true;
+			
 		}
 		else
 			return false;
+		
+		/* Remove the indexing from sphider // Abhishek */
+		$pageId=getPageIdFromModuleComponentId("article",$moduleComponentId);
+		$path=getPagePath($pageId);
+		global $urlRequestRoot;
+		$delurl = "http://".$_SERVER['HTTP_HOST'].$urlRequestRoot."/home".$path;
+		$query="SELECT link_id FROM `links` WHERE url='$delurl'";
+		
+		$result=mysql_query($query);
+		if(mysql_num_rows($result)==0) return true; //Nothing to delete 
+		$delids="";
+		while($row=mysql_fetch_row($result))
+			$delids.=$row[0].",";
+		
+		$delids=rtrim($delids,",");
+		
+		$query="DELETE FROM `links` WHERE url='$delurl'";
+		
+		mysql_query($query);
+		for ($i=0;$i<=15; $i++) 
+		{
+			$char = dechex($i);
+			$query="DELETE FROM `link_keyword$char` WHERE link_id IN ($delids)";
+			
+			mysql_query($query) or die(mysql_error()." article.lib.php L:441");
+			
+		}
+		return true;
+		
 
 	}
 	public function copyModule($moduleComponentId) {
 		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`=$moduleComponentId";
 		$result = mysql_query($query);
 		$content = mysql_fetch_assoc($result);
-		//['article_content']
+		
 		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `article_content` ";
 		$result = mysql_query($query) or displayerror(mysql_error() . "article.lib L:98");
 		$row = mysql_fetch_assoc($result);

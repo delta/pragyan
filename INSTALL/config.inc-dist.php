@@ -137,7 +137,7 @@ $searchConfigFileText =<<<SEARCHCONFIGFILETEXT
 	\$mysql_user = "$MYSQL_USERNAME";
 	\$mysql_password = "$MYSQL_PASSWORD"; 
 	\$mysql_host = "$MYSQL_SERVER";
-	\$mysql_table_prefix = "";
+	\$mysql_table_prefix = ""; // This doesn't work in sphider
 
 
 

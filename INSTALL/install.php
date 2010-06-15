@@ -84,6 +84,7 @@ function installCMS() {
 					array('checkDatabaseAccess', 'Checking Database Access', false),
 					array('importDatabase', 'Importing Database', false),
 					array('saveHtaccess', 'Checking .htaccess Settings', false),
+					array('indexSite', 'Indexing site', false)
 			);
 
 	for ($i = 0; $i < count($installationSteps); ++$i) {
@@ -98,6 +99,15 @@ function installCMS() {
 	return $installationSteps;
 }
 
+function indexSite() {
+	global $cmsFolder;
+	include("$cmsFolder/modules/search/admin/spider.php");
+	$serveruri=$_SERVER['REQUEST_URI'];
+	$uri=substr($serveruri,0,stripos($serveruri,"INSTALL/install.php"));
+	$site = "http://" . $_SERVER['HTTP_HOST'] . $uri . "home/";
+	index_site($site, 0, -1, 'full', "", "+\n&", 0);
+	return '';
+}
 
 /**
  * Save configuration settings submitted from the form.
@@ -155,6 +165,13 @@ function saveConfigurationSettings() {
 		return 'Could not write to config.inc.php. Please make sure that the file is writable.';
 
 	fwrite($writeHandle, $configFileText);
+	fclose($writeHandle);
+	
+	$writeHandle = @fopen("$cmsFolder/modules/search/settings/database.php",'w');
+	if(!$writeHandle)
+		return "Could not write to $cmsFolder/modules/search/settings/database.php. Please make sure that the file is writable.";
+	
+	fwrite($writeHandle, $searchConfigFileText);
 	fclose($writeHandle);
 
 	$c = 0;
@@ -255,7 +272,9 @@ function importDatabase() {
 			}
 		}
 	}
-
+	$error = include 'searchStructure.php';
+	if($error != '')
+		return $error;
 	$handle = @fopen($installFolder."/pragyan_inserts.sql", "r");
 	if ($handle) {
 		while (!feof($handle)) {
@@ -372,6 +391,15 @@ HTACCESS;
 			<p>You can change permissions back to the way it was, after the installation completes.</p>
 		</li>
 CONFIGFILE;
+	}
+	
+	if (!is_writable("../$sourceFolder/modules/search/settings/database.php")) {
+		$prereq .= <<<SEARCHCONFIGFILE
+		<li>
+			<p>Please make sure that the file named database.php in the cms/modules/search/settings/ directory has write permissions during the install process.</p>
+			<p>You can change permissions back to the way it was, after the installation completes.</p>
+		</li>
+SEARCHCONFIGFILE;
 	}
 
 	if ($prereq != '') {

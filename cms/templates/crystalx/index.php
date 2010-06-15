@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title><? echo  $TITLE; ?></title>
-    <meta name="description" content="The official website of the Rotaract Club of NIT Trichy" />
-    <meta name="keywords" content="Rotaract Club, National Institute of Technology, Tiruchirappalli, Trichy" />
+  <!--  <meta name="description" content="<? echo $DESCRIPTION ?>" />
+    <meta name="keywords" content="<? echo $KEYWORDS ?>" /> -->
 	<?global $urlRequestRoot;	global $PAGELASTUPDATED;
 	if($PAGELASTUPDATED!="")
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
@@ -15,6 +15,7 @@
     <link rel="stylesheet" media="aural" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/aural.css" />
     <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/other.css" />
     <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
+    
 
 	<script language="javascript" type="text/javascript">
 		//defined here for use in javascript

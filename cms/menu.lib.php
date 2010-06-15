@@ -68,7 +68,7 @@ MENUHTML;
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 	$menuHtml = '';
 	for ($i = 0; $i < count($menuArray); ++$i) {
-		$menuHtml .= "<a href=\"{$linkPrefix}{$menuArray[$i][1]}\"";
+		$menuHtml .= "<a href=\"./{$linkPrefix}{$menuArray[$i][1]}/\"";
 		if ($i == $currentIndex) 
 			$menuHtml .= ' class="currentpage"';
 		$menuHtml .= "><div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";
