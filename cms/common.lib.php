@@ -31,7 +31,7 @@ function escape($query)
 
 function safe_html($html)
 {
-	return strip_tags($html); /* I'm working on a better solution - abhishek*/
+	return htmlspecialchars(strip_tags($html));
 }
 
 /** Load Templates into the database */
