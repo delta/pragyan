@@ -21,9 +21,10 @@ function getmicrotime(){
 
 function getSearchBox(){
 	$CMS_TITLE = CMS_TITLE;
-	if($_GET['query']!="") $lastquery=escape(safe_html($_GET['query']));
-	if($_POST['query']!="") $lastquery=escape(safe_html($_POST['query']));
-	echo $lastquery;
+	$lastquery="";
+	if($_GET['query']!="") $lastquery=safe_html($_GET['query']);
+	if($_POST['query']!="") $lastquery=safe_html($_POST['query']);
+
 	global $cmsFolder,$urlRequestRoot;
 	$searchbox=<<<SEARCH
 	<style type="text/css">
@@ -47,7 +48,7 @@ function getSearchBox(){
 			<td align="center">
 				<table>
 					<tr>
-						<td><div align="left"><input type="text" size="40" id="query" name="query" value=$lastquery /></td>
+						<td><div align="left"><input type="text" size="40" id="query" name="query" value="$lastquery" /></td>
 						<td><input type="submit" value="Search"/></td>
 					</tr>
 				</table>
