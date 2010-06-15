@@ -44,7 +44,16 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		} else
 			displayinfo("You need to <a href=\"./+login\">login</a> first to logout!");
 	}
-
+	if($action=="search") {
+		require_once("search.lib.php");
+		$ret = getSearchBox();
+		if(isset($_POST['query'])) 
+			$ret .= getSearchResultString($_POST['query']);
+		elseif(isset($_GET['query'])) 
+			$ret .= getSearchResultString($_GET['query']);
+	
+		return $ret;
+	}
 	if (isset($_GET['subaction']) && $_GET['subaction'] == 'getchildren') {
 		if (isset($_GET['parentpath'])) {
 			global $urlRequestRoot;

@@ -141,7 +141,6 @@ $settingsForm = <<<SETTINGSFORM
 		var txtMySQLUsername    = trim(document.SettingsForm.txtMySQLUsername.value);
 		var txtMySQLPassword    = trim(document.SettingsForm.txtMySQLPassword.value);
 		var txtMySQLDatabase    = trim(document.SettingsForm.txtMySQLDatabase.value);
-		var txtMySQLTablePrefix = trim(document.SettingsForm.txtMySQLTablePrefix.value);
 
 		var txtAdminUsername    = trim(document.SettingsForm.txtAdminUsername.value);
 		var txtAdminEmail	= trim(document.SettingsForm.txtAdminEmail.value);
@@ -193,7 +192,7 @@ $settingsForm = <<<SETTINGSFORM
 		if(txtAdminEmail.length == 0) empty++;
 		if(txtAdminUsername.length == 0) empty++;
 
-		if(txtMySQLTablePrefix.length == 0) empty++;
+		
 		if(txtMySQLDatabase.length == 0) empty++;
 		if(txtMySQLPassword.length == 0) empty++;
 		if(txtMySQLUsername.length == 0) empty++;
@@ -251,7 +250,7 @@ $settingsForm = <<<SETTINGSFORM
 </fieldset>
 
 <fieldset name="AdminUser">
-	<legend>Administrator Detailss</legend>
+	<legend>Administrator Details</legend>
 	<table border="0" width="580px">
 		<tr>
 			<td width="210px"><label for="txtAdminUsername">Administrator Username:</label></td>

@@ -1,19 +1,6 @@
-<html>
-	<head>		
-	<title>
-	Sphider installation script.
-	</title>
-	<LINK REL=STYLESHEET HREF="admin.css" TYPE="text/css">
-	</head>
-<body>
-<h2>Sphider installation script.</h2>
-<?
-error_reporting(E_ALL);
-$settings_dir = "../settings";
-include "$settings_dir/database.php";
-
+<?php
 $error = 0;
-mysql_query("create table `".$mysql_table_prefix."sites`(
+mysql_query("CREATE TABLE IF NOT EXISTS `sites`(
 	site_id int auto_increment not null primary key,
 	url varchar(255),
 	title varchar(255),
@@ -29,7 +16,7 @@ if (mysql_errno() > 0) {
 	print "<br>\n";
 	$error += mysql_errno();
 }
-mysql_query("create table `".$mysql_table_prefix."links` (
+mysql_query("CREATE TABLE IF NOT EXISTS `links` (
 	link_id int auto_increment primary key not null,
 	site_id int,
 	url varchar(255) not null,
@@ -50,7 +37,7 @@ if (mysql_errno() > 0) {
 	print "<br>\n";
 	$error += mysql_errno();
 }
-mysql_query("create table `".$mysql_table_prefix."keywords`	(
+mysql_query("CREATE TABLE IF NOT EXISTS `keywords`	(
 	keyword_id int primary key not null auto_increment,
 	keyword varchar(30) not null,
 	unique kw (keyword),
@@ -65,7 +52,7 @@ if (mysql_errno() > 0) {
 
 for ($i=0;$i<=15; $i++) {
 	$char = dechex($i);
-	mysql_query("create table `".$mysql_table_prefix."link_keyword$char` (
+	mysql_query("CREATE TABLE IF NOT EXISTS `link_keyword$char` (
 		link_id int not null,
 		keyword_id int not null,
 		weight int(3),
@@ -81,7 +68,7 @@ for ($i=0;$i<=15; $i++) {
 	}
 }
 
-mysql_query("create table `".$mysql_table_prefix."categories` (
+mysql_query("CREATE TABLE IF NOT EXISTS `categories` (
 	category_id integer not null auto_increment primary key, 
 	category text,
 	parent_num integer
@@ -94,7 +81,7 @@ if (mysql_errno() > 0) {
 	$error += mysql_errno();
 }
 
-mysql_query("create table `".$mysql_table_prefix."site_category` (
+mysql_query("CREATE TABLE IF NOT EXISTS `site_category` (
 	site_id integer,
 	category_id integer
 	)");
@@ -106,7 +93,7 @@ if (mysql_errno() > 0) {
 	$error += mysql_errno();
 }
 
-mysql_query("create table `".$mysql_table_prefix."temp` (
+mysql_query("CREATE TABLE IF NOT EXISTS `temp` (
 	link varchar(255),
 	level integer,
 	id varchar (32)
@@ -119,7 +106,7 @@ if (mysql_errno() > 0) {
 	$error += mysql_errno();
 }
 
-mysql_query("create table `".$mysql_table_prefix."pending` (
+mysql_query("CREATE TABLE IF NOT EXISTS `pending` (
 	site_id integer,
 	temp_id varchar(32),
 	level integer,
@@ -134,7 +121,7 @@ if (mysql_errno() > 0) {
 	$error += mysql_errno();
 }
 
-mysql_query("create table `".$mysql_table_prefix."query_log` (
+mysql_query("CREATE TABLE IF NOT EXISTS `query_log` (
 	query varchar(255),
 	time timestamp(14),
 	elapsed float(2),
@@ -148,7 +135,7 @@ if (mysql_errno() > 0) {
 	$error += mysql_errno();
 }
 
-mysql_query("create table `".$mysql_table_prefix."domains` (
+mysql_query("CREATE TABLE IF NOT EXISTS `domains` (
 	domain_id int auto_increment primary key not null,	
 	domain varchar(255))");
 
@@ -159,12 +146,9 @@ if (mysql_errno() > 0) {
 	$error += mysql_errno();
 }
 
+if($error>0)
+	return 'Error in creating sphider search tables';
+else
+	return '';
 
-if ($error >0) {
-	print "<b>Creating tables failed. Consult the above error messages.</b>";
-} else {
-	print "<b>Creating tables successfully completed. Go to <a href=\"admin.php\">admin.php</a> to start indexing.</b>";
-}
 ?>
-</body>
-</html>

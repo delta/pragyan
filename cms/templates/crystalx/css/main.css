@@ -129,7 +129,7 @@ code, kbd, samp {font-family:monospace; font-size:110%;}
 #strip a:hover {color:#192666;}
 
     /* Strip - breadcrumbs */
-    #strip #breadcrumbs {width:100%px; margin:0; padding:0;}
+    #strip #breadcrumbs {width:100%; margin:0; padding:0;}
     
     /* Strip - RSS */
     #strip #rss {float:right; width:175px; _width:200px; margin:0; padding-left:25px; background:url("../design/ico_rss.gif") 0 50% no-repeat}

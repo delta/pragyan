@@ -211,9 +211,7 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`, `page_module`, `perm_a
 (49, 'scrolltext', 'create', 'Create', 1, 'create the scrolltext'),
 (50, 'sqlquery', 'view', 'View', 1, 'View'),
 (51, 'sqlquery', 'edit', 'Edit', 2, 'Edit'),
-(52, 'sqlquery', 'create', 'Create', 0, 'Create'),
-(53, 'search', 'view', 'Search', 1, 'Search'),
-(54, 'search', 'create', 'Create', 0, 'Create');
+(52, 'sqlquery', 'create', 'Create', 0, 'Create');
 --
 -- Dumping data for table `pragyanV3_templates`
 --

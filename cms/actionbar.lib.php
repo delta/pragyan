@@ -26,9 +26,11 @@ function getActionbarPage($userId, $pageId) {
 		$actionbarPage["profile"]="Profile";
 		$actionbarPage["logout"]="Logout";
 	}
+	$actionbarPage["search"]="Search";
 	$actionbar="<div id=\"cms-actionbarPage\">";
+	
 	foreach($actionbarPage as $action=>$actionname) {
-		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>";
+		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}
 	$actionbar.="</div>";
 	return $actionbar;
@@ -46,7 +48,7 @@ function getActionbarModule($userId, $pageId) {
 	$actionbar="<div id=\"cms-actionbarModule\">";
 	if(is_array($actionbarPage)>0)
 	foreach($actionbarPage as $action=>$actionname) {
-		$actionbar.="<span class=\"cms-actionbarModuleItem\"><a class=\"robots-nofollow\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>";
+		$actionbar.="<span class=\"cms-actionbarModuleItem\"><a class=\"robots-nofollow\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}
 	$actionbar.="</div>";
 	return $actionbar;

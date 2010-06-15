@@ -66,7 +66,6 @@ function getGlobalSettings()
 	$globals=array();
 	while($row=mysql_fetch_array($result))
 		$globals[$row['attribute']]=$row['value'];
-	//print_r($globals);
 	return $globals;
 }
 
