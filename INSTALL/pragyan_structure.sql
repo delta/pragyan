@@ -200,7 +200,8 @@ CREATE TABLE IF NOT EXISTS `forum_threads` (
 CREATE TABLE IF NOT EXISTS `gallery_name` (
   `page_modulecomponentid` int(11) NOT NULL,
   `gallery_name` varchar(50) NOT NULL,
-  `gallery_desc` varchar(200) NOT NULL
+  `gallery_desc` varchar(200) NOT NULL,
+  `imagesPerPage` int(11) NOT NULL DEFAULT '6'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
