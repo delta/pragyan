@@ -9,9 +9,6 @@ php_flag magic_quotes_gpc off
 #Register Global Must ALWAYS BE TURNED OFF. Else it will pose security risks.
 php_flag register_globals off
 
-#Enable Short Open Tag. Else it will mean errors.
-php_value short_open_tag 1
-
 ##For file uploads ##############################
 # php directives :
 #php_value upload_max_filesize 50*1024*1024

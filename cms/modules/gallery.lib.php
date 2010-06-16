@@ -50,31 +50,95 @@ class gallery implements module, fileuploadable {
 		global $moduleFolder;
 		global $uploadFolder;
 		$content =<<<JS
-			<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/library/highslide.js"></script>
+			<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/highslide-with-gallery.js"></script>
+			<link rel="stylesheet" type="text/css" href="$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/highslide.css" />
 			<script type="text/javascript">
-			hs.graphicsDir = "$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/library/graphics/";
+				hs.graphicsDir = '$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/graphics/';
+				hs.align = 'center';
+				hs.transitions = ['expand', 'crossfade'];
+				hs.fadeInOut = true;
+				hs.dimmingOpacity = 0.8;
+				hs.outlineType = 'rounded-white';
+				hs.captionEval = 'this.thumb.alt';
+				hs.marginBottom = 105;
+				hs.numberPosition = 'caption';
+
+				hs.addSlideshow({
+					interval: 5000,
+					repeat: false,
+					useControls: true,
+					overlayOptions: {
+						className: 'text-controls',
+						position: 'bottom center',
+						relativeTo: 'viewport',
+						offsetY: -60
+					},
+					thumbstrip: {
+						position: 'bottom center',
+						mode: 'horizontal',
+						relativeTo: 'viewport'
+					}
+				});
 			</script>
-			<link rel="stylesheet" href="$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/library/default.css" />
-
-
 JS;
 		$gallQuery = "SELECT * from `gallery_name` where `page_modulecomponentid`=$this->moduleComponentId";
 		$gallResult = mysql_query($gallQuery);
 		$row = mysql_fetch_assoc($gallResult);
 		$content .= "<h2><center>{$row['gallery_name']}</center></h2><br/><center><h3>{$row['gallery_desc']}</center></h3>";
+		$perPage = $row['imagesPerPage'];
 		include_once ("$sourceFolder/" . 'upload.lib.php');
 		$arr = getUploadedFiles($this->moduleComponentId, 'gallery');
-
-		for ($i = 0; $i < count($arr); $i++) {
+		$numPic = count($arr);
+		if(isset($_GET['gallerypage']))
+			$page = (int)escape($_GET['gallerypage']) - 1;
+		else
+			$page = 0;
+		$start = $page * $perPage;
+		if($start > $numPic) {
+			$start = 0;
+			$page = 0;
+		}
+		$end = $start + $perPage;
+		if($end > $numPic)
+			$end = $numPic;
+		$content .= '<div class="highslide-gallery" style="width: 100%; margin: auto">';
+		for ($i = $start; $i < $end; $i++) {
 			$gallQuery2 = "SELECT * FROM `gallery_pics` where `upload_filename`='{$arr[$i]['upload_filename']}' AND `page_modulecomponentid`= $this->moduleComponentId";
 			$gallResult2 = mysql_query($gallQuery2);
 			$row2 = mysql_fetch_assoc($gallResult2);
 			if ($row2) {
-				$content .= "<span class=\"pragyangallery\" white-space=\"nowrap\"><div class='highslide-caption' id=\"caption$i\">{$row2['gallery_filecomment']}</div>";
-				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this, {captionId: \'caption' . $i . '\'})">';
-				$content .= "<img src=\"./" . $arr[$i]['upload_filename'] . "\" alt='Image not available' title='Click to enlarge' height='100' width='136' /></a></span>";
+				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this)">';
+				$content .= "<img src=\"./" . $arr[$i]['upload_filename'] . "\" alt='{$row2['gallery_filecomment']}' title='Click to enlarge' height='100' width='136' /></a>";
 			}
 		}
+		$content .= '</div>';
+		$nextVal = $page + 2;
+		if($start == 0)
+			$prevButton = "&lt;&lt;Prev ";
+		else
+			$prevButton = "<a href='./+view&gallerypage=" . $page . "'> &lt;&lt;Prev</a> ";
+		if($end == $numPic)
+			$nextButton = " Next&gt;&gt;";
+		else
+			$nextButton = " <a href='./+view&gallerypage=" . $nextVal . "'> Next&gt;&gt; </a>";
+		$pages = "";
+		$pageStart = 1;
+		$pageEnd = ceil($numPic/$perPage);
+		if($page > 4) {
+			$pageStart = $page - 3;
+			$pages .= "... ";
+		}
+		if($pageEnd - $page > 5)
+			$pageEnd = $page + 5;
+		$pageVal = $page + 1;
+		for($i = $pageStart; $i <= $pageEnd; $i++)
+			if($i == $pageVal)
+				$pages .= " $pageVal ";
+			else
+				$pages .= " <a href='./+view&gallerypage={$i}'>{$i}</a> ";
+		if(ceil($numPic/$perPage) - $page > 5)
+			$pages .= " ...";
+		$content .= "<p>" . $prevButton . $pages . $nextButton . "</p>";
 		return $content;
 	}
 	public function createModule(& $moduleComponentId) {
@@ -109,7 +173,9 @@ JS;
 			$gallResult = mysql_query($gallQuery);
 		}
 		if (isset ($_POST['btnEditGallname']) && isset ($_POST['gallName']) && isset ($_POST['gallDesc']) && $_POST['gallName'] != '' && $_POST['gallDesc'] != '') {
-			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."' WHERE `page_modulecomponentid`=$moduleComponentId";
+			if(is_numeric($_POST['imagesPerPage']))
+				$perPage = (int)escape($_POST['imagesPerPage']);
+			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."' WHERE `page_modulecomponentid`=$moduleComponentId";
 			$gallResult = mysql_query($gallQuery);
 		}
 
@@ -124,26 +190,49 @@ JS;
 		$uploadSuccess = submitFileUploadForm($this->moduleComponentId, "gallery", $this->userId, false, $allowableTypes);
 		if (is_array($uploadSuccess) && isset ($uploadSuccess[0])) {
 			for($i=0;$i<count($uploadSuccess);$i++){
-				$gallQuery3 = "INSERT INTO `gallery_pics` (`upload_filename`, `page_modulecomponentid`, `gallery_filecomment`) VALUES('$uploadSuccess[$i]', $this->moduleComponentId, '".escape($_POST['desc'])."')";
+				$gallQuery3 = "INSERT INTO `gallery_pics` (`upload_filename`, `page_modulecomponentid`, `gallery_filecomment`) VALUES('$uploadSuccess[$i]', $this->moduleComponentId, 'No Comment')";
 				$gallResult3 = mysql_query($gallQuery3);
 			}
 		}
 		$arr = getUploadedFiles($this->moduleComponentId, 'gallery');
+		$result = mysql_fetch_array(mysql_query("SELECT * FROM `gallery_name` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		$content2 .=<<<GALFORM
 					<br /><br />
+					<script type="text/javascript">
+						<!--
+						function validate() {
+							var strValidChars = "0123456789.-";
+							var strString = document.getElementById('perPage').value;
+
+							if (strString.length == 0)
+								alert("Empty Images Per Page will be taken as default value(10).");
+
+							for (i = 0; i < strString.length; i++) {
+								if (strValidChars.indexOf(strString.charAt(i)) == -1) {
+									alert("The value in the Images Per Page field doesn't seems to be valid number. An invalid number will be replaced by default value(10).");
+									break;							  	
+								}
+							}
+						}
+						-->
+					</script>
 					<form name="edit" method="POST" action="./+edit">
 					<table>
 						<tr><th colspan=2>Edit gallery name and description</th></tr>
 						<tr>
 							<td>New Gallery Name</td>
-							<td><input type='text' name="gallName"></td>
+							<td><input type='text' name="gallName" value='{$result['gallery_name']}'></td>
 						</tr>
 						<tr>
 							<td>New Gallery Description</td>
-							<td><input type='text' name="gallDesc"></td>
+							<td><input type='text' name="gallDesc" value='{$result['gallery_desc']}'></td>
 						</tr>
 						<tr>
-							<td><input type="submit" name="btnEditGallname" value="Change Gallery Name"></td>
+							<td>Images Per Page</td>
+							<td><input type="text" id=perPage name="imagesPerPage" value='{$result['imagesPerPage']}'></td>
+						</tr>
+						<tr>
+							<td><input type="submit" name="btnEditGallname" value="Save Settings"></td>
 						</tr>
 					</table>
 					</form>
