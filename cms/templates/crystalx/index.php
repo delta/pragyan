@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title><? echo  $TITLE; ?></title>
-  <!--  <meta name="description" content="<? echo $DESCRIPTION ?>" />
-    <meta name="keywords" content="<? echo $KEYWORDS ?>" /> -->
+    <meta name="description" content="<? echo $SITEDESCRIPTION ?>" />
+    <meta name="keywords" content="<? echo $SITEKEYWORDS ?>" /> 
 	<?global $urlRequestRoot;	global $PAGELASTUPDATED;
 	if($PAGELASTUPDATED!="")
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";

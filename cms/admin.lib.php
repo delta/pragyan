@@ -62,15 +62,24 @@ function globalSettingsForm()
 	$default_mailverify=$default_mail_verify==0?"":"checked";
 	$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
 	$templates = getAvailableTemplates();
+	
 
 	$globalform=<<<globalform
 	<form name='admin_page_form' method='POST' action='./+admin&subaction=global'>
 	<fieldset>
 	<legend>Global Settings</legend>
-	<table>
+	<table style="width:100%">
 	<tr>
-	<td>Website Name :</td>
-	<td><input type="text" name='cms_title' value="$cms_title"></td>
+	<td style="width:35%">Website Name :</td>
+	<td style="width:65%"><input type="text" name='cms_title' value="$cms_title"></td>
+	</tr>
+	<tr>
+	<td>Site Description :</td>
+	<td><textarea style="width:98%" rows=10 cols=10 name='cms_desc' />$cms_desc</textarea></td>
+	</tr>
+	<tr>
+	<td>Site Keywords (comma-separated) :</td>
+	<td><input type="text" name='cms_keywords' value='$cms_keywords'></td>
 	</tr>
 	<tr>
 	<td>Website Email :</td>
@@ -276,6 +285,9 @@ function updateGlobalSettings()
 	$global['default_template']=escape($_POST['default_template']);
 	$global['cms_email']=escape($_POST['cms_email']);
 	$global['upload_limit']=escape($_POST['upload_limit']);
+	
+	$global['cms_desc']=escape($_POST['cms_desc']);
+	$global['cms_keywords']=escape($_POST['cms_keywords']);
 
 	setGlobalSettings($global);
 

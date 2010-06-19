@@ -20,6 +20,8 @@ $STARTSCRIPTS; ///<Will contain a string containing all that has to be executed 
 $urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); ///<Root of the request - that path to cms base
 $TEMPLATEBROWSERPATH; ///<Full path to template folder as seen from the browser (defined in template.lib.php)
 $TEMPLATECODEPATH; ///<Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
+$SITEDESCRIPTION;
+$SITEKEYWORDS;
 $DEBUGINFO = "";
 $cookieSupported = false;
 
@@ -64,6 +66,9 @@ define("UPLOAD_SIZE_LIMIT", $upload_limit);
 define("SEND_MAIL_ON_REGISTRATION",($default_mail_verify==0)?false:true);
 define("CMS_EMAIL",$cms_email);
 define("ACTIVATE_USER_ON_REG",$default_user_activate);
+$SITEDESCRIPTION=$cms_desc;
+$SITEKEYWORDS=$cms_keywords;
+
 
 require_once($sourceFolder."/parseurl.lib.php");
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
