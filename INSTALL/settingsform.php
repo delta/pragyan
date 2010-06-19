@@ -9,6 +9,7 @@
 
 $settingsForm = <<<SETTINGSFORM
 <script type="text/javascript" language="javascript">
+	var error=0;
 	function toggleImap(b) {
 		document.getElementById('txtIMAPServerAddress').disabled =
 		document.getElementById('txtIMAPPort').disabled =
@@ -33,6 +34,7 @@ $settingsForm = <<<SETTINGSFORM
 	}		
 	function validate_domain(field)
 	{
+		error=0;
 		var val = field.value;
 		var check = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/; //IP Address
 		var check2 = /^[A-Za-z\.\s]*$/; //Domain Name
@@ -40,6 +42,8 @@ $settingsForm = <<<SETTINGSFORM
 		{
 			if(!check.test(val) && !check2.test(val))
 			{
+			error=1;
+			
 			alert("Enter a valid server address !");
 			field.focus();
 			field.select();
@@ -49,13 +53,15 @@ $settingsForm = <<<SETTINGSFORM
 	
 	function validate_name(field)
 	{
+		error=0;
 		var val = trim(field.value);
 		var check = /^[A-Za-z\.\s]*$/;
 	
 		if(val.length != 0)
-		{
+		{	
 			if(!check.test(val))
 			{
+				error=1;
 				alert("Enter a valid name !");
 				field.focus();
 				field.select();
@@ -65,6 +71,7 @@ $settingsForm = <<<SETTINGSFORM
 
 	function validate_num(field)
 	{
+		error=0;
 		var val = trim(field.value);
 		var check = /^\d*$/;
 	
@@ -72,6 +79,7 @@ $settingsForm = <<<SETTINGSFORM
 		{	
 			if(!check.test(val))
 			{
+			error=1;
 			alert("Enter a valid numeric value");
 			field.focus();
 			field.select();
@@ -81,6 +89,7 @@ $settingsForm = <<<SETTINGSFORM
 
 	function validate_username(field)
 	{
+		error=0;
 		var val = trim(field.value);
 		var a = val.indexOf(" ")
 		var check = /^[A-Za-z\d]*$/;
@@ -89,6 +98,7 @@ $settingsForm = <<<SETTINGSFORM
 		{
 			if(a != -1)
 			{
+				error=1;
 				alert("Dont leave space in between characters !");
 				field.focus();
 				field.select();
@@ -96,6 +106,7 @@ $settingsForm = <<<SETTINGSFORM
 	
 			else if(!check.test(val))
 			{
+				error=1;
 				alert("Entry not valid ! The Username should contain only characters and numbers .");
 				field.focus();
 				field.select();
@@ -105,6 +116,7 @@ $settingsForm = <<<SETTINGSFORM
 
 	function validate_email(field)
 	{
+		error=0;
 		var val = trim(field.value);
 		var check = /^[A-Za-z0-9][a-z0-9._-]+(\.[a-z0-9_\+-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*\.([a-z]{2,4})$/;
 	
@@ -112,6 +124,7 @@ $settingsForm = <<<SETTINGSFORM
 		{
 			if(!check.test(val))
 			{
+			error=1;
 			alert("Email Id not valid ! Check for the following : Start with Alphabets or Numbers, Special Characters allowed : '.' , '_' , '-' and Special characters should not occur in succession");
 			field.focus();
 			field.select();
@@ -121,6 +134,7 @@ $settingsForm = <<<SETTINGSFORM
 
 	function validate_port(field)
 	{
+		error=0;
 		var val = trim(field.value);
 		var check = /^\d{1,5}$/;
 	
@@ -128,6 +142,7 @@ $settingsForm = <<<SETTINGSFORM
 		{	
 			if(!check.test(val))
 			{
+			error=1;
 			alert("Enter a valid Port number");
 			field.focus();
 			field.select();
@@ -204,7 +219,7 @@ $settingsForm = <<<SETTINGSFORM
 	
 		document.SettingsForm.txtMySQLUsername.focus();
 	
-		return (empty == 0);
+		return (empty == 0 && error==0);
 	}
 	function checkForm()
 	{
@@ -236,7 +251,7 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtMySQLPassword">Password:</label></td>
-			<td><input type="password" name="txtMySQLPassword" id="txtMySQLPassword" value="" /></td>
+			<td><input type="password" name="txtMySQLPassword" id="txtMySQLPassword" autocomplete="off" value="" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtMySQLDatabase">Database:</label></td>
@@ -262,15 +277,15 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtAdminFullname">Administrator Full Name:</label></td>
-			<td><input type="text" name="txtAdminFullname" id="txtAdminFullname" value="" onblur="validate_name(this)" /></td>
+			<td><input type="text" name="txtAdminFullname" id="txtAdminFullname" value="" autocomplete="off" onblur="validate_name(this)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtAdminPassword">Administrator Password:</label></td>
-			<td><input type="password" name="txtAdminPassword" id="txtAdminPassword" value="" /></td>
+			<td><input type="password" name="txtAdminPassword" id="txtAdminPassword" autocomplete="off" value="" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtAdminPassword2">Administrator Password (Verify):</label></td>
-			<td><input type="password" name="txtAdminPassword2" id="txtAdminPassword2" value="" /></td>
+			<td><input type="password" name="txtAdminPassword2" id="txtAdminPassword2" autocomplete="off" value="" /></td>
 		</tr>
 	</table>
 </fieldset>

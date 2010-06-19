@@ -122,6 +122,8 @@ INSERT IGNORE INTO `article_content` (`page_modulecomponentid`, `article_content
 
 INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
 ('cms_title', 'Pragyan CMS v3'),
+('cms_desc', 'This website is powered by Pragyan CMS'),
+('cms_keywords', 'Pragyan CMS v3.0, Sourceforge, Abhishek Shrivastava'),
 ('cms_email', 'no-reply@localhost'),
 ('allow_pagespecific_header', '0'),
 ('allow_pagespecific_template', '1'),

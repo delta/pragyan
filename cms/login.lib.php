@@ -99,7 +99,7 @@ echo "SERVER: $server, urlRequestRoot: $urlRequestRoot<br />\n";
 			
 						}
 					} else
-						displayinfo("Authentication failure for password reset for $user_email");
+						displayinfo(safe_html("Authentication failure for password reset for $user_email"));
 	}
 	return "";
 }

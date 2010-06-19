@@ -303,7 +303,9 @@ function importDatabase() {
 	setGlobalSettingByAttribute("default_template",CMS_TEMPLATE);
 	setGlobalSettingByAttribute("default_user_activate",$DEFAULT_USER_ACTIVATE);
 	setGlobalSettingByAttribute("default_mail_verify",$SEND_MAIL_ON_REGISTRATION);
-	setGlobalSettingByAttribute("upload_limit",UPLOAD_LIMIT);	
+	setGlobalSettingByAttribute("upload_limit",UPLOAD_LIMIT);
+	setGlobalSettingByAttribute("cms_desc",CMS_TITLE);
+	setGlobalSettingByAttribute("cms_keywords",CMS_TITLE);
 	
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (
 	1,'".ADMIN_USERNAME."','".ADMIN_EMAIL."','".ADMIN_FULLNAME."','".md5(ADMIN_PASSWORD)."',NOW(),'',1,'db')";
