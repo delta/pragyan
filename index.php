@@ -132,6 +132,7 @@ if($debugSet == "on") {
 	$DEBUGINFO .= "POST info : ".arraytostring($_POST)."\n<br />";
 	$DEBUGINFO .= "FILES info : ".arraytostring($_FILES)."\n<br />";
 //	$DEBUGINFO .= "SESSION info : ".arraytostring($_SESSION)."\n<br />";
+	print_r($_SERVER);
 
 	if($DEBUGINFO!="")	displayinfo($DEBUGINFO);
 }

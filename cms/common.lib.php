@@ -499,3 +499,22 @@ function showBreadcrumbSubmenu()
 	$result = mysql_fetch_row(mysql_query($query));
 	return $result[0];
 }
+
+function getFileActualPath($moduleType,$moduleComponentId,$fileName)
+{
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
+	$result = mysql_query($query) or die(mysql_error() . "upload L:85");
+	$row = mysql_fetch_assoc($result);
+	/**
+	 * Not checking if filetype adheres to uploadable filetype list beacuse this check can be
+	 * performed in $moduleInstance->getFileAccessPermission.
+	 */
+
+	global $sourceFolder,$uploadFolder;
+	$upload_fileid = $row['upload_fileid'];
+	
+	$filename = str_repeat("0", (10 - strlen((string) $upload_fileid))) . $upload_fileid . "_" . $fileName;
+	
+	$file = $sourceFolder . "/" . $uploadFolder . "/" . $moduleType . "/" . $filename;
+	return $file;
+}

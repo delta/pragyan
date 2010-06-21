@@ -141,6 +141,8 @@ var $usepre; //! bool
 var $usetableheader; //! bool
 var $shownoimg; //! bool
 
+var $moduleComponentId;
+
 function HTML2FPDF($orientation='P',$unit='mm',$format='A4')
 {
 //! @desc Constructor
@@ -227,8 +229,13 @@ function HTML2FPDF($orientation='P',$unit='mm',$format='A4')
   $this->usetableheader=false;
   $this->usecss=true;
   $this->usepre=true;
+  
 }
-
+// This one is for compatibility with Pragyan CMS security features for using images, added by Abhishek
+function setModuleComponentId($mcid)
+{
+	$this->moduleComponentId=$mcid;
+}
 function setBasePath($str)
 {
 //! @desc Inform the script where the html file is (full path - e.g. http://www.google.com/dir1/dir2/dir3/file.html ) in order to adjust HREF and SRC links. No-Parameter: The directory where this script is.
@@ -463,6 +470,7 @@ function WriteHTML($html)
      					}
   				}
 				}
+			
 				$this->OpenTag($tag,$attr);
 			}
 		}
@@ -811,7 +819,7 @@ function OpenTag($tag,$attr)
 			break;
 		case 'IMG':
 		  if(!empty($this->textbuffer) and !$this->tablestart)
-		  {
+		  { 
 		    //Output previously buffered content and output image below
         //Set some default values
         $olddivwidth = $this->divwidth;
@@ -839,6 +847,9 @@ function OpenTag($tag,$attr)
   				  $bak_x = $this->x;
             $bak_y = $this->y;
             //Check whether image exists locally or on the URL
+            
+            $srcpath=getFileActualPath("article",$this->moduleComponentId,basename($srcpath)); //Pragyan CMS specific, by Abhishek
+            
             $f_exists = @fopen($srcpath,"rb");
             if (!$f_exists) //Show 'image not found' icon instead
             {
@@ -857,9 +868,12 @@ function OpenTag($tag,$attr)
   				  $bak_x = $this->x;
             $bak_y = $this->y;
             //Check whether image exists locally or on the URL
+            $srcpath=getFileActualPath("article",$this->moduleComponentId,basename($srcpath));//Pragyan CMS specific, by Abhishek
+          
             $f_exists = @fopen($srcpath,"rb");
             if (!$f_exists) //Show 'image not found' icon instead
             {
+            	
                 if(!$this->shownoimg) break;
                 $srcpath = str_replace("\\","/",dirname(__FILE__)) . "/";
                 $srcpath .= 'no_img.gif';
