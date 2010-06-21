@@ -160,11 +160,12 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		global $sourceFolder;
 		require_once("$sourceFolder/modules/pdf/html2fpdf.php");
 		$pdf=new HTML2FPDF();
+		$pdf->setModuleComponentId($moduleComponentId);
 		$pdf->AddPage();
 		$pdf->WriteHTML($page->getHtml($userId,$moduleComponentId,"view"));
 		$filePath = $sourceFolder . "/uploads/temp/" . $TITLE . ".pdf";
 		while(file_exists($filePath))
-			$filePath = $sourceFolder . "/uploads/temp/" . rand() . ".pdf";
+			$filePath = $sourceFolder . "/uploads/temp/" . $TITLE."-".rand() . ".pdf";
 		$pdf->Output($filePath);
 		header("Pragma: public");
 		header("Expires: 0");
