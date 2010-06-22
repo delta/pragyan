@@ -16,16 +16,3 @@ div.cms-menuitem {display:block; padding:3px 0 3px 22px; background:url("../desi
 div.cms-menuitem:hover {background-color:#D3DFF8; color:#192666;}
 #col ul#category li#category-active a {background:#E0E8FA url("../design/ico_archive2.gif") 5px 50% no-repeat; font-weight:bold;}
 
-div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
-span.articlecomment_info { font-size : 90%; font-style : italic; }
-
-div.galleryimagebox {
-border : 1px solid #B7CAF6; float : left; margin : 5px; padding : 10px; width: 200px;
-}
-span.pragyangallery {margin:10px;}
-
-div.formfieldextrainfo {border : 1px solid #B7CAF6; text-align : center;  }
-div.formfieldextrainfo span {font-style : italic; font-weight : normal;}
-div.formfieldred {border-color : #FF0000; background-color : #E9C1BF; font-weight : bold; text-align : center; }
-div.formfieldgreen {border-color : #00FF00; background-color : #ABEABF;text-align : center; }
-div.formfieldinfo { background-color : #9FC5E2;text-align : center; }

@@ -117,7 +117,7 @@ function igall() {
 </script>
 EXTRA;
 	}
-	
+	global $ICONS;
 	$RET = <<<RET
 <script type="text/javascript">
 function ignore(id) {
@@ -151,7 +151,7 @@ function validate2() {
 </script>
 
 <fieldset>
-<legend>Finalize Template</legend>
+<legend>{$ICONS['Templates Management']['small']}Finalize Template</legend>
 {$issues}
 {$ignoreall}
 {$issueExcess}

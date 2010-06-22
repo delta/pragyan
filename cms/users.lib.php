@@ -8,6 +8,7 @@
 
 function userManagementForm()
 {
+	global $ICONS;
 	$usermgmtform=<<<USERFORM
 	<script type='text/javascript' language='javascript'>
 	function checkAll(formobj)
@@ -29,7 +30,7 @@ function userManagementForm()
 	</script>
 	<form name='user_mgmt_form' action='./+admin&subaction=useradmin' method='POST'>
 	<fieldset>
-	<legend>User Management</legend>
+	<legend>{$ICONS['User Management']['small']}User Management</legend>
 	
 	Select Fields to Display : <input type='button' onclick='return checkAll(this.form);' value='Check All' /><input type='button' onclick='return unCheckAll(this.form);' value='Uncheck All' />
 	<table><tr><td>Field Name</td><td>Display ?</td><td>Field Name</td><td>Display ?</td><td>Field Name</td><td>Display ?</td></tr>

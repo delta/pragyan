@@ -24,10 +24,12 @@ $SITEDESCRIPTION;
 $SITEKEYWORDS;
 $DEBUGINFO = "";
 $cookieSupported = false;
+$ICONS;
 
 
 require_once($sourceFolder."/config.inc.php");
 require_once($sourceFolder."/common.lib.php");
+require_once($sourceFolder."/icons.lib.php");
 
 if(!defined("ADMIN_USERID") )
 {
