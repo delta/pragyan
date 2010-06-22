@@ -92,6 +92,10 @@ function globalSettingsForm()
 	<td><input type="text" name='upload_limit' value='$upload_limit'></td>
 	</tr>
 	<tr>
+	<td>Site Reindex Frequency (days) :</td>
+	<td><input type="text" name='reindex_frequency' value='$reindex_frequency'></td>
+	</tr>
+	<tr>
 	<td>Allow Page-specific Headers ?</td>
 	<td><input name='allow_page_header' type='checkbox' $allow_pagespecific_header></td>
 	</tr>
@@ -198,6 +202,31 @@ function delDir($dirname) {
 }
 function admin() {
 	global $urlRequestRoot,$templateFolder,$cmsFolder,$ICONS;
+    if(isset($_GET['indexsite'])) {
+		global $cmsFolder;
+		include("$cmsFolder/modules/search/admin/spider.php");
+		if($_GET['indexsite'] == 1) {
+			$serveruri=$_SERVER['SCRIPT_NAME'];
+			$uri=substr($serveruri,0,stripos($serveruri,"index.php"));
+			$site = "http://" . $_SERVER['HTTP_HOST'] . $uri . "home/";
+			index_site($site, 0, -1, 'full', "", "+\n&", 0);
+			displayinfo("Index for site created");
+		} else {
+			index_all();
+		}
+	}
+	
+	$result = mysql_fetch_array(mysql_query("SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = 'reindex_frequency'"));
+	if($result != NULL)
+		$threshold = $result['value'];
+	else
+		$threshold = 30;
+	$result = mysql_fetch_array(mysql_query("SELECT to_days(CURRENT_TIMESTAMP)-to_days(`indexdate`) AS 'diff' FROM `sites` WHERE `url` LIKE '%home%'"));
+	
+	if($result == NULL)
+		displayinfo("It seems the site doesn't have index for the search to work. Click <a href='./+admin&indexsite=1'>here</a> to index the site.");
+	else if($result['diff'] > $threshold)
+		displayinfo("Your site index was created {$result['diff']} days before. Click <a href='./+admin&indexsite=2'>here</a> to reindex your site.");
 	$str = <<<ADMINPAGE
 	<fieldset>
 	<legend>Website Administration</legend>
@@ -270,7 +299,9 @@ ADMINPAGE;
 		$str .= '<a href="./+admin&subaction=editprofileform">Edit User Profile Form</a><br />';
 		$str .= '<a href="./+admin&subaction=viewsiteregistrants">View Users Registered to the Website</a><br />';
 		$str .= '<a href="./+admin&subaction=editsiteregistrants">Edit Registrants</a><br />';
-		$str .= '<a href="./+admin&subaction=reloadtemplates">Reload Templates</a><br /></fieldset>';
+		$str .= '<a href="./+admin&subaction=reloadtemplates">Reload Templates</a><br />';
+		$str .= '<a href="./+admin&indexsite=2">Reindex Site for Searching</a></br/></fieldset>';
+		
 		
 	}
 	
@@ -292,7 +323,7 @@ function updateGlobalSettings()
 	$global['default_template']=escape($_POST['default_template']);
 	$global['cms_email']=escape($_POST['cms_email']);
 	$global['upload_limit']=escape($_POST['upload_limit']);
-	
+	$global['reindex_frequency']=escape($_POST['reindex_frequency']);
 	$global['cms_desc']=escape($_POST['cms_desc']);
 	$global['cms_keywords']=escape($_POST['cms_keywords']);
 

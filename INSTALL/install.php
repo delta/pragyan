@@ -83,8 +83,8 @@ function installCMS() {
 					array('saveConfigurationSettings', 'Saving Configuration Settings', false),
 					array('checkDatabaseAccess', 'Checking Database Access', false),
 					array('importDatabase', 'Importing Database', false),
-					array('saveHtaccess', 'Checking .htaccess Settings', false),
-					array('indexSite', 'Indexing site', false)
+					array('saveHtaccess', 'Checking .htaccess Settings', false)
+					//array('indexSite', 'Indexing site', false)
 			);
 
 	for ($i = 0; $i < count($installationSteps); ++$i) {
@@ -98,7 +98,7 @@ function installCMS() {
 	}
 	return $installationSteps;
 }
-
+/*
 function indexSite() {
 	global $cmsFolder;
 	include("$cmsFolder/modules/search/admin/spider.php");
@@ -108,6 +108,7 @@ function indexSite() {
 	index_site($site, 0, -1, 'full', "", "+\n&", 0);
 	return '';
 }
+*/
 
 /**
  * Save configuration settings submitted from the form.
@@ -306,6 +307,7 @@ function importDatabase() {
 	setGlobalSettingByAttribute("upload_limit",UPLOAD_LIMIT);
 	setGlobalSettingByAttribute("cms_desc",CMS_TITLE);
 	setGlobalSettingByAttribute("cms_keywords",CMS_TITLE);
+	setGlobalSettingByAttribute("reindex_frequency",2);
 	
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (
 	1,'".ADMIN_USERNAME."','".ADMIN_EMAIL."','".ADMIN_FULLNAME."','".md5(ADMIN_PASSWORD)."',NOW(),'',1,'db')";
