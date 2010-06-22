@@ -15,6 +15,7 @@
     <link rel="stylesheet" media="aural" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/aural.css" />
     <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/other.css" />
     <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
+    <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
     
 
 	<script language="javascript" type="text/javascript">

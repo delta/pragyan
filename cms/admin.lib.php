@@ -49,10 +49,12 @@ them, ability to activate users, ability to create users - to refine
  *
  *
  * */
+
 function globalSettingsForm()
 {
 	global $pageFullPath;
 	global $CMSTEMPLATE;
+	global $urlRequestRoot,$templateFolder,$cmsFolder;
 	$globals=getGlobalSettings();
 	foreach($globals as $var=>$val) 
 		$$var=$val;
@@ -63,11 +65,11 @@ function globalSettingsForm()
 	$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
 	$templates = getAvailableTemplates();
 	
-
+	global $ICONS;
 	$globalform=<<<globalform
 	<form name='admin_page_form' method='POST' action='./+admin&subaction=global'>
 	<fieldset>
-	<legend>Global Settings</legend>
+	<legend>{$ICONS['Global Settings']['small']}Global Settings</legend>
 	<table style="width:100%">
 	<tr>
 	<td style="width:35%">Website Name :</td>
@@ -145,7 +147,7 @@ function templateManagementForm()
 	foreach($templates as $template)
 		$templatesList .= "<option value='" . $template . "'>" . $template . "</option>";
 	$templatesList .= "</select>";
-
+	global $ICONS;
 	require_once("upload.lib.php");
 	$form=<<<FORM
 	<script type="text/javascript">
@@ -162,7 +164,7 @@ function templateManagementForm()
 	</script>
 	<form name='template' method='POST' action='./+admin&subaction=template&subsubaction=' enctype="multipart/form-data">
 	<fieldset>
-	<legend>Template Management</legend>
+	<legend>{$ICONS['Templates Management']['small']}Template Management</legend>
 	Add new Template (select a ZIP file containing template): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
 	<br/><br/>Delete Existing Template: {$templatesList}<input type='submit' name='btn_uninstall' value='Uninstall' onclick='return delconfirm(this);'>
 	</fieldset>
@@ -195,14 +197,19 @@ function delDir($dirname) {
 	return true;
 }
 function admin() {
-
+	global $urlRequestRoot,$templateFolder,$cmsFolder,$ICONS;
 	$str = <<<ADMINPAGE
 	<fieldset>
 	<legend>Website Administration</legend>
-	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=global","_top")' value='Global Settings' />
-	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=useradmin","_top")' value='User Management' />
-	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=template","_top")' value='Templates Management' />
-	<input style='width:200px' type='button' onclick='window.open("./+admin&subaction=expert","_top")' value='Experts Only' />
+	<table class="iconspanel">
+	<tr>
+	<td><a href="./+admin&subaction=global">{$ICONS['Global Settings']['large']}<br/>Global Settings</a></td>
+	<td><a href="./+admin&subaction=useradmin">{$ICONS['User Management']['large']}<br/>User Management</a></td>
+	<td><a href="./+admin&subaction=template">{$ICONS['Templates Management']['large']}<br/>Templates Management</a></td>
+	<td><a href="./+admin&subaction=expert">{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</a></td>
+	</tr>
+
+	</table>
 	</fieldset>
 ADMINPAGE;
         if(isset($_GET['subaction']) && $_GET['subaction']=='template')
@@ -254,7 +261,7 @@ ADMINPAGE;
 	}
 	else 
 	{
-		$str .= "<fieldset><legend>Experts Only</legend>";
+		$str .= "<fieldset><legend>{$ICONS['Site Maintenance']['small']}Experts Only</legend>";
 		$str .= '<a href="./+admin&subaction=checkPerm">Check Permission List</a><br />';
 		$str .= '<a href="./+admin&subaction=checkAdminUser">Check Admin User</a><br />';
 		$str .= '<a href="./+admin&subaction=checkAdminPerms">Check Admin Perms</a><br />';

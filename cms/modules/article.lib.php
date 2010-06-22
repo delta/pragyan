@@ -124,7 +124,7 @@ RET;
 		return $ret;
 	}
 	public function actionEdit() {
-		global $sourceFolder;
+		global $sourceFolder,$ICONS;
 		//require_once("$sourceFolder/diff.lib.php");
 		require_once($sourceFolder."/upload.lib.php");
 		submitFileUploadForm($this->moduleComponentId,"article",$this->userId,UPLOAD_SIZE_LIMIT);
@@ -187,7 +187,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		}
 		$fulleditpage = $this->getCkBody();
 		
-		$commentsedit = "<fieldset><legend><a name='comments'>Comments</a></legend>";
+		$commentsedit = "<fieldset><legend><a name='comments'>{$ICONS['Page Comments']['small']}Comments</a></legend>";
 		
 		if($this->isCommentsEnabled()) {
 			$comments = mysql_query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
@@ -206,13 +206,18 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		$commentsedit .="</fieldset>";
 		$top="<a href='#topquicklinks'>Top</a>";
 		$fulleditpage .= $commentsedit.$top;
-		
+		global $ICONS;
 		$header = <<<HEADER
 		<fieldset><legend><a name='topquicklinks'>Quicklinks</a></legend>
-		 <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#editor'" value="Edit Page"/>
-        	<input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#files'" value="Manage Uploaded Files"/>
-        	        	<input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#revisions'" value="View Page Revisions"/>
-        	<input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#comments'" value="Edit Comments"/>
+		<table class='iconspanel'>
+		<tr>
+		<td><a href='#editor'>{$ICONS['Edit Page']['large']}<br/>Edit Page</a></td>
+		<td><a href='#files'>{$ICONS['Uploaded Files']['large']}<br/>Manage Uploaded Files</a></td>
+		<td><a href='#revisions'>{$ICONS['Page Revisions']['large']}<br/>Page Revisions</a></td>
+		<td><a href='#comments'>{$ICONS['Page Comments']['large']}<br/>Page Comments</a></td>
+		</tr>
+		</table>
+	
         
 		</fieldset><br/><br/>
 HEADER;
@@ -318,6 +323,7 @@ HEADER;
 			global $cmsFolder;
 			global $moduleFolder;
 			global $urlRequestRoot;
+			global $ICONS;
 			require_once ("$sourceFolder/$moduleFolder/article/ckeditor/ckeditor.php");
 			if($content=="") {
 				$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`= $this->moduleComponentId";
@@ -355,7 +361,7 @@ Ck;
 					    </script><br />
 					    $top
 					    <fieldset>
-					        <legend><a name="files">Uploaded Files</a></legend>
+					        <legend><a name="files">{$ICONS['Uploaded Files']['small']}Uploaded Files</a></legend>
 							
 Ck1;
 		$CkFooter .= getUploadedFilePreviewDeleteForm($this->moduleComponentId,"article",'./+edit');
@@ -377,7 +383,7 @@ Ck1;
 		$query = "SELECT article_revision,article_updatetime,user_id FROM `article_contentbak` where page_modulecomponentid = $this->moduleComponentId ORDER BY article_revision LIMIT $start,$count";
 		$result = mysql_query($query);
 		$revisionTable = "<fieldset>
-					        <legend><a name='revisions'>Archive : </a></legend>" .
+					        <legend><a name='revisions'>{$ICONS['Page Revisions']['small']}Page Revisions : </a></legend>" .
 					        		"<table border='1'><tr><td>Revision Number</td><td>Date Updated</td><td>User Email</td></tr>";
 		while ($row = mysql_fetch_assoc($result)) {
 			$revisionTable .= "<tr><td><a href=\"./+edit&version=".$row['article_revision']."#preview\">".$row['article_revision']."</a></td><td>".$row['article_updatetime']."</td><td>".getUserEmail($row['user_id'])."</td></tr>";
@@ -400,7 +406,7 @@ Ck1;
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 
-		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$compId', 'Coming up Soon!!!')";
+		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`, `allowComments`)VALUES ('$compId', 'Coming up Soon!!!','0')";
 		$result = mysql_query($query) or die(mysql_error()."article.lib L:76");
 		if (mysql_affected_rows()) {
 			$moduleComponentId = $compId;

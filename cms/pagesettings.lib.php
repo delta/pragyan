@@ -44,7 +44,7 @@ function getSettingsForm($pageId, $userId) {
 	if (!$page_values) {
 		return '';
 	}
-
+	global $ICONS;
 	$modifiers = '';
 	$showInMenuBox = '';
 	if ($pageId == 0) {
@@ -92,7 +92,7 @@ function getSettingsForm($pageId, $userId) {
 	$inheritedInfoText = <<<INHERITEDINFO
 	<a name="inheritinfoform"></a>
 		<fieldset style="padding: 8px">
-			<legend>Inherited Information</legend>
+			<legend>{$ICONS['Page Inherited Info']['small']}Inherited Information</legend>
 			
 			<form name="pagesettings" action="./+settings&subaction=editinheritedinfo" method="POST">
 				<table>
@@ -195,7 +195,7 @@ INHERITEDINFO;
 		</script>
 		  <a name="childpageform"></a>
 	 <fieldset>
-        <legend>Create Child Page</legend>
+        <legend>{$ICONS['Create New Page']['small']}Create Child Page</legend>
       
         <table>
         	<tr>
@@ -263,7 +263,7 @@ CREATE;
 	<form name="pagesettings" action="./+settings&subaction=move" onsubmit="return moveOnSubmit()" method="POST">
 	  <a name="copymovepageform"></a>
 	 <fieldset>
-        <legend>Copy or Move Page</legend>
+        <legend>{$ICONS['Copy or Move Page']['small']}Copy or Move Page</legend>
       
 		<table border="1">
 			<tr>
@@ -334,16 +334,19 @@ MOVECOPY;
         <a name="topquicklinks"></a>
         <fieldset>
         <legend>Quick Links</legend>
-        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#pageinfoform'" value="Page Info Form"/>
-        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#childpageform'" value="Create Child Page"/>
-        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#copymovepageform'" value="Copy or Move page"/>
-        <input style="width:200px" type="button" onclick="window.location=location.href.substring(0,location.href.indexOf('#')) + '#inheritinfoform'" value="Inherited Information"/>
-        
+        <table class='iconspanel'>
+        <tr>
+        <td><a href='#pageinfoform'>{$ICONS['Page Settings']['large']}<br/>Page Settings</a></td>
+        <td><a href='#childpageform'>{$ICONS['Create New Page']['large']}<br/>Create New Page</a></td>
+        <td><a href='#copymovepageform'>{$ICONS['Copy or Move Page']['large']}<br/>Copy or Move Page</a></td>
+        <td><a href='#inheritinfoform'>{$ICONS['Page Inherited Info']['large']}<br/>Page Inherited Information</a></td>
+        </tr>
+        </table>   
         </fieldset>
         
         <a name="pageinfoform"></a>
       	<fieldset>
-        	<legend>Page Information</legend>
+        	<legend>{$ICONS['Page Settings']['small']}Page Information</legend>
         	
 	        <table border="1" cellpadding="2px" cellspacing="2px">
 				<tr><td>Page path:</td><td>$pageFullPath</td></tr>
