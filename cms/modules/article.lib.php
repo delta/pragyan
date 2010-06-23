@@ -43,11 +43,13 @@ class article implements module, fileuploadable {
 	}
 	
 	function renderComment($id,$user,$timestamp,$comment,$delete=0) {
+	global $ICONS;
 	if($delete==1)
 	{
 		global $urlRequestRoot,$cmsFolder,$templateFolder;
-		$delete  = "<a href='./+edit&delComment=$id'> <img style=\"padding:0px\; \" align=right src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/32x32/actions/edit-delete.png\" alt=\"Delete\" /> </a>";
+		$delete  = "<a class='commentdelete' href='./+edit&delComment=$id'>{$ICONS['Delete']['large']}</a>";
 	}
+	else $delete="";
 		
 		$ret = <<<RET
 <div class="articlecomment">

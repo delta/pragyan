@@ -25,6 +25,7 @@ $SITEKEYWORDS;
 $DEBUGINFO = "";
 $cookieSupported = false;
 $ICONS;
+$ICONS_SRC;
 
 
 require_once($sourceFolder."/config.inc.php");

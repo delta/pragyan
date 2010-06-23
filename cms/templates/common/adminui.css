@@ -4,7 +4,7 @@ Admin User Interface CSS Styling
 
 div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
 span.articlecomment_info { font-size : 90%; font-style : italic; }
-
+a.commentdelete img { float: right; }
 div.galleryimagebox {
 border : 1px solid #B7CAF6; float : left; margin : 5px; padding : 10px; width: 200px;
 }
