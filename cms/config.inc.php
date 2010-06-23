@@ -21,7 +21,7 @@ define("MYSQL_DATABASE","pragyan");
 
 // defining the prefix which is appended to every table of Pragyan CMS.
 // this feature allows you to have multiple websites using the same database.
-define("MYSQL_DATABASE_PREFIX","");
+define("MYSQL_DATABASE_PREFIX","pragyanV3_");
 
 // defining the user id of the administrator. WARNING: Only experts should alter this.
 define("ADMIN_USERID",1);

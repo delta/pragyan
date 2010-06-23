@@ -147,7 +147,8 @@ CREATE TABLE IF NOT EXISTS `forum_module` (
   `forum_description` text NOT NULL,
   `forum_moderated` tinyint(1) NOT NULL DEFAULT '1' COMMENT '(1-Moderated & 0-Public)',
   `last_post_userid` int(11) NOT NULL,
-  `last_post_datetime` datetime NOT NULL,
+  `last_post_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total_thread_count` int(11) DEFAULT '1',
   PRIMARY KEY (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -190,6 +191,19 @@ CREATE TABLE IF NOT EXISTS `forum_threads` (
   `forum_thread_lastpost_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`forum_thread_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `forum_visits`
+--
+
+CREATE TABLE IF NOT EXISTS `forum_visits` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `last_visit` datetime NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 
 -- --------------------------------------------------------
 
