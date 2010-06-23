@@ -1,0 +1,36 @@
+/**
+Admin User Interface CSS Styling
+*/
+
+div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
+span.articlecomment_info { font-size : 90%; font-style : italic; }
+
+div.galleryimagebox {
+border : 1px solid #B7CAF6; float : left; margin : 5px; padding : 10px; width: 200px;
+}
+span.pragyangallery {margin:10px;}
+
+div.formfieldextrainfo {border : 1px solid #B7CAF6; text-align : center;  }
+div.formfieldextrainfo span {font-style : italic; font-weight : normal;}
+div.formfieldred {border-color : #FF0000; background-color : #E9C1BF; font-weight : bold; text-align : center; }
+div.formfieldgreen {border-color : #00FF00; background-color : #ABEABF;text-align : center; }
+div.formfieldinfo { background-color : #9FC5E2;text-align : center; }
+/**
+For Icons Panel
+*/
+table.iconspanel {
+width: 100%;
+}
+table.iconspanel td {
+text-align : center;
+vertical-align : middle;
+}
+table.iconspanel td:hover {
+text-align : center;
+vertical-align : middle;
+background-color : #E7ECFD;
+cursor : pointer;
+}
+table.iconspanel td a {
+text-decoration : none;
+}
