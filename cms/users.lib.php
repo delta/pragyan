@@ -57,6 +57,7 @@ USERFORM;
 		}
 		$usermgmtform.="</tr>";
 	}
+	global $ICONS_SRC;
 	$usermgmtform.=<<<USERFORM
 	<input type='hidden' name='not_first_time' />
 	</table>
@@ -79,10 +80,22 @@ USERFORM;
 	</fieldset>
 	<div style="clear:both"></div>
 	<hr/>
-	<input type="submit" onclick="this.form.action+='&subsubaction=search'" value="Search User" />
-	<input type="submit" onclick="this.form.action+='&subsubaction=create'" value="New User" />
-	<input type='submit' value='Deactivate All' name='deactivate_all_users'/>
-	<input type='submit' value='Activate All' name='activate_all_users'/>
+	<table class='iconspanel'>
+	<tr>
+	<td>
+	<input type="image" alt="Search User" src='{$ICONS_SRC['Search']['large']}' onclick="this.form.action+='&subsubaction=search'" value="Search User" /><br/>Search User
+	</td>
+	<td>
+	<input type="image" alt="New User" src='{$ICONS_SRC['New User']['large']}' onclick="this.form.action+='&subsubaction=create'" value="New User" /><br/>New User
+	</td>
+	<td>
+	<input type='image' alt="Deactivate All Users" src='{$ICONS_SRC['Deactivate']['large']}' value='Deactivate All' name='deactivate_all_users'/><br/>Deactivate All Users
+	</td>
+	<td>
+	<input type='image' alt="Activate All Users" src='{$ICONS_SRC['Activate']['large']}' value='Activate All' name='activate_all_users'/><br/>Activate All Users
+	</td>
+	</tr>
+	</table>
 	</fieldset>
 	
 	
@@ -326,7 +339,7 @@ function handleUserMgmt()
 			
 		}
 		
-		$searchForm="<form name='user_search_form' action='./+admin&subaction=useradmin&subsubaction=search' method='POST'>";
+		$searchForm="<form name='user_search_form' action='./+admin&subaction=useradmin&subsubaction=search' method='POST'><h3>Search User</h3>";
 		for($i=0;$i<count($usertablefields);$i++)
 			if(isset($_POST[$usertablefields[$i].'_sel']))
 				$searchForm.="<input type='hidden' name='{$usertablefields[$i]}_sel' value='checked'/>";
@@ -386,7 +399,7 @@ function handleUserMgmt()
 		}
 		
 		$nextUserId=getNextUserId();
-		$userForm="<form name='user_create_form' action='./+admin&subaction=useradmin&subsubaction=create&userid=$nextUserId' method='POST'>";
+		$userForm="<form name='user_create_form' action='./+admin&subaction=useradmin&subsubaction=create&userid=$nextUserId' method='POST'><h3>Create New User</h3>";
 		for($i=0;$i<count($usertablefields);$i++)
 			if(isset($_POST[$usertablefields[$i].'_sel']))
 				$userForm.="<input type='hidden' name='{$usertablefields[$i]}_sel' value='checked'/>";
@@ -520,12 +533,13 @@ USERLIST;
 	
 	if($act=="edit")
 	{
-		$userlist.="<th>De/Activate</th><th>Edit User Information</th><th>Delete User</th>";
+		$userlist.="<th>Actions</th>";
 	}
 	$userlist.="</tr></thead><tbody>";
 	$rowclass="oddrow";
 	$flag=false;
 	$usercount=0;
+	global $ICONS_SRC;
 	for($i=0; $i<count($userId); $i++)
 	{
 		if($type=="activated" && $userActivated[$i]==0)
@@ -541,11 +555,13 @@ USERLIST;
 		}
 		if($act=="edit")
 		{
+			$userlist.="<td id='user_editactions'>";
 			if($userActivated[$i]==0)
-				$userlist.="<td id='user_activate'><input type='submit' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_activate' value='Activate'></td>\n";
-			else $userlist.="<td id='user_deactivate'><input type='submit' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_deactivate' value='Deactivate'></td>\n";
-			$userlist.="<td id='user_profile'><input type='submit' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_info' value='Edit'></td>\n";
-			$userlist.="<td id='user_delete'><input type='submit' onclick=\"return checkDelete(this,'".$userName[$i]."','".$userId[$i]."')\" name='user_delete' value='Delete'></td>\n";
+				$userlist.="<input title='Activate User' type='image' src='{$ICONS_SRC['Activate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_activate' value='Activate'>\n";
+			else $userlist.="<input  title='Deactivate User' type='image' src='{$ICONS_SRC['Deactivate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_deactivate' value='Deactivate'>\n";
+			$userlist.="<input  title='Edit User' type='image' src='{$ICONS_SRC['Edit']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_info' value='Edit'>\n";
+			$userlist.="<input  title='Delete User' type='image' src='{$ICONS_SRC['Delete']['small']}' onclick=\"return checkDelete(this,'".$userName[$i]."','".$userId[$i]."')\" name='user_delete' value='Delete'>\n";
+			$userlist.="</td>";
 			
 		}
 		$userlist.="</tr>";

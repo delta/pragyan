@@ -273,8 +273,9 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	$userIds = getDistinctRegistrants($moduleComponentId, $sortField, $sortOrder);
 	$userCount = count($userIds);
 
-	$editImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/apps/accessories-text-editor.png\" alt=\"Edit\" />";
-	$deleteImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Delete\" />";
+	global $ICONS;
+	$editImage = $ICONS['Edit']['small'];
+	$deleteImage = $ICONS['Delete']['small'];
 
 	$tableBody = '<tbody>';
 	for($i = 0; $i < $userCount; $i++) {
@@ -284,7 +285,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 				$tableBody .= '<td align="center">&nbsp;</td>';
 			}
 			else {
-				$tableBody .= '<td align="center"><a title="Edit" href="./+editregistrants&subaction=edit&useremail='.getUserEmail($userIds[$i]).'" />' . $editImage . '</a>';
+				$tableBody .= '<td align="center"><a title="Edit" href="./+editregistrants&subaction=edit&useremail='.getUserEmail($userIds[$i]).'" />' . $editImage . '</a>&nbsp;';
 			}
 			if($userIds[$i] <= 0) {
 				$tableBody .= '<a style="cursor:pointer" title="Delete" onclick="return gotopage(\'./+editregistrants&subaction=delete&&useremail='.getUserEmail($userIds[$i]).'&registrantid='.$userIds[$i].'\',\''.getUserEmail($userIds[$i]).'\')" />' . $deleteImage . '</a></td>';
