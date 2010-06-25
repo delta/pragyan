@@ -131,7 +131,8 @@ INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
 ('upload_limit', '50000000'),
 ('default_user_activate', '1'),
 ('default_mail_verify', '0'),
-('breadcrumb_submenu', '0');
+('breadcrumb_submenu', '0'),
+('reindex_frequency', '2');
 
 --
 -- Dumping data for table `pragyanV3_groups`

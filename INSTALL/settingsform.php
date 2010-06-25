@@ -320,6 +320,11 @@ $settingsForm = <<<SETTINGSFORM
 			alert("Administrator Passwords do not match");
 			return false;
 		}
+		else if(document.getElementById('txtAdminPassword').value.length == 0)
+		{
+			alert("Administrator Password should not be left blank");
+			return false;
+		}
 		return validate_form();
 	}
 

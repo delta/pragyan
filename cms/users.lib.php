@@ -369,7 +369,7 @@ function handleUserMgmt()
 			$incomplete=false;
 			foreach($usertablefields as $field)
 			{
-				if(($field != 'user_regdate') && ($var != 'user_lastlogin') && ($var != 'user_activated') && ($_POST[$field]==""))
+				if(($field != 'user_regdate') && ($field != 'user_lastlogin') && ($field != 'user_activated') && (isset($_POST[$field]) && $_POST[$field]==""))
 				{
 					displayerror("New user could not be created. Some fields are missing!");
 					$incomplete=true;

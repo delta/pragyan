@@ -307,7 +307,7 @@ function importDatabase() {
 	setGlobalSettingByAttribute("upload_limit",UPLOAD_LIMIT);
 	setGlobalSettingByAttribute("cms_desc",CMS_TITLE);
 	setGlobalSettingByAttribute("cms_keywords",CMS_TITLE);
-	setGlobalSettingByAttribute("reindex_frequency",2);
+	setGlobalSettingByAttribute("reindex_frequency","2");
 	
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (
 	1,'".ADMIN_USERNAME."','".ADMIN_EMAIL."','".ADMIN_FULLNAME."','".md5(ADMIN_PASSWORD)."',NOW(),'',1,'db')";
