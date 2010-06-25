@@ -17,7 +17,7 @@ $editor=<<<FORUM
 
 
 <link rel="stylesheet" href="$css" type="text/css" />
-<script type="text/javascript" languauge="javascript" src="$js"></script>
+<script type="text/javascript" language="javascript" src="$js"></script>
 
 <div id="bbeditor">
 	<table cellpadding="0" cellspacing="0" width="100%">

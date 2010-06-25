@@ -246,7 +246,7 @@ function setBasePath($str)
 
 function ShowNOIMG_GIF($opt=true)
 {
-//! @desc Enable/Disable Displaying the no_img.gif when an image is not found. No-Parameter: Enable
+//! @desc Enable/Disable Displaying the no_img.jpg when an image is not found. No-Parameter: Enable
 //! @return void
   $this->shownoimg=$opt;
 }
@@ -855,7 +855,7 @@ function OpenTag($tag,$attr)
             {
                 if(!$this->shownoimg) break;
                 $srcpath = str_replace("\\","/",dirname(__FILE__)) . "/";
-                $srcpath .= 'no_img.gif';
+                $srcpath .= 'no_img.jpg';
             }
             $sizesarray = $this->Image($srcpath, $this->GetX(), $this->GetY(), $attr['WIDTH'], $attr['HEIGHT'],'','',false);
             $this->y = $bak_y;
@@ -876,7 +876,7 @@ function OpenTag($tag,$attr)
             	
                 if(!$this->shownoimg) break;
                 $srcpath = str_replace("\\","/",dirname(__FILE__)) . "/";
-                $srcpath .= 'no_img.gif';
+                $srcpath .= 'no_img.jpg';
             }
             $sizesarray = $this->Image($srcpath, $this->GetX(), $this->GetY(), $attr['WIDTH'], $attr['HEIGHT'],'','',false);
             $this->y = $bak_y;
@@ -910,7 +910,7 @@ function OpenTag($tag,$attr)
             if (!$f_exists) //Show 'image not found' icon instead
             {
                 $srcpath = str_replace("\\","/",dirname(__FILE__)) . "/";
-                $srcpath .= 'no_img.gif';
+                $srcpath .= 'no_img.jpg';
             }
             $sizesarray = $this->Image($srcpath, $this->GetX(), $this->GetY(), $attr['WIDTH'], $attr['HEIGHT'],'',$this->HREF); //Output Image
   				  $ini_x = $sizesarray['X'];
