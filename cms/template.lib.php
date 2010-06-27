@@ -22,7 +22,7 @@ function getPageTemplate($pageId)
  	return $row[0];
 }
 
-function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$BREADCRUMB,&$INHERITEDINFO,&$CONTENT,&$DEBUGINFO,&$ERRORSTRING,&$WARNINGSTRING,&$INFOSTRING,&$STARTSCRIPTS) {
+function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$BREADCRUMB,&$INHERITEDINFO,&$CONTENT,&$FOOTER,&$DEBUGINFO,&$ERRORSTRING,&$WARNINGSTRING,&$INFOSTRING,&$STARTSCRIPTS) {
 	global $cmsFolder;
 	global $sourceFolder;
 	global $templateFolder;
@@ -207,7 +207,7 @@ function addfatalissue(&$issues,$str,$id)
 
 function reportIssues($templatePath,&$issues) {
 	$content = file_get_contents($templatePath . "index.php");
-	$reqd = array("\$CONTENT","\$ACTIONBARMODULE","\$ACTIONBARPAGE");
+	$reqd = array("\$CONTENT","\$ACTIONBARMODULE","\$ACTIONBARPAGE","\$SITEDESCRIPTION","\$SITEKEYWORDS","\$FOOTER");
 	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$DEBUGINFO","\$MENUBAR","\$INHERITEDINFO","\$ERRORSTRING","\$WARNINGSTRING","\$INFOSTRING");
 	$id = 0;
 	$i = 0;

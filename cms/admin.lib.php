@@ -84,6 +84,28 @@ function globalSettingsForm()
 	<td><input type="text" name='cms_keywords' value='$cms_keywords'></td>
 	</tr>
 	<tr>
+	<td>Site Footer :</td>
+	<td><textarea style="width:98%" rows=10 cols=10 name='cms_footer' />$cms_footer</textarea></td>
+	</tr>
+	<tr>
+	<td>Default template :</td>
+	<td><select name='default_template' >
+globalform;
+
+	
+	for($i=0; $i<count($templates); $i++)
+	{
+		if($templates[$i]==DEF_TEMPLATE)
+		$globalform.="<option value='".$templates[$i]."' selected >".ucwords($templates[$i])."</option>";
+		else
+		$globalform.="<option value='".$templates[$i]."' >".ucwords($templates[$i])."</option>";
+	}
+
+$globalform.=<<<globalform
+	</select>
+	</td>
+	</tr>
+	<tr>
 	<td>Website Email :</td>
 	<td><input type="text" name='cms_email' value='$cms_email'></td>
 	</tr>
@@ -110,24 +132,6 @@ function globalSettingsForm()
 	<tr>
 	<td>Show Breadcrumbs Submenu ?</td>
 	<td><input name='breadcrumb_submenu' type='checkbox' $breadcrumb_submenu></td>
-	</tr>
-	<tr>
-	<td>Default template :</td>
-	<td><select name='default_template' >
-globalform;
-
-	
-	for($i=0; $i<count($templates); $i++)
-	{
-		if($templates[$i]==DEF_TEMPLATE)
-		$globalform.="<option value='".$templates[$i]."' selected >".ucwords($templates[$i])."</option>";
-		else
-		$globalform.="<option value='".$templates[$i]."' >".ucwords($templates[$i])."</option>";
-	}
-
-$globalform.=<<<globalform
-	</select>
-	</td>
 	</tr>
 	<tr>
 	<td>Activate User On Registration ?</td>
@@ -326,6 +330,7 @@ function updateGlobalSettings()
 	$global['reindex_frequency']=escape($_POST['reindex_frequency']);
 	$global['cms_desc']=escape($_POST['cms_desc']);
 	$global['cms_keywords']=escape($_POST['cms_keywords']);
+	$global['cms_footer']=escape($_POST['cms_footer']);
 
 	setGlobalSettings($global);
 

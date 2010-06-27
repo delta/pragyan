@@ -126,7 +126,7 @@ INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
 ('cms_keywords', 'Pragyan CMS v3.0, Sourceforge, Abhishek Shrivastava'),
 ('cms_email', 'no-reply@localhost'),
 ('allow_pagespecific_header', '0'),
-('allow_pagespecific_template', '1'),
+('allow_pagespecific_template', '0'),
 ('default_template', 'crystalx'),
 ('upload_limit', '50000000'),
 ('default_user_activate', '1'),

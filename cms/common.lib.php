@@ -76,11 +76,7 @@ function setGlobalSettings($globals)
 	
 	foreach($globals as $var => $val)
 	{
-		if(mysql_num_rows(mysql_query("SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = '$var'")) != 0)
-			$query="UPDATE `".MYSQL_DATABASE_PREFIX."global` SET `value`='$val' WHERE `attribute`='$var'";
-		else
-			$query="INSERT INTO `" . MYSQL_DATABASE_PREFIX . "global`(`attribute`,`value`) VALUES('{$var}','{$val}')";
-		mysql_query($query);
+		setGlobalSettingByAttribute($var,$val);
 	}
 }
 
@@ -88,8 +84,11 @@ function setGlobalSettings($globals)
 
 function setGlobalSettingByAttribute($attribute,$value)
 {
+	if(mysql_num_rows(mysql_query("SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = '$attribute'")) != 0)
 		$query="UPDATE `".MYSQL_DATABASE_PREFIX."global` SET `value`='$value' WHERE `attribute`='$attribute'";
-		return mysql_query($query);
+	else
+		$query="INSERT INTO `" . MYSQL_DATABASE_PREFIX . "global`(`attribute`,`value`) VALUES('{$attribute}','{$value}')";
+	mysql_query($query);	
 }
 
 /**Used for error handling */
