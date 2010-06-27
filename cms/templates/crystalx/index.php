@@ -87,7 +87,7 @@
     <div id="footer">
         <div id="top" class="noprint"><p><span class="noscreen">Back to top</span> <a href="#header" title="Back to top ^">^<span></span></a></p></div>
         <hr class="noscreen" />
-        <p id="copyright">&copy; 2010 - powered by <a href="http://sourceforge.net/projects/pragyan" title="Praygan CMS">Pragyan CMS v3.0</a></p>
+        <p id="copyright"><? echo $FOOTER; ?></p>
     </div> <!-- /footer -->
 
 </div> <!-- /main -->

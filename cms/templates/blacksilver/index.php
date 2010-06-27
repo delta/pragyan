@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/error.css" />
   <? echo  $pageStyle; ?>
   <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/other.css" />
-
+<link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
   <script language='javascript' src="<? echo  $TEMPLATEBROWSERPATH; ?>>/scripts/ajaxbasic.js" ></script>
 
 </head>

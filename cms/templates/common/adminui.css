@@ -38,5 +38,9 @@ text-decoration : none;
 /**
 For Article
 */
-input[type='button'], input[type='submit'], input[type='reset'], input[type='file'] {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;height : 20px;border : 1px solid #ccc;margin-top : 2px;}
+input, textarea, select {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;border : 1px solid #ccc;margin : 2px;}
+input[type='image'] { /*Overrding for images */ background-color : inherit !important; border : none !important; }
+input[disabled], select[disabled], textarea[disabled] {background-color : #cecece;}
 #cklowerpanel .tbl2 {font-size : 11px;color : #555;background-color : #f1f1f1;padding : 4px;}
+
+

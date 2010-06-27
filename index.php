@@ -71,6 +71,7 @@ define("CMS_EMAIL",$cms_email);
 define("ACTIVATE_USER_ON_REG",$default_user_activate);
 $SITEDESCRIPTION=$cms_desc;
 $SITEKEYWORDS=$cms_keywords;
+$FOOTER=$cms_footer;
 
 
 require_once($sourceFolder."/parseurl.lib.php");
@@ -126,15 +127,15 @@ if($debugSet == "on") {
 	$DEBUGINFO .= "Get Vars : ".arraytostring($_GET)."<br />\n";
 	$DEBUGINFO .= "Page Id : ".$pageId."<br />\n";
 	$DEBUGINFO .= "Page id path : ".arraytostring($pageIdArray)."\n<br />";
-//	$DEBUGINFO .= "Title : ".$TITLE."\n<br />";
-//	$DEBUGINFO .= "Breadcrumbs : ".$BREADCRUMB."\n";
-//	$DEBUGINFO .= "Menu Bar : ".$MENUBAR."\n<br />";
-//	$DEBUGINFO .= "Action Bar for page : ".$ACTIONBARPAGE."\n<br />";
-//	$DEBUGINFO .= "Action Bar for module : ".$ACTIONBARMODULE."\n<br />";
-//	$DEBUGINFO .= "SERVER info : ".arraytostring($_SERVER)."\n<br />";
+	$DEBUGINFO .= "Title : ".$TITLE."\n<br />";
+	$DEBUGINFO .= "Breadcrumbs : ".$BREADCRUMB."\n";
+	$DEBUGINFO .= "Menu Bar : ".$MENUBAR."\n<br />";
+	$DEBUGINFO .= "Action Bar for page : ".$ACTIONBARPAGE."\n<br />";
+	$DEBUGINFO .= "Action Bar for module : ".$ACTIONBARMODULE."\n<br />";
+	$DEBUGINFO .= "SERVER info : ".arraytostring($_SERVER)."\n<br />";
 	$DEBUGINFO .= "POST info : ".arraytostring($_POST)."\n<br />";
 	$DEBUGINFO .= "FILES info : ".arraytostring($_FILES)."\n<br />";
-//	$DEBUGINFO .= "SESSION info : ".arraytostring($_SESSION)."\n<br />";
+	$DEBUGINFO .= "SESSION info : ".arraytostring($_SESSION)."\n<br />";
 	print_r($_SERVER);
 
 	if($DEBUGINFO!="")	displayinfo($DEBUGINFO);
@@ -143,7 +144,7 @@ if($debugSet == "on") {
 	setcookie("cookie_support", "enabled", 0, "/"); ///<used to check in subsequent requests if cookies are supported or not
 	
 	
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
 
 disconnect();
 exit();
