@@ -26,7 +26,7 @@ $DEBUGINFO = "";
 $cookieSupported = false;
 $ICONS;
 $ICONS_SRC;
-$onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")); . "home";
+$onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
 // For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 
 require_once($sourceFolder."/config.inc.php");
