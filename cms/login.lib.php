@@ -55,9 +55,8 @@ echo "SERVER: $server, urlRequestRoot: $urlRequestRoot<br />\n";
 								$language = "en";
 								
 								$messenger = new messenger(false);
-				
-								$messenger->assign_vars(array('RESETPASS_URL'=>"http://pragyan.org/10/home/+login&subaction=resetPasswd&resetPasswd=$temp[user_email]&key=$key",
-															'NAME'=>"$temp[user_fullname]"));
+								global $onlineSiteUrl;
+								$messenger->assign_vars(array('RESETPASS_URL'=>"$onlineSiteUrl/+login&subaction=resetPasswd&resetPasswd=$temp[user_email]&key=$key", 'NAME'=>"$temp[user_fullname]", 'WEBSITE'=>CMS_TITLE, 'DOMAIN' => $onlineSiteUrl));
 				
 								if ($messenger->mailer($to,$mailtype,$key))
 									displayinfo("Password reset link sent. Kindly check your e-mail. <br /><input type=\"button\" onclick=\"history.go(-2)\" value=\"Go back\" />");
@@ -87,14 +86,13 @@ echo "SERVER: $server, urlRequestRoot: $urlRequestRoot<br />\n";
 							$language = "en";
 							
 							$messenger = new messenger(false);
-			
-							$messenger->assign_vars(array('PASSWORD'=>"$password",
-														'NAME'=>"$temp[user_fullname]"));
+							global $onlineSiteUrl;
+							$messenger->assign_vars(array('PASSWORD'=>"$password",'NAME'=>"$temp[user_fullname]", 'WEBSITE'=>CMS_TITLE, 'DOMAIN'=>$onlineSiteUrl));
 			
 							if ($messenger->mailer($to,$mailtype,$key))
 								displayinfo("Password reset. Kindly check your e-mail.");
 							else 
-								displayerror("Password reset failed. Kindly contact webadmin@pragyan.org");
+								displayerror("Password reset failed. Kindly contact administrator");
 							// send mail code ends here
 			
 						}

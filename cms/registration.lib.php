@@ -75,7 +75,7 @@ REG;
 }
 
 function register() {
-	///registration form
+	///registration formmessenger
 	global $uploadFolder;global $sourceFolder;global $moduleFolder;global $urlRequestRoot;
 	require("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
 	require("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
@@ -128,14 +128,13 @@ FORM;
 				
 				
 				$messenger = new messenger(false);
-
-				$messenger->assign_vars(array('ACTIVATE_URL'=>"http://pragyan.org/09/home/+login&subaction=register&verify=$to&key=$key",
-											'NAME'=>"$temp[user_fullname]"));
+				global $onlineSiteUrl;
+				$messenger->assign_vars(array('ACTIVATE_URL'=>"$onlineSiteUrl/+login&subaction=register&verify=$to&key=$key",'NAME'=>"$temp[user_fullname]",'WEBSITE'=>CMS_TITLE));
 
 				if ($messenger->mailer($to,$mailtype,$key,$from))
 					displayinfo("Activation link resent. Kindly check your e-mail for activation link.");
 				else 
-					displayerror("Activation link resending failure. Kindly contact webadmin@pragyan.org");
+					displayerror("Activation link resending failure. Kindly contact administrator");
 				// send mail code ends here
 							
 			}
@@ -156,9 +155,9 @@ FORM;
 				if (mysql_affected_rows() > 0)
 					displayinfo("Your e-mail ".escape($_GET[verify])." has been verified. Now you can fill your profile information by clicking <a href=\"./+profile\">here</a> or by clicking on the preferences link in the action bar any time you are logged in.");
 				else
-					displayerror("Verification error for ".escape($_GET[verify]).". Please contact webadmin@pragyan.org");
+					displayerror("Verification error for ".escape($_GET[verify]).". Please contact administrator");
 			} else
-				displayerror("Verification error for ".escape($_GET[verify]).". Please contact webadmin@pragyan.org");
+				displayerror("Verification error for ".escape($_GET[verify]).". Please contact administrator");
 		}
 	}
 	///Registration form submission
@@ -206,31 +205,33 @@ FORM;
 					displayinfo("You have been successfully registered. You can now <a href=\"./+login\">log in</a>.");
 				else displayinfo("Your registration was successful but your account is not activated yet. Kindly check your email, or wait for the website administrator to activate you.");
 			}
-
-/*
-			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` LIKE '" . $umail . "'";
-			$result = mysql_query($query);
-			$temp = mysql_fetch_assoc($result);
-			$server = $_SERVER['SCRIPT_URI'];
-			$key = getVerificationKey($temp['user_email'], $temp['user_password'], $temp['user_regdate']);
+			if(SEND_MAIL_ON_REGISTRATION)
+			{
+				$email = $umail;
+				$query = "SELECT * FROM  `" . MYSQL_DATABASE_PREFIX . "users`  WHERE `user_email`='$email' ";
+				$result = mysql_query($query) or displayerror(mysql_error() . "registration L:211");
+			
+				$temp = mysql_fetch_assoc($result);
+				$key = getVerificationKey($email, $temp['user_password'], $temp['user_regdate']);
 
 				// send mail code starts here - see common.lib.php for more
 				$from = CMS_EMAIL;
-				$to = $temp['user_email'];
+				$to = "$email";
 				$mailtype = "activation_mail";
-				
+		
+		
 				$messenger = new messenger(false);
-
-				$messenger->assign_vars(array('ACTIVATE_URL'=>"http://pragyan.org/10/home/+login&subaction=register&verify=$to&key=$key",
-											'NAME'=>"$temp[user_fullname]"));
+				global $onlineSiteUrl;
+				$messenger->assign_vars(array('ACTIVATE_URL'=>"$onlineSiteUrl/+login&subaction=register&verify=$to&key=$key",'NAME'=>"$temp[user_fullname]",'WEBSITE'=>CMS_TITLE, 'DOMAIN'=>$onlineSiteUrl));
 
 				if ($messenger->mailer($to,$mailtype,$key,$from))
-					displayinfo("Activation link sent. Kindly check your e-mail for activation link.");
+					displayinfo("Kindly check your e-mail for activation link.");
 				else 
-					displayerror("Activation link sending failure. Kindly contact webadmin@pragyan.org");
+					displayerror("Activation link sending failure. Kindly contact administrator");
 				// send mail code ends here
-
-*/
+					
+			}
+			
 		}
 	}
 }
