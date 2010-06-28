@@ -240,7 +240,11 @@ function admin() {
 	<td><a href="./+admin&subaction=global">{$ICONS['Global Settings']['large']}<br/>Global Settings</a></td>
 	<td><a href="./+admin&subaction=useradmin">{$ICONS['User Management']['large']}<br/>User Management</a></td>
 	<td><a href="./+admin&subaction=template">{$ICONS['Templates Management']['large']}<br/>Templates Management</a></td>
-	<td><a href="./+admin&subaction=expert">{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</a></td>
+	<td><a href="./+admin&subaction=email">{$ICONS['Email Registrants']['large']}<br/>Email Registrants</a></td>
+	</tr>
+	<tr>
+	<td colspan=4><a href="./+admin&subaction=expert">{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</a></td>
+	
 	</tr>
 
 	</table>
@@ -314,7 +318,6 @@ ADMINPAGE;
 		$str .= '<a href="./+admin&subaction=checkPerm">Check Permission List</a><br />';
 		$str .= '<a href="./+admin&subaction=checkAdminUser">Check Admin User</a><br />';
 		$str .= '<a href="./+admin&subaction=checkAdminPerms">Check Admin Perms</a><br />';
-		$str .= '<a href="./+admin&subaction=useradmin">User Administration</a><br />';
 		$str .= '<a href="./+admin&subaction=changePermRank">Change Perm Ranks</a><br />';
 		$str .= '<a href="./+admin&subaction=editprofileform">Edit User Profile Form</a><br />';
 		$str .= '<a href="./+admin&subaction=viewsiteregistrants">View Users Registered to the Website</a><br />';

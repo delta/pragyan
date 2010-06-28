@@ -482,7 +482,6 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		$userlist.="<input type='hidden' name='editusertype' value='$type' />";
 		$columns+=3;
 	}
-	
 	$userlist.=<<<USERLIST
 	<style type="text/css" title="currentStyle">
 			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
