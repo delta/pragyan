@@ -25,7 +25,7 @@
 	</script>
 </head>
 
-<body>
+<body onload="<? echo $STARTSCRIPTS;?>">
 
 <!-- Main -->
 <div id="main" class="box">

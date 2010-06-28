@@ -379,6 +379,23 @@ function CheckPrerequisites() {
 		
 	}
 	
+	$testFolder=@fopen($cmsfolder."/languages/testperms", 'w');
+	if(!$testFolder)
+	{
+		$prereq.="<li>Please check the permissions of the <b>$sourceFolder/languages/</b> folder. It should be writable by your webserver user<br>";
+		$prereq.="On a <i>linux</i> server, after going inside the $sourceFolder folder run the following commands as root<br>";
+		$prereq.="<pre>chown -R &lt;httpd-process-user&gt; languages</pre>";
+		$prereq.="<b>OR</b><br /><pre>chmod -R 777 languages</pre></li>";
+		$prereq.="<br>NOTE: &lt;httpd-process-user&gt; is the default user for your webserver process. In most cases, it is 'www-data' or 'apache'.";
+	}
+	else {
+		fclose($testFolder);
+		unlink("$cmsfolder/languages/testperms");
+		
+	}
+	
+	
+	
 
 	if (!is_writable('../.htaccess')) {
 		$prereq .= <<<HTACCESS

@@ -18,7 +18,8 @@ $ICON_ARRAY=array(
 'Page Settings'=>"actions/document-properties.png",
 'Create New Page'=>"actions/document-new.png",
 'Copy or Move Page'=>"actions/edit-copy.png",
-'Page Inherited Info'=>"apps/preferences-desktop-theme.png"
+'Page Inherited Info'=>"apps/preferences-desktop-theme.png",
+'Email Registrants'=>"actions/mail-reply-all.png"
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)
