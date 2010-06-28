@@ -449,8 +449,16 @@ class messenger {
 				//echo displayinfo($from.' <br> '.$to.' <br> '.$subject.' <br> '.$body);
 				
 				//Send mail 
-				return mail($to, $subject, $body, $from);
+				global $debugSet;
+				if($debugSet=="on")
+				{
+					displayinfo("Vars :".arraytostring($this->vars));
+					displayinfo("Mail sent to $to from $from with subject $subject and body $body");
+					return true;
 				}
+				else return mail($to, $subject, $body, $from);
+			}
+				
 	}
 
 function getAvailableTemplates()

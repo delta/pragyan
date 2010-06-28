@@ -44,8 +44,6 @@ RESET;
 								displayerror("Account not yet activated.<b>Please check your email</b> and click on the activation link. <a href=\"./+login&subaction=register&reSendKey=1\">Resend activation mail?</a><br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 							} else {
 								
-								$server = $_SERVER['SCRIPT_URI'];
-echo "SERVER: $server, urlRequestRoot: $urlRequestRoot<br />\n";
 								$key = md5($temp['user_password'].'xXc'.substr($temp['user_email'],1,2));
 								
 								// send mail code starts here - see common.lib.php for more
