@@ -116,42 +116,19 @@
 
 					$pageId = getPageIdFromModuleComponentId('form',$moduleCompId);
 					$parentPage = getParentPage($pageId);
-					$event = getPageTitle($parentPage);
+					$formname = getPageTitle($parentPage);
 					$keyid = $finalName = str_pad($userId, 5,'0', STR_PAD_LEFT);
 					$key = '';
-					if($event=='Hospitality') {
-						$mailtype = "hospitality_mail";
-						$key = 'P10'.$keyid;
-					}elseif($event=='Crossfire'){
-						$mailtype = "crossfire_mail";
-					}
-					elseif($event=='Home') {
-						$mailtype = "suggestions_mail";
-					}
-					else {
-						$mailtype = "registration_mail";
-					}
+					$mailtype = "form_registration_mail";
 					$messenger = new messenger(false);
 
-/*
-				if($event=='Akriti') {
-				$key=<<<MSG
-									 
-Your Akriti registration no. is P09AR$keyid.
-Please ensure that your drawing sheets and/or reports only bear the registration number. 
-Name of the institute, participants name are strictly prohibited from appearing in any form.
-MSG;
-				}
-*/
-				
-					$messenger->assign_vars(array('EVENT'=>"$event",'KEY'=>"$key",
-												'NAME'=>getUserFullName($userId)));
-					if($event != 'onlinefinals') {
-						if ($messenger->mailer($to,$mailtype,$key,$from))
-							displayinfo("You have been succesfully registered to $event and a registration confirmation mail has been sent. Kindly check your e-mail.");
+					global $onlineSiteUrl;				
+					$messenger->assign_vars(array('FORMNAME'=>"$formname",'KEY'=>"$key",'WEBSITE'=>CMS_TITLE,'DOMAIN'=>$onlineSiteUrl,	'NAME'=>getUserFullName($userId)));
+					if ($messenger->mailer($to,$mailtype,$key,$from))
+							displayinfo("You have been succesfully registered to $formname and a registration confirmation mail has been sent. Kindly check your e-mail.");
 						else 
 							displayerror("Registration confirmation mail sending failure. Kindly contact webadmin@pragyan.org");
-					}
+					
 				}
 
 				// send mail code ends here

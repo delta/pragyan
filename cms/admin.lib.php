@@ -204,6 +204,7 @@ function delDir($dirname) {
 	rmdir($dirname);
 	return true;
 }
+
 function admin() {
 	global $urlRequestRoot,$templateFolder,$cmsFolder,$ICONS;
     if(isset($_GET['indexsite'])) {
@@ -245,6 +246,21 @@ function admin() {
 	</table>
 	</fieldset>
 ADMINPAGE;
+	if(isset($_GET['subaction'])) {
+		require_once("email.lib.php");
+		if($_GET['subaction'] == "email")
+			return $str . displayEmail();
+		else if($_GET['subaction'] == "openemail")
+			return $str . displayEmail(escape($_GET['name']));
+		else if($_GET['subaction'] == "emailsend") {
+			sendEmail();
+			return $str . displayEmail(escape($_POST['emailtemplates']));
+		}
+		else if($_GET['subaction'] == "emailsave") {
+			saveEmail();
+			return $str . displayEmail(escape($_POST['emailtemplates']));
+		}
+	}
         if(isset($_GET['subaction']) && $_GET['subaction']=='template')
 	{ 
 		;

@@ -423,7 +423,7 @@ class messenger {
 				$mail_filepath= MAILPATH."/".LANGUAGE."/email/$mailtype.txt"; 
 				$drop_header = '';
 				
-				if(!file_exists($mail_filepath)) {displayerror("NO FILE called $mail_filepath FOUND !");} //check file
+				if(!file_exists($mail_filepath)) {displayerror(safe_html("NO FILE called $mail_filepath FOUND !"));} //check file
 				if(($data = @file_get_contents($mail_filepath)) === false) {displayerror("$mail_filepath FILE READ ERROR !");} //read contents
 				
 				//escape quotes
