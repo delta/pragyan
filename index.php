@@ -121,23 +121,18 @@ $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 require_once($sourceFolder."/registration.lib.php");
 
 if($debugSet == "on") {
-	$DEBUGINFO .= "Page Full text path : ".$pageFullPath."<br />\n";
-	$DEBUGINFO .= "UID : ".getUserId()."<br />\n";
-	$DEBUGINFO .= "GIDS : ".arraytostring(getGroupIds($userId))."<br />\n";
-	$DEBUGINFO .= "Action : ".$action."<br />\n";
-	$DEBUGINFO .= "Get Vars : ".arraytostring($_GET)."<br />\n";
-	$DEBUGINFO .= "Page Id : ".$pageId."<br />\n";
-	$DEBUGINFO .= "Page id path : ".arraytostring($pageIdArray)."\n<br />";
-	$DEBUGINFO .= "Title : ".$TITLE."\n<br />";
-	$DEBUGINFO .= "Breadcrumbs : ".$BREADCRUMB."\n";
-	$DEBUGINFO .= "Menu Bar : ".$MENUBAR."\n<br />";
-	$DEBUGINFO .= "Action Bar for page : ".$ACTIONBARPAGE."\n<br />";
-	$DEBUGINFO .= "Action Bar for module : ".$ACTIONBARMODULE."\n<br />";
-	$DEBUGINFO .= "SERVER info : ".arraytostring($_SERVER)."\n<br />";
-	$DEBUGINFO .= "POST info : ".arraytostring($_POST)."\n<br />";
-	$DEBUGINFO .= "FILES info : ".arraytostring($_FILES)."\n<br />";
-	$DEBUGINFO .= "SESSION info : ".arraytostring($_SESSION)."\n<br />";
-	print_r($_SERVER);
+	$DEBUGINFO .= "Page Full text path : ".$pageFullPath."<br /><br />\n";
+	$DEBUGINFO .= "UID : ".getUserId()."<br /><br />\n";
+	$DEBUGINFO .= "GIDS : ".arraytostring(getGroupIds($userId))."<br /><br />\n";
+	$DEBUGINFO .= "Action : ".$action."<br /><br />\n";
+	$DEBUGINFO .= "Get Vars : ".arraytostring($_GET)."<br /><br />\n";
+	$DEBUGINFO .= "Page Id : ".$pageId."<br /><br />\n";
+	$DEBUGINFO .= "Page id path : ".arraytostring($pageIdArray)."\n<br /><br />";
+	$DEBUGINFO .= "Title : ".$TITLE."\n<br /><br />";
+	$DEBUGINFO .= "SERVER info : ".arraytostring($_SERVER)."\n<br /><br />";
+	$DEBUGINFO .= "POST info : ".arraytostring($_POST)."\n<br /><br />";
+	$DEBUGINFO .= "FILES info : ".arraytostring($_FILES)."\n<br /><br />";
+	$DEBUGINFO .= "SESSION info : ".arraytostring($_SESSION)."\n<br /><br />";
 
 	if($DEBUGINFO!="")	displayinfo($DEBUGINFO);
 }

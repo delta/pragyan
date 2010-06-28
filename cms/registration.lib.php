@@ -129,7 +129,7 @@ FORM;
 				
 				$messenger = new messenger(false);
 				global $onlineSiteUrl;
-				$messenger->assign_vars(array('ACTIVATE_URL'=>"$onlineSiteUrl/+login&subaction=register&verify=$to&key=$key",'NAME'=>"$temp[user_fullname]",'WEBSITE'=>CMS_TITLE));
+				$messenger->assign_vars(array('ACTIVATE_URL'=>"$onlineSiteUrl/+login&subaction=register&verify=$to&key=$key",'NAME'=>"$temp[user_fullname]",'WEBSITE'=>CMS_TITLE,'DOMAIN'=>$onlineSiteUrl));
 
 				if ($messenger->mailer($to,$mailtype,$key,$from))
 					displayinfo("Activation link resent. Kindly check your e-mail for activation link.");

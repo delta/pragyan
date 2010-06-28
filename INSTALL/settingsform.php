@@ -407,8 +407,8 @@ $settingsForm = <<<SETTINGSFORM
 		<tr>
 			<td>Activate user on registration?</td>
 			<td>
-				<label><input type="radio" name="optDefaultUserActive" id="optDefaultUserActiveYes" value="Yes" />Yes</label>
-				<label><input type="radio" name="optDefaultUserActive" id="optDefaultUserActiveNo" value="No" checked="checked" />No</label>
+				<label><input type="radio" name="optDefaultUserActive" id="optDefaultUserActiveYes" value="Yes" checked="checked" />Yes</label>
+				<label><input type="radio" name="optDefaultUserActive" id="optDefaultUserActiveNo" value="No" />No</label>
 			</td>
 		</tr>
 		<tr>
