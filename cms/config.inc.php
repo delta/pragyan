@@ -11,13 +11,13 @@
 define("MYSQL_SERVER","localhost");
 
 // defining the username to connect to the database.
-define("MYSQL_USERNAME","pragyan");
+define("MYSQL_USERNAME","root");
 
 // defining the password used to connect to the database.
-define("MYSQL_PASSWORD","pragyan");
+define("MYSQL_PASSWORD","root");
 
 // defining the name of the database to connect to.
-define("MYSQL_DATABASE","pragyan");
+define("MYSQL_DATABASE","workspace");
 
 // defining the prefix which is appended to every table of Pragyan CMS.
 // this feature allows you to have multiple websites using the same database.
