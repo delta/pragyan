@@ -1,3 +1,17 @@
+Revision 56  : to learn svn commit by  chakradarraju  on  2010-06-30 00:10:5
+----------------------------------------------------------------------------------------------
+Revision 55  : Added Email Registrants in Admin by  abhishekdelta  on  2010-06-29 01:11:4
+----------------------------------------------------------------------------------------------
+Revision 54  : Bugfixes in default emails by  abhishekdelta  on  2010-06-28 18:53:0
+----------------------------------------------------------------------------------------------
+Revision 53  : fixed a bug in previous commit by  abhishekdelta  on  2010-06-28 08:34:1
+----------------------------------------------------------------------------------------------
+Revision 52  : Removed Pragyan stuff from email templates by  abhishekdelta  on  2010-06-28 08:31:1
+----------------------------------------------------------------------------------------------
+Revision 51  : Added site footer option and changed admin CSS by  abhishekdelta  on  2010-06-28 04:43:5
+----------------------------------------------------------------------------------------------
+Revision 50  : Fixed problem with no_img.gif in PDF plugin by  abhishekdelta  on  2010-06-26 03:34:3
+----------------------------------------------------------------------------------------------
 Revision 49  : Bugfixes in users,settingsform and installation by  abhishekdelta  on  2010-06-26 00:31:0
 ----------------------------------------------------------------------------------------------
 Revision 48  : Fixed forum module by  abhishekdelta  on  2010-06-24 04:34:4
