@@ -244,51 +244,45 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 
 
 	/// Retrieve all that work as HTML
-	$htmlOutput = '<table border="1"><th nowrap="nowrap">User/Group Name</th>';
-	/// The column headers
-	for($i = 0; $i < $permCount; $i++) {
-		$htmlOutput .= '<th nowrap="nowrap">' . $permList[$permIds[$i]][0] . ' - ' . $permList[$permIds[$i]][1] . '</th>';
-	}
+	$htmlOutput = '<table border="1"><tr><td bgcolor=#C0C0C0></td><th colspan="'. (count($modifiableGroups)) . '" align="center">GROUPS</th>
+			<th colspan="'. $userCount . '" align="center">USERS</th>
+			</tr>
+			<tr><th nowrap="nowrap">User/Group Name --></th>';
+	
 
-	$htmlOutput .= '<tr><th colspan="'. ($permCount + 1) . '" align="left">Groups</th></tr>';
-
-	/// First the groups
 	for($i = 0; $i < count($modifiableGroups); $i++) {
-		$htmlOutput .= '<tr><td>' . $groupNames[$modifiableGroups[$i]] . '</td>';
-
-		for($j = 0; $j < $permCount; $j++) {
-			$htmlOutput .= '<td>';
-			if(isset($groupEffectivePermissions[$modifiableGroups[$i]][$permIds[$j]])) {
-				$htmlOutput .= $groupEffectivePermissions[$modifiableGroups[$i]][$permIds[$j]] === true ? 'Yes' : 'No';
-			}
-			else {
-				$htmlOutput .= 'Unset';
-			}
-			$htmlOutput .= "</td>\n";
+		$htmlOutput .= '<th>' . $groupNames[$modifiableGroups[$i]] . '</th>';
 		}
-		$htmlOutput .= "</tr>\n";
-	}
-
-	$htmlOutput .= '<tr><th colspan="'. ($permCount + 1) . '" align="left">Users</th></tr>';
-
-	/// Then the users
 	for($i = 0; $i < $userCount; $i++) {
-		$htmlOutput .= '<tr><td>' . $userNames[$userIds[$i]] . '</td>';
-
-		for($j = 0; $j < $permCount; $j++) {
+		$htmlOutput .= '<th>' . $userNames[$userIds[$i]] . '</th>';
+		}
+		$htmlOutput .= "</tr>";
+		
+	for($i = 0; $i < $permCount; $i++) {
+		$htmlOutput .= '<tr><th nowrap="nowrap">' . $permList[$permIds[$i]][0] . ' - ' . $permList[$permIds[$i]][1] . '</th>';
+		for($j = 0; $j < count($modifiableGroups); $j++) {
 			$htmlOutput .= '<td>';
-			if(isset($userEffectivePermissions[$userIds[$i]][$permIds[$j]])) {
-				$htmlOutput .= $userEffectivePermissions[$userIds[$i]][$permIds[$j]] === true ? 'Yes' : 'No';
+			if(isset($groupEffectivePermissions[$modifiableGroups[$j]][$permIds[$i]])) {
+				$htmlOutput .= $groupEffectivePermissions[$modifiableGroups[$j]][$permIds[$i]] === true ? 'Yes' : 'No';
 			}
 			else {
 				$htmlOutput .= 'Unset';
 			}
-			$htmlOutput .= "</td>\n";
+			$htmlOutput .= "</td>";
+			}
+		for($j = 0; $j < $userCount; $j++) {
+			$htmlOutput .= '<td>';
+			if(isset($userEffectivePermissions[$userIds[$j]][$permIds[$i]])) {
+				$htmlOutput .= $userEffectivePermissions[$userIds[$j]][$permIds[$i]] === true ? 'Yes' : 'No';
+			}
+			else {
+				$htmlOutput .= 'Unset';
+			}
+			$htmlOutput .= "</td>";
 		}
-		$htmlOutput .= "</tr>\n";
-	}
+	}	
 	$htmlOutput .= "</table>\n";
-
+	
 	return $htmlOutput;
 }
 
