@@ -54,7 +54,8 @@ php_value LimitRequestBody 63963136
 ####    or assuming the directory where this file is kept is webserverRoot/workspace6/pragyan_v2
 
 #BASEDIRECTORY
-RewriteBase /workspace/pragyan/trunk
+RewriteBase /workspace/pragyan
+RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
 RewriteCond %{REQUEST_URI} ^/workspace/pragyan/trunk/$
 RewriteCond %{REQUEST_URI} ^/workspace/pragyan/$
 
