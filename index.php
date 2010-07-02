@@ -84,7 +84,16 @@ logInfo (getUserEmail($userId),$userId, $pageId, $pageFullPath, getPageModule($p
 if ($pageId === false) { ///<Following also used in download.lib.php
 	header("http/1.0 404 Not Found" );
 	echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
-		 "<p>The requested URL ".$_SERVER['SCRIPT_URL']." was not found on this server.</p><hr>" .
+		 "<p>The requested URL was not found on this server.</p><hr>" .
+		 "$_SERVER[SERVER_SIGNATURE]</body></html>";
+	exit();
+}
+if(URLSecurityCheck($_GET))
+{
+	header("http/1.0 400 Bad Request" );
+	echo "<html><head><title>400 Bad Request</title></head><body><h1>Bad Request</h1>" .
+		 "<p>The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/>
+		 If you believe its a correct URL, please contact the administrator immediately.</p><hr>" .
 		 "$_SERVER[SERVER_SIGNATURE]</body></html>";
 	exit();
 }
@@ -103,6 +112,7 @@ if (getTitle($pageId, $action, $TITLE))
 	$TITLE = CMS_TITLE . " - $TITLE";
 else
 	$TITLE = CMS_TITLE;
+
 $CONTENT = getContent($pageId, $action, $userId, $permission);
 
 require_once($sourceFolder."/inheritedinfo.lib.php");
