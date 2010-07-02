@@ -53,8 +53,9 @@ generate_text_log()
  }
  else
  {
-  print "Revision " revno " : " $1 " by " username " on " date
-  print "----------------------------------------------------------------------------------------------"
+  print "Revision " revno " by " username " on " date 
+  print "Description : " $1
+  print "--------------------------------------------------------------------------------"
  } 
  }
  END{
