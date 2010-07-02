@@ -136,7 +136,7 @@ INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
 
 --
 -- Dumping data for table `pragyanV3_groups`
---
+-- 
 
 INSERT IGNORE INTO `pragyanV3_groups` (`group_id`, `group_name`, `group_description`, `group_priority`, `form_id`) VALUES
 (2, 'admin', 'The Administrators', 100, 0);
@@ -165,56 +165,57 @@ INSERT IGNORE INTO `pragyanV3_pages` (`page_id`, `page_name`, `page_parentid`, `
 -- Dumping data for table `pragyanV3_permissionlist`
 --
 
-INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`, `page_module`, `perm_action`, `perm_text`, `perm_rank`, `perm_description`) VALUES
-(0, 'page', 'admin', 'Admin', 0, ''),
-(1, 'page', 'grant', 'Permissions', 0, 'Grant Permissions'),
-(2, 'page', 'settings', 'Settings', 0, 'Page Settings'),
-(3, 'page', 'pdf', 'PDF', 0, 'Convert into PDF'),
-(4, 'article', 'create', 'Create', 8, 'Create an aritcle'),
-(5, 'article', 'view', 'View', 0, 'View the article'),
-(6, 'article', 'edit', 'Edit', 0, 'Edit the article'),
-(11, 'form', 'create', 'Create Form', 19, 'Create a new Form'),
-(12, 'form', 'view', 'Register', 0, 'Register to a form'),
-(13, 'form', 'viewregistrants', 'View Registrants', 0, 'View Registrants'),
-(14, 'form', 'editregistrants', 'Edit Registrants', 0, 'Edit Registrants'' info'),
-(15, 'form', 'editform', 'Edit Form', 0, 'Edit the structure of the form'),
-(16, 'forum', 'create', 'Create', 0, 'Create a forum'),
-(17, 'forum', 'view', 'View', 0, 'View the posts'),
-(18, 'forum', 'moderate', 'Moderate', 0, 'Moderate the forums'),
-(19, 'forum', 'post', 'New Post', 0, 'Post in forums'),
-(20, 'gallery', 'create', 'Create Gallery', 18, 'Create a new Gallery'),
-(21, 'gallery', 'view', 'View Gallery', 0, 'View the Gallery'),
-(22, 'gallery', 'edit', 'Edit', 0, 'Edit the gallery'),
-(23, 'hospi', 'create', 'Create', 1, 'Create the hospi module'),
-(24, 'hospi', 'view', 'View', 1, 'View the hospi module'),
-(25, 'hospi', 'accomodate', 'Accomodate', 1, 'Accomodate the hospi module'),
-(26, 'hospi', 'addroom', 'Add Room', 1, 'Add Room to the hospi module'),
-(27, 'news', 'create', 'Create News', 20, 'Create a new News'),
-(28, 'news', 'view', 'View', 0, 'VIew'),
-(29, 'news', 'rssview', 'RSS View', 0, 'Retrieve News as RSS'),
-(30, 'news', 'edit', 'Edit News', 0, 'Edit the news item'),
-(31, 'poll', 'create', 'Create Poll', 0, 'Create a Poll'),
-(32, 'poll', 'view', 'Vote', 0, 'Vote for a poll'),
-(33, 'pr', 'create', 'Create', 0, 'Create a PR module'),
-(34, 'pr', 'view', 'View', 0, 'View a PR module'),
-(35, 'quiz', 'create', 'Create', 0, 'Create a New Quiz'),
-(36, 'quiz', 'view', 'View', 0, 'Take the quiz'),
-(37, 'quiz', 'edit', 'Edit', 2, 'Edit the Quiz'),
-(38, 'quiz', 'correct', 'Correct', 3, 'Correct the Quiz Attempts'),
-(39, 'qaos', 'create', 'Create', 0, 'Create the QAOS module'),
-(40, 'qaos', 'view', 'View', 0, 'View QAOS'),
-(41, 'qaos', 'edit', 'Edit', 0, 'Edit QAOS'),
-(42, 'qaos', 'qaosadmin', 'Qaos Admin', 1, 'Admin the QAOS'),
-(43, 'qaos', 'score', 'Score', 2, 'Score the QAOS'),
-(44, 'sitemap', 'create', 'Create', 0, 'Create a sitemap'),
-(45, 'sitemap', 'view', 'View', 0, 'View a sitemap'),
-(46, 'scrolltext', 'scrollview', 'Scrollview', 1, 'scrollview the scrolltext'),
-(47, 'scrolltext', 'edit', 'Edit', 1, 'edit the scrolltext'),
-(48, 'scrolltext', 'view', 'View', 1, 'view the scrolltext'),
-(49, 'scrolltext', 'create', 'Create', 1, 'create the scrolltext'),
-(50, 'sqlquery', 'view', 'View', 1, 'View'),
-(51, 'sqlquery', 'edit', 'Edit', 2, 'Edit'),
-(52, 'sqlquery', 'create', 'Create', 0, 'Create');
+INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `perm_text`, `perm_rank`, `perm_description`) VALUES
+('page', 'admin', 'Admin', 0, ''),
+('page', 'grant', 'Permissions', 0, 'Grant Permissions'),
+('page', 'settings', 'Page Settings', 0, 'Page Settings'),
+('page', 'pdf', 'PDF', 0, 'Convert into PDF'),
+('article', 'create', 'Create', 8, 'Create an aritcle'),
+('article', 'view', 'View', 0, 'View the article'),
+('article', 'edit', 'Edit', 0, 'Edit the article'),
+('form', 'create', 'Create Form', 19, 'Create a new Form'),
+('form', 'view', 'Register', 0, 'Register to a form'),
+('form', 'viewregistrants', 'View Registrants', 0, 'View Registrants'),
+('form', 'editregistrants', 'Edit Registrants', 0, 'Edit Registrants'' info'),
+('form', 'editform', 'Edit Form', 0, 'Edit the structure of the form'),
+('forum', 'create', 'Create', 0, 'Create a forum'),
+('forum', 'view', 'View', 0, 'View the posts'),
+('forum', 'moderate', 'Moderate', 0, 'Moderate the forums'),
+('forum', 'post', 'New Post', 0, 'Post in forums'),
+('forum', 'forumsettings', 'Forum Settings',0,'Change forum settings'),
+('gallery', 'create', 'Create Gallery', 18, 'Create a new Gallery'),
+('gallery', 'view', 'View Gallery', 0, 'View the Gallery'),
+('gallery', 'edit', 'Edit', 0, 'Edit the gallery'),
+('hospi', 'create', 'Create', 1, 'Create the hospi module'),
+('hospi', 'view', 'View', 1, 'View the hospi module'),
+('hospi', 'accomodate', 'Accomodate', 1, 'Accomodate the hospi module'),
+('hospi', 'addroom', 'Add Room', 1, 'Add Room to the hospi module'),
+('news', 'create', 'Create News', 20, 'Create a new News'),
+('news', 'view', 'View', 0, 'VIew'),
+('news', 'rssview', 'RSS View', 0, 'Retrieve News as RSS'),
+('news', 'edit', 'Edit News', 0, 'Edit the news item'),
+('poll', 'create', 'Create Poll', 0, 'Create a Poll'),
+('poll', 'view', 'Vote', 0, 'Vote for a poll'),
+('pr', 'create', 'Create', 0, 'Create a PR module'),
+('pr', 'view', 'View', 0, 'View a PR module'),
+('quiz', 'create', 'Create', 0, 'Create a New Quiz'),
+('quiz', 'view', 'View', 0, 'Take the quiz'),
+('quiz', 'edit', 'Edit', 2, 'Edit the Quiz'),
+('quiz', 'correct', 'Correct', 3, 'Correct the Quiz Attempts'),
+('qaos', 'create', 'Create', 0, 'Create the QAOS module'),
+('qaos', 'view', 'View', 0, 'View QAOS'),
+('qaos', 'edit', 'Edit', 0, 'Edit QAOS'),
+('qaos', 'qaosadmin', 'Qaos Admin', 1, 'Admin the QAOS'),
+('qaos', 'score', 'Score', 2, 'Score the QAOS'),
+('sitemap', 'create', 'Create', 0, 'Create a sitemap'),
+('sitemap', 'view', 'View', 0, 'View a sitemap'),
+('scrolltext', 'scrollview', 'Scrollview', 1, 'scrollview the scrolltext'),
+('scrolltext', 'edit', 'Edit', 1, 'edit the scrolltext'),
+('scrolltext', 'view', 'View', 1, 'view the scrolltext'),
+('scrolltext', 'create', 'Create', 1, 'create the scrolltext'),
+('sqlquery', 'view', 'View', 1, 'View'),
+('sqlquery', 'edit', 'Edit', 2, 'Edit'),
+('sqlquery', 'create', 'Create', 0, 'Create');
 --
 -- Dumping data for table `pragyanV3_templates`
 --
@@ -236,13 +237,12 @@ INSERT IGNORE INTO `pragyanV3_usergroup` (`user_id`, `group_id`) VALUES
 
 --
 -- Dumping data for table `pragyanV3_userpageperm`
---
+-- Non-admin users by default have permissions to View Article and convert page into PDF.
 
-INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) VALUES
-('group', 0, 0, 3, 'Y'),
-('group', 0, 0, 5, 'Y'),
-('group', 0, 0, 53, 'Y');
-INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) SELECT 'group', 0, 2, `perm_id`, 'Y' FROM `pragyanV3_permissionlist` WHERE 1;
+INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) SELECT 
+'group', 0, 0, `perm_id`, 'Y' FROM `pragyanV3_permissionlist` WHERE `perm_action` IN ('view','pdf') AND `page_module` IN ('page','article','gallery','news','sitemap');
+INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) SELECT 
+'group', 0, 2, `perm_id`, 'Y' FROM `pragyanV3_permissionlist` WHERE 1;
 
 --
 -- Dumping data for table `pragyanV3_userprofile_elementdata`

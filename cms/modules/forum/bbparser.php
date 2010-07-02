@@ -14,11 +14,11 @@ function phpentities($text) {
 	return $text;
 }
 // Parse smiley bbcode into HTML images
-function parsesmileys($message) {
-	global $urlRequestRoot,$sourceFolder,$moduleFolder,$cmsFolder;
-
+global $urlRequestRoot,$sourceFolder,$moduleFolder,$cmsFolder;
 $imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/";
 define("IMAGES","$imgpath");
+function parsesmileys($message) {
+	global $IMAGES;
 	$smiley = array(
 		"#\:\)#si" => "<img src='".IMAGES."smile.gif' alt='smiley'>",
 		"#\;\)#si" => "<img src='".IMAGES."wink.gif' alt='smiley'>",
@@ -33,7 +33,11 @@ define("IMAGES","$imgpath");
 	foreach($smiley as $key=>$smiley_img) $message = preg_replace($key, $smiley_img, $message);
 	return $message;
 }
-
+function parsenewline($text) {
+		$text = preg_replace('#\<br/\>#si', '[br/]', $text);
+		$text = preg_replace('#\<br /\>#si', '[br /]', $text);
+		return $text;
+}
 // Show smiley icons in comments, forum and other post pages
 function displaysmileys($textarea) {
 	$smiles = "";
@@ -55,11 +59,11 @@ function displaysmileys($textarea) {
 // Parse bbcode into HTML code
 function parseubb($text) {
 	$text = preg_replace('#\[b\](.*?)\[/b\]#si', '<b>\1</b>', $text);
-
 	$text = preg_replace('#\[i\](.*?)\[/i\]#si', '<i>\1</i>', $text);
 	$text = preg_replace('#\[u\](.*?)\[/u\]#si', '<u>\1</u>', $text);
 	$text = preg_replace('#\[center\](.*?)\[/center\]#si', '<center>\1</center>', $text);
-
+	$text = preg_replace('#\[br/\]#si', '<br/>', $text);
+	$text = preg_replace('#\[br /\]#si', '<br />', $text);
 	$text = preg_replace('#\[url\]([\r\n]*)(http://|ftp://|https://|ftps://)([^\s\'\";\+]*?)([\r\n]*)\[/url\]#si', '<a href=\'\2\3\' target=\'_blank\'>\2\3</a>', $text);
 	$text = preg_replace('#\[url\]([\r\n]*)([^\s\'\";\+]*?)([\r\n]*)\[/url\]#si', '<a href=\'http://\2\' target=\'_blank\'>\2</a>', $text);
 	$text = preg_replace('#\[url=([\r\n]*)(http://|ftp://|https://|ftps://)([^\s\'\";\+]*?)\](.*?)([\r\n]*)\[/url\]#si', '<a href=\'\2\3\' target=\'_blank\'>\4</a>', $text);
