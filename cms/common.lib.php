@@ -17,6 +17,8 @@ function disconnect() {
 	mysql_close();
 }
 
+/** Security Functions Begin, by Abhishek (For Usage, read Security Guidelines)**/
+
 /** To escape the database queries for avoiding SQL injection attacks */
 
 function escape($query)
@@ -27,12 +29,25 @@ function escape($query)
 	return $query;
 }
 
+/** To protect against writing dangerous URLs, Returns true if it detects a risk, More improvement to be done */
+
+function URLSecurityCheck($getvars)
+{
+	foreach($getvars as $var=>$val)
+	{
+		if(preg_match("/[<>]/",$var) || preg_match("/[<>]/",$val)) 
+			return true;
+	}
+	return false;
+}
+
 /** To prevent XSS attacks  */
 
 function safe_html($html)
 {
 	return htmlspecialchars(strip_tags($html));
 }
+/** Security Functions Ends **/
 
 /** Load Templates into the database */
 

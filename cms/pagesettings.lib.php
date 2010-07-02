@@ -394,7 +394,7 @@ FORMDISPLAY;
 	        </table>
 
 
-    		<input type="submit" name="btnSubmit" value="Submit" />&nbsp;&nbsp;<input type="reset" name="btnReset" value="Reset" />
+    		<input type="submit" name="btnSubmit" value="Submit"/>&nbsp;&nbsp;<input type="reset" name="btnReset" value="Reset" />
       	</fieldset>
       	<a href="#topquicklinks">Top</a>
     </form>
@@ -527,10 +527,10 @@ function pagesettings($pageId, $userId) {
 	require_once($sourceFolder."/tree.lib.php");
 
 	if(isset($_GET['displayinfo'])) {
-		displayinfo($_GET['displayinfo']);
+		displayinfo(safe_html($_GET['displayinfo']));
 	}
 	if(isset($_GET['displayerror'])) {
-		displayerror($_GET['displayerror']);
+		displayerror(safe_html($_GET['displayerror']));
 	}
 	if (isset ($_GET['subaction']))	 {
 		if($_GET['subaction']=="pagesettings") {
