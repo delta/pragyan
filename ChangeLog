@@ -1,3 +1,12 @@
+Revision 63  by  abhishekdelta  on  2010-07-03 03:42:1
+Description : Fixed Forum Module : patch by Balanivash
+--------------------------------------------------------------------------------
+Revision 62  by  abhishekdelta  on  2010-07-03 03:19:1
+Description : Added security check for URLs that contains <,>
+--------------------------------------------------------------------------------
+Revision 61  by  abhishekdelta  on  2010-07-02 20:32:1
+Description : Modified svnlogger script
+--------------------------------------------------------------------------------
 Revision 60  by  abhishekdelta  on  2010-07-02 20:14:3
 Description : Adding support for user-specified MySQL server
 --------------------------------------------------------------------------------

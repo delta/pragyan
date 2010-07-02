@@ -131,13 +131,17 @@ class forum implements module {
 				$dontallowselected = "";
 				$lallowselected = "";
 				$ldontallowselected = "";
+				
 				if($forum_moderated==1) $moderatedselected = 'selected="selected"';
 				else 					$publicselected = 'selected="selected"';
 				if($allow_delete_posts==1) $allowselected = 'selected="selected"';
 				else 					$dontallowselected = 'selected="selected"';
 				if($allow_like_posts==1) $lallowselected = 'selected="selected"';
-				else 					$ldontallowselected = 'selected="selected"';
+				else $ldontallowselected = 'selected="selected"';
+				global $ICONS;
 				$forumHtml .=<<<PRE
+				<fieldset>
+				<legend>{$ICONS['Forum Settings']['small']}Forum Settings</legend>
 								<form method="post" name="forum_access" action="./+forumsettings">
 				<table><tr><td>
 				Choose Forum Access Level  </td><td><select name="mod_permi" style="width:100px;">
@@ -163,6 +167,7 @@ class forum implements module {
 				</tr></table>
 				<input type="submit" value="submit">
 				</form>
+				</fieldset>
 PRE;
 		return $forumHtml;
 	}
@@ -230,9 +235,12 @@ PRE;
 			$result1 = mysql_query($query1);
 			$num_rows = mysql_num_rows($result);
 			$num_rows1 = mysql_num_rows($result1);
+			global $ICONS;
 			if ($result) {
+			
 				$action = "+post&subaction=create_thread";
 				$moderate =<<<PRE
+				<fieldset><legend>{$ICONS['Forum Moderate']['small']}Moderate Forum</legend>
 		<p align="left"><a href="$action" style="color:#0F5B96"><img src="$temp/newthread.gif" /></a></p>
         <table width="100%" border="0" align="center" cellpadding="3" cellspacing="1">
         <tr>
@@ -328,7 +336,7 @@ PRE;
 				        						'<img alt="" src="' . $temp . '/new_posts_icon.gif" align=left>' .
 				        								' &nbsp;- Topic with new posts since last visit.<br /><br />' .
 				        								'<img alt="" src="' . $temp . '/no_new_posts_icon.gif" align=left>' .
-				        										'&nbsp;- Topic with no new posts since last visit. </p><hr />';
+				        										'&nbsp;- Topic with no new posts since last visit. </p><hr /></fieldset>';
 			}
 			return $moderate;
 		} else {
@@ -840,6 +848,7 @@ PRE1;
 					$thread_Header .= '<a href="+post&subaction=post_reply&thread_id='.$thread_id.'"><img src="'.$temp.'/reply.gif" /></a>&nbsp';
 				}
 				$thread_Header .=<<<PRE
+				
 				<a href="+post&subaction=create_thread"><img src="$temp/newthread.gif" /></a></p>
 				<p align="right"><a href="+view"> << Go Back to Forum</a>&nbsp;
 				<table width="100%" border="1" cellpadding="4" cellspacing="2" id="forum" >
@@ -887,7 +896,7 @@ PRE;
 						$threadHtml .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
 					}
 					$threadHtml .='</td>
-					        <td class="ThreadAuthorBox" width="20%" rowspan="2"><strong> ' . $name . ' </a><br />';
+					        <td class="ThreadAuthorBox" width="25%" rowspan="2"><strong> ' . $name . ' </a><br />';
 				if ($threadUserId > 0) {
 					if ($threadUserId == $userId)
 						$lastLogin = $_SESSION['last_to_last_login_datetime'];
@@ -913,7 +922,7 @@ PRE;
 					 //compare the userID of the logged in user with that of the author of the current reply
 						{
 						$threadHtml .= '<a href="+view&subaction=delete_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
-										'<img src="'.$temp.'/delete_sm.gif"</a></span>';
+										'<img src="'.$temp.'/delete_sm.gif"></a></span>';
 					}
 			}
 			if($r['allow_like_posts'] == 1) {
@@ -927,15 +936,15 @@ PRE;
 						if(mysql_num_rows($re)==0 && mysql_num_rows($re1)==0)
 							{
 							$threadHtml .= '  <a href="+view&subaction=like_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
-										'  Like</a></span>';
+										'  <img title="Like this post" src="'.$temp.'/thumbs_up.gif"></a></span>';
 							$threadHtml .= '  <a href="+view&subaction=dislike_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
-										'  Disike</a></span>';
+										'  <img title="Dislike this post" src="'.$temp.'/thumbs_down.gif"></a></span>';
 							}
 						else {
 						if(mysql_num_rows($re)>0)
 							$threadHtml .= ' You Like this post';
 						else
-							$threadHtml .= ' You Disike this post';
+							$threadHtml .= ' You Dislike this post';
 						}
 						}
 			}

@@ -13,22 +13,15 @@
 $css=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/styles.css";
 $js=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/jscript.js";
 $imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/";
+global $ICONS;
 $editor=<<<FORUM
 
 <link rel="stylesheet" href="$css" type="text/css" />
 <script type="text/javascript" languauge="javascript" src="$js"></script>
 
 <div id="bbeditor">
-	<table cellpadding="0" cellspacing="0" width="100%">
-	<tbody><tr>
-
-	<td class="main-bg" valign="top">
-	<br><table cellpadding="0" cellspacing="0" width="100%">
-	<tbody><tr>
-	<td class="capmain">Post Thread</td>
-	</tr>
-	<tr>
-	<td class="main-body">
+<fieldset><legend>{$ICONS['Forum New Entry']['small']}Create New Entry</legend>
+	
 	<form name="inputform" method="post" action="$action" enctype="multipart/form-data">
 	<table class="tbl-border" cellpadding="0" cellspacing="0" width="100%">
 	<tbody><tr>
@@ -97,41 +90,32 @@ $editor=<<<FORUM
 
 	</td>
 	</tr>
-	<tr>
-	<td class="tbl2" valign="top" width="145">Options</td>
-	<td class="tbl1">
+	
 FORUM;
 global $userId;
 global $pageId;
 $moderate = getPermissions($userId,$pageId,'moderate','forum');
 if ($moderate) {
-		$editor .= '<input name="sticky" value="1" type="checkbox"> Make this Thread Sticky(Moderators only can post stickies!)<br>';
+		$editor .= '<tr>
+	<td class="tbl2" valign="top" width="145">Options</td>
+	<td class="tbl1">
+	<input name="sticky" value="1" type="checkbox"> Make this Thread Sticky(Moderators only can post stickies!)<br></td>
+	</tr>';
 }
 $editor.=<<<FORUM
-
-	</td>
-	</tr>
 	<tr><td>* = Mandatory Field</td></tr>
-	</tbody></table>
-	</td>
-	</tr>
-	</tbody></table>
-	<table cellpadding="0" cellspacing="0" width="100%">
-	<tbody><tr>
+	<tr>
 	<td colspan="2" class="tbl1" align="center">
 	<input name="preview" value="Preview " class="button" type="submit">
 	<input name="post" value="Post " class="button" type="submit">
 	</td>
 	</tr>
 	</tbody></table>
+	</td>
+	</tr>
+	</tbody></table>
 	</form>
-	</td>
-	</tr>
-	</tbody></table>
-	</td>
-
-	</tr>
-	</tbody></table>
+	</fieldset>
 </div>
 
 FORUM;

@@ -181,7 +181,7 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `pe
 ('forum', 'create', 'Create', 0, 'Create a forum'),
 ('forum', 'view', 'View', 0, 'View the posts'),
 ('forum', 'moderate', 'Moderate', 0, 'Moderate the forums'),
-('forum', 'post', 'New Post', 0, 'Post in forums'),
+('forum', 'post', 'New Topic', 0, 'Create new topic in forums'),
 ('forum', 'forumsettings', 'Forum Settings',0,'Change forum settings'),
 ('gallery', 'create', 'Create Gallery', 18, 'Create a new Gallery'),
 ('gallery', 'view', 'View Gallery', 0, 'View the Gallery'),
