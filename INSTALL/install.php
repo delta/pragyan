@@ -116,7 +116,7 @@ function indexSite() {
  */
 function saveConfigurationSettings() {
 	$configurationMap = array(
-			'txtMySQLServer' => 'MYSQL_SERVER',
+			'txtMySQLServerHost' => 'MYSQL_SERVER',
 			'txtMySQLUsername' => 'MYSQL_USERNAME',
 			'txtMySQLPassword' => 'MYSQL_PASSWORD',
 			'txtMySQLDatabase' => 'MYSQL_DATABASE',
@@ -145,6 +145,7 @@ function saveConfigurationSettings() {
 			'txtADSServerAddress' => 'AUTH_ADS_SERVER',
 			'txtADSNetworkName' => 'AUTH_ADS_NETWORK',
 			'txtADSUserDomain' => 'AUTH_ADS_DOMAIN',
+			'txtMySQLServerPort' => 'MYSQL_PORT'
 	);
 	
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
@@ -156,7 +157,8 @@ function saveConfigurationSettings() {
 		}
 			
 	}
-
+	if($MYSQL_PORT!="") $MYSQL_SERVER.=":$MYSQL_PORT";
+	
 	global $cmsFolder;
 
 	$configFileText = '';

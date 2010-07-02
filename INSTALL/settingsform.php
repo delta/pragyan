@@ -172,7 +172,7 @@ $settingsForm = <<<SETTINGSFORM
 
 	function validate_form()
 	{
-		var txtMySQLServer      = trim(document.SettingsForm.txtMySQLServer.value);
+		var txtMySQLServerHost  = trim(document.SettingsForm.txtMySQLServer.value);
 		var txtMySQLUsername    = trim(document.SettingsForm.txtMySQLUsername.value);
 		var txtMySQLPassword    = trim(document.SettingsForm.txtMySQLPassword.value);
 		var txtMySQLDatabase    = trim(document.SettingsForm.txtMySQLDatabase.value);
@@ -235,14 +235,14 @@ $settingsForm = <<<SETTINGSFORM
 		if(txtMySQLDatabase.length == 0) empty++;
 		if(txtMySQLPassword.length == 0) empty++;
 		if(txtMySQLUsername.length == 0) empty++;
-		if(txtMySQLServer.length == 0) empty++;
+		if(txtMySQLServerHost.length == 0) empty++;
 		
 		var error=0;
 		var message="Correct the following before proceeding : ";
 
-			if(!validate_domain(document.getElementById('txtMySQLServer'),1))
+			if(!validate_domain(document.getElementById('txtMySQLServerHost'),1))
 			{
-			message+="MySQL Server , ";
+			message+="MySQL Server Host , ";
 			error++;
 			}if(!validate_username(document.getElementById('txtMySQLUsername'),1))
 			{
@@ -339,8 +339,12 @@ $settingsForm = <<<SETTINGSFORM
 	<legend>Database Settings</legend>
 	<table border="0" width="580px">
 		<tr>
-			<td width="210px"><label for="txtMySQLServer">MySQL Server:</label></td>
-			<td><input type="text" name="txtMySQLServer" id="txtMySQLServer" value="localhost" onblur="validate_domain(this,0)" /></td>
+			<td width="210px"><label for="txtMySQLServerHost">MySQL Server Host:</label></td>
+			<td><input type="text" name="txtMySQLServerHost" id="txtMySQLServerHost" value="localhost" onblur="validate_domain(this,0)" /></td>
+		</tr>
+		<tr>
+			<td width="210px"><label for="txtMySQLServerPort">MySQL Server Port:<br/>(Leave blank if not sure) </label></td>
+			<td><input type="text" name="txtMySQLServerPort" id="txtMySQLServerPort" value="" onblur="validate_port(this,0)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtMySQLUsername">Username:</label></td>
