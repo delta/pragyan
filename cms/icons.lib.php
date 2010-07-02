@@ -19,7 +19,10 @@ $ICON_ARRAY=array(
 'Create New Page'=>"actions/document-new.png",
 'Copy or Move Page'=>"actions/edit-copy.png",
 'Page Inherited Info'=>"apps/preferences-desktop-theme.png",
-'Email Registrants'=>"actions/mail-reply-all.png"
+'Email Registrants'=>"actions/mail-reply-all.png",
+'Forum Settings'=>"emblems/emblem-system.png",
+'Forum Moderate'=>"actions/edit-clear.png",
+'Forum New Entry'=>"actions/window-new.png"
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)
