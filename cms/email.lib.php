@@ -27,6 +27,8 @@ function displayEmail($template = "") {
 	$emailTemplates = "<select id='emailtemplates' name='emailtemplates'><option value='new'{$newSelected}>Create New Template</option>";
 	$dir = "$cmsFolder/languages/" . LANGUAGE . "/email/templates/";
 	$handle = opendir($dir);
+	$subject="";
+	$content="";
 	while($file = readdir($handle)) {
 		if(substr($file, -4, 4) == ".txt") {
 			$name = substr($file, 0, -4);
