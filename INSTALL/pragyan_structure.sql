@@ -138,6 +138,20 @@ CREATE TABLE IF NOT EXISTS `form_regdata` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `forum_like`
+--
+
+CREATE TABLE IF NOT EXISTS `forum_like` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `forum_thread_id` int(11) NOT NULL,
+  `forum_post_id` int(11) NOT NULL,
+  `forum_like_user_id` int(11) NOT NULL,
+  `like_status` enum('0','1') NOT NULL COMMENT '(0-Dislike 1-like)'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `forum_module`
 --
 
@@ -149,10 +163,10 @@ CREATE TABLE IF NOT EXISTS `forum_module` (
   `last_post_userid` int(11) NOT NULL,
   `last_post_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `total_thread_count` int(11) DEFAULT '1',
+  `allow_delete_posts` enum('0','1') NOT NULL DEFAULT '0' COMMENT '(1-Allow 0-Don''t Allow)',
+  `allow_like_posts` enum('0','1') NOT NULL DEFAULT '0' COMMENT '(1-Allow 0-Don''t Allow)',
   PRIMARY KEY (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `forum_posts`
@@ -203,7 +217,6 @@ CREATE TABLE IF NOT EXISTS `forum_visits` (
   `user_id` int(11) NOT NULL,
   `last_visit` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 
 -- --------------------------------------------------------
 
@@ -465,7 +478,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
 --
 
 CREATE TABLE IF NOT EXISTS `pragyanV3_permissionlist` (
-  `perm_id` int(11) NOT NULL,
+  `perm_id` int(11) AUTO_INCREMENT NOT NULL,
   `page_module` enum('page','article','billing','form','forum','gallery','hospi','news','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search','newsletter','pdf') NOT NULL,
   `perm_action` varchar(100) NOT NULL,
   `perm_text` varchar(200) NOT NULL,

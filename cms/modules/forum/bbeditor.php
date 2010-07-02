@@ -15,9 +15,8 @@ $js=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/jscript.js";
 $imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/";
 $editor=<<<FORUM
 
-
 <link rel="stylesheet" href="$css" type="text/css" />
-<script type="text/javascript" language="javascript" src="$js"></script>
+<script type="text/javascript" languauge="javascript" src="$js"></script>
 
 <div id="bbeditor">
 	<table cellpadding="0" cellspacing="0" width="100%">
@@ -37,7 +36,7 @@ $editor=<<<FORUM
 	<table border="0" cellpadding="0" cellspacing="1" width="100%">
 	<tbody><tr>
 	<td class="tbl2" width="145">Subject*</td>
-	<td class="tbl2"><input name="subject" value="RE:$subject" class="textbox" maxlength="255" style="width: 250px;" type="text"></td>
+	<td class="tbl2"><input name="subject" value="$subject" class="textbox" maxlength="255" style="width: 250px;" type="text"></td>
 	</tr>
 	<tr>
 	<td class="tbl2" valign="top" width="145">Message*</td>
