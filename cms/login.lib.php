@@ -168,8 +168,10 @@ LOGIN;
 					$user_passwd = escape($_POST['user_password']);
 					$login_method = '';
 					
-					if($temp = getUserInfo($user_email)) { // chk if existsInDB
+					if($temp = getUserInfo($user_email)) { 
+						// check if exists in DB
 						$login_status = checkLogin($temp['user_loginmethod'],$temp['user_name'],$user_email,$user_passwd);
+						// This is to make sure when user logs in through LDAP, ADS or IMAP accounts, his passwords should be changed in database also, incase its old.
 						if ($login_status)
 							updateUserPassword($user_email,$user_passwd); //update passwd in db
 					}
@@ -193,7 +195,7 @@ LOGIN;
 							if(($login_status = checkLogin('ldap',$user_name,$user_email,$user_passwd))) $login_method='ldap';
 						}
 						
-						if($login_status) { //create new user in db and activate the user
+						if($login_status) { //create new user in db and activate the user (only if user's login is valid)
 								$user_fullname = strtoupper($user_name);
 								$user_md5passwd = md5($user_passwd);
 								$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
@@ -216,7 +218,9 @@ LOGIN;
 							mysql_query($query) or die(mysql_error() . " in login.lib.L:111");
 							$_SESSION['last_to_last_login_datetime']=$temp['user_lastlogin'];
 							setAuth($temp['user_id']);
-							displayinfo("Welcome " . $temp['user_name'] . "!");
+							
+							//exit();
+							//displayinfo("Welcome " . $temp['user_name'] . "!");
 							return $temp['user_id'];
 							}
 						}

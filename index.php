@@ -55,7 +55,7 @@ if(isset($_GET['action']))
 	$action = strtolower(escape($_GET['action']));
 else	$action = "view";
 
-if ($action == 'keepalive')
+if ($action == 'keepalive') //just to check if server is alive, an alternative of Ping
 	die("OK: " . rand());
 
 checkInstallation($pageFullPath,$action);

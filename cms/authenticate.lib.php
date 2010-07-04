@@ -20,12 +20,13 @@ function getSessionData($user_id) {
 	return $sessionData;
 }
 
-/**Sets the cookie*/
+/**Sets the cookie and overwrites browser's cache of login information*/
 function setAuth($user_id) {
 	global $userId;
 	$userId = $user_id;
 	$_SESSION['userId'] = $userId;
 	$_SESSION['data'] = getSessionData($user_id);
+	header("location: ".$_SERVER["REQUEST_URI"]); // This is important to make sure that the login form is not resubmitted on clicking BACK
 	return $user_id;
 }
 
