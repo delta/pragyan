@@ -26,7 +26,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 			else
 				return $newUserId; ///<The login page
 		} else
-			displayinfo("You are already logged in ".getUserName($userId)."! Click <a href=\"./+logout\">here</a> to logout.");
+			displayinfo("You are logged in as ".getUserName($userId)."! Click <a href=\"./+logout\">here</a> to logout.");
 		return getContent($pageId, "view", $userId, getPermissions($userId,$pageId,"view"), $recursed=0);
 	}
 	if($action=="profile") {
