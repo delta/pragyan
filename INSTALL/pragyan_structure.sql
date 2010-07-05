@@ -706,27 +706,46 @@ CREATE TABLE IF NOT EXISTS `qaos_version` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `quiz_answersubmissions`
+--
+
+CREATE TABLE IF NOT EXISTS `quiz_answersubmissions` (
+  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
+  `quiz_sectionid` int(11) NOT NULL COMMENT 'Section ID',
+  `quiz_questionid` int(11) NOT NULL COMMENT 'Question ID',
+  `user_id` int(11) NOT NULL COMMENT 'User ID',
+  `quiz_questionrank` int(11) NOT NULL COMMENT 'The rank of the question in the page',
+  `quiz_submittedanswer` text NOT NULL COMMENT 'Answer submitted by the user',
+  `quiz_questionviewtime` datetime NOT NULL COMMENT 'When the user saw this question for the first time',
+  `quiz_answersubmittime` datetime NOT NULL COMMENT 'When the user submitted his answer',
+  `quiz_marksallotted` decimal(5,2) default NULL COMMENT 'Marks allotted for the given question',
+  UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`,`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `quiz_descriptions`
 --
 
 CREATE TABLE IF NOT EXISTS `quiz_descriptions` (
-  `page_modulecomponentid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Quiz Id',
-  `quiz_title` varchar(255) NOT NULL DEFAULT 'New Quiz' COMMENT 'Quiz Title',
-  `quiz_headertext` text NOT NULL COMMENT 'Quiz Header Text',
-  `quiz_submittext` text NOT NULL COMMENT 'Quiz Submit Text',
-  `quiz_quiztype` enum('simple','gre') NOT NULL DEFAULT 'simple' COMMENT 'Type of the quiz. Determines what functions are used for generating questions, submitting answers, etc.',
-  `quiz_testduration` time DEFAULT NULL COMMENT 'Duration of a Test',
-  `quiz_questionspertest` int(11) NOT NULL DEFAULT '20' COMMENT 'Number of questions per test',
-  `quiz_questionsperpage` int(11) DEFAULT NULL COMMENT 'Number of questions to show per page',
-  `quiz_objectivecount` int(11) DEFAULT NULL COMMENT 'Number of objective questions in the test. Number of subjective = total - this',
-  `quiz_questiongrouping` enum('shuffle','objectivefirst','subjectivefirst') NOT NULL DEFAULT 'shuffle' COMMENT 'How to group questions',
-  `quiz_startdatetime` datetime DEFAULT NULL COMMENT 'When the quiz opens',
-  `quiz_enddatetime` datetime DEFAULT NULL COMMENT 'When the quiz closes',
-  `quiz_showtesttimer` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether to show the time taken for the whole test',
-  `quiz_showpagetimer` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether to show the time taken by the user for the page he/she is on',
-  `quiz_startweight` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`page_modulecomponentid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+  `page_modulecomponentid` int(11) NOT NULL auto_increment COMMENT 'Quiz ID',
+  `quiz_title` varchar(260) NOT NULL,
+  `quiz_headertext` text NOT NULL COMMENT 'Text shown before the user clicks Start Test',
+  `quiz_submittext` text NOT NULL COMMENT 'Text shown once the user submits the test',
+  `quiz_quiztype` enum('simple','gre') NOT NULL,
+  `quiz_testduration` time NOT NULL,
+  `quiz_questionspertest` int(11) NOT NULL,
+  `quiz_questionsperpage` int(11) NOT NULL,
+  `quiz_timeperpage` int(11) NOT NULL,
+  `quiz_startdatetime` datetime NOT NULL COMMENT 'When the quiz should open to users',
+  `quiz_enddatetime` datetime NOT NULL COMMENT 'When the quiz should close to users',
+  `quiz_allowsectionrandomaccess` tinyint(1) NOT NULL COMMENT 'Whether sections can be accessed in any order by the user, or must be accessed in the same order they were created',
+  `quiz_mixsections` tinyint(1) NOT NULL,
+  `quiz_showquiztimer` tinyint(1) NOT NULL COMMENT 'Whether the quiz timer must be shown',
+  `quiz_showpagetimer` tinyint(1) NOT NULL COMMENT 'Whether the page timer must be shown',
+  PRIMARY KEY  (`page_modulecomponentid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 -- --------------------------------------------------------
 
@@ -735,13 +754,14 @@ CREATE TABLE IF NOT EXISTS `quiz_descriptions` (
 --
 
 CREATE TABLE IF NOT EXISTS `quiz_objectiveoptions` (
-  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz Id',
-  `quiz_questionid` int(11) NOT NULL COMMENT 'Question Id',
-  `quiz_questionoptionid` int(11) NOT NULL COMMENT 'Option Id',
-  `quiz_questionoption` text NOT NULL COMMENT 'Option Text',
-  `quiz_questionoptionrank` int(11) NOT NULL COMMENT 'Option Rank',
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_questionid`,`quiz_questionoptionid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
+  `quiz_sectionid` int(11) NOT NULL COMMENT 'Section ID',
+  `quiz_questionid` int(11) NOT NULL COMMENT 'Question ID',
+  `quiz_optionid` int(11) NOT NULL auto_increment COMMENT 'Option ID',
+  `quiz_optiontext` text NOT NULL COMMENT 'The option itself!',
+  `quiz_optionrank` int(11) NOT NULL COMMENT 'A rank, according to which options will be ordered',
+  PRIMARY KEY  (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`,`quiz_optionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -750,48 +770,51 @@ CREATE TABLE IF NOT EXISTS `quiz_objectiveoptions` (
 --
 
 CREATE TABLE IF NOT EXISTS `quiz_questions` (
-  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz Id',
-  `quiz_questionid` int(11) NOT NULL COMMENT 'Question Id',
-  `quiz_questiontitle` varchar(255) NOT NULL COMMENT 'Question Title',
-  `quiz_question` text NOT NULL COMMENT 'Question Text',
-  `quiz_questiontype` enum('subjective','singleselectobjective','multiselectobjective') NOT NULL DEFAULT 'subjective' COMMENT 'Question Type',
-  `quiz_questionweight` int(11) NOT NULL DEFAULT '1' COMMENT 'Question Weight',
-  `quiz_answermaxlength` int(11) DEFAULT NULL COMMENT 'Answer''s Maximum Length',
-  `quiz_rightanswer` text COMMENT 'Correct answer, used in scoring in case of objective, and given as a hint to the person correcting the paper in case of subjective',
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_questionid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
+  `quiz_sectionid` int(11) NOT NULL COMMENT 'Section ID',
+  `quiz_questionid` int(11) NOT NULL auto_increment COMMENT 'Question ID',
+  `quiz_question` text NOT NULL COMMENT 'The question',
+  `quiz_questiontype` enum('sso','mso','subjective') NOT NULL COMMENT 'Whether the question is single select objective, multiselect objective, or subjective',
+  `quiz_questionrank` int(11) NOT NULL COMMENT 'A rank to determine the ordering of questions in a section',
+  `quiz_questionweight` int(11) NOT NULL COMMENT 'Question difficulty level, based on which positive and negative marks may be alloted',
+  `quiz_answermaxlength` int(11) NOT NULL COMMENT 'Maximum number of characters in the answer, in case it''s a subjective question',
+  `quiz_rightanswer` text NOT NULL COMMENT 'The correct answer for the question. In case of sso, the option id, in case of mmo, a delimited set of options ids, and in case of subjective, a hint to the human correcting the quiz',
+  PRIMARY KEY  (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `quiz_quizattemptdata`
+-- Table structure for table `quiz_sections`
 --
 
-CREATE TABLE IF NOT EXISTS `quiz_quizattemptdata` (
-  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz Id',
-  `user_id` int(11) NOT NULL COMMENT 'User Id',
-  `quiz_starttime` datetime NOT NULL COMMENT 'Time when the user started attempting the test',
-  `quiz_submittime` datetime DEFAULT NULL COMMENT 'Time when the user submitted the entire test',
-  `quiz_marksallotted` decimal(4,2) DEFAULT NULL COMMENT 'Marks secured by the user',
-  PRIMARY KEY (`page_modulecomponentid`,`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `quiz_sections` (
+  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
+  `quiz_sectionid` int(11) NOT NULL auto_increment COMMENT 'Section ID',
+  `quiz_sectiontitle` varchar(260) NOT NULL COMMENT 'Section Title',
+  `quiz_sectionssocount` int(11) NOT NULL COMMENT 'Number of Single Select Objective questions to be taken from this section',
+  `quiz_sectionmsocount` int(11) NOT NULL COMMENT 'Number of Multiselect Objective questions to be taken from this section',
+  `quiz_sectionsubjectivecount` int(11) NOT NULL,
+  `quiz_sectiontimelimit` time NOT NULL COMMENT 'Amount of time a user may spend on this section (taken from the time when he first opened this section)',
+  `quiz_sectionquestionshuffled` tinyint(1) NOT NULL COMMENT 'Whether questions should be shuffled (1), or taken in the order given by question_rank (0)',
+  `quiz_sectionrank` int(11) NOT NULL,
+  PRIMARY KEY  (`page_modulecomponentid`,`quiz_sectionid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `quiz_submittedanswers`
+-- Table structure for table `quiz_userattempts`
 --
 
-CREATE TABLE IF NOT EXISTS `quiz_submittedanswers` (
-  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz Id',
-  `quiz_questionid` int(11) NOT NULL COMMENT 'Question Id',
-  `user_id` int(11) NOT NULL COMMENT 'User Id',
-  `quiz_submittedanswer` text COMMENT 'Answer submitted by the user',
-  `quiz_questionviewtime` datetime DEFAULT NULL COMMENT 'Time when the question was shown to the user',
-  `quiz_answersubmittime` datetime DEFAULT NULL COMMENT 'Time when the user submitted the answer',
-  `quiz_markssecured` float(3,2) DEFAULT NULL,
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_questionid`,`user_id`),
-  KEY `INDEX` (`page_modulecomponentid`,`user_id`)
+CREATE TABLE IF NOT EXISTS `quiz_userattempts` (
+  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
+  `quiz_sectionid` int(11) NOT NULL COMMENT 'Section ID',
+  `user_id` int(11) NOT NULL COMMENT 'User ID',
+  `quiz_attemptstarttime` datetime NOT NULL COMMENT 'Time when the user started the quiz',
+  `quiz_submissiontime` datetime default NULL COMMENT 'Time when the user submitted the quiz. If an entry exists here, with this field null, the user has started the quiz, but hasn''t completed it yet.',
+  `quiz_marksallotted` decimal(5,2) default NULL COMMENT 'Total marks the person scored',
+  UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`quiz_sectionid`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -801,11 +824,11 @@ CREATE TABLE IF NOT EXISTS `quiz_submittedanswers` (
 --
 
 CREATE TABLE IF NOT EXISTS `quiz_weightmarks` (
-  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz Id',
-  `quiz_questionweight` int(11) NOT NULL COMMENT 'Question Weight',
-  `quiz_weightpositivemarks` decimal(3,2) NOT NULL COMMENT 'Marks to be granted if a question of this weight is correctly answered',
-  `quiz_weightnegativemarks` decimal(3,2) NOT NULL COMMENT 'Marks to be deducted if a question of this weight is incorrectly answered',
-  PRIMARY KEY (`page_modulecomponentid`,`quiz_questionweight`)
+  `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
+  `question_weight` int(11) NOT NULL COMMENT 'Question Weight',
+  `question_positivemarks` decimal(5,2) NOT NULL COMMENT 'Marks allotted in case a correct answer was submitted',
+  `question_negativemarks` decimal(5,2) NOT NULL COMMENT 'Marks deducted in case a wrong answer was submitted',
+  UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`question_weight`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
