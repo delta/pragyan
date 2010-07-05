@@ -22,7 +22,9 @@ $ICON_ARRAY=array(
 'Email Registrants'=>"actions/mail-reply-all.png",
 'Forum Settings'=>"emblems/emblem-system.png",
 'Forum Moderate'=>"actions/edit-clear.png",
-'Forum New Entry'=>"actions/window-new.png"
+'Forum New Entry'=>"actions/window-new.png",
+'Website Administration'=>"categories/applications-development.png",
+'Access Permissions'=>"status/network-wireless-encrypted.png"
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)
