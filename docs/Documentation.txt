@@ -46,6 +46,7 @@ Pragyan CMS - Credits
     * new user management
     * new CKEditor 3.1
     * global settings
+    * security
 
 - Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
     * creator of the pragyan CMS project
