@@ -475,6 +475,7 @@ QUESTIONFORM;
 		$questionCount = $this->quizRow['quiz_questionsperpage'];
 		$questionQuery = "SELECT `quiz_questions`.`quiz_sectionid` AS `quiz_sectionid`, `quiz_questions`.`quiz_questionid` AS `quiz_questionid`, `quiz_question`, `quiz_questiontype`, `quiz_questionweight`, `quiz_answermaxlength`, `quiz_rightanswer`, `quiz_questionviewtime`, `quiz_answersubmittime` " .
 				"FROM `quiz_questions`, `quiz_answersubmissions` WHERE " .
+				"`quiz_questions`.`page_modulecomponentid` = {$this->quizId} AND " .
 				"`quiz_answersubmissions`.`user_id` = $userId AND " .
 				"`quiz_questions`.`page_modulecomponentid` = `quiz_answersubmissions`.`page_modulecomponentid` AND " .
 				"`quiz_questions`.`quiz_sectionid` = `quiz_answersubmissions`.`quiz_sectionid` AND " .
