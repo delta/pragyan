@@ -3,6 +3,14 @@ Pragyan CMS - Readme
 
  A CMS to facilitate collaborative content creation and updation.
 
+ Important Documents
+ ===================
+ + Developer's Instructions	: docs/DEVELOPER-README.txt
+ + Pragyan CMS Working Overview	: docs/DeveloperNotes.txt
+ + About Pragyan CMS and Team	: docs/Documentation.txt
+ + GNU GPL License 		: docs/LICENSE
+ + Installation Instructions 	: INSTALL/INSTALL.txt
+
   Version 3.0
   --------------
   http://www.pragyan.org
