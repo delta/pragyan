@@ -1,9 +1,11 @@
 <?php
+// For the messenger email class, see common.lib.php
+
 function getAllUsers() {
 	$ret = "";
-	$result = mysql_query("SELECT `user_name`,`user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+	$result = mysql_query("SELECT `user_name`,`user_id`,`user_fullname`,`user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
 	while($row = mysql_fetch_array($result))
-		$ret .= "'{$row['user_id']}' : '{$row['user_name']}', ";
+		$ret .= "'{$row['user_id']}' : '{$row['user_name']} - {$row['user_fullname']} [{$row['user_email']}]', ";
 	$ret = rtrim($ret,", ");
 	return $ret;	
 }

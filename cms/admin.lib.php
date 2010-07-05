@@ -232,9 +232,11 @@ function admin() {
 		displayinfo("It seems the site doesn't have index for the search to work. Click <a href='./+admin&indexsite=1'>here</a> to index the site.");
 	else if($result['diff'] > $threshold)
 		displayinfo("Your site index was created {$result['diff']} days before. Click <a href='./+admin&indexsite=2'>here</a> to reindex your site.");
-	$str = <<<ADMINPAGE
+	$str = "<p>Jump to <a href='#quicklinks'>Quicklinks</a></p>";
+	$quicklinks = <<<ADMINPAGE
 	<fieldset>
-	<legend>Website Administration</legend>
+	<legend>{$ICONS['Website Administration']['small']}Website Administration</legend>
+	<a name='quicklinks'></a>
 	<table class="iconspanel">
 	<tr>
 	<td><a href="./+admin&subaction=global">{$ICONS['Global Settings']['large']}<br/>Global Settings</a></td>
@@ -253,32 +255,32 @@ ADMINPAGE;
 	if(isset($_GET['subaction'])) {
 		require_once("email.lib.php");
 		if($_GET['subaction'] == "email")
-			return $str . displayEmail();
+			return $str . displayEmail() .$quicklinks;
 		else if($_GET['subaction'] == "openemail")
-			return $str . displayEmail(escape($_GET['name']));
+			return $str . displayEmail(escape($_GET['name'])).$quicklinks;
 		else if($_GET['subaction'] == "emailsend") {
 			sendEmail();
-			return $str . displayEmail(escape($_POST['emailtemplates']));
+			return $str . displayEmail(escape($_POST['emailtemplates'])).$quicklinks;
 		}
 		else if($_GET['subaction'] == "emailsave") {
 			saveEmail();
-			return $str . displayEmail(escape($_POST['emailtemplates']));
+			return $str . displayEmail(escape($_POST['emailtemplates'])).$quicklinks;
 		}
 	}
         if(isset($_GET['subaction']) && $_GET['subaction']=='template')
 	{ 
-		;
+		
 		if(isset($_GET['subsubaction']))
 		{
 			require_once("template.lib.php"); 
 			$op=handleTemplateMgmt();
 			if($op!="") return $op;
-			else return $str.templateManagementForm();
+			else return $str.templateManagementForm().$quicklinks;
 		}
-		else return $str.templateManagementForm();
+		else return $str.templateManagementForm().$quicklinks;
 	}
 	global $sourceFolder;	
-	if(!isset($_GET['subaction'])) return $str;
+	if(!isset($_GET['subaction'])) return $quicklinks;
 	require_once("users.lib.php");
 	$op="";$ophead="";
 	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
@@ -329,7 +331,7 @@ ADMINPAGE;
 	}
 	
 	
-	return $str.$op;
+	return $str.$op.$quicklinks;
 
 }
 
