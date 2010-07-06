@@ -333,10 +333,10 @@ MOVECOPY;
         	<br />
         <a name="topquicklinks"></a>
         <fieldset>
-        <legend>Quick Links</legend>
+        <legend>{$ICONS['Page Settings']['small']}Page Settings</legend>
         <table class='iconspanel'>
         <tr>
-        <td><a href='#pageinfoform'>{$ICONS['Page Settings']['large']}<br/>Page Settings</a></td>
+        <td><a href='#pageinfoform'>{$ICONS['Page Information']['large']}<br/>Page Information</a></td>
         <td><a href='#childpageform'>{$ICONS['Create New Page']['large']}<br/>Create New Page</a></td>
         <td><a href='#copymovepageform'>{$ICONS['Copy or Move Page']['large']}<br/>Copy or Move Page</a></td>
         <td><a href='#inheritinfoform'>{$ICONS['Page Inherited Info']['large']}<br/>Page Inherited Information</a></td>
@@ -346,7 +346,7 @@ MOVECOPY;
         
         <a name="pageinfoform"></a>
       	<fieldset>
-        	<legend>{$ICONS['Page Settings']['small']}Page Information</legend>
+        	<legend>{$ICONS['Page Information']['small']}Page Information</legend>
         	
 	        <table border="1" cellpadding="2px" cellspacing="2px">
 				<tr><td>Page path:</td><td>$pageFullPath</td></tr>
