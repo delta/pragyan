@@ -39,7 +39,27 @@ function getSuggestions($pattern) {
 	return join($suggestions, ',');
 }
 
+function renderArray($array) {
+	$ret = '';
+	foreach($array as $val)
+		$ret .= "'{$val}', ";
+	$ret = rtrim($ret, ", ");
+	return $ret;
+}
 
+function inner($smallobj) {
+	$ret = '';
+	foreach($smallobj as $key => $val) {
+		$temp = renderArray($val);
+		$ret .= "'{$key}' : [{$temp}], ";
+	}
+	$ret = rtrim($ret, ", ");
+	return $ret;
+}
+
+function json($objDesc) {
+	return "{'Y' : {" . inner($objDesc['Y']) . "}, 'N' : {" . inner($objDesc['N']) . "}}";
+}
 
 /**
  * Generates a table showing the permissions of all users and visible groups on a particular page
@@ -211,7 +231,7 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 
 
 	/// Calculate permissions as far as groups are concerned.
-	for($i = 0; $i <= $userCount; $i++) {
+	for($i = 0; $i < $userCount; $i++) {
 		if(!isset($userGroups[$userIds[$i]])) {
 			if($userIds[$i] == 0)
 				continue;
@@ -241,55 +261,88 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 			}
 		}
 	}
-
-
+	
+	$sortedGroupPerms = array('Y' => array(), 'N' => array());
+	$sortedUserPerms = array('Y' => array(), 'N' => array());
+	
+	foreach($groupEffectivePermissions as $groupid => $data) {
+		foreach($groupEffectivePermissions[$groupid] as $permid => $value) {
+			if($value === true) {
+				if(!isset($sortedGroupPerms['Y'][$groupid]))
+					$sortedGroupPerms['Y'][$groupid] = array();
+				$sortedGroupPerms['Y'][$groupid][] = $permid;
+			} else {
+				if(!isset($sortedGroupPerms['N'][$groupid]))
+					$sortedGroupPerms['N'][$groupid] = array();
+				$sortedGroupPerms['N'][$groupid][] = $permid;
+			}
+		}
+	}
+	
+	foreach($userEffectivePermissions as $userid => $data) {
+		foreach($userEffectivePermissions[$userid] as $permid => $value) {
+			if($value === true) {
+				if(!isset($sortedUserPerms['Y'][$userid]))
+					$sortedUserPerms['Y'][$userid] = array();
+				$sortedUserPerms['Y'][$userid][] = $permid;
+			} else {
+				if(!isset($sortedUserPerms['N'][$userid]))
+					$sortedUserPerms['N'][$userid] = array();
+				$sortedUserPerms['N'][$userid][] = $permid;
+			}
+		}
+	}
+	
+	$groupReturnText = json($sortedGroupPerms);
+	$userReturnText = json($sortedUserPerms);
+	
+	$ret = <<<RET
+permGroups = {$groupReturnText};
+permUsers = {$userReturnText};
+RET;
+	return $ret;
+	
 	/// Retrieve all that work as HTML
-	$htmlOutput = '<table border="1"><th nowrap="nowrap">User/Group Name</th>';
-	/// The column headers
-	for($i = 0; $i < $permCount; $i++) {
-		$htmlOutput .= '<th nowrap="nowrap">' . $permList[$permIds[$i]][0] . ' - ' . $permList[$permIds[$i]][1] . '</th>';
-	}
+	/*$htmlOutput = '<table border="1"><tr><td bgcolor=#C0C0C0></td><th colspan="'. (count($modifiableGroups)) . '" align="center">GROUPS</th>
+			<th colspan="'. $userCount . '" align="center">USERS</th>
+			</tr>
+			<tr><th nowrap="nowrap">User/Group Name --></th>';
+	
 
-	$htmlOutput .= '<tr><th colspan="'. ($permCount + 1) . '" align="left">Groups</th></tr>';
-
-	/// First the groups
 	for($i = 0; $i < count($modifiableGroups); $i++) {
-		$htmlOutput .= '<tr><td>' . $groupNames[$modifiableGroups[$i]] . '</td>';
-
-		for($j = 0; $j < $permCount; $j++) {
-			$htmlOutput .= '<td>';
-			if(isset($groupEffectivePermissions[$modifiableGroups[$i]][$permIds[$j]])) {
-				$htmlOutput .= $groupEffectivePermissions[$modifiableGroups[$i]][$permIds[$j]] === true ? 'Yes' : 'No';
-			}
-			else {
-				$htmlOutput .= 'Unset';
-			}
-			$htmlOutput .= "</td>\n";
+		$htmlOutput .= '<th>' . $groupNames[$modifiableGroups[$i]] . '</th>';
 		}
-		$htmlOutput .= "</tr>\n";
-	}
-
-	$htmlOutput .= '<tr><th colspan="'. ($permCount + 1) . '" align="left">Users</th></tr>';
-
-	/// Then the users
 	for($i = 0; $i < $userCount; $i++) {
-		$htmlOutput .= '<tr><td>' . $userNames[$userIds[$i]] . '</td>';
-
-		for($j = 0; $j < $permCount; $j++) {
+		$htmlOutput .= '<th>' . $userNames[$userIds[$i]] . '</th>';
+		}
+		$htmlOutput .= "</tr>";
+		
+	for($i = 0; $i < $permCount; $i++) {
+		$htmlOutput .= '<tr><th nowrap="nowrap">' . $permList[$permIds[$i]][0] . ' - ' . $permList[$permIds[$i]][1] . '</th>';
+		for($j = 0; $j < count($modifiableGroups); $j++) {
 			$htmlOutput .= '<td>';
-			if(isset($userEffectivePermissions[$userIds[$i]][$permIds[$j]])) {
-				$htmlOutput .= $userEffectivePermissions[$userIds[$i]][$permIds[$j]] === true ? 'Yes' : 'No';
+			if(isset($groupEffectivePermissions[$modifiableGroups[$j]][$permIds[$i]])) {
+				$htmlOutput .= $groupEffectivePermissions[$modifiableGroups[$j]][$permIds[$i]] === true ? 'Yes' : 'No';
 			}
 			else {
 				$htmlOutput .= 'Unset';
 			}
-			$htmlOutput .= "</td>\n";
+			$htmlOutput .= "</td>";
+			}
+		for($j = 0; $j < $userCount; $j++) {
+			$htmlOutput .= '<td>';
+			if(isset($userEffectivePermissions[$userIds[$j]][$permIds[$i]])) {
+				$htmlOutput .= $userEffectivePermissions[$userIds[$j]][$permIds[$i]] === true ? 'Yes' : 'No';
+			}
+			else {
+				$htmlOutput .= 'Unset';
+			}
+			$htmlOutput .= "</td>";
 		}
-		$htmlOutput .= "</tr>\n";
-	}
+	}	
 	$htmlOutput .= "</table>\n";
-
-	return $htmlOutput;
+	
+	return $htmlOutput;*/
 }
 
 
@@ -410,31 +463,35 @@ function getPermissionTable($userid, $groupids, $pagepath, $permAssocList) {
 
 	for($i = 0; $i < count($pagepath); $i++) {
 		$permTableString .= "\n<a name=\"{$pageNames[$i]}$i\"></a>\n<br /><br />\n<table border=\"1px\" cellpadding=\"4px\" cellspacing=\"4px\">\n<tr>\n<th>Page Title:</th><th colspan=\"".count($permList)."\">{$pageTitles[$i]}</th></tr>\n";
-		$permTableString .= "<tr><th>Permission:</th>$secondRow</tr>\n";
-
 		for($j = 0; $j < count($groupids); $j++) {
-			$permTableString .= "<tr><td>{$groupNames[$j]}</td>";
+			$permTableString .= "<tr><td bgcolor=\"C0C0C0\"></td><th>{$groupNames[$j]}</th>";
 
-			for($k = 0; $k < count($permList); $k++) {
+
+			foreach($permList as $permId => $actionArray) {
+                  		$permTableString .= '<tr><th>'.$actionArray[1]." - ".$actionArray[2] . '</th>';			
+			
+			for($k = 0; $k < count($groupids); $k++) {
 				$permission = 'Unset';
 				if(isset($permissionTable[$i]) && isset($permissionTable[$i][$j]) && isset($permissionTable[$i][$j][$k])) {
 					$permission = ($permissionTable[$i][$j][$k] ? 'Yes' : 'No');
 				}
 				$permTableString .= "<td>$permission</td>";
 			}
-			$permTableString .= "</tr>\n";
+			$permTableString .= "</tr>\n";}
 		}
 
 		if($userid >= 0) {
-			$permTableString .= "<tr><td>User:</td>";
-			for($k = 0; $k < count($permList); $k++) {
+			$permTableString .= "<tr><td bgcolor=\"C0C0C0\"></td><td>User:</td>";
+			foreach($permList as $permId => $actionArray) {
+                  		$permTableString .= '<tr><th>'.$actionArray[1]." - ".$actionArray[2] . '</th>';	
+			for($k = 0; $k < count($userid); $k++) {
 				$permission = 'Unset';
 				if(isset($permissionTable[$i]) && isset($permissionTable[$i][$j]) && isset($permissionTable[$i][$j][$k])) {
 					$permission = ($permissionTable[$i][$j][$k] ? 'Yes' : 'No');
 				}
 				$permTableString .= "<td>$permission</td>";
 			}
-			$permTableString .= "</tr>\n";
+			$permTableString .= "</tr>\n";}
 		}
 
 		$permTableString .= "</table>";
@@ -606,6 +663,105 @@ function determineGrantTargetId(&$targettype) {
  * @return Boolean, indicating whether the function was successful
  */
 function grantPermissions($userid, $pageid) {
+	if(isset($_GET['doaction']) && $_GET['doaction'] == "changePerm") {
+		$permtype = escape($_GET['permtype']);
+		$pageid = escape($_GET['pageid']);
+		$usergroupid = escape($_GET['usergroupid']);
+		$permid = escape($_GET['permid']);
+		$perm = escape($_GET['perm']);
+		if($perm == 'Y' || $perm == 'N') {
+			if($permission = mysql_fetch_array(mysql_query("SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
+				if($permission['perm_permission'] == $perm)
+					echo "1";
+				else {
+					mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "userpageperm` SET `perm_permission` = '{$perm}' WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
+					if(mysql_affected_rows())
+						echo "1";
+					else
+						echo "0";
+				}
+			} else {
+				mysql_query("INSERT `" . MYSQL_DATABASE_PREFIX . "userpageperm`(`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) VALUES('$permtype','$pageid','$usergroupid','$permid','$perm')");
+				if(mysql_affected_rows())
+					echo "1";
+				else
+					echo "0";
+			}
+		} else {
+			if($permission = mysql_fetch_array(mysql_query("SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
+				mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
+				if(mysql_affected_rows())
+					echo "1";
+				else
+					echo "0";
+			} else {
+				echo "1";
+			}
+		}
+		disconnect();
+		exit();
+	}
+	// for serving refresh permissions request
+	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getpermvars' && isset($_GET['pageid'])) {
+		global $cmsFolder,$urlRequestRoot;
+		$pageid = escape($_GET['pageid']);
+		if(mysql_fetch_array(mysql_query("SELECT `page_name` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageid}'"))) {
+		$pagepath = array();
+		parseUrlDereferenced($pageid, $pagepath);
+		$pageid = $pagepath[count($pagepath) - 1];
+
+		$groups = array_reverse(getGroupIds($userid));
+		$virtue = '';
+		$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
+		if($maxPriorityGroup == -1) {
+			return 'You do not have the required permissions to view this page.';
+		}
+
+		if($virtue == 'user') {
+			$grantableActions = getGroupPermissions($groups, $pagepath, $userid);
+		}
+		else {
+			$grantableActions = getGroupPermissions($groups, $pagepath);
+		}
+
+		$actionCount = count($_POST['permission']);
+		$checkedActions = array();
+		for($i = 0; $i < $actionCount; $i++) {
+			list($modTemp, $actTemp) = explode('_', escape($_POST['permission'][$i]), 2);
+
+			if(isset($_POST[$modTemp.$actTemp])) {
+				if(isset($grantableActions[$modTemp])) {
+					for($j = 0; $j < count($grantableActions[$modTemp]); $j++) {
+						if($grantableActions[$modTemp][$j][1] == $actTemp) {
+							$checkedActions[$modTemp][] = $grantableActions[$modTemp][$j];
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(count($checkedActions) > 0) {
+			$grantableActions = $checkedActions;
+		}
+
+		$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
+		$modifiableGroupIds = array(0, 1);
+		for($i = 0; $i < count($modifiableGroups); $i++) {
+			$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
+		}
+		$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+			$ret =<<<RET
+pageid = {$pageid};
+{$permissions}
+RET;
+			echo $ret;
+		} else {
+			echo "Error: Invalid Pageid passed";
+		}
+		disconnect();
+		exit();
+	}
+	
 	/// An ajaxed request for suggestions for a user's name or email is being entertained
 	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getsuggestions' && isset($_GET['forwhat'])) {
 		if(strlen($_GET['forwhat']) >= 3) {
@@ -731,7 +887,123 @@ function grantPermissions($userid, $pageid) {
 	}
 
 	elseif(isset($_POST['btnEveryonePermTable']) || isset($_POST['btnUserPermTable']) || isset($_POST['btnGroupPermTable'])) {
+		global $cmsFolder,$urlRequestRoot;
 		$pagepath = array();
+		parseUrlDereferenced($pageid, $pagepath);
+		$pageid = $pagepath[count($pagepath) - 1];
+
+		$groups = array_reverse(getGroupIds($userid));
+		$virtue = '';
+		$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
+		if($maxPriorityGroup == -1) {
+			return 'You do not have the required permissions to view this page.';
+		}
+
+		if($virtue == 'user') {
+			$grantableActions = getGroupPermissions($groups, $pagepath, $userid);
+		}
+		else {
+			$grantableActions = getGroupPermissions($groups, $pagepath);
+		}
+
+		$actionCount = count($_POST['permission']);
+		$checkedActions = array();
+		for($i = 0; $i < $actionCount; $i++) {
+			list($modTemp, $actTemp) = explode('_', escape($_POST['permission'][$i]), 2);
+
+			if(isset($_POST[$modTemp.$actTemp])) {
+				if(isset($grantableActions[$modTemp])) {
+					for($j = 0; $j < count($grantableActions[$modTemp]); $j++) {
+						if($grantableActions[$modTemp][$j][1] == $actTemp) {
+							$checkedActions[$modTemp][] = $grantableActions[$modTemp][$j];
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(count($checkedActions) > 0) {
+			$grantableActions = $checkedActions;
+		}
+
+		$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
+		$modifiableGroupIds = array(0, 1);
+		for($i = 0; $i < count($modifiableGroups); $i++) {
+			$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
+		}
+		$perms = getAllPermissions();
+		$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+		$groups = customGetAllGroups();
+		$users = customGetAllUsers();
+		$ret = <<<RET
+<style type="text/css" title="currentStyle">
+		@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+		@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+		@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+		div#permtable_filter input { width: 90px; }
+		div#permtable2_filter input { width: 90px; }
+</style>
+<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/js/permissionsTable.js"></script>
+<script type="text/javascript" charset="utf-8">
+function initSmartTable()
+{
+	$(document).ready(function() {
+		oTable = $('#permtable').dataTable({
+			"bJQueryUI": true,
+			"sPaginationType": "two_button",
+			"bAutoWidth": false,
+			"aoColumns": [ { "sWidth": "100px" } ]
+		});
+	} );
+	$(document).ready(function() {
+		oTable = $('#permtable2').dataTable({
+			"bJQueryUI": true,
+			"sPaginationType": "two_button",
+			"bAutoWidth": false,
+			"aoColumns": [ { "sWidth": "100px" } ]
+		});
+	} );
+}
+</script>
+<script type="text/javascript">
+var pageid = {$pageid};
+var permissions = {{$perms}};
+var permGroups;
+var permUsers;
+var groups = {{$groups}};
+var users = {{$users}};
+{$permissions}
+var selected = {'permissions' : [], 'users' : [], 'groups' : []};
+</script>
+<div id='info'></div>
+<div id='permTable'>
+
+</div>
+<input type='button' value='Show Permission' onClick='showPermissions()'>
+
+<table width=100%>
+<tr>
+<td>
+Search:<input type=text id='searchAction' onChange='searchAction()'> <input type=button value=Go onClick=searchUsers> <a href='javascript:selectAll1()'>Select All</a> <a href='javascript:clearAll1()'>Clear All</a> <a href='javascript:toggle1()'>Toggle</a><br>
+<table class="userlisttable display" id='permtable' name='permtable'><thead><tr><th>Permissions</th></thead><tbody id='actionsList'>
+
+</tbody></table>
+</td>
+<td>
+Search:<input type=text id='searchUsers' onChange='searchUsers()'> <input type=button value=Go onClick=searchUsers> <a href='javascript:selectAll2()'>Select All</a> <a href='javascript:clearAll2()'>Clear All</a> <a href='javascript:toggle2()'>Toggle</a><br>
+<table class="userlisttable display" id='permtable2' name='permtable2'><thead><tr><th>Users</th></thead><tbody id='usersList'>
+
+</tbody></table>
+</td>
+</tr>
+</table>
+RET;
+		global $STARTSCRIPTS;
+		$STARTSCRIPTS .= " populateList();";
+		return $ret;
+		/*$pagepath = array();
 		parseUrlDereferenced($pageid, $pagepath);
 		$pageid = $pagepath[count($pagepath) - 1];
 
@@ -831,7 +1103,7 @@ function grantPermissions($userid, $pageid) {
 				displayerror('A user registered with the e-mail ID you entered was not found.');
 				return '';
 			}
-		}
+		}*/
 	}
 
 	/// The User is trying to edit groups
@@ -847,6 +1119,49 @@ function grantPermissions($userid, $pageid) {
 	return getGrantForm($userid, $pageid);
 }
 
+function getPerms($pageId, $groupuser, $yesno) {
+	$ret = "";
+	$result = mysql_query("SELECT `usergroup_id`, `perm_id` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `page_id` = '{$pageId}' AND `perm_type` = '{$groupuser}' AND `perm_permission` = '{$yesno}'");
+	while($row = mysql_fetch_array($result))
+		$perms[$row['usergroup_id']][] = $row['perm_id'];
+	if(isset($perms)) 
+		foreach($perms as $group => $values) {
+			$ret .= "'" . $group . "' : [";
+			foreach($values as $value)
+				$ret .= "'" . $value . "', ";
+			$ret = rtrim($ret, ", ");
+			$ret .= "], ";
+		}
+	$ret = rtrim($ret, ", ");
+	return $ret;
+}
+
+function customGetAllUsers() {
+	$ret = "'0' : 'Anonymous', ";
+	$result = mysql_query("SELECT `user_name`,`user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+	while($row = mysql_fetch_array($result))
+		$ret .= "'{$row['user_id']}' : '{$row['user_name']}', ";
+	$ret = rtrim($ret,", ");
+	return $ret;	
+}
+
+function customGetAllGroups() {
+	$ret = "'0' : 'Everyone', '1' : 'Logged in Users', ";
+	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups`");
+	while($row = mysql_fetch_array($result))
+		$ret .= "'{$row['group_id']}' : '{$row['group_name']}', ";
+	$ret = rtrim($ret,", ");
+	return $ret;
+}
+
+function getAllPermissions() {
+	$ret = "";
+	$result = mysql_query("SELECT `perm_id`,`page_module`,`perm_action` FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist`");
+	while($row = mysql_fetch_array($result))
+		$ret .= "'{$row['perm_id']}' : '{$row['page_module']} - {$row['perm_action']}', ";
+	$ret = rtrim($ret,", ");
+	return $ret;
+}
 
 
 /**
