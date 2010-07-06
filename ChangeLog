@@ -1,3 +1,12 @@
+Revision 68  by  abhishekdelta  on  2010-07-06 02:46:2
+Description : Fixed Quiz module in working state
+--------------------------------------------------------------------------------
+Revision 67  by  abhishekdelta  on  2010-07-05 20:01:2
+Description : Added docs folder and updated default article content
+--------------------------------------------------------------------------------
+Revision 66  by  abhishekdelta  on  2010-07-05 19:02:2
+Description : Minor fixes in emails and admin.lib.php
+--------------------------------------------------------------------------------
 Revision 65  by  abhishekdelta  on  2010-07-04 21:19:3
 Description : Fixed security bug related to logging in on clicking back
 --------------------------------------------------------------------------------
