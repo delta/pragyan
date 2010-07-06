@@ -132,7 +132,7 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 	if($forEditRegistrant) {
 		$formAction = './+admin&subaction=editsiteregistrants&subsubaction=editregistrant';
 	}
-
+global $ICONS;
 	$profileForm =<<<PREF
 
 <script language="javscript" type="text/javascript" src="$abhiValidatorPath"></script>
@@ -176,7 +176,7 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 <div class="cms-registrationform">
 	<form id="cms-registrationform" class="fValidator-form" method="POST" name="user_profile_usrFrm" onsubmit="return checkProfileForm(this)" action="$formAction">
 		<fieldset style="width:80%">
-			<legend>Preferences</legend>
+			<legend>{$ICONS['User Profile']['small']}Profile Preferences</legend>
 
 			<table>
 				<tr>
@@ -382,8 +382,8 @@ function getProfileGroupsAndFormsList($userId) {
 
 	if(count($associatedGroups) == 0 && count($unassociatedGroups) == 0)
 		return false;
-
-	$retVal = '<fieldset style="padding: 8px"><legend>Groups I Belong To</legend>';
+	global $ICONS;
+	$retVal = "<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Groups I Belong To</legend>";
 	if(count($associatedGroups) > 0) {
 		$retVal .= '<strong>Groups associated with forms:</strong><br /><br /><table style="margin-left: 8px" border="1" cellpadding="4px" cellspacing="4px">' .
 						'<tr><th>Form Path</th><th>Group Name</th><th>Unregister</th></tr>' .

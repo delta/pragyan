@@ -16,6 +16,7 @@ $ICON_ARRAY=array(
 'Templates Management'=>"categories/applications-graphics.png",
 'Site Maintenance'=>"categories/preferences-system.png",
 'Page Settings'=>"actions/document-properties.png",
+'Page Information'=>"mimetypes/x-office-document.png",
 'Create New Page'=>"actions/document-new.png",
 'Copy or Move Page'=>"actions/edit-copy.png",
 'Page Inherited Info'=>"apps/preferences-desktop-theme.png",
@@ -24,7 +25,9 @@ $ICON_ARRAY=array(
 'Forum Moderate'=>"actions/edit-clear.png",
 'Forum New Entry'=>"actions/window-new.png",
 'Website Administration'=>"categories/applications-development.png",
-'Access Permissions'=>"status/network-wireless-encrypted.png"
+'Access Permissions'=>"status/network-wireless-encrypted.png",
+'User Profile'=>"places/user-home.png",
+'User Groups'=>"apps/system-users.png"
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)

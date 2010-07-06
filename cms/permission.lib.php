@@ -935,6 +935,7 @@ RET;
 		$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
 		$groups = customGetAllGroups();
 		$users = customGetAllUsers();
+		global $templateFolder;
 		$ret = <<<RET
 <style type="text/css" title="currentStyle">
 		@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
@@ -945,7 +946,7 @@ RET;
 </style>
 <script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
 <script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/js/permissionsTable.js"></script>
+<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts/permissionsTable.js"></script>
 <script type="text/javascript" charset="utf-8">
 function initSmartTable()
 {
@@ -1315,7 +1316,7 @@ function getGrantForm($userid, $pageid) {
 	parseUrlReal($pageFullPath, $actualPagePath);
 	$actualPageId = $actualPagePath[count($actualPagePath) - 1];
 	$actualPageTitle = getPageTitle($actualPageId);
-
+	global $ICONS;
 	$displayForm = <<<FORMHTML
 		<script type="text/javascript" language="javascript">
 		<!--
@@ -1329,7 +1330,7 @@ function getGrantForm($userid, $pageid) {
 		</script>
 		<br />
 		<fieldset style="padding: 8px">
-			<legend>Permissions</legend>
+			<legend>{$ICONS['Access Permissions']['small']}Permissions</legend>
 
 			<h2>'$actualPageTitle' at path '$pageFullPath'</h2>
 

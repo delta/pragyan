@@ -25,7 +25,7 @@ function getSearchBox(){
 	if($_GET['query']!="") $lastquery=safe_html($_GET['query']);
 	if($_POST['query']!="") $lastquery=safe_html($_POST['query']);
 
-	global $cmsFolder,$urlRequestRoot;
+	global $cmsFolder,$urlRequestRoot,$ICONS;
 	$searchbox=<<<SEARCH
 	<style type="text/css">
 		table.searchBox{border:1px solid #113377}
@@ -39,7 +39,8 @@ function getSearchBox(){
 		}
 	</style>
 
-	<h2>$CMS_TITLE - Search</h2>
+	<fieldset>
+	<legend>{$ICONS['Search']['small']}$CMS_TITLE Search</legend>
 	
 	<center>
 	<form action="./+search" method="POST">
