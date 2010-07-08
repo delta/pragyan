@@ -1,11 +1,12 @@
 <?php
 /**
  * @package pragyan
- * @copyright (c) 2008 Pragyan Team
+ * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
 
+// The PR Module is for Public Relations to directly add a user to the Pragyan Website if someone's not registered. The user registered through this is automatically activated also.
 class pr implements module {
 	private $userId;
 	private $moduleComponentId;
@@ -72,7 +73,7 @@ REGISTRATIONFORM;
 			isset($_POST['txtUserEmail']) && isset($_POST['txtUserPhone']) && 
 			isset($_POST['txtUserInstitution']) && isset($_POST['txtUserPassword']) && isset($_POST['txtUserConfirmPassword'])
 		) {
-			if(getUserIdFromEmail($_POST['txtUserEmail'])) {
+			if(getUserIdFromEmail(escape($_POST['txtUserEmail']))) {
 				displayerror('The given E-mail Id is already registered on the website. Please use the respective forms\' Edit Registrants view to register the user to events.');
 				return;
 			}
@@ -97,13 +98,13 @@ REGISTRATIONFORM;
 			$newUserId = 1;
 			if(!is_null($userIdRow[0]))
 				$newUserId = $userIdRow[0] + 1;
-			$userEmail = trim($_POST['txtUserEmail']);
+			$userEmail = escape(trim($_POST['txtUserEmail']));
 			$userPassword = $_POST['txtUserPassword'];
-			$userContactNumber = $_POST['txtUserPhone'];
-			$userInstitute = $_POST['txtUserInstitution'];
-
+			$userContactNumber = escape($_POST['txtUserPhone']);
+			$userInstitute = escape($_POST['txtUserInstitution']);
+			$userFullName=escape($_POST['txtUserFullName']);
 			$insertQuery = 'INSERT INTO `'.MYSQL_DATABASE_PREFIX.'users`(`user_id`, `user_name`, `user_email`, `user_fullname`, `user_password`, `user_regdate`, `user_lastlogin`, `user_activated`) ' .
-					"VALUES($newUserId, '{$_POST['txtUserFullName']}', '$userEmail', '{$_POST['txtUserFullName']}', MD5('$userPassword'), NOW(), NOW(), 1)";
+					"VALUES($newUserId, '$userFullName', '$userEmail', '$userFullName', MD5('$userPassword'), NOW(), NOW(), 1)";
 			$insertResult = mysql_query($insertQuery);
 
 			if(!$insertResult) {
@@ -111,8 +112,7 @@ REGISTRATIONFORM;
 				return;
 			}
 
-			displayinfo("User $userEmail has been registered to the pragyan website.");
-
+			
 			$contactElementId = 3;
 			$instituteElementId = 4;
 			$contactInsertQuery = 
@@ -124,6 +124,8 @@ REGISTRATIONFORM;
 			if(!$contactInsertResult) {
 				displayerror('Could not save the contact number of the user.');
 			}
+			else displayinfo("User $userEmail has been registered to the pragyan website.");
+
 		}
 		else {
 			displayerror('Invalid form submit data.');

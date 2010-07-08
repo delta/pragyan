@@ -312,7 +312,7 @@ ADMINPAGE;
 	else if($_GET['subaction']=='useradmin')
 	{
 		
-		$str .= userManagementForm();
+		$op .= userManagementForm();
 	}
 	else 
 	{

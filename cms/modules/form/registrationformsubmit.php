@@ -559,14 +559,6 @@
 		$registeruser_result = mysql_query($registeruser_query);
 		if(mysql_affected_rows()>0){
 
-			/** ABHILASH'S EDIT FOR TUX VENTURE BEGINS HERE */
-
-			$TUXVENTUREMCID = array('203','204','205','206');
-			if (in_array($moduleCompId,$TUXVENTUREMCID)) {
-			  //echo '1';
-				updateFormSubmitCount($moduleCompId, $userId);
-			}
-			/** ABHILASH'S EDIT FOR TUX VENTURE ENDS HERE */
 
 			global $sourceFolder;
 			require_once($sourceFolder."/group.lib.php");
@@ -588,15 +580,7 @@
 	}
 	/** Update the lastupdated date */
 	function updateUser($moduleCompId,$userId) {
-		/** ABHILASH'S EDIT FOR TUX VENTURE BEGINS HERE */
-
-	  $TUXVENTUREMCID = array('203','204','205','206');
-		if (in_array($moduleCompId,$TUXVENTUREMCID)){
-		  //		  echo '2';
-			updateFormSubmitCount($moduleCompId, $userId);
-		}
-
-		/** ABHILASH'S EDIT FOR TUX VENTURE ENDS HERE */
+		
 
 		$updateuser_query = "UPDATE `form_regdata` SET `form_lastupdated` = CURRENT_TIMESTAMP WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId";
 		$updateuser_result = mysql_query($updateuser_query);

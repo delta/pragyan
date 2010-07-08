@@ -9,6 +9,8 @@
 function userManagementForm()
 {
 	global $ICONS;
+	global $urlRequestRoot, $cmsFolder, $moduleFolder, $templateFolder,$sourceFolder;
+	require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
 	$usermgmtform=<<<USERFORM
 	<script type='text/javascript' language='javascript'>
 	function checkAll(formobj)
@@ -36,8 +38,11 @@ function userManagementForm()
 	<table><tr><td>Field Name</td><td>Display ?</td><td>Field Name</td><td>Display ?</td><td>Field Name</td><td>Display ?</td></tr>
 USERFORM;
 	
-	$usertablefields=getTableFieldsName('users');
-	$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");
+	$xcolumnNames=array_values(getColumnList(0, false, false, false, false, false));
+	
+	$usertablefields=array_merge(getTableFieldsName('users'),$xcolumnNames);
+	$userfieldprettynames=array_merge(array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method"),array_map('ucfirst',$xcolumnNames));
+	
 	$cols=3;
 	for($i=0;$i<count($usertablefields);$i=$i+$cols)
 	{	
@@ -49,7 +54,7 @@ USERFORM;
 				$checked="";
 				if(isset($_POST['not_first_time']))
 					$checked=isset($_POST[$usertablefields[$i+$j].'_sel'])?"checked":"";
-				else if($usertablefields[$i+$j]=="user_name" || $usertablefields[$i+$j]=="user_fullname" || $usertablefields[$i+$j]=="user_email" || $usertablefields[$i+$j]=="user_lastlogin" || $usertablefields[$i+$j]=="user_activated")
+				else if($usertablefields[$i+$j]=="user_fullname" || $usertablefields[$i+$j]=="user_email" || $usertablefields[$i+$j]=="user_activated")
 					$checked="checked";
 				
 				$usermgmtform.="<td>{$userfieldprettynames[$i+$j]}</td><td><input type='checkbox' name='{$usertablefields[$i+$j]}_sel' $checked /></td>";
@@ -105,6 +110,8 @@ USERFORM;
 }
 function handleUserMgmt()
 {
+	global $urlRequestRoot, $cmsFolder, $moduleFolder, $templateFolder,$sourceFolder;
+	require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
 	if(isset($_GET['userid']))
 	 $_GET['userid']=escape($_GET['userid']);
 	if(isset($_POST['editusertype'])) $_POST['editusertype']=escape($_POST['editusertype']);
@@ -170,7 +177,8 @@ function handleUserMgmt()
 		if(isset($_POST['user_info_update']))
 		{
 			$updates = array();
-			$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`={$_GET['userid']}";
+			$userId=$_GET['userid'];
+			$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`={$userId}";
 			$row=mysql_fetch_assoc(mysql_query($query));
 			$errors = false;
 			
@@ -229,10 +237,20 @@ function handleUserMgmt()
 				displaywarning("Please make sure ".strtoupper(escape($_POST['user_loginmethod']))." is configured properly, otherwise the user will not be able to login to the website.");
 			}
 
-			if(!$errors && count($updates) > 0) {
-				$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = {$_GET['userid']}";
-				$profileResult = mysql_query($profileQuery);
-				if(!$profileResult) {
+			if(!$errors) {
+				if(count($updates) > 0)
+				{
+					$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = {$_GET['userid']}";
+					$profileResult = mysql_query($profileQuery);
+					if(!$profileResult) {
+					displayerror('An error was encountered while attempting to process your request.'.$profileQuery);
+					$errors = true;
+					}
+				}
+				global $sourceFolder,$moduleFolder;
+		require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
+		require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
+				if(!$errors && !submitRegistrationForm(0, $userId, true, true)) {
 					displayerror('An error was encountered while attempting to process your request.'.$profileQuery);
 					$errors = true;
 				}
@@ -243,14 +261,24 @@ function handleUserMgmt()
 				
 			
 		}
-		$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`={$_GET['userid']}";
+		$userid=$_GET['userid'];
+		$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`=$userid";
+		$columnList=getColumnList(0,false,false,false,false,false);
+		$xcolumnIds=array_keys($columnList);
+		$xcolumnNames=array_values($columnList);
+		
 		$row=mysql_fetch_assoc(mysql_query($query));
-		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");
-		$userinfo="<fieldset><legend>Edit User Information</legend><form name='user_info_edit' action='./+admin&subaction=useradmin&userid={$_GET['userid']}' method='post'>";
+		
+		
+		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");	
+		
+		$userinfo="<fieldset><legend>Edit User Information</legend><form name='user_info_edit' action='./+admin&subaction=useradmin&userid=$userid' method='post'>";
 		
 		
 		
-		$usertablefields=getTableFieldsName('users');		
+		
+		$usertablefields=array_merge(getTableFieldsName('users'),$xcolumnNames);
+
 		for($i=0;$i<count($usertablefields);$i++)
 			if(isset($_POST[$usertablefields[$i].'_sel']))
 				$userinfo.="<input type='hidden' name='{$usertablefields[$i]}_sel' value='checked'/>";
@@ -258,7 +286,7 @@ function handleUserMgmt()
 		
 	
 		
-		$userinfo.=userProfileForm($userfieldprettynames,$row);
+		$userinfo.=userProfileForm($userfieldprettynames,$row,false,true);
 		$userinfo.="<input type='submit' value='Update' name='user_info_update' />
 		<input type='reset' value='Reset' /></form></fieldset>";
 		return $userinfo;
@@ -293,7 +321,11 @@ function handleUserMgmt()
 	{
 	
 		$results="";
-		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");		
+		//TODO : Implement Search based on user profile fields
+		
+		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");	
+		
+
 		$usertablefields=getTableFieldsName('users');
 		
 		$first=true;
@@ -340,16 +372,18 @@ function handleUserMgmt()
 		}
 		
 		$searchForm="<form name='user_search_form' action='./+admin&subaction=useradmin&subsubaction=search' method='POST'><h3>Search User</h3>";
-		for($i=0;$i<count($usertablefields);$i++)
-			if(isset($_POST[$usertablefields[$i].'_sel']))
-				$searchForm.="<input type='hidden' name='{$usertablefields[$i]}_sel' value='checked'/>";
+		$xcolumnNames=array_values(getColumnList(0, false, false, false, false, false));
+		$usertablefields2=array_merge($usertablefields,$xcolumnNames);
+		for($i=0;$i<count($usertablefields2);$i++)
+			if(isset($_POST[$usertablefields2[$i].'_sel']))
+				$searchForm.="<input type='hidden' name='{$usertablefields2[$i]}_sel' value='checked'/>";
 		$searchForm.="<input type='hidden' name='not_first_time' />";
 		
 		$infoarray=array();
 		foreach ($usertablefields as $field)
 			$infoarray[$field]=${$field.'_lastval'};
 			
-		$searchForm.=userProfileForm($userfieldprettynames,$infoarray,true);
+		$searchForm.=userProfileForm($userfieldprettynames,$infoarray,true,false);
 		
 		$searchForm.="Operation : <input type='radio' name='user_search_op' value='and'  />AND  <input type='radio' name='user_search_op' value='or' checked='true' />OR<br/><br/><input type='submit' onclick name='user_search_submit' value='Search' /><input type='reset' value='Clear' /></form>";
 		return $searchForm.$results;
@@ -360,9 +394,10 @@ function handleUserMgmt()
 	else if(isset($_GET['subsubaction']) && $_GET['subsubaction']=='create')
 	{
 		
-		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");		
-		$usertablefields=getTableFieldsName('users');
 		
+		$userfieldprettynamesarray=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");	
+		
+		$usertablefields=getTableFieldsName('users');
 		
 		if(isset($_POST['create_user_submit']))
 		{
@@ -371,7 +406,7 @@ function handleUserMgmt()
 			{
 				if(($field != 'user_regdate') && ($field != 'user_lastlogin') && ($field != 'user_activated') && (isset($_POST[$field]) && $_POST[$field]==""))
 				{
-					displayerror("New user could not be created. Some fields are missing!");
+					displayerror("New user could not be created. Some fields are missing!$field");
 					$incomplete=true;
 					break;
 				}
@@ -392,7 +427,10 @@ function handleUserMgmt()
 					if(isset($_POST['user_activated'])) $user_activated=1;
 					$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` (`user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password` ,`user_regdate` ,`user_lastlogin` ,`user_activated`,`user_loginmethod`)VALUES ('$user_id' ,'$user_name' ,'$user_email' ,'$user_fullname' , MD5('$user_password') ,CURRENT_TIMESTAMP , '', '$user_activated','$user_loginmethod')";
 					$result = mysql_query($query) or die(mysql_error());
-					if (mysql_affected_rows()) displayinfo("User $user_fullname Successfully Created!");
+					global $sourceFolder,$moduleFolder;
+		require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
+		require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
+					if (mysql_affected_rows() && submitRegistrationForm(0, $user_id, true, true)) displayinfo("User $user_fullname Successfully Created!");
 					else displayerror("Failed to create user");
 				}
 			}
@@ -400,16 +438,18 @@ function handleUserMgmt()
 		
 		$nextUserId=getNextUserId();
 		$userForm="<form name='user_create_form' action='./+admin&subaction=useradmin&subsubaction=create&userid=$nextUserId' method='POST'><h3>Create New User</h3>";
-		for($i=0;$i<count($usertablefields);$i++)
-			if(isset($_POST[$usertablefields[$i].'_sel']))
-				$userForm.="<input type='hidden' name='{$usertablefields[$i]}_sel' value='checked'/>";
+		$xcolumnNames=array_values(getColumnList(0, false, false, false, false, false));
+		$usertablefields2=array_merge($usertablefields,$xcolumnNames);
+		for($i=0;$i<count($usertablefields2);$i++)
+			if(isset($_POST[$usertablefields2[$i].'_sel']))
+				$userForm.="<input type='hidden' name='{$usertablefields2[$i]}_sel' value='checked'/>";
 		$userForm.="<input type='hidden' name='not_first_time' />";
 		$infoarray=array();
 		foreach ($usertablefields as $field)
 			$infoarray[$field]="";
 		$infoarray['user_id']=$nextUserId;
 		
-		$userForm.=userProfileForm($userfieldprettynames,$infoarray,false);
+		$userForm.=userProfileForm($userfieldprettynamesarray,$infoarray,false,true);
 		
 		$userForm.="<input type='submit' onclick name='create_user_submit' value='Create' /><input type='reset' value='Clear' /></form>";
 		return $userForm;
@@ -453,8 +493,24 @@ function getAllUsersInfo(&$userId,&$userName,&$userEmail,&$userFullName,&$userPa
 }
 function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 {
+	global $urlRequestRoot, $cmsFolder, $moduleFolder, $templateFolder,$sourceFolder;
+	require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
+	
+
+	$extraColumns=getColumnList(0, false, false, false, false, false);
+	$xcolumnIds=array(); $xcolumnNames=array(); $xcolumnFieldVars=array();
+	foreach($extraColumns as $columnid=>$colname)
+	{
+	 $xcolumnIds[]=$columnid;
+	 $xcolumnNames[]=$colname;
+	 $xcolumnFieldVars[]='user'.ucfirst($colname);
+	 ${'user'.ucfirst($colname)}=array();
+	}
+	
 	if($userInfo==NULL)
-	 getAllUsersInfo($userId,$userName,$userEmail,$userFullName,$userPassword,$userLastLogin,$userRegDate,$userActivated,$userLoginMethod);
+	{
+	 getAllUsersInfo($userId,$userName,$userEmail,$userFullName,$userPassword,$userLastLogin,$userRegDate,$userActivated,$userLoginMethod); 
+	}
 	else 
 	{
 		$userId=$userInfo['user_id'];
@@ -469,11 +525,27 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		$userLoginMethod=$userInfo['user_loginmethod'];
 		
 	}
+	 foreach($userId as $userid)
+		 {
+		 	$xinfo=generateFormDataRow(0,$userid,$xcolumnIds);
+			foreach($xinfo as $j=>$info)
+			{
+				${$xcolumnFieldVars[$j]}[]=$info;
+			}
+		}
+
 	
-	global $urlRequestRoot,$cmsFolder;
-	$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");
-	$userlisttdids=array("user_id","user_name","user_email","user_fullname","user_password","user_regdate","user_lastlogin","user_activated","user_loginmethod");
-	$userfieldvars=array("userId","userName","userEmail","userFullName","userPassword","userRegDate","userLastLogin","userActivated","userLoginMethod");
+	
+	$userfieldprettynames=array_merge( array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method"), array_map('ucfirst',$xcolumnNames));
+	
+	function replace10byYesNo(&$value,$key)
+	{ if($value=='1') $value="Yes"; else if ($value=='0') $value="No"; }
+	array_walk($userActivated,'replace10byYesNo');
+	
+	
+	$userlisttdids=array_merge(array("user_id","user_name","user_email","user_fullname","user_password","user_regdate","user_lastlogin","user_activated","user_loginmethod"), $xcolumnIds);
+	$userfieldvars=array_merge(array("userId","userName","userEmail","userFullName","userPassword","userRegDate","userLastLogin","userActivated","userLoginMethod"), $xcolumnFieldVars);
+	
 	$userlist="";
 	$columns=count($userfieldvars);
 	if($act=="edit")
@@ -514,7 +586,10 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 	<tr>
 USERLIST;
 
-	$usertablefields=getTableFieldsName('users');
+		
+	
+	$defCols=getTableFieldsName('users');
+	$usertablefields=array_merge($defCols,$xcolumnNames);
 	$displayfieldsindex=array();
 	$c=0;
 	for($i=0;$i<count($usertablefields);$i++)
@@ -527,6 +602,8 @@ USERLIST;
 			$displayfieldsindex[$c++]=$i;
 		}
 	}
+	
+	
 	$userlist.="<input type='hidden' name='not_first_time' />";
 		
 	
@@ -550,8 +627,10 @@ USERLIST;
 		
 		for($j=0; $j<count($displayfieldsindex); $j++)
 		{
-			$userlist.="<td id='{$userlisttdids[$j]}'>".${$userfieldvars[$displayfieldsindex[$j]]}[$i]."</td>";
+			$userlist.="<td class='{$userlisttdids[$j]}'>".${$userfieldvars[$displayfieldsindex[$j]]}[$i]."</td>";	
 		}
+		
+		
 		if($act=="edit")
 		{
 			$userlist.="<td id='user_editactions'>";
@@ -574,7 +653,7 @@ USERLIST;
 	
 	return ($flag)?$userlist:"No Users Found!";
 }
-function userProfileForm($userfieldprettynames,$profileInfoRows,$editID=false)
+function userProfileForm($userfieldprettynames,$profileInfoRows,$editID=false,$showProfileInfo=true)
 {
 	$i=0;
 	$userinfo="<table>";
@@ -609,6 +688,22 @@ function userProfileForm($userfieldprettynames,$profileInfoRows,$editID=false)
 		else $userinfo.="<tr><td>{$userfieldprettynames[$i++]}</td><td><input type='text' name='$field' value='$value'/></td></tr>";
 		
 	}
+	
+	if($showProfileInfo)
+	{
+		global $sourceFolder,$moduleFolder;
+		require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
+		require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
+		$containsFileUploadFields = false;
+		$userId=$profileInfoRows['user_id'];
+		$dynamicFields = getFormElementsHtmlAsArray(0, $userId, $jsValidationFunctions, $containsFileUploadFields);
+		$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+		if($dynamicFields != '') {
+			$dynamicFields = "<tr>$dynamicFields</tr>";
+		}
+		$userinfo.=$dynamicFields;
+	}
+	
 	return $userinfo."</table>";
 }
 ?>
