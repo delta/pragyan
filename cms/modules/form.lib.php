@@ -213,7 +213,9 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 		if(isset($_GET['subaction'])&&(($_GET['subaction']=='moveUp')||($_GET['subaction']=='moveDown'))&&isset($_GET['elementid']))
 			moveFormElement($this->moduleComponentId,escape($_GET['subaction']),escape($_GET['elementid']));
 
-		return generateFormDescBody($this->moduleComponentId).generateFormElementDescBody($this->moduleComponentId);
+		$html = generateFormDescBody($this->moduleComponentId).generateFormElementDescBody($this->moduleComponentId);
+		global $ICONS;
+		return "<fieldset><legend>{$ICONS['Form Edit']['small']}Edit Form</legend>$html</fieldset>";
 	}
 
 	public function actionViewregistrants() {
@@ -225,7 +227,9 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 			$sortField = escape($_GET['sortfield']);
 		if(isset($_GET['sortorder']) && ($_GET['sortorder'] == 'asc' || $_GET['sortorder'] == 'desc'))
 			$sortOrder = escape($_GET['sortorder']);
-		return generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder);
+		global $ICONS;
+		$html= generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder);
+		return "<fieldset><legend>{$ICONS['Form Registrants']['small']}View Form Registrants</legend>$html</fieldset>";
 	}
 
 	public function actionEditregistrants() {
@@ -310,8 +314,9 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 			$sortField = escape($_GET['sortfield']);
 		if(isset($_GET['sortorder']) && ($_GET['sortorder'] == 'asc' || $_GET['sortorder'] == 'desc'))
 			$sortOrder = escape($_GET['sortorder']);
-
-		return generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder, 'editregistrants');
+		global $ICONS;
+		$html= generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder, 'editregistrants');
+		return "<fieldset><legend>{$ICONS['Form Registrants']['small']}Edit Form Registrants</legend>$html</fieldset>";
 	}
 	
 	public function actionReports() {

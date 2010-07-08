@@ -297,6 +297,7 @@ MOVECOPY;
 	global $pageFullPath;
 	$parentPath = ($pageId==0?'':'<a href="../+settings">Parent page link.</a>');
 	$pageType=$page_values['page_module'];
+	
 	$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
 	$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 	$row = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
@@ -520,7 +521,7 @@ function setChildTemplateFromParentID($parentId,$page_template)
  * @return HTML content for the page (the form, or the notifications after the form handling)
  */
 function pagesettings($pageId, $userId) {
-	//($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showMenuBar, $showSiblingMenu, $visibleChildList)
+	
 	$pageId=escape($pageId);
 	$userId=escape($userId);
 	global $sourceFolder;
@@ -677,6 +678,7 @@ function pagesettings($pageId, $userId) {
 					mysql_query($menuquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
+						else displayinfo("Menu successfully created! <a href='./$childPageName+settings'>Click here</a> to go to its page-settings and start creating links in the menu.");
 				}
 				elseif($_POST['childpagetype']=="link") {
 					global $sourceFolder;

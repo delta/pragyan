@@ -1,11 +1,10 @@
 <?php
-
-
 /**
  * @package pragyan
  * @copyright (c) 2008 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
+ * UNDER CONSTRUCTION
  */
 class poll implements module {
 	private $userId;

@@ -546,41 +546,6 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_userpageperm` (
   KEY `user_id` (`usergroup_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_userprofile_elementdata`
---
-
-CREATE TABLE IF NOT EXISTS `pragyanV3_userprofile_elementdata` (
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `profile_elementid` int(11) NOT NULL DEFAULT '0',
-  `profile_elementdata` text NOT NULL,
-  PRIMARY KEY (`user_id`,`profile_elementid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_userprofile_elementdesc`
---
-
-CREATE TABLE IF NOT EXISTS `pragyanV3_userprofile_elementdesc` (
-  `profile_elementid` int(11) NOT NULL DEFAULT '0',
-  `profile_elementname` varchar(100) NOT NULL,
-  `profile_elementdisplaytext` varchar(500) NOT NULL COMMENT 'Description of data held',
-  `profile_elementtype` enum('text','textarea','radio','checkbox','select','file') NOT NULL DEFAULT 'text',
-  `profile_elementsize` int(11) DEFAULT NULL,
-  `profile_elementtypeoptions` text,
-  `profile_elementdefaultvalue` varchar(400) DEFAULT NULL,
-  `profile_elementmorethan` varchar(400) DEFAULT NULL,
-  `profile_elementlessthan` varchar(400) DEFAULT NULL,
-  `profile_elementcheckint` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Check if it is int if 1',
-  `profile_elementtooltiptext` text NOT NULL,
-  `profile_elementisrequired` tinyint(1) NOT NULL DEFAULT '0',
-  `profile_elementrank` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`profile_elementid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

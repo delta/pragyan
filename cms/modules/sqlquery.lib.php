@@ -73,24 +73,28 @@ class sqlquery implements module {
 		$editPageContent .= $this->getQueryEditForm($paramPageTitle, $paramSqlQuery, $useParams);
 		
 		$helptext = "";
-		if(isset($_POST['btnListTables']))
+		if(isset($_POST['btnListTables'])||( isset($_GET['subaction']) && $_GET['subaction']=="listalltables") )
 		{
-			$helptext .="<table><tr><th>Tables of Database ".MYSQL_DATABASE."</th></tr>";
+			
+			$helptext.="<h2>Tables of Database ".MYSQL_DATABASE."</h2><br/><table id='sqlhelptable' name='sqlhelptable' class='display'><thead></tr><tr><th>Table Name</th><th>Columns Information</th><th>Rows Information</th></tr></thead><tbody>";
 			$query="SHOW TABLES";
 			$res=mysql_query($query);
 			while($row=mysql_fetch_row($res))
 			{
-				$helptext .="<tr><td>{$row[0]}</td></tr>";
+				$helptext .="<tr><td>{$row[0]}</td><td><a href='./+edit&subaction=tablecols&tablename={$row[0]}'>View Columns</a></td><td><a href='./+edit&subaction=tablerows&tablename={$row[0]}'>View Rows</a></td></tr>";
 			}
-			$helptext .="</table>";
+			$helptext .="</tbody></table>";
 		}
-		if(isset($_POST['btnListRows']) && $_POST['tablename']!="")
+		if((isset($_POST['btnListRows']) && $_POST['tablename']!="") || ( isset($_GET['subaction']) && $_GET['subaction']=="tablerows") )
 		{
-			$tablename=escape(safe_html($_POST['tablename']));
+			if(isset($_POST['tablename'])) $tablename=escape(safe_html($_POST['tablename']));
+			else if(isset($_GET['tablename'])) $tablename=escape(safe_html($_GET['tablename']));
+			else { displayerror("Table name missing"); return $editPageContent; }
+			
 			$query="SELECT * FROM $tablename";
 			$res=mysql_query($query);
 			$numfields=mysql_num_fields($res);
-			$helptext .="<table><tr><th colspan=".$numfields.">Rows of Table $tablename</th></tr>";
+			$helptext .="<table id='sqlhelptable' name='sqlhelptable' class='display'><thead><tr><th colspan=".$numfields.">Rows of Table $tablename <br/><a href='./+edit&subaction=tablecols&tablename=$tablename'>View Columns</a>  <a href='./+edit&subaction=listalltables'>View All Tables</a></th></tr>";
 			$helptext .="<tr>";
 			
 			for($i=0;$i<$numfields;$i++)
@@ -102,7 +106,7 @@ class sqlquery implements module {
 				    }
 				 $helptext.="<th>$name</th>";
 			}
-			$helptext .="</tr>";
+			$helptext .="</tr></thead><tbody>";
 			
 			
 			while($row=mysql_fetch_row($res))
@@ -112,13 +116,16 @@ class sqlquery implements module {
 					$helptext .="<td>{$row[$i]}</td>";
 				$helptext .="</tr>";
 			}
-			$helptext .="</table>";
+			$helptext .="</tbody></table>";
 		}
-		if(isset($_POST['btnListColumns']) && $_POST['tablename']!="")
+		if((isset($_POST['btnListColumns']) && $_POST['tablename']!="") || ( isset($_GET['subaction']) && $_GET['subaction']=="tablecols"))
 		{
-			$tablename=escape(safe_html($_POST['tablename']));
-			$helptext .="<table><tr><th colspan=6>Column Information of Table $tablename</th></tr>";
-			$helptext .="<tr><th>Column Name</th><th>Column Type</th><th>Maximum Length</th><th>Default Value</th><th>Not Null</th><th>Primary Key</th></tr>";
+			if(isset($_POST['tablename'])) $tablename=escape(safe_html($_POST['tablename']));
+			else if(isset($_GET['tablename'])) $tablename=escape(safe_html($_GET['tablename']));
+			else { displayerror("Table name missing"); return $editPageContent; }
+			
+			$helptext .="<table id='sqlhelptable' name='sqlhelptable' class='display'><thead><tr><th colspan=6>Column Information of Table $tablename <br/><a href='./+edit&subaction=tablerows&tablename=$tablename'>View Rows</a>  <a href='./+edit&subaction=listalltables'>View All Tables</a> </th></tr>";
+			$helptext .="<tr><th>Column Name</th><th>Column Type</th><th>Maximum Length</th><th>Default Value</th><th>Not Null</th><th>Primary Key</th></tr></thead><tbody>";
 			$query="SELECT * FROM $tablename LIMIT 1";
 			$res=mysql_query($query);
 			for($i=0;$i<mysql_num_fields($res);$i++)
@@ -130,11 +137,29 @@ class sqlquery implements module {
 				    }
 				 $helptext.="<tr><td>{$meta->name}</td><td>{$meta->type}</td><td>{$meta->max_length}</td><td>{$meta->def}</td><td>{$meta->not_null}</td><td>{$meta->primary_key}</td></tr>";
 			}
-			$helptext .="</table>";
+			$helptext .="</tbody></table>";
 		}
-		
-		if($helptext!="") $helptext="<fieldset><legend>Database Information</legend>$helptext</fieldset>";
-		return $editPageContent.$helptext;
+		global $urlRequestRoot,$cmsFolder;
+			$smarttable =<<<SMART
+			<style type="text/css" title="currentStyle">
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+			</style>
+			<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
+			<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
+			<script type="text/javascript" charset="utf-8">
+				$(document).ready(function() {
+					oTable = $('#sqlhelptable').dataTable({
+						"bJQueryUI": true,
+						"sPaginationType": "full_numbers"
+					});
+				} );
+			</script>
+SMART;
+	global $ICONS;
+		if($helptext!="") $helptext="<fieldset><legend>{$ICONS['Database Information']['small']}Database Information</legend>$smarttable $helptext</fieldset>";
+		return $helptext.$editPageContent;
 	}
 
 	private function getQueryEditForm($pageTitle = '', $sqlQuery = '', $useParams = false) {
@@ -153,10 +178,11 @@ class sqlquery implements module {
 			$pageTitle = $defaultValueRow[0];
 			$sqlQuery = $defaultValueRow[1];
 		}
+		global $ICONS;
 		$dbname=MYSQL_DATABASE;
 		$dbprefix=MYSQL_DATABASE_PREFIX;
 		$queryEditForm = <<<QUERYEDITFORM
-		<fieldset><legend>Custom SQL Query</legend>
+		<fieldset><legend>{$ICONS['SQL Query']['small']}Custom SQL Query</legend>
 		<form method="POST" action="./+edit">
 			<table>
 				<tr><td>Page Title:</td><td><input id="pagetitle" name="pagetitle" type="text" value="$pageTitle" /></td></tr>
@@ -164,13 +190,13 @@ class sqlquery implements module {
 			</table>
 			<input type="submit" name="btnSubmitQueryData" value="Save Changes" />
 			<input type="submit" name="btnPreviewResults" value="Preview Result Page" />
-			Need help ? Use the Database Information form below.
+			<br/>Need help ? Use the Database Information form below.
 		</form>
 		</fieldset>
 		<fieldset>
-		<legend>Database Information</legend>
-		<table>
-		<form method="POST" action="./+edit&subaction=help">
+		<legend>{$ICONS['Database Information']['small']} Database Information</legend>
+		<table style="width:100%">
+		<form method="POST" action="./+edit" >
 		<tr><td>Database Name</td><td>$dbname</td></tr>
 		<tr><td>Tables Prefix</td><td>$dbprefix</td></tr>
 		<tr><td colspan="2"><input style="width:100%" type="submit" name="btnListTables" value="List All Tables"/></td></tr>
@@ -189,7 +215,7 @@ QUERYEDITFORM;
 		$result = mysql_query($sqlQuery);
 
 		if(!$result) {
-			return 'Error. The query used to generate this page is invalid.<br />';
+			return 'Error. The query used to generate this page is invalid. <a href="./+edit">Click here</a> to change the default query.<br />';
 		}
 
 		$pageContent = '<table>';
