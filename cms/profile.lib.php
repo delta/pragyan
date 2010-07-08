@@ -92,7 +92,7 @@ function profile($userId, $forEditRegistrant = false) {
 
 			$errors = !submitRegistrationForm(0, $userId, true, true) || $errors;
 			if(!$errors) {
-				displayinfo('All fields updated successfully!. Now you can fill registration forms on this site.<br />' .
+				displayinfo('All fields updated successfully!.<br />' .
 						'<input type="button" onclick="history.go(-2)" value="Go back" />');
 			}
 		}
@@ -122,7 +122,7 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 		$captchaRow = mysql_fetch_row($captchaResult);
 		if(isset($captchaRow[0]) && $captchaRow[0] == 1) {
 			$captchaValidation = getCaptchaHtml();
-		}
+		} 
 	}
 
 	$fValidatorPath = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts/formValidator.js";

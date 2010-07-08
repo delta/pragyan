@@ -78,8 +78,6 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 		}
 	}
 
-//	print_r($columnList);
-//	print_r($elementRow);
 	if(in_array('useremail', $columnList)) {
 		$elementRow['useremail'] = getUserEmail($userId);
 	}
@@ -112,7 +110,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 
 
 
-	function getColumnList($moduleCompId, $showUserEmail, $showUserFullName, $showRegistrationDate, $showLastUpdateDate, $showUserProfileData) {
+	function getColumnList($moduleCompId, $showUserEmail, $showUserFullName, $showRegistrationDate, $showLastUpdateDate, $showUserProfileData=false) {
 		$columns = array();
 		
 		if($showUserEmail)
