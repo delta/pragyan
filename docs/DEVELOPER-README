@@ -4,10 +4,11 @@ Pragyan CMS v3.0 - Developer's Guide
 :::::::::::::::::::::::::::::::: Index ::::::::::::::::::::::::::::::::
 
 1) Installation Instructions
-2) Coding Guidelines
-	+ Uniformity
+2) Reinstallation Instructions
+3) Coding Guidelines
 	+ Security
 	+ Portability
+	+ Uniformity
 	+ Optimization
 
 
@@ -17,8 +18,11 @@ ______________________________________________________________________
 +++++++++ INSTALLATION INSTRUCTIONS ++++++++++++++++++++++++++++++++++
 ______________________________________________________________________
 
-For those who have downloaded a nightly build of Pragyan CMS v3,
-please follow the following steps before you install the CMS :
+For those who have downloaded a nightly build of Pragyan CMS v3, and
+doing a fresh reinstall please follow the following steps before you
+install the CMS (Note that this is NOT for the users who have 
+downloaded an official release from Pragyan CMS Sourceforge.net
+home page, those users can directly refer to INSTALL/INSTALL.txt)  :
 
 1) Delete all the contents of the cms/config.inc.php file
 2) Delete the .htaccess file in the root directory of Pragyan CMS
@@ -28,6 +32,22 @@ please follow the following steps before you install the CMS :
 
 
 ______________________________________________________________________
+
++++++++++ REINSTALLATION INSTRUCTIONS ++++++++++++++++++++++++++++++++++
+______________________________________________________________________
+
+To safely uninstall Pragyan CMS so that you can reinstall from the 
+same files, do the following :
+
+1) If you're in Linux-based operating system, go to the root directory
+of Pragyan CMS and execute the following script like this :
+>sh scripts/uninstall.sh
+Next, delete the old database and create a new one.
+2) If you're NOT in a Linux-based operating system, simply follow the 
+steps mentioned in INSTALLATION INSTRUCTIONS.
+
+
+____________________________________________________________________
 
 +++++++++ CODING GUIDELINES ++++++++++++++++++++++++++++++++++++++++++
 ______________________________________________________________________
@@ -51,24 +71,26 @@ ______________________________________________________________________
 	in any assignment operation i.e. when a PHP variable is being 
 	assigned a value of a dangerous variable using '=' operator. 
 	Something like $var=$_GET['hi'] should be made to 
-	$var=escape($_GET['hi'])
-
-
+	$var=escape($_GET['hi']). This check is to prevent attacks
+	of type SQL Injection. 
+	
 	===== RULE 2 =====
+	
+	Be careful not to escape the same variable TWICE.
+
+	===== RULE 3 =====
 	
 	Don't use escape() function when a dangerous variable 
 	is used in a conditional operation i.e in a IF, FOR, WHILE or
 	'?:' condition statement.
 
-
-	===== RULE 3 =====
+	===== RULE 4 =====
 	
 	In a MySQL query, put the table name and column names
 	within ` ` escape quotes. e.g. "SELECT apple FROM tree WHERE 
 	apple=2" should be "SELECT `apple` FROM `tree` WHERE `apple`=2"
 
-
-	===== RULE 4 =====
+	===== RULE 5 =====
 	
 	Use the safe_html() function whenever a dangerous variable 
 	is directly or indirectly being echoed or printed onto the 
@@ -77,7 +99,8 @@ ______________________________________________________________________
 
 	===== EXAMPLES ===== 
 
-	Bad Code : 
+	Vulnerable Code : 
+	-----------------
 
 	if(isset($_GET['hello']))
 		$var = $_GET['hello'];
@@ -91,7 +114,8 @@ ______________________________________________________________________
 	echo $query;
 
 
-	Secure Code : 
+	Secure Code :
+	------------- 
 
 	if(isset($_GET['hello']))
 		$var = escape($_GET['hello']);
@@ -114,5 +138,11 @@ ______________________________________________________________________
 	When creating Templates, don't use the PHP echo short form,
 	use the entire echo statement. For example - <?=$HELLO?>
 	should be converted to <? echo $HELLO; ?>
+	
+	===== RULE 2 =====
+	
+	Avoid using the OS-specific commands in functions like exec().
+	In case its impossible to avoid it, try to find an alternative
+	for Windows and/or Linux-bases OS also and implement it.
 	
 	

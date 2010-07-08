@@ -1,3 +1,15 @@
+Revision 72  by  abhishekdelta  on  2010-07-08 19:11:4
+Description : Improved SQL module, removed defunct modules and added module icons
+--------------------------------------------------------------------------------
+Revision 71  by  abhishekdelta  on  2010-07-08 16:47:0
+Description : Made user management to also display extra custom user profile form fields
+--------------------------------------------------------------------------------
+Revision 70  by  abhishekdelta  on  2010-07-06 17:51:1
+Description : Bugfixes in permissions table
+--------------------------------------------------------------------------------
+Revision 69  by  abhishekdelta  on  2010-07-06 17:24:4
+Description : Fixed permissions table : patch by Chakra
+--------------------------------------------------------------------------------
 Revision 68  by  abhishekdelta  on  2010-07-06 02:46:2
 Description : Fixed Quiz module in working state
 --------------------------------------------------------------------------------
