@@ -27,7 +27,19 @@ $ICON_ARRAY=array(
 'Website Administration'=>"categories/applications-development.png",
 'Access Permissions'=>"status/network-wireless-encrypted.png",
 'User Profile'=>"places/user-home.png",
-'User Groups'=>"apps/system-users.png"
+'User Groups'=>"apps/system-users.png",
+'PR Add User'=>"apps/system-users.png",
+'Form Edit'=>'actions/edit-paste.png',
+'Form Registrants'=>'apps/system-users.png',
+'Gallery Edit'=>'apps/preferences-desktop-screensaver.png',
+'News'=>'apps/internet-news-reader.png',
+'News Edit'=>'apps/internet-news-reader.png',
+'News Add'=>'apps/internet-news-reader.png',
+'Database Information'=>'places/network-server.png',
+'SQL Query'=>'apps/utilities-terminal.png',
+'Quiz Edit'=>'categories/applications-games.png',
+'Quiz Correct'=>'categories/applications-office.png'
+
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)

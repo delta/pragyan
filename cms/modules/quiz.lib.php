@@ -188,7 +188,9 @@ class quiz implements module {
 				$dataSource = 'db';
 		}
 
-		return getQuizEditForm($this->moduleComponentId, $dataSource);
+		$html= getQuizEditForm($this->moduleComponentId, $dataSource);
+		global $ICONS;
+		return "<fieldset><legend>{$ICONS['Quiz Edit']['small']} Edit Quiz Information</legend>$html</fieldset>";
 	}
 
 	public function actionCorrect() {
@@ -205,7 +207,9 @@ class quiz implements module {
 				$quizObject->deleteEntries(intval($_POST['hdnUserId']));
 		}
 
-		return getQuizUserListHtml($this->moduleComponentId);
+		$html=getQuizUserListHtml($this->moduleComponentId);
+		global $ICONS;
+		return "<fieldset><legend>{$ICONS['Quiz Correct']['small']} Quiz Correct Scores</legend>$html</fieldset>";
 	}
 
 	public function actionViewResults() {

@@ -6,7 +6,7 @@
  * For more details, see README
  */
  
-//NOTE (by Abhishek) : I've deliberately not used safe_html in NEWS module so as to give the user the freedom to use HTML tags to specify stuff like highlight news,colored news, images, etc ... 
+//NOTE (by Abhishek) : I've deliberately not used safe_html in NEWS module so as to give the user the freedom to use HTML tags to specify stuff like highlighted news,colored news, images, etc ... 
 
  class news implements module {
 	private $userId;
@@ -91,7 +91,7 @@ RSSOUTPUT;
 		echo $this->getNews();
 		exit;
 	}
-//I have edited this but wasnt able to check its working 
+
 	public function actionEdit() {
 	
 	
@@ -125,6 +125,7 @@ RSSOUTPUT;
 	</script>
 VALSCRIPT;
 		if(isset($_GET['subaction'])) {
+			global $ICONS;
 			if(isset($_GET['newsid']) && ctype_digit($_GET['newsid'])) {
 				if($_GET['subaction'] == 'deletenews') {
 					$query1 = "SELECT * FROM `news_data` WHERE `news_id`=".escape($_GET['newsid'])." AND `page_modulecomponentid` = $this->moduleComponentId";
@@ -141,14 +142,14 @@ VALSCRIPT;
 					$row = mysql_fetch_assoc($result);
 					$editForm = <<<EDITFORM
 						$validateScript
-					 	<form name="AddNews" action="./+edit" method="POST" onsubmit="return validate_empty();">
+					 	<fieldset><legend>{$ICONS['News Edit']['small']} Edit News<legend><form name="AddNews" action="./+edit" method="POST" onsubmit="return validate_empty();">
 							Title of News Item  <input type="text" name="title" id="title" size="50" value="{$row['news_title']}"><br /><br />
 							News Description  <br><textarea name="feed" id="feed" cols="50" rows="10">{$row['news_feed']}</textarea><br />
 							Rank/Importance of Feed  <input type="text" name="rank" size="10" value="{$row['news_rank']}" /><br /><br />
 							Relative link  <input type="text" name="link" size=40 value="{$row['news_link']}" ><br><br>
 							<input type="submit" value="Save Changes" name="btnSaveChanges"/>
 							<input type="hidden" name="newsid" value="{$row['news_id']}" />
-				  	</form>
+				  	</form></fieldset>
 EDITFORM;
 
 					return $editForm;
@@ -169,13 +170,14 @@ EDITFORM;
 				
 					$addnews=<<<NEWS
 $validateScript
+<fieldset><legend>{$ICONS['News Add']['small']} Add News<legend>
 <form name="AddNews" action="./+edit&subaction=addnews" method="POST" onsubmit="return validate_empty()">
 								Title of News Item  <input type="text" name="title" id="title" size=50 /><br><br>
 								News Description  <br><textarea name="feed" id="feed" cols="50" rows="10"> </textarea><br>
 								Rank/Importance of Feed <input type="text" name="rank" size=10 /><br><br>' .
 										'Relative link  <input type="text" name="link" size=40 /><br><br>
 								<input type="submit" name="btnAddNews" value="Submit News Feed" />
-								</form>
+								</form></fieldset>
 NEWS;
 					return $addnews;
 				}
@@ -191,7 +193,8 @@ NEWS;
 		$result=mysql_query($query);
 
 		$rowCount = mysql_num_rows($result);
-		$news = '<form name="newsedit" action="./+edit" method="POST">';
+		global $ICONS;
+		$news = "<fieldset><legend>{$ICONS['News Edit']['small']} Edit News<legend><form name=\"newsedit\" action=\"./+edit\" method=\"POST\">";
 		$news.=<<<CHECKDEL
 		<script language="javascript">
 
@@ -221,7 +224,7 @@ CHECKDEL;
 		}
 		$news .= <<<END
 </table>
-<br /><input type=button value='Add News' onClick='window.location="./+edit&subaction=addnews"'> <input type=button value='View News' onClick='window.location="./+view"'>
+<br /><input type=button value='Add News' onClick='window.location="./+edit&subaction=addnews"'> <input type=button value='View News' onClick='window.location="./+view"'></form></fieldset>
 END;
 		return $news;
 	}

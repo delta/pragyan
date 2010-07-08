@@ -322,8 +322,6 @@ ADMINPAGE;
 		$str .= '<a href="./+admin&subaction=checkAdminPerms">Check Admin Perms</a><br />';
 		$str .= '<a href="./+admin&subaction=changePermRank">Change Perm Ranks</a><br />';
 		$str .= '<a href="./+admin&subaction=editprofileform">Edit User Profile Form</a><br />';
-		$str .= '<a href="./+admin&subaction=viewsiteregistrants">View Users Registered to the Website</a><br />';
-		$str .= '<a href="./+admin&subaction=editsiteregistrants">Edit Registrants</a><br />';
 		$str .= '<a href="./+admin&subaction=reloadtemplates">Reload Templates</a><br />';
 		$str .= '<a href="./+admin&indexsite=2">Reindex Site for Searching</a></br/></fieldset>';
 		

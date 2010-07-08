@@ -195,6 +195,9 @@ JS;
 			}
 		}
 		$arr = getUploadedFiles($this->moduleComponentId, 'gallery');
+		global $ICONS;
+		$content2="<fieldset><legend>{$ICONS['Gallery Edit']['small']}Edit Gallery</legend>".$content2;
+		
 		$result = mysql_fetch_array(mysql_query("SELECT * FROM `gallery_name` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		$content2 .=<<<GALFORM
 					<br /><br />
@@ -265,7 +268,7 @@ IMGFORM;
 				$content2 .= "</form></div>";
 			}
 		}
-		return $content2;
+		return $content2."</fieldset>";
 	}
 	public function deleteModule($moduleComponentId) {
 		global $sourceFolder;

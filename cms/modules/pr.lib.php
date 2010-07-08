@@ -24,13 +24,13 @@ class pr implements module {
 
 	private function getNewUserThirdPartyRegistrationForm() {
 		global $sourceFolder, $moduleFolder, $urlRequestRoot,$cmsFolder;
-
+		global $ICONS;
 		$registrationForm = <<<REGISTRATIONFORM
 			<script language="javascript" type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/pr/pr.js">
 			</script>
 			<form name="pruserregistrationform" method="POST" action="./+view" onsubmit="return validatePrRegistrationForm(this)">
 				<fieldset style="padding: 8px; margin: 8px">
-					<legend>User Information</legend>
+					<legend>{$ICONS['PR Add User']['small']}User Information</legend>
 
 					<table>
 						<tr>
