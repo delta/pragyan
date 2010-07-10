@@ -177,7 +177,7 @@ PRE;
 		$temp = $urlRequestRoot . "/" . $cmsFolder . "/" . $moduleFolder . "/forum/images";
 		require_once ("$sourceFolder/$moduleFolder/forum/bbeditor.php");
 		require_once ("$sourceFolder/$moduleFolder/forum/bbparser.php");
-
+		$js=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/jscript.js";
 		$userId = $this->userId;
 		$table_name = "forum_threads";
 		$table1_name = "forum_posts";
@@ -240,14 +240,15 @@ PRE;
 			
 				$action = "+post&subaction=create_thread";
 				$moderate =<<<PRE
-				<fieldset><legend>{$ICONS['Forum Moderate']['small']}Moderate Forum</legend>
-		<p align="left"><a href="$action" style="color:#0F5B96"><img src="$temp/newthread.gif" /></a></p>
-        <table width="100%" border="0" align="center" cellpadding="3" cellspacing="1">
+		<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
+		<fieldset><legend>{$ICONS['Forum Moderate']['small']}Moderate Forum</legend>
+		<p align="left"><a href="$action" style="color:#0F5B96"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
+        <table width="100%" id="forum" align="center" cellpadding="3" cellspacing="1">
         <tr>
-        <td class="forumTableHeaderSubject" colspan="4"><strong>Subject</strong><br /></td>
-        <td class="forumTableHeaderViews"><strong>Views</strong></td>
-        <td class="forumTableHeaderReplies"><strong>Replies</strong></td>
-        <td class="forumTableHeaderPost"><strong>Last Post</strong></td>
+        <td class="forumTableHeader" colspan="4"><strong>Subject</strong><br /></td>
+        <td class="forumTableHeader"><strong>Views</strong></td>
+        <td class="forumTableHeader"><strong>Replies</strong></td>
+        <td class="forumTableHeader"><strong>Last Post</strong></td>
         </tr>
         <tr>
 PRE;
@@ -263,26 +264,26 @@ PRE;
 						if ($rows['forum_post_approve'] == 0)
 							{
 								$text = "Approve";
-								$img = "thumbs_up.gif";
+								$img = "like.gif";
 							}
 						else
 							{
 								$text = "Disapprove";
-								$img = "thumbs_down.gif";
+								$img = "unlike.gif";
 							}
 						$subaction = strtolower($text);
 						$moderate .=<<<PRE
 		        <tr>
-		        <td class="forumTableCol"  width="3%"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]">
-		        <img src="$temp/b_drop.png" /></a></td>
-		        <td class="forumTableCol"  width="3%"><a href="+moderate&subaction=$subaction&thread_id=$rows[forum_thread_id]">
+		        <td class="forumThreadRow"  width="3%"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]">
+		        <img src="$temp/delete1.gif" /></a></td>
+		        <td class="forumThreadRow"  width="3%"><a href="+moderate&subaction=$subaction&thread_id=$rows[forum_thread_id]">
 		        <img src="$temp/$img" /></a></td>
-		        <td class="forumTableCol"  width="3%"><img src="$temp/pinned_topic_icon.gif" /></td>
-		        <td class="forumTableRow"  width="41%"><a href="+moderate&forum_id=$rows[forum_thread_id]"> $topic </a><br /><small>by <b> $name </a></b>
+		        <td class="forumThreadRow"  width="3%"><img src="$temp/sticky.gif" /></td>
+		        <td class="forumThreadRow"  width="41%"><a href="+moderate&forum_id=$rows[forum_thread_id]"> $topic </a><br /><small>by <b> $name </a></b>
 		        on $rows[forum_thread_datetime] </small></td>
-		        <td class="forumTableCol"  width="10%"> $rows[forum_thread_viewcount] </td>
-		        <td class="forumTableCol"  width="10%"> $reply_count </td>
-		        <td class="forumTableRow"  width="30%"><small>by <b> $last_post_author </a></b> on $rows[forum_thread_lastpost_date] </small></td>
+		        <td class="forumThreadRow"  width="10%"> $rows[forum_thread_viewcount] </td>
+		        <td class="forumThreadRow"  width="10%"> $reply_count </td>
+		        <td class="forumThreadRow"  width="30%"><small>by <b> $last_post_author </a></b> on $rows[forum_thread_lastpost_date] </small></td>
 		        </tr>
 PRE;
 
@@ -293,9 +294,9 @@ PRE;
 				for ($i = 1; $i <= $num_rows; $i++) {
 					$rows = mysql_fetch_array($result);
 					if($userId>0 && ($_SESSION['last_to_last_login_datetime']<$rows['forum_thread_lastpost_date']))
-						$img_src = "new_posts_icon.gif";
+						$img_src = "thread_new.gif";
 					else
-						$img_src = "no_new_posts_icon.gif";
+						$img_src = "thread_hot.gif";
 
 					$query1 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1'";
 					$result1 = mysql_query($query1);
@@ -306,36 +307,36 @@ PRE;
 						if ($rows['forum_post_approve'] == 0)
 							{
 								$text = "Approve";
-								$img = "thumbs_up.gif";
+								$img = "like.gif";
 							}
 						else
 							{
 								$text = "Disapprove";
-								$img = "thumbs_down.gif";
+								$img = "unlike.gif";
 							}
 					$subaction = strtolower($text);
 					$moderate .=<<<PRE
         <tr>
-        <td class="forumTableCol"  width="3%"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]"><img src="$temp/b_drop.png" />
+        <td class="forumThreadRow"  width="3%"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]"><img src="$temp/delete1.gif" />
         </a></td>
-		<td class="forumTableCol"  width="3%"><a href="+moderate&subaction=$subaction&thread_id=$rows[forum_thread_id]"><img src="$temp/$img" />
+		<td class="forumThreadRow"  width="3%"><a href="+moderate&subaction=$subaction&thread_id=$rows[forum_thread_id]"><img src="$temp/$img" />
 		</a></td>
-        <td class="forumTableCol"  width="3%"><img src="$temp/$img_src" /></td>
-        <td class="forumTableRow"  width="41%"><a href="+moderate&forum_id=$rows[forum_thread_id]"> $topic </a><br /><small>by <b> $name </a></b>
+        <td class="forumThreadRow"  width="3%"><img src="$temp/$img_src" /></td>
+        <td class="forumThreadRow"  width="41%"><a href="+moderate&forum_id=$rows[forum_thread_id]"> $topic </a><br /><small>by <b> $name </a></b>
         on $rows[forum_thread_datetime] </small></td>
-        <td class="forumTableCol"  width="10%"> $rows[forum_thread_viewcount] </td>
-        <td class="forumTableCol"  width="10%"> $reply_count </td>
-        <td class="forumTableRow"  width="30%"><small>by <b> $last_post_author </a></b> on $rows[forum_thread_lastpost_date] </small></td>
+        <td class="forumThreadRow"  width="10%"> $rows[forum_thread_viewcount] </td>
+        <td class="forumThreadRow"  width="10%"> $reply_count </td>
+        <td class="forumThreadRow"  width="30%"><small>by <b> $last_post_author </a></b> on $rows[forum_thread_lastpost_date] </small></td>
         </tr>
 PRE;
 				}
 				$moderate .= '</table><br />
-				        <p align="left"><img alt="" src="' . $temp . '/thumbs_up.gif" align=left> &nbsp;- To Approve Threads.<br /><br />' .
-				        		'<img alt="" src="' . $temp . '/thumbs_down.gif" align=left> &nbsp;- To Disapprove Threads.<br /><br />' .
-				        				'<img alt="" src="' . $temp . '/pinned_topic_icon.gif" align=left> &nbsp;- Sticky Threads.<br /><br />' .
-				        						'<img alt="" src="' . $temp . '/new_posts_icon.gif" align=left>' .
+				        <p align="left"><img alt="" src="' . $temp . '/like.gif" align=left> &nbsp;- To Approve Threads.<br /><br />' .
+				        		'<img alt="" src="' . $temp . '/unlike.gif" align=left> &nbsp;- To Disapprove Threads.<br /><br />' .
+				        				'<img alt="" src="' . $temp . '/sticky.gif" align=left> &nbsp;- Sticky Threads.<br /><br />' .
+				        						'<img alt="" src="' . $temp . '/thread_new.gif" align=left>' .
 				        								' &nbsp;- Topic with new posts since last visit.<br /><br />' .
-				        								'<img alt="" src="' . $temp . '/no_new_posts_icon.gif" align=left>' .
+				        								'<img alt="" src="' . $temp . '/thread_hot.gif" align=left>' .
 				        										'&nbsp;- Topic with no new posts since last visit. </p><hr /></fieldset>';
 			}
 			return $moderate;
@@ -344,35 +345,37 @@ PRE;
 			$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`=$forum_id AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 			$result1 = mysql_query($sql);
 			$rows = mysql_fetch_array($result1);
-			$forum_topic = parseubb(parsesmileys($rows['forum_thread_topic']));
+			$forum_topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
 			$forum_detail = parseubb(parsesmileys($rows['forum_detail']));
-			$name = getUserName($rows['forum_thread_user_id']);
+			$name = ucfirst(getUserName($rows['forum_thread_user_id']));
 			$posts = $this->getTotalPosts($rows['forum_thread_user_id']);
 			$reg_date = $this->getRegDateFromUserID($rows['forum_thread_user_id']);
+			$count='0';
 			if ($rows['forum_post_approve'] == 0)
 				{
 					$text = "Approve";
-					$img = "thumbs_up.gif";
+					$img = "like.gif";
 				}
 			else
 				{
 					$text = "Disapprove";
-					$img = "thumbs_down.gif";
+					$img = "unlike.gif";
 				}
 			$subaction = strtolower($text);
 			$postpart =<<<PRE
-        <p align="left"><a href="+post&subaction=post_reply&thread_id=$forum_id"><img src="$temp/reply.gif" /></a>&nbsp;
-        <a href="+post&subaction=create_thread"><img src="$temp/newthread.gif" /></a></p>
+		<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
+        <p align="left"><a href="+post&subaction=post_reply&thread_id=$forum_id"><img title="Reply" src="$temp/reply.gif" /></a>&nbsp;
+        <a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
         <p align="right"><a href="+view"> << Go Back to Forum</a>&nbsp;
-		<table width="100%" border="0" cellpadding="3" cellspacing="1" bordercolor="1" >
+		<table id="forum" width="100%" cellpadding="3" cellspacing="1" bordercolor="1" >
 		<tr>
-        <td class="forumTableCol" rowspan="2"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]">
-        <img src="$temp/b_drop.png" /></a></td>
-		<td class="forumTableCol" rowspan="2"><a href="+moderate&subaction=$subaction&thread_id=$rows[forum_thread_id]">
+        <td class="forumThreadRow" rowspan="2"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]">
+        <img src="$temp/delete1.gif" /></a></td>
+		<td class="forumThreadRow" rowspan="2"><a href="+moderate&subaction=$subaction&thread_id=$rows[forum_thread_id]">
 		<img src="$temp/$img" /></a></td>
-		<td class="forumTableRow"><strong>$forum_topic</strong><br /><img src="$temp/post_icon.gif" />
+		<td class="forumThreadRow"><strong>$forum_topic</strong><br /><img src="$temp/post_icon.gif" />
 		 <small">by $name on $rows[forum_thread_datetime] </small></td>
-		<td class="forumTableRow" rowspan="2"><strong>$name <br />
+		<td class="forumThreadRow" rowspan="2"><strong>$name <br />
 PRE;
 			if ($userId > 0 && $name != "Anonymous") {
 				if ($rows['forum_thread_user_id'] == $userId)
@@ -382,45 +385,53 @@ PRE;
 					$moderator=getPermissions($rows['forum_thread_user_id'], getPageIdFromModuleComponentId("forum",$this->moduleComponentId), "moderate");
 					if($moderator)$postpart .= "Moderator";else
 				$postpart .= "Member";
-				$postpart .= '</strong><br /><br /><small>Posts: ' . $posts . ' <br />Joined: ' . $reg_date . ' <br />Last Visit:' . $lastLogin .
-'</small>';
+				$content = 'content'.$count;
+				$text = 'text'.$count;
+				$postpart .= <<<PRE
+						</strong><br /><br />
+						<script type="text/javascript" languauge="javascript" src="$js"></script>
+						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a>
+						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
+						$lastLogin </small></div>
+PRE;
 			}
 			$postpart .=<<<PRE
 	        </td>
 	        </tr>
 	        <tr>
-	        <td class="forumTableRow"><br /> $forum_detail </td>
-	        </tr>
+	        <td class="forumThreadRow"><br /> $forum_detail </td>
+	        </tr><tr><td class="blank" colspan="2"></td></tr>
 PRE;
-			$postpart .= "</table><br />";
+			//$postpart .= "</table><br />";
 			$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`=$forum_id AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY forum_post_id ASC";
 			$result2 = mysql_query($sql2);
 			while ($rows = mysql_fetch_array($result2)) {
-				$post_title = (parseubb(parsesmileys($rows['forum_post_title'])));
+				$count = $count + '1';
+				$post_title = ucfirst(parseubb(parsesmileys($rows['forum_post_title'])));
 				$post_content = (parseubb(parsesmileys($rows['forum_post_content'])));
-				$name = getUserName($rows['forum_post_user_id']);
+				$name = ucfirst(getUserName($rows['forum_post_user_id']));
 				$posts = $this->getTotalPosts($rows['forum_post_user_id']);
 				$reg_date = $this->getRegDateFromUserID($rows['forum_post_user_id']);
 				if ($rows['forum_post_approve'] == 0)
 					{
 						$text = "Approve";
-						$img = "thumbs_up.gif";
+						$img = "like.gif";
 					}
 				else
 					{
 						$text = "Disapprove";
-						$img = "thumbs_down.gif";
+						$img = "unlike.gif";
 					}
 				$subaction = strtolower($text);
 				$postpart .=<<<PRE
-	        <table width="100%" border="0" cellpadding="3" cellspacing="1" >
-	        <td class="forumTableCol" rowspan="2" width="3%">
+
+	        <td class="forumThreadRow" rowspan="2" width="3%">
 	        <a href="+moderate&subaction=delete&forum_id=$rows[forum_thread_id]&post_id=$rows[forum_post_id]"><img src="$temp/b_drop.png" /></a></td>
-			<td class="forumTableCol" rowspan="2" width="3%">
+			<td class="forumThreadRow" rowspan="2" width="3%">
 			<a href="+moderate&subaction=$subaction&forum_id=$rows[forum_thread_id]&post_id=$rows[forum_post_id]"><img src="$temp/$img" /></a></td>
-	        <td class="forumTableRow"><strong>Re:- $post_title </strong><br /><img src="$temp/post_icon.gif" />
+	        <td class="forumThreadRow"><strong>Re:- $post_title </strong><br /><img src="$temp/post_icon.gif" />
 	        <small">by $name on $rows[forum_post_datetime] <small></td>
-			<td class="forumTableRow" rowspan="2" width="20%"><strong>$name<br />
+			<td class="forumThreadRow" rowspan="2" width="20%"><strong>$name<br />
 PRE;
 				if ($userId > 0 && $name != "Anonymous") {
 					if ($rows['forum_post_user_id'] == $userId)
@@ -430,18 +441,25 @@ PRE;
 						$moderator=getPermissions($rows['forum_post_user_id'], getPageIdFromModuleComponentId("forum",$this->moduleComponentId), "moderate");
 					if($moderator)$postpart .= "Moderator";else
 					$postpart .= "Member";
-					$postpart .= '</strong><br /><br /><small>Posts: ' . $posts . ' <br />Joined: ' . $reg_date . ' <br />' .
-							'Last Visit:' . $lastLogin . '</strong>';
+					$content = 'content'.$count;
+					$text = 'text'.$count;
+					$postpart .= <<<PRE
+						</strong><br /><br />
+						<script type="text/javascript" languauge="javascript" src="$js"></script>
+						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a>
+						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
+						$lastLogin </small></div>
+PRE;
 				}
 				$postpart .=<<<PRE
 	        </td>
 	        </tr>
 	        <tr>
-	        <td class="forumTableRow"><br />$post_content</td>
-	        </tr>
-	        </table>
+	        <td class="forumThreadRow"><br />$post_content</td>
+	        </tr><tr><td class="blank" colspan="2"></td></tr>
 PRE;
 			}
+			$postpart .='</table>';
 			$query3 = "SELECT `forum_thread_viewcount` FROM `$table_name` WHERE forum_thread_id='$forum_id' AND `page_modulecomponentid`='$this->moduleComponentId' ";
 			$result3 = mysql_query($query3);
 			$rows = mysql_fetch_array($result3);
@@ -451,8 +469,8 @@ PRE;
 			$query5 = "UPDATE `$table_name` SET `forum_thread_viewcount`='$addview' WHERE forum_thread_id='$forum_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 			$result5 = mysql_query($query5);
 			$postpart .= '<br>
-			        <p align="left"><a href="+post&subaction=post_reply&thread_id='.$forum_id.'"><img src="'.$temp.'/reply.gif" />' .
-			        		'</a>&nbsp;<a href="+post&subaction=create_thread"><img src="'.$temp.'/newthread.gif" /></a></p>';
+			        <p align="left"><a href="+post&subaction=post_reply&thread_id='.$forum_id.'"><img title="Reply" src="'.$temp.'/reply.gif" />' .
+			        		'</a>&nbsp;<a href="+post&subaction=create_thread"><img title="New Thread" src="'.$temp.'/newthread.gif" /></a></p>';
 			return $postpart;
 		}
 	}
@@ -471,6 +489,7 @@ PRE;
 		$table_name = "forum_threads";
 		$table1_name = "forum_posts";
 		$table2_name = "forum_module";
+		$subaction="";
 		if(isset($_GET['subaction']))
 			$subaction = escape($_GET['subaction']);
 		global $sourceFolder;
@@ -646,7 +665,9 @@ public function actionView() {
 		$temp = $urlRequestRoot . "/" . $cmsFolder . "/" . $moduleFolder . "/forum/images";
 		$table_name = "forum_threads";
 		$table1_name = "forum_posts";
-		$forumHtml = '' ;
+		$forumHtml = <<<PRE
+		<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
+PRE;
 		$postpart = '';
 		//to check last visit to the forum
 		$table_visit = "forum_visits";
@@ -695,13 +716,13 @@ public function actionView() {
 				$action = "+post&subaction=create_thread";
 				$num_rows = mysql_num_rows($result); //counts the total no of general threads				
 				$forum_header =<<<PRE
-			<p align="left"><a href="$action"><img src="$temp/newthread.gif" /></a></p>
+			<p align="left"><a href="$action"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
 	        <table width="100%" border="1" align="center" cellpadding="4" cellspacing="2" id="forum">
 	        <tr class="TableHeader">
-	        <td class="forumTableHeaderSubject" colspan="2"><strong>Subject</strong><br /></td>
-	        <td class="forumTableHeaderViews"> <strong>Views</strong></td>
-	        <td class="forumTableHeaderReplies"><strong>Replies</strong></td>
-	        <td class="forumTableHeaderPost"><strong>Last Post</strong></td>
+	        <td class="forumTableHeader" colspan="2"><strong>TOPICS</strong><br /></td>
+	        <td class="forumTableHeader"> <strong>VIEWS</strong></td>
+	        <td class="forumTableHeader"><strong>REPLIES</strong></td>
+	        <td class="forumTableHeader"><strong>LAST POST</strong></td>
 	        </tr>
 PRE;
 				$forumHtml .= $forum_header;
@@ -733,6 +754,7 @@ PRE;
 						$forumHtml .= $this->forumHtml($rows,'threadRow');
 						}
 					}
+				$forumHtml .= '<tr></tr></table><br />';
 				}
 			}
 			else {
@@ -744,21 +766,31 @@ PRE;
 					$res = mysql_query($query);
 					if ( !$res )
 						displayerror("Could not perform the delete operation on the selected post!");
+					$query = "DELETE FROM `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=$post_id AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$res = mysql_query($query);
 			}
 				if ($_GET['subaction'] == "like_post") {
 					$post_id = escape($_GET['post_id']);
+					$query = "SELECT * FROM `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=$post_id AND `page_modulecomponentid`='$this->moduleComponentId' ";
+					$res = mysql_query($query);
+					if(mysql_num_rows($res)==0) {
 					$query = "INSERT INTO`forum_like` (`page_modulecomponentid`,`forum_thread_id`,`forum_post_id`,`forum_like_user_id`,`like_status`) VALUES ($this->moduleComponentId,$thread_id,$post_id,$userId,'1')";
 					$res = mysql_query($query);
 					if ( !$res )
 						displayerror("Could not perform the like operation on the selected post!");
-			}	
+					}	
+			}
 				if ($_GET['subaction'] == "dislike_post") {
 					$post_id = escape($_GET['post_id']);
+					$query = "SELECT * FROM `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=$post_id AND `page_modulecomponentid`='$this->moduleComponentId' ";
+					$res = mysql_query($query);
+					if(mysql_num_rows($res)==0) {
 					$query = "INSERT INTO`forum_like` (`page_modulecomponentid`,`forum_thread_id`,`forum_post_id`,`forum_like_user_id`,`like_status`) VALUES ($this->moduleComponentId,$thread_id,$post_id,$userId,'0')";
 					$res = mysql_query($query) or die(mysql_error());
 					if ( !$res )
 						displayerror("Could not perform the dislike operation on the selected post!");
-			}	
+						}
+			}			
 			}
 			$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`=$thread_id AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 			$result1 = mysql_query($sql);
@@ -770,32 +802,39 @@ PRE;
 			$posts = $this->getTotalPosts($rows['forum_thread_user_id']);
 			$reg_date = $this->getRegDateFromUserID($rows['forum_thread_user_id']);
 			$forumHtml = $this->forumHtml($rows,'threadHead');
+			$count=0;
 			if ($rows['forum_post_approve'] == 1)
-				$forumHtml .= $this->forumHtml($rows,'threadMain');
+				$forumHtml .= $this->forumHtml($rows,'threadMain',0,0);
 			$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`=$thread_id AND `forum_post_approve` = 1 AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY `forum_post_id` ASC";
 			$result2 = mysql_query($sql2);
-			while ($rows = mysql_fetch_array($result2)) 
-				$forumHtml .= $this->forumHtml($rows,'threadMain',1);
+			while ($rows1 = mysql_fetch_array($result2)) {
+				$count = $count + 1;
+				$forumHtml .= $this->forumHtml($rows1,'threadMain',1,$count);
+			}
 			$sql3 = "SELECT `forum_thread_viewcount` FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
 			$result3 = mysql_query($sql3);
-			$rows = mysql_fetch_array($result3);
-			$view = $rows['forum_thread_viewcount'];
+			$rows2 = mysql_fetch_array($result3);
+			$view = $rows2['forum_thread_viewcount'];
 			// count more value
 			$addview = $view +1;
 			$sql5 = "UPDATE `$table_name` SET `forum_thread_viewcount`='$addview' WHERE forum_thread_id='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 			$result5 = mysql_query($sql5);
+			$forumHtml .= '</table><br />';
+			if($rows['forum_thread_category']!='sticky'){
+			$forumHtml .= '<p align="left"><a href="+post&subaction=post_reply&thread_id='.$thread_id.'"><img alt="Reply" title="Reply" src="'.$temp.'/reply.gif" /></a></p>';
 			}
-			$forumHtml .= '</table><br />
-				            <p align="left"><img alt="" src="' . $temp . '/pinned_topic_icon.gif" align=left> &nbsp;- Sticky Threads.<br /><br />' .
-				            		'<img alt="" src="' . $temp . '/thread_new.gif" align=left> &nbsp;- Topic with new posts since last visit.' .
-				            				'<br /><br /><img alt="" src="' . $temp . '/thread_hot.gif" align=left>' .
+			}
+			$forumHtml .= '<p align="left"><img alt="Sticky" title="Sticky" src="' . $temp . '/sticky.gif" align=left> &nbsp;- Sticky Threads.<br /><br />' .
+				            		'<img alt="New Posts" title="New Posts" src="' . $temp . '/thread_new.gif" align=left> &nbsp;- Topic with new posts since last visit.' .
+				            				'<br /><br /><img alt="No new posts" title="No new Posts" src="' . $temp . '/thread_hot.gif" align=left>' .
 				            						'&nbsp;- Topic with no new posts since last visit. </p>';
 		return $forumHtml;
 	}
-	private function forumHtml($data, $type='thread', $post=0) {
+	private function forumHtml($data, $type='thread', $post=0,$count=0) {
 		global $urlRequestRoot, $moduleFolder, $cmsFolder,$templateFolder,$sourceFolder,$userId;
 		require_once ("$sourceFolder/$moduleFolder/forum/bbeditor.php");
 		require_once ("$sourceFolder/$moduleFolder/forum/bbparser.php");
+		$js=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/jscript.js";
 		$table_name = "forum_threads";
 		$table1_name = "forum_posts";
 		$templatesImageFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/".TEMPLATE;
@@ -821,23 +860,23 @@ PRE;
 						{
 							$img_src = "thread_hot.gif";
 						}
-				$topic = (parseubb(parsesmileys($rows['forum_thread_topic'])));
+				$topic = ucfirst((parseubb(parsesmileys($rows['forum_thread_topic']))));
 				$name = getUserName($rows['forum_thread_user_id']);
 				$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
 				if($rows['forum_thread_category']=='sticky') {
-						$img_src = 'pinned_topic_icon.gif';
+						$img_src = 'sticky.gif';
 						}
 				$query1 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
 				$result1 = mysql_query($query1);
 				$reply_count = mysql_num_rows($result1);
 				$forum_threads .=<<<PRE1
-			            <tr>
-			            <td class="forumTableIcon" width="3%"><img src="$temp/$img_src" /></td>
-			            <td class="forumTableTopic" width="51%"><a href="+view&thread_id=$rows[forum_thread_id]"> $topic </a><br /><small>by <b> $name </a></b>
+			            <tr class="forumThreadRow">
+			            <td class="forumThreadRow forumTableIcon" width="3%"><img src="$temp/$img_src" /></td>
+			            <td class="forumThreadRow" width="51%"><a class="threadRow" href="+view&thread_id=$rows[forum_thread_id]"> $topic </a><br /><small>by <b> $name </b>
 			             on $rows[forum_thread_datetime] </small></td>
-			            <td class="forumTableViews" width="8%"> $rows[forum_thread_viewcount] </td>
-			            <td class="forumTablePosts" width="8%"> $reply_count </td>
-			            <td class="forumTableLast" width="30%"><small>by <b> $last_post_author </a></b> on $rows[forum_thread_lastpost_date] </small></td>
+			            <td class="forumThreadRow" width="8%" style="text-align:center;"> $rows[forum_thread_viewcount] </td>
+			            <td class="forumThreadRow" width="8%" style="text-align:center;"> $reply_count </td>
+			            <td class="forumThreadRow" width="30%"><small>by <b> $last_post_author </a></b> on $rows[forum_thread_lastpost_date] </small></td>
 			            </tr>        
 PRE1;
 				$forumHtml .= $forum_threads;
@@ -845,13 +884,13 @@ PRE1;
 		if($type == 'threadHead'){
 				$thread_Header = '<p align="left">';
 				if($rows['forum_thread_category']!='sticky') {
-					$thread_Header .= '<a href="+post&subaction=post_reply&thread_id='.$thread_id.'"><img src="'.$temp.'/reply.gif" /></a>&nbsp';
+					$thread_Header .= '<a href="+post&subaction=post_reply&thread_id='.$thread_id.'"><img alt="Reply" title="Reply" src="'.$temp.'/reply.gif" /></a>&nbsp&nbsp';
 				}
 				$thread_Header .=<<<PRE
-				
-				<a href="+post&subaction=create_thread"><img src="$temp/newthread.gif" /></a></p>
+				<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
+				&nbsp<a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
 				<p align="right"><a href="+view"> << Go Back to Forum</a>&nbsp;
-				<table width="100%" border="1" cellpadding="4" cellspacing="2" id="forum" >
+				<table width="100%" cellpadding="4" cellspacing="2" id="forum" >
 PRE;
 			$forumHtml = $thread_Header;
 		}
@@ -880,9 +919,10 @@ PRE;
 			$postTime = $rows['forum_post_datetime'];
 			$threadUserId = $postUserId;
 			}
+			$datetime = date("Y-m-d H:i:s")-$postTime;
 					$threadHtml = '<tr class="ThreadHeadRow" cellspacing="10">
-					        <td class="ThreadRowTopic"><strong> ' . $topic . ' </strong><br />' .
-					        		'<img src="' . $temp . '/post_icon.gif" /><small>by ' . $name . ' </a>' .
+					        <td class="forumThreadRow"><strong> ' . $topic . ' </strong><br />' .
+					        		'<img src="' . $temp . '/post_icon.gif" /><small>&nbsp&nbsp by ' . ucfirst($name) . ' </a>' .
 					        				' on ' . $postTime  . ' </small>';
 					if($post == 1)						
 					if($r['allow_like_posts'] == 1){
@@ -892,11 +932,11 @@ PRE;
 					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
 					$dlikeres = mysql_query($dlikequery) or die(mysql_error());
 					$dlikeres = mysql_num_rows($dlikeres);
-						$threadHtml .= '<br /><small> ' . $likeres . ' people like this post</small><br />';
+						$threadHtml .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';
 						$threadHtml .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
 					}
 					$threadHtml .='</td>
-					        <td class="ThreadAuthorBox" width="25%" rowspan="2"><strong> ' . $name . ' </a><br />';
+					        <td class="forumThreadRow" width="25%" rowspan="2"><strong> ' . ucfirst($name) . ' </a><br />';
 				if ($threadUserId > 0) {
 					if ($threadUserId == $userId)
 						$lastLogin = $_SESSION['last_to_last_login_datetime'];
@@ -905,24 +945,23 @@ PRE;
 						$moderator=getPermissions($threadUserId, getPageIdFromModuleComponentId("forum",$this->moduleComponentId), "moderate");
 					if($moderator)$threadHtml .= "Moderator";else
 					$threadHtml .= "Member";
-					$threadHtml .= '</strong><br /><br /><small>Posts: ' . $posts . ' <br />Joined: ' . $reg_date . ' <br />Last Visit:'
-					. $lastLogin . '</small>';
-				}
-				$threadHtml .=<<<PRE
-	        </td>
-	        </tr>
-	        <tr>
-	        <td class="forumContent"> <br />$detail </td>
-	        </tr>
+					$content = 'content'.$count;
+					$text = 'text'.$count;
+					$threadHtml .= <<<PRE
+						</strong><br /><br />
+						<script type="text/javascript" languauge="javascript" src="$js"></script>
+						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a>
+						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
+						$lastLogin </small></div>
 PRE;
-			if($userId>0 && ( ($r['allow_delete_posts'] == 1) ||($r['allow_like_posts']==1))) {	
-			$threadHtml .= '<tr><td colspan="2" align="right">';
+if($post==1 && $userId>0 && ( ($r['allow_delete_posts'] == 1) ||($r['allow_like_posts']==1))) {	
+			//$threadHtml .= '<tr><td colspan="2" align="right">';
 			if($r['allow_delete_posts'] == 1){
 			if ($post==1 && $userId > 0 && $userId == $rows['forum_post_user_id'])
 					 //compare the userID of the logged in user with that of the author of the current reply
 						{
-						$threadHtml .= '<a href="+view&subaction=delete_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
-										'<img src="'.$temp.'/delete_sm.gif"></a></span>';
+						$threadHtml .= '<br /><br /><a href="+view&subaction=delete_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
+										'<img src="'.$temp.'/delete1.gif"></a></span>';
 					}
 			}
 			if($r['allow_like_posts'] == 1) {
@@ -936,21 +975,29 @@ PRE;
 						if(mysql_num_rows($re)==0 && mysql_num_rows($re1)==0)
 							{
 							$threadHtml .= '  <a href="+view&subaction=like_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
-										'  <img title="Like this post" src="'.$temp.'/thumbs_up.gif"></a></span>';
+										'  <img title="Like this post" src="'.$temp.'/like.gif"></a></span>';
 							$threadHtml .= '  <a href="+view&subaction=dislike_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
-										'  <img title="Dislike this post" src="'.$temp.'/thumbs_down.gif"></a></span>';
+										'  <img title="Dislike this post" src="'.$temp.'/unlike.gif"></a></span>';
 							}
 						else {
 						if(mysql_num_rows($re)>0)
-							$threadHtml .= ' You Like this post';
+							$threadHtml .= '<br /> You Like this post';
 						else
-							$threadHtml .= ' You Dislike this post';
+							$threadHtml .= '<br /> You Dislike this post';
 						}
 						}
 			}
-			$threadHtml .= '</td></tr>';
+			//$threadHtml .= '</td></tr>';
 		}
-	        $threadHtml .= '<tr class="blank"><td colspan="2"></td></tr>';
+				}
+				$threadHtml .=<<<PRE
+	        </td>
+	        </tr>
+	        <tr>
+	        <td class="forumThreadRow"> <br />$detail </td>
+	        </tr>
+PRE;
+	        $threadHtml .= '<tr><td class="blank" colspan="2"></td></tr>';
 
 
 			$forumHtml .= $threadHtml;

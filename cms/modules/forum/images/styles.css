@@ -2,6 +2,40 @@ hr {	height : 1px;	border : 1px solid #eee;}
 hr.side-hr {	height : 1px;	border : 1px solid #eee;}
 td {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
 pre {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
+small {
+font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 10px;
+}
+.forumTableHeader {
+background-color : #A0B9F3;
+text-align:center;
+border:1px solid #FFFFFF;
+}
+.forumTableIcon {
+vertical-align:middle;
+}
+.forumThreadRow {
+background-color : #DAE6FF;
+border:1px solid #FFFFFF;
+}
+.blank {
+border: 1px solid #FFFFFF;
+}
+tr.forumThreadRow:onmouseover {
+background-color :#F6F4D0;
+border-left-color:#FFFFFF;
+}
+a.threadRow {
+text-decoration:none;
+}
+a.threadRow:hover {
+text-decoration:underline;
+}
+#forum {
+border:0;
+}
+img.smiley:hover {
+cursor:pointer;
+}
 
 #bbeditor .alt {color : #005599;}
 #bbeditor .outer-border {border : 1px solid #000;}
@@ -9,7 +43,7 @@ pre {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
 #bbeditor .full-header {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #ddd;background-color : #444;padding : 10px;}
 #bbeditor .footer {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;border : 1px solid #ccc;padding : 5px;}
 #bbeditor .button {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;height : 20px;border : 1px solid #ccc;margin-top : 2px;}
-#bbeditor .textbox {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f8f8f8;border : 1px solid #ccc; width:98%;}
+#bbeditor .textbox {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 12px;color : #555;background-color : #ffffff;border : 1px solid #ccc; width:98%;}
 #bbeditor .main-body {font-size : 11px;color : #555;background-color : #fff;padding : 4px 0px 5px 0px;}
 #bbeditor .side-body {font-size : 10px;color : #777;background-color : #f6f6f6;padding : 4px;}
 #bbeditor .main-bg {color : #555;background-color : #fff;padding : 10px 5px 10px 5px;}
@@ -19,9 +53,11 @@ pre {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
 #bbeditor .news-footer {font-size : 10px;color : #555;background-color : #f1f1f1;padding : 3px 4px 4px 4px;}
 #bbeditor .capmain {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 11px;font-weight : bold;color : #666;background-color : #fff;padding : 2px 0px 4px 0px;}
 #bbeditor .scapmain {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;font-weight : bold;color : #666;background-color : #f1f1f1;border-bottom : 1px solid #e1e1e1;padding : 4px;}
-#bbeditor .tbl-border {color : #555;background-color : #e1e1e1;}
+#bbeditor .tbl-border {background-color : #ecf1f3;border:1px solid #555;}
 #bbeditor .tbl {font-size : 11px;color : #555;background-color : #fff;padding : 4px;}
-#bbeditor .tbl1 {font-size : 11px;color : #555;background-color : #fff;padding : 4px;}
+#bbeditor .tbl1 {font-size : 11px;color : #555;background-color : #f8f8f8;padding : 4px;}
+#bbeditor .button2 {background-image:url("./button.gif");height:24px;font-size : 11px;font-weight:bold;border :1px solid #666;text-align:center;vertical-align:middle; }
+#bbeditor .button1 {font-size : 11px;color : #555;background-color : #fff;padding : 4px; text-align:center; }
 #bbeditor .tbl2 {font-size : 11px;color : #555;background-color : #f1f1f1;padding : 4px;}
 #bbeditor .forum-caption {font-size : 11px;font-weight : bold;color : #888;background-color : #f1f1f1;padding : 2px 4px 4px 4px;}
 #bbeditor .quote {font-size : 11px;color : #555;background-color : #f8f8f8;padding : 4px;margin : 0px 20px 0px 20px;border : 1px solid #bbb;}

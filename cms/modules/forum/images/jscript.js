@@ -71,3 +71,15 @@ function insertText(elname, what) {
 function show_hide(msg_id) {
 	msg_id.style.display = msg_id.style.display == 'none' ? 'block' : 'none';
 }
+function toggle(showHideDiv, switchTextDiv) {
+	var ele = document.getElementById(showHideDiv);
+	var text = document.getElementById(switchTextDiv);
+	if(ele.style.display == "block") {
+    		ele.style.display = "none";
+		text.innerHTML = "Show Details";
+  	}
+	else {
+		ele.style.display = "block";
+		text.innerHTML = "Hide Details";
+	}
+} 
