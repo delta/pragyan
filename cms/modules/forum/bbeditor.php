@@ -78,16 +78,15 @@ $editor=<<<FORUM
 	<tr>
 	<td class="tbl2" width="145">&nbsp;</td>
 	<td class="tbl2">
-	<img src="$imgpath/images/smile.gif" alt="smiley" onclick="insertText('message', ':)');">
-	<img src="$imgpath/images/wink.gif" alt="smiley" onclick="insertText('message', ';)');">
-	<img src="$imgpath/images/frown.gif" alt="smiley" onclick="insertText('message', ':|');">
-	<img src="$imgpath/images/sad.gif" alt="smiley" onclick="insertText('message', ':(');">
-	<img src="$imgpath/images/shock.gif" alt="smiley" onclick="insertText('message', ':o');">
-	<img src="$imgpath/images/pfft.gif" alt="smiley" onclick="insertText('message', ':p');">
-	<img src="$imgpath/images/cool.gif" alt="smiley" onclick="insertText('message', 'B)');">
-	<img src="$imgpath/images/grin.gif" alt="smiley" onclick="insertText('message', ':D');">
-	<img src="$imgpath/images/angry.gif" alt="smiley" onclick="insertText('message', ':@');">
-
+	<img class="smiley" title="Smile" src="$imgpath/images/smileys/smile.gif" alt=":)" onclick="insertText('message', ':)');">&nbsp
+	<img class="smiley" title="Wink" src="$imgpath/images/smileys/wink.gif" alt=";)" onclick="insertText('message', ';)');">&nbsp
+	<img class="smiley" title="Frown" src="$imgpath/images/smileys/frown.gif" alt=":|" onclick="insertText('message', ':|');">&nbsp
+	<img class="smiley" title="Sad" src="$imgpath/images/smileys/sad.gif" alt=":(" onclick="insertText('message', ':(');">&nbsp
+	<img class="smiley" title="Shock" src="$imgpath/images/smileys/shock.gif" alt=":o" onclick="insertText('message', ':o');">&nbsp
+	<img class="smiley" title="lol" src="$imgpath/images/smileys/pfft.gif" alt=":p" onclick="insertText('message', ':p');">&nbsp
+	<img class="smiley" title="Cool" src="$imgpath/images/smileys/cool.gif" alt="B)" onclick="insertText('message', 'B)');">&nbsp
+	<img class="smiley" title="Grin" src="$imgpath/images/smileys/grin.gif" alt=":D" onclick="insertText('message', ':D');">&nbsp
+	<img class="smiley" title="Angry" src="$imgpath/images/smileys/angry.gif" alt=":@" onclick="insertText('message', ':@');">&nbsp
 	</td>
 	</tr>
 	
@@ -98,16 +97,15 @@ $moderate = getPermissions($userId,$pageId,'moderate','forum');
 if ($moderate) {
 		$editor .= '<tr>
 	<td class="tbl2" valign="top" width="145">Options</td>
-	<td class="tbl1">
-	<input name="sticky" value="1" type="checkbox"> Make this Thread Sticky(Moderators only can post stickies!)<br></td>
+	<td class="tbl2">
+	<input name="sticky" value="1" type="checkbox"> Make this Thread Sticky<br></td>
 	</tr>';
 }
 $editor.=<<<FORUM
-	<tr><td>* = Mandatory Field</td></tr>
 	<tr>
-	<td colspan="2" class="tbl1" align="center">
-	<input name="preview" value="Preview " class="button" type="submit">
-	<input name="post" value="Post " class="button" type="submit">
+	<td colspan="2" class="button1">
+	<input class="button2" name="preview" value="Preview " class="button" type="submit">
+	<input class="button2" name="post" value="Post " class="button" type="submit">
 	</td>
 	</tr>
 	</tbody></table>

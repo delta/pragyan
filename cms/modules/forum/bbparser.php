@@ -15,20 +15,20 @@ function phpentities($text) {
 }
 // Parse smiley bbcode into HTML images
 global $urlRequestRoot,$sourceFolder,$moduleFolder,$cmsFolder;
-$imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/";
+$imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/smileys";
 define("IMAGES","$imgpath");
 function parsesmileys($message) {
 	global $IMAGES;
 	$smiley = array(
-		"#\:\)#si" => "<img src='".IMAGES."smile.gif' alt='smiley'>",
-		"#\;\)#si" => "<img src='".IMAGES."wink.gif' alt='smiley'>",
-		"#\:\(#si" => "<img src='".IMAGES."sad.gif' alt='smiley'>",
-		"#\:\|#si" => "<img src='".IMAGES."frown.gif' alt='smiley'>",
-		"#\:o#si" => "<img src='".IMAGES."shock.gif' alt='smiley'>",
-		"#\:p#si" => "<img src='".IMAGES."pfft.gif' alt='smiley'>",
-		"#b\)#si" => "<img src='".IMAGES."cool.gif' alt='smiley'>",
-		"#\:d#si" => "<img src='".IMAGES."grin.gif' alt='smiley'>",
-		"#\:@#si" => "<img src='".IMAGES."angry.gif' alt='smiley'>"
+		"#\:\)#si" => "<img title='Smile' src='".IMAGES."smile.gif' alt=':)'>",
+		"#\;\)#si" => "<img title='Wink' src='".IMAGES."wink.gif' alt=';)'>",
+		"#\:\(#si" => "<img title='Sad' src='".IMAGES."sad.gif' alt=':('>",
+		"#\:\|#si" => "<img title='Frown' src='".IMAGES."frown.gif' alt=':|'>",
+		"#\:o#si" => "<img title='Shock' src='".IMAGES."shock.gif' alt=':o'>",
+		"#\:p#si" => "<img title='lol'src='".IMAGES."pfft.gif' alt=':P'>",
+		"#b\)#si" => "<img title='Cool'src='".IMAGES."cool.gif' alt='B)'>",
+		"#\:d#si" => "<img title='Grin' src='".IMAGES."grin.gif' alt=':D'>",
+		"#\:@#si" => "<img title='Angry' src='".IMAGES."angry.gif' alt=':@'>",
 	);
 	foreach($smiley as $key=>$smiley_img) $message = preg_replace($key, $smiley_img, $message);
 	return $message;
@@ -50,7 +50,7 @@ function displaysmileys($textarea) {
 		":p" => "pfft.gif",
 		"B)" => "cool.gif",
 		":D" => "grin.gif",
-		":@" => "angry.gif"
+		":@" => "angry.gif",
 	);
 	foreach($smileys as $key=>$smiley) $smiles .= "<img src='".IMAGES."$smiley' alt='smiley' onClick=\"insertText('$textarea', '$key');\">\n";
 	return $smiles;

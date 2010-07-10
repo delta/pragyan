@@ -555,7 +555,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_userpageperm` (
 
 CREATE TABLE IF NOT EXISTS `pragyanV3_users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'user identification number',
-  `user_name` varchar(100) NOT NULL COMMENT 'user''s good name',
+  `user_name` varchar(100) NOT NULL COMMENT 'User''s good name',
   `user_email` varchar(100) NOT NULL,
   `user_fullname` varchar(100) NOT NULL COMMENT 'User''s full name',
   `user_password` varchar(32) NOT NULL,
@@ -563,6 +563,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_users` (
   `user_lastlogin` datetime NOT NULL,
   `user_activated` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Used for email verification',
   `user_loginmethod` enum('db','ldap','imap','ads') NOT NULL DEFAULT 'db' COMMENT 'Login Method',
+  `user_profilepic` varchar(100) NOT NULL DEFAULT 'default.jpg' COMMENT 'User''s picture',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
