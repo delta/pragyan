@@ -19,26 +19,6 @@
  * @param $pattern Pattern for which suggestions must be found
  * @return string A comma separated string ready to be sent back to the client
  */
-function getSuggestions($pattern) {
-	$suggestionsQuery = "SELECT IF(user_email LIKE \"$pattern%\", 1, " .
-			"IF(`user_fullname` LIKE \"$pattern%\", 2, " .
-			"IF(`user_fullname` LIKE \"% $pattern%\", 3, " .
-			"IF(`user_email` LIKE \"%$pattern%\", 4, " .
-			"IF(`user_fullname` LIKE \"%$pattern%\", 5, 6" .
-			"))))) AS `relevance`,	`user_email`, `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE " .
-			"  `user_activated`=1 AND(`user_email` LIKE \"%$pattern%\" OR `user_fullname` LIKE \"%$pattern%\" ) ORDER BY `relevance`";
-//			echo $suggestionsQuery;
-	$suggestionsResult = mysql_query($suggestionsQuery);
-
-	$suggestions = array($pattern);
-
-	while($suggestionsRow = mysql_fetch_row($suggestionsResult)) {
-		$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
-	}
-
-	return join($suggestions, ',');
-}
-
 function renderArray($array) {
 	$ret = '';
 	foreach($array as $val)
@@ -57,7 +37,7 @@ function inner($smallobj) {
 	return $ret;
 }
 
-function json($objDesc) {
+function customjson($objDesc) {
 	return "{'Y' : {" . inner($objDesc['Y']) . "}, 'N' : {" . inner($objDesc['N']) . "}}";
 }
 
@@ -293,212 +273,16 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 		}
 	}
 	
-	$groupReturnText = json($sortedGroupPerms);
-	$userReturnText = json($sortedUserPerms);
+	$groupReturnText = customjson($sortedGroupPerms);
+	$userReturnText = customjson($sortedUserPerms);
 	
 	$ret = <<<RET
 permGroups = {$groupReturnText};
 permUsers = {$userReturnText};
 RET;
 	return $ret;
-	
-	/// Retrieve all that work as HTML
-	/*$htmlOutput = '<table border="1"><tr><td bgcolor=#C0C0C0></td><th colspan="'. (count($modifiableGroups)) . '" align="center">GROUPS</th>
-			<th colspan="'. $userCount . '" align="center">USERS</th>
-			</tr>
-			<tr><th nowrap="nowrap">User/Group Name --></th>';
-	
-
-	for($i = 0; $i < count($modifiableGroups); $i++) {
-		$htmlOutput .= '<th>' . $groupNames[$modifiableGroups[$i]] . '</th>';
-		}
-	for($i = 0; $i < $userCount; $i++) {
-		$htmlOutput .= '<th>' . $userNames[$userIds[$i]] . '</th>';
-		}
-		$htmlOutput .= "</tr>";
-		
-	for($i = 0; $i < $permCount; $i++) {
-		$htmlOutput .= '<tr><th nowrap="nowrap">' . $permList[$permIds[$i]][0] . ' - ' . $permList[$permIds[$i]][1] . '</th>';
-		for($j = 0; $j < count($modifiableGroups); $j++) {
-			$htmlOutput .= '<td>';
-			if(isset($groupEffectivePermissions[$modifiableGroups[$j]][$permIds[$i]])) {
-				$htmlOutput .= $groupEffectivePermissions[$modifiableGroups[$j]][$permIds[$i]] === true ? 'Yes' : 'No';
-			}
-			else {
-				$htmlOutput .= 'Unset';
-			}
-			$htmlOutput .= "</td>";
-			}
-		for($j = 0; $j < $userCount; $j++) {
-			$htmlOutput .= '<td>';
-			if(isset($userEffectivePermissions[$userIds[$j]][$permIds[$i]])) {
-				$htmlOutput .= $userEffectivePermissions[$userIds[$j]][$permIds[$i]] === true ? 'Yes' : 'No';
-			}
-			else {
-				$htmlOutput .= 'Unset';
-			}
-			$htmlOutput .= "</td>";
-		}
-	}	
-	$htmlOutput .= "</table>\n";
-	
-	return $htmlOutput;*/
 }
 
-
-
-/**
- * Generates a table showing the permissions of a user at a particular level
- * @param $userid User id of the person whose permission table is to be retrieved
- * @param $groupids Array containing the groups to which the person belongs, which have a priority lesser
- * 									than the current user's priority
- * @param $pagepath Array containing the path to the current page
- * @param $permAssocList Associative array containing the actions for which the permission table must be generated
- * @return string The HTML generated for the permissions table
- */
-function getPermissionTable($userid, $groupids, $pagepath, $permAssocList) {
-	/// For the set of actions given by $permList, generate an SQL query to pull out the corresponding permission
-	/// ids for each of the actions
-	$groupidsAssoc = array_flip($groupids);
-	$pagepathAssoc = array_flip($pagepath);
-
-	$actionString = array();
-
-	/// Generate an associative array of the form:
-	/// 	$permList[permId] -> [id in table, module name, action name]
-	$permList = array();
-	$i = 0;
-	foreach($permAssocList as $moduleName => $moduleActions) {
-		if(is_array($moduleActions) && count($moduleActions) > 0) {
-			for($j = 0; $j < count($moduleActions); $j++) {
-				$permList[$moduleActions[$j][0]] = array($i, $moduleName, $moduleActions[$j][1]);
-				$i++;
-			}
-		}
-	}
-
-	/// Table names for convenience
-	$pagesTable = '`'.MYSQL_DATABASE_PREFIX.'pages`';
-	$uppermTable = '`'.MYSQL_DATABASE_PREFIX.'userpageperm`';
-	$groupsTable = '`'.MYSQL_DATABASE_PREFIX.'groups`';
-
-	/// Pull all the set permissions, for all the groups, for all the page ids in the path to the current page
-	$permQuery = "SELECT $pagesTable.`page_id`, $uppermTable.`usergroup_id`, $uppermTable.`perm_permission`, " .
-							 "$uppermTable.`perm_type`, $uppermTable.`perm_id` " .
-							 "FROM $pagesTable, $uppermTable WHERE (";
-	if(count($groupids) > 0) {
-		$permQuery .= "(`usergroup_id` IN (".join($groupids, ', ').") AND `perm_type` = 'group') OR ";
-	}
-	$permQuery .= "(`usergroup_id` = $userid AND `perm_type` = 'user')) AND " .
-							 "$pagesTable.`page_id` IN (".join($pagepath, ', ').") AND $pagesTable.`page_id` = $uppermTable.`page_id` AND " .
-							 "`perm_id` IN (". join(array_keys($permList), ', ') . ")";
-
-
-	$permissionTable = array(); ///< Holds the permission table, as a 3d array: 1st index pageid, 2nd groupid and 3rd perm id
-	$pageTitles = array();			///< Holds the page titles in the path to the current page
-	$pageNames = array();				///< Holds the page names in the path to the current page
-	$groupNames = array();			///< Holds the names of groups the user belongs to
-
-	/// Find all the page names and titles in the path to the current page
-	$pagesQuery = "SELECT `page_id`, `page_name`, `page_title` FROM $pagesTable WHERE `page_id` IN (".join($pagepath, ', ').")";
-	$pagesResult = mysql_query($pagesQuery);
-	while($pagesResultRow = mysql_fetch_assoc($pagesResult)) {
-		$pageTitles[$pagepathAssoc[$pagesResultRow['page_id']]] = $pagesResultRow['page_title'];
-		$pageNames[$pagepathAssoc[$pagesResultRow['page_id']]] = $pagesResultRow['page_name'];
-	}
-	$pageNames[0] = 'home';
-
-	/// Find the names of all the groups the user belongs to
-	if(count($groupids) > 0) {
-		$groupsQuery = "SELECT `group_id`, `group_name` FROM $groupsTable WHERE `group_id` IN (" . join($groupids, ', ') . ")";
-		$groupsResult = mysql_query($groupsQuery);
-		while($groupsResultRow = mysql_fetch_assoc($groupsResult)) {
-			$groupNames[$groupidsAssoc[$groupsResultRow['group_id']]] = $groupsResultRow['group_name'];
-		}
-
-		/// Push these in, because sahil refuses to put them in the db
-		if(isset($groupidsAssoc[1])) { $groupNames[$groupidsAssoc[1]] = 'Logged In'; }
-		if(isset($groupidsAssoc[0])) { $groupNames[$groupidsAssoc[0]] = 'Guest'; }
-	}
-
-	/// Retrieve results for the query generated earlier
-	$permResult = mysql_query($permQuery);
-
-	if(!$permResult) {
-		displayerror("An error occurred while trying to process your Request!<br />" . $permQuery);
-		return '';
-	}
-
-	$userOffset = count($groupids);
-	while($permResultRow = mysql_fetch_assoc($permResult)) {
-		if($permResultRow['perm_type'] == 'user') {
-			$permissionTable[$pagepathAssoc[$permResultRow['page_id']]][$userOffset][$permList[$permResultRow['perm_id']][0]] =
-						$permResultRow['perm_permission'] == 'Y' ? true : false;
-		}
-		else {
-			// Decipher This!!!
-			$permissionTable[$pagepathAssoc[$permResultRow['page_id']]][$groupidsAssoc[$permResultRow['usergroup_id']]][$permList[$permResultRow['perm_id']][0]] =
-						$permResultRow['perm_permission'] == 'Y' ? true : false;
-		}
-	}
-
-	$secondRow = '';
-	foreach($permList as $permId => $actionArray) {
-		$secondRow .= '<th>'.$actionArray[1]." - ".$actionArray[2] . '</th>';
-	}
-
-	$permTableString = '<br /><h2>Showing permission settings for ';
-	if($userid >= 0) {
-		$permTableString .= getUserName($userid);
-	}
-	else {
-		$permTableString .= 'group(s) ' . join($groupNames, ', ');
-	}
-	$permTableString .= ' </h2><a href="./+grant">&laquo; Back</a><br /><br />';
-
-	/// The breadcrumbs sort of thing
-	for($i = 0; $i < count($pagepath); $i++) {
-		$permTableString .= "\n/<a href=\"#{$pageNames[$i]}$i\">$pageNames[$i]</a> ";
-	}
-
-	for($i = 0; $i < count($pagepath); $i++) {
-		$permTableString .= "\n<a name=\"{$pageNames[$i]}$i\"></a>\n<br /><br />\n<table border=\"1px\" cellpadding=\"4px\" cellspacing=\"4px\">\n<tr>\n<th>Page Title:</th><th colspan=\"".count($permList)."\">{$pageTitles[$i]}</th></tr>\n";
-		for($j = 0; $j < count($groupids); $j++) {
-			$permTableString .= "<tr><td bgcolor=\"C0C0C0\"></td><th>{$groupNames[$j]}</th>";
-
-
-			foreach($permList as $permId => $actionArray) {
-                  		$permTableString .= '<tr><th>'.$actionArray[1]." - ".$actionArray[2] . '</th>';			
-			
-			for($k = 0; $k < count($groupids); $k++) {
-				$permission = 'Unset';
-				if(isset($permissionTable[$i]) && isset($permissionTable[$i][$j]) && isset($permissionTable[$i][$j][$k])) {
-					$permission = ($permissionTable[$i][$j][$k] ? 'Yes' : 'No');
-				}
-				$permTableString .= "<td>$permission</td>";
-			}
-			$permTableString .= "</tr>\n";}
-		}
-
-		if($userid >= 0) {
-			$permTableString .= "<tr><td bgcolor=\"C0C0C0\"></td><td>User:</td>";
-			foreach($permList as $permId => $actionArray) {
-                  		$permTableString .= '<tr><th>'.$actionArray[1]." - ".$actionArray[2] . '</th>';	
-			for($k = 0; $k < count($userid); $k++) {
-				$permission = 'Unset';
-				if(isset($permissionTable[$i]) && isset($permissionTable[$i][$j]) && isset($permissionTable[$i][$j][$k])) {
-					$permission = ($permissionTable[$i][$j][$k] ? 'Yes' : 'No');
-				}
-				$permTableString .= "<td>$permission</td>";
-			}
-			$permTableString .= "</tr>\n";}
-		}
-
-		$permTableString .= "</table>";
-	}
-
-	return $permTableString . '<br />';
-}
 
 function getPermissionId($module, $action) {
 	$permQuery = "SELECT `perm_id` FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE " .
@@ -663,45 +447,42 @@ function determineGrantTargetId(&$targettype) {
  * @return Boolean, indicating whether the function was successful
  */
 function grantPermissions($userid, $pageid) {
+	//serving change permission requests
 	if(isset($_GET['doaction']) && $_GET['doaction'] == "changePerm") {
 		$permtype = escape($_GET['permtype']);
 		$pageid = escape($_GET['pageid']);
 		$usergroupid = escape($_GET['usergroupid']);
 		$permid = escape($_GET['permid']);
 		$perm = escape($_GET['perm']);
+		$flag = true;
 		if($perm == 'Y' || $perm == 'N') {
 			if($permission = mysql_fetch_array(mysql_query("SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
-				if($permission['perm_permission'] == $perm)
-					echo "1";
-				else {
+				if($permission['perm_permission'] != $perm) {
 					mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "userpageperm` SET `perm_permission` = '{$perm}' WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
-					if(mysql_affected_rows())
-						echo "1";
-					else
-						echo "0";
+					if(mysql_affected_rows() == 0)
+						$flag = false;
 				}
 			} else {
 				mysql_query("INSERT `" . MYSQL_DATABASE_PREFIX . "userpageperm`(`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) VALUES('$permtype','$pageid','$usergroupid','$permid','$perm')");
-				if(mysql_affected_rows())
-					echo "1";
-				else
-					echo "0";
+				if(mysql_affected_rows() == 0)
+					$flag = false;
 			}
 		} else {
 			if($permission = mysql_fetch_array(mysql_query("SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
 				mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
-				if(mysql_affected_rows())
-					echo "1";
-				else
-					echo "0";
-			} else {
-				echo "1";
+				if(mysql_affected_rows() == 0)
+					$flag = false;
 			}
 		}
+		
+		if($flag)
+			echo "1";
+		else
+			echo "0";
 		disconnect();
 		exit();
 	}
-	// for serving refresh permissions request
+	//serving refresh permissions request
 	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getpermvars' && isset($_GET['pageid'])) {
 		global $cmsFolder,$urlRequestRoot;
 		$pageid = escape($_GET['pageid']);
@@ -762,187 +543,63 @@ RET;
 		exit();
 	}
 	
-	/// An ajaxed request for suggestions for a user's name or email is being entertained
-	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getsuggestions' && isset($_GET['forwhat'])) {
-		if(strlen($_GET['forwhat']) >= 3) {
-			echo getSuggestions($_GET['forwhat']);
-			disconnect();
-			exit();
-		}
+	global $cmsFolder,$urlRequestRoot;
+	$pagepath = array();
+	parseUrlDereferenced($pageid, $pagepath);
+	$pageid = $pagepath[count($pagepath) - 1];
+
+	$groups = array_reverse(getGroupIds($userid));
+	$virtue = '';
+	$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
+	if($maxPriorityGroup == -1) {
+		return 'You do not have the required permissions to view this page.';
 	}
 
-	/// The user just clicked Grant Permissions on a Perm Grant form
-	elseif(
-			isset($_POST['optusergroup']) && isset($_POST['btnSubmit']) && isset($_POST['permission']) &&
-			is_array($_POST['permission']) && isset($_POST['optpermtype'])
-		)
-	{
-		$errorString = 'Some errors were encountered while attempting to process your request. ';  /// Define a very general error string for easy returns!
+	if($virtue == 'user') {
+		$grantableActions = getGroupPermissions($groups, $pagepath, $userid);
+	}
+	else {
+		$grantableActions = getGroupPermissions($groups, $pagepath);
+	}
+	if(isset($_POST['permission']))
+	$actionCount = count($_POST['permission']);
+	else $actionCount="";
+	$checkedActions = array();
+	for($i = 0; $i < $actionCount; $i++) {
+		list($modTemp, $actTemp) = explode('_', escape($_POST['permission'][$i]), 2);
 
-		/// Check whether the permissions are being set for a user or a group
-		/// Obtain the Id of the user or the group for which the permission is being set
-		$targettype = '';
-		$targetid = determineGrantTargetId($targettype);
-		if($targetid < 0) {
-			displayerror('Some errors were encountered while attempting to process your request.');
-			return '';
-		}
-
-		/// Check whether the user has the rights to grant permissions at this level
-		$pagepath = array();
-		parseUrlDereferenced($pageid, $pagepath);
-		$pageid = $pagepath[count($pagepath) - 1];
-
-		$groups = array_reverse(getGroupIds($userid));
-		$virtue = '';
-		$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
-
-		if($maxPriorityGroup == -1) {
-			displayerror('You do not have the required permissions to view this page.');
-			return '';
-		}
-
-		/// Check whether the user is granting permissions to a group having lower priority than
-		/// the group with the highest priority that he belongs to
-		$canGrant = true;			// Can grant permissions to any user, but not to any group
-		if($targettype == 'group' && $targetid >= 2) {
-			$maxPriority = 1;
-			if($maxPriorityGroup > 1) {
-				$maxPriority = "(SELECT `group_priority` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE " .
-											"`group_id` = $maxPriorityGroup)";
-			}
-			$groups_query = "SELECT `group_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE " .
-											"`group_id` = $targetid AND `group_priority` <= $maxPriority";
-
-			$groups_query_result = mysql_query($groups_query);
-			if(!$groups_query_result || mysql_num_rows($groups_query_result) != 1) {
-				displayerror($groups_query . ' ' . mysql_num_rows($groups_query_result) . ' ' . mysql_error());
-				$canGrant = false;
-			}
-		}
-
-		if((!$canGrant && $targetid != 0 && $targetid != 1) || ($targetid == 1 && $maxPriorityGroup == 0)) {
-			displayerror('You cannot grant permissions to the selected user or group.');
-			return '';
-		}
-
-		if($virtue == 'user') {
-			$permList = getGroupPermissions($groups, $pagepath, $userid);
-		}
-		else {
-			$permList = getGroupPermissions($groups, $pagepath);
-		}
-
-		/// All checks passed, start granting permissions, one by one, for each of the given module+action combinations
-		$actionCount = count($_POST['permission']);
-		$permissionsGoneWrong = array();
-		$permission = false;
-		if($_POST['optpermtype'] == 'allowed') {
-			$permission = true;
-		}
-		if($_POST['optpermtype'] == 'unset') {
-			$permission = -1;
-		}
-		for($i = 0; $i < $actionCount; $i++) {
-			list($module, $action) = explode('_', escape($_POST['permission'][$i]), 2);
-
-			if(!isset($_POST[$module.$action])) {
-				continue;
-			}
-
-			$canGrant = false;
-			if(isset($permList[$module])) {
-				for($j = 0; $j < count($permList[$module]); $j++) {
-					if($permList[$module][$j][1] == $action) {
-						$canGrant = true;
+		if(isset($_POST[$modTemp.$actTemp])) {
+			if(isset($grantableActions[$modTemp])) {
+				for($j = 0; $j < count($grantableActions[$modTemp]); $j++) {
+					if($grantableActions[$modTemp][$j][1] == $actTemp) {
+						$checkedActions[$modTemp][] = $grantableActions[$modTemp][$j];
 						break;
 					}
 				}
 			}
-
-			if(!$canGrant) {
-				$permissionsGoneWrong[] = "$module - $action";
-				continue;
-			}
-
-			if($permission === -1) {
-				if(!unsetPagePermission($targetid, $pageid, $action, $module, $targettype)) {
-					$permissionsGoneWrong[] = "$module - $action";
-				}
-			}
-			else {
-				if(!setPagePermission($targetid, $pageid, $action, $module, $permission, $targettype)) {
-					$permissionsGoneWrong[] = "$module - $action";
-				}
-			}
-		}
-
-		/// Display errors if any
-		if(count($permissionsGoneWrong) > 0) {
-			displayerror('Permissions could not be updated for the following: '.join($permissionsGoneWrong, "<br />"));
-		}
-		else {
-			displayinfo('All permissions updated successfully.');
 		}
 	}
+	if(count($checkedActions) > 0) {
+		$grantableActions = $checkedActions;
+	}
 
-	elseif(isset($_POST['btnEveryonePermTable']) || isset($_POST['btnUserPermTable']) || isset($_POST['btnGroupPermTable'])) {
-		global $cmsFolder,$urlRequestRoot;
-		$pagepath = array();
-		parseUrlDereferenced($pageid, $pagepath);
-		$pageid = $pagepath[count($pagepath) - 1];
-
-		$groups = array_reverse(getGroupIds($userid));
-		$virtue = '';
-		$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
-		if($maxPriorityGroup == -1) {
-			return 'You do not have the required permissions to view this page.';
-		}
-
-		if($virtue == 'user') {
-			$grantableActions = getGroupPermissions($groups, $pagepath, $userid);
-		}
-		else {
-			$grantableActions = getGroupPermissions($groups, $pagepath);
-		}
-
-		$actionCount = count($_POST['permission']);
-		$checkedActions = array();
-		for($i = 0; $i < $actionCount; $i++) {
-			list($modTemp, $actTemp) = explode('_', escape($_POST['permission'][$i]), 2);
-
-			if(isset($_POST[$modTemp.$actTemp])) {
-				if(isset($grantableActions[$modTemp])) {
-					for($j = 0; $j < count($grantableActions[$modTemp]); $j++) {
-						if($grantableActions[$modTemp][$j][1] == $actTemp) {
-							$checkedActions[$modTemp][] = $grantableActions[$modTemp][$j];
-							break;
-						}
-					}
-				}
-			}
-		}
-		if(count($checkedActions) > 0) {
-			$grantableActions = $checkedActions;
-		}
-
-		$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
-		$modifiableGroupIds = array(0, 1);
-		for($i = 0; $i < count($modifiableGroups); $i++) {
-			$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
-		}
-		$perms = getAllPermissions();
-		$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
-		$groups = customGetAllGroups();
-		$users = customGetAllUsers();
-		global $templateFolder;
-		$ret = <<<RET
+	$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
+	$modifiableGroupIds = array(0, 1);
+	for($i = 0; $i < count($modifiableGroups); $i++) {
+		$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
+	}
+	$perms = getAllPermissions();
+	$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+	$groups = customGetGroups($maxPriorityGroup);
+	$users = customGetAllUsers();
+	global $templateFolder;
+	$ret = <<<RET
 <style type="text/css" title="currentStyle">
-		@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-		@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-		@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-		div#permtable_filter input { width: 90px; }
-		div#permtable2_filter input { width: 90px; }
+	@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+	@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+	@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+	div#permtable_filter input { width: 90px; }
+	div#permtable2_filter input { width: 90px; }
 </style>
 <script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
 <script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
@@ -950,22 +607,22 @@ RET;
 <script type="text/javascript" charset="utf-8">
 function initSmartTable()
 {
-	$(document).ready(function() {
-		oTable = $('#permtable').dataTable({
-			"bJQueryUI": true,
-			"sPaginationType": "two_button",
-			"bAutoWidth": false,
-			"aoColumns": [ { "sWidth": "100px" } ]
-		});
-	} );
-	$(document).ready(function() {
-		oTable = $('#permtable2').dataTable({
-			"bJQueryUI": true,
-			"sPaginationType": "two_button",
-			"bAutoWidth": false,
-			"aoColumns": [ { "sWidth": "100px" } ]
-		});
-	} );
+$(document).ready(function() {
+	oTable = $('#permtable').dataTable({
+		"bJQueryUI": true,
+		"sPaginationType": "two_button",
+		"bAutoWidth": false,
+		"aoColumns": [ { "sWidth": "100px" } ]
+	});
+} );
+$(document).ready(function() {
+	oTable = $('#permtable2').dataTable({
+		"bJQueryUI": true,
+		"sPaginationType": "two_button",
+		"bAutoWidth": false,
+		"aoColumns": [ { "sWidth": "100px" } ]
+	});
+} );
 }
 </script>
 <script type="text/javascript">
@@ -979,145 +636,32 @@ var users = {{$users}};
 var selected = {'permissions' : [], 'users' : [], 'groups' : []};
 </script>
 <div id='info'></div>
+<INPUT type=checkbox id='skipAlerts'> Skip Alerts <br>
 <div id='permTable'>
 
 </div>
-<input type='button' value='Show Permission' onClick='showPermissions()'>
-
 <table width=100%>
 <tr>
-<td>
-Search:<input type=text id='searchAction' onChange='searchAction()'> <input type=button value=Go onClick=searchUsers> <a href='javascript:selectAll1()'>Select All</a> <a href='javascript:clearAll1()'>Clear All</a> <a href='javascript:toggle1()'>Toggle</a><br>
+<td width=50%>
+<a href='javascript:selectAll1()'>Select All</a> <a href='javascript:clearAll1()'>Clear All</a> <a href='javascript:toggle1()'>Toggle</a><br>
 <table class="userlisttable display" id='permtable' name='permtable'><thead><tr><th>Permissions</th></thead><tbody id='actionsList'>
 
 </tbody></table>
 </td>
-<td>
-Search:<input type=text id='searchUsers' onChange='searchUsers()'> <input type=button value=Go onClick=searchUsers> <a href='javascript:selectAll2()'>Select All</a> <a href='javascript:clearAll2()'>Clear All</a> <a href='javascript:toggle2()'>Toggle</a><br>
+<td width=50%>
+<a href='javascript:selectAll2()'>Select All</a> <a href='javascript:clearAll2()'>Clear All</a> <a href='javascript:toggle2()'>Toggle</a><br>
 <table class="userlisttable display" id='permtable2' name='permtable2'><thead><tr><th>Users</th></thead><tbody id='usersList'>
 
 </tbody></table>
 </td>
 </tr>
 </table>
+
+<a href='javascript:populateList()'>Click here if the lists are empty</a>
 RET;
-		global $STARTSCRIPTS;
-		$STARTSCRIPTS .= " populateList();";
-		return $ret;
-		/*$pagepath = array();
-		parseUrlDereferenced($pageid, $pagepath);
-		$pageid = $pagepath[count($pagepath) - 1];
-
-		$groups = array_reverse(getGroupIds($userid));
-		$virtue = '';
-		$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
-		if($maxPriorityGroup == -1) {
-			return 'You do not have the required permissions to view this page.';
-		}
-
-		if($virtue == 'user') {
-			$grantableActions = getGroupPermissions($groups, $pagepath, $userid);
-		}
-		else {
-			$grantableActions = getGroupPermissions($groups, $pagepath);
-		}
-
-		$actionCount = count($_POST['permission']);
-		$checkedActions = array();
-		for($i = 0; $i < $actionCount; $i++) {
-			list($modTemp, $actTemp) = explode('_', escape($_POST['permission'][$i]), 2);
-
-			if(isset($_POST[$modTemp.$actTemp])) {
-				if(isset($grantableActions[$modTemp])) {
-					for($j = 0; $j < count($grantableActions[$modTemp]); $j++) {
-						if($grantableActions[$modTemp][$j][1] == $actTemp) {
-							$checkedActions[$modTemp][] = $grantableActions[$modTemp][$j];
-							break;
-						}
-					}
-				}
-			}
-		}
-		if(count($checkedActions) > 0) {
-			$grantableActions = $checkedActions;
-		}
-
-		$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
-		$modifiableGroupIds = array(0, 1);
-		for($i = 0; $i < count($modifiableGroups); $i++) {
-			$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
-		}
-
-		/// The user is trying to see everyone's permissions on the current page
-		if(isset($_POST['btnEveryonePermTable'])) {
-			return getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
-		}
-
-		/// The user is trying to see the permission table for a group
-		elseif(isset($_POST['btnGroupPermTable'])) {
-			/// Check whether the permissions are being set for a user or a group
-			/// Obtain the Id of the user or the group for which the permission is being set
-			$targettype = '';
-			$targetid = determineGrantTargetId($targettype);
-			if($targetid < 0 || ($targettype != 'group' && $targetid != 0)) {
-				displayerror('An unknown error was encountered while processing the request.');
-				return '';
-			}
-
-			if($targetid > 1) {
-				$maxPriority = 1;
-				if($maxPriorityGroup > 1) {
-					$maxPriority = '(SELECT `group_priority` ' .
-												 'FROM `'.MYSQL_DATABASE_PREFIX.'groups` WHERE `group_id` = ' . $maxPriorityGroup . ')';
-				}
-				$priorityQuery = 'SELECT `group_id` FROM `'.MYSQL_DATABASE_PREFIX.'groups` WHERE ' .
-												 '`group_id` = '.$targetid.' AND `group_priority` <= ' . $maxPriority;
-				$priorityResult = mysql_query($priorityQuery);
-				if(!$priorityResult || mysql_num_rows($priorityResult) != 1) {
-					displayerror('You do not have the rights to view the permissions table of the selected group.');
-					return '';
-				}
-			}
-
-			if($targettype == 'group') {
-				return getPermissionTable(-1, array($targetid), $pagepath, $grantableActions);
-			}
-			else {
-				return getPermissionTable(0, array(), $pagepath, $grantableActions);
-			}
-		}
-
-		elseif(isset($_POST['btnUserPermTable']) && isset($_POST['useremail'])) {
-			$hyphenPos = strpos($_POST['useremail'], '-');
-			if($hyphenPos >= 0) {
-				$userEmail = escape(trim(substr($_POST['useremail'], 0, $hyphenPos - 1)));
-			}
-			else {
-				$userEmail = escape($_POST['useremail']);
-			}
-
-			$targetUserId = getUserIdFromEmail($userEmail);
-			if($targetUserId > 0) {
-				return getPermissionTable($targetUserId, $modifiableGroupIds, $pagepath, $grantableActions);
-			}
-			else {
-				displayerror('A user registered with the e-mail ID you entered was not found.');
-				return '';
-			}
-		}*/
-	}
-
-	/// The User is trying to edit groups
-	elseif(isset($_GET['subaction']) && $_GET['subaction'] == 'editgroups') {
-		$pagepath = array();
-		parseUrlDereferenced($pageid, $pagepath);
-		$virtue = '';
-		$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, array_reverse(getGroupIds($userid)), $virtue);
-		$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
-		return getGroupsForm($userid, $modifiableGroups, $pagepath);
-	}
-	/// Nothing was sent; show the grant form
-	return getGrantForm($userid, $pageid);
+	global $STARTSCRIPTS;
+	$STARTSCRIPTS .= " populateList();";
+	return $ret;
 }
 
 function getPerms($pageId, $groupuser, $yesno) {
@@ -1138,7 +682,7 @@ function getPerms($pageId, $groupuser, $yesno) {
 }
 
 function customGetAllUsers() {
-	$ret = "'0' : 'Anonymous', ";
+	$ret = "";
 	$result = mysql_query("SELECT `user_name`,`user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
 	while($row = mysql_fetch_array($result))
 		$ret .= "'{$row['user_id']}' : '{$row['user_name']}', ";
@@ -1146,9 +690,9 @@ function customGetAllUsers() {
 	return $ret;	
 }
 
-function customGetAllGroups() {
+function customGetGroups($priority) {
 	$ret = "'0' : 'Everyone', '1' : 'Logged in Users', ";
-	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups`");
+	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < {$priority}");
 	while($row = mysql_fetch_array($result))
 		$ret .= "'{$row['group_id']}' : '{$row['group_name']}', ";
 	$ret = rtrim($ret,", ");
@@ -1247,143 +791,6 @@ function setPagePermission($usergroupid, $pageid, $action, $module, $permission,
 
 	return true;
 }
-
-
-
-/**
- * Generate an HTML form to allow the user to set permissions for other users or groups
- * @param $userid The id of the user trying to modify permissions
- * @param $pageid Page id of the concerned page
- * @return String containing the generated HTML form
- */
-function getGrantForm($userid, $pageid) {
-	global $urlRequestRoot, $cmsFolder, $templateFolder,$sourceFolder;
-	$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
-	$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
-
-	$pagepath = array();
-	parseUrlDereferenced($pageid, $pagepath);
-	$pageid = $pagepath[count($pagepath) - 1];
-	$groups = array_reverse(getGroupIds($userid));
-
-	$virtue = '';
-	$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, $groups, $virtue);
-	if($maxPriorityGroup == -1) {
-		return 'You do not have the required permissions to view this page.';
-	}
-
-	/// Find all the groups the user can modify
-	$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup, 'asc');
-	$groupsBox = '';
-	for($i = 0; $i < count($modifiableGroups); $i++) {
-		$groupsBox .= '<option value="' . $modifiableGroups[$i]['group_name'] . '">' . $modifiableGroups[$i]['group_name'] . ' - ' . $modifiableGroups[$i]['group_description'] . '</option>';
-	}
-	$groupsForm = getGroupsForm($userid, $modifiableGroups, $pagepath);
-	if($groupsForm == '') {
-		$groupsForm =
-				"<select name=\"selEditGroups\" id=\"editableGroupsList\">\n<option>$groupsBox</option>\n</select>" .
-				'<input type="submit" name="btnEditGroup" value="Edit Selected Group" /><br /><br />' .
-				'<input type="submit" name="btnEditGroupPriorities" value="Add/Shuffle/Remove Groups" />';
-	}
-	$groupsBox = "<select name=\"modifiablegroups\" id=\"modifiableGroupsList\" disabled=\"disabled\">\n<option>$groupsBox</option>\n</select>";
-
-	/// Get all the actions for which the user has the right to grant permissions
-	if($virtue == 'user') {
-		$grantableActions = getGroupPermissions($groups, $pagepath, $userid);
-	}
-	else {
-		$grantableActions = getGroupPermissions($groups, $pagepath);
-	}
-
-	$actionsBox = '<table id="grantablepermissions">';
-	foreach($grantableActions as $module => $actions) {
-		$actionsBox .= '<tr><td>' . ucfirst($module).":</td>\n<td>";
-
-		for($i = 0; $i < count($actions); $i++) {
-			$actionsBox .= "<label title=\"{$actions[$i][2]}\"><input type=\"checkbox\" name=\"".$module.$actions[$i][1]."\" /> ".ucfirst($actions[$i][1])."\n" .
-										 "<input type=\"hidden\" name=\"permission[]\" value=\"".$module."_".$actions[$i][1]."\" />\n";
-		}
-
-		$actionsBox .= "</td></tr>\n";
-	}
-	$actionsBox .= '</table>';
-
-	$usersBox = '<input type="text" name="useremail" id="userEmail" disabled="disabled" autocomplete="off" style="width: 256px" />' .
-							'<div id="suggestionsBox" class="suggestionbox"></div>';
-
-	global $pageFullPath;
-	$actualPagePath = array();
-	parseUrlReal($pageFullPath, $actualPagePath);
-	$actualPageId = $actualPagePath[count($actualPagePath) - 1];
-	$actualPageTitle = getPageTitle($actualPageId);
-	global $ICONS;
-	$displayForm = <<<FORMHTML
-		<script type="text/javascript" language="javascript">
-		<!--
-			imgAjaxLoading = new Image();
-			imgAjaxLoading.src = '$imagesFolder/ajaxloading.gif';
-		-->
-		</script>
-		<script type="text/javascript" language="javascript" src="$scriptsFolder/ajaxsuggestionbox.js">
-		</script>
-		<script type="text/javascript" language="javascript" src="$scriptsFolder/permgrant.js">
-		</script>
-		<br />
-		<fieldset style="padding: 8px">
-			<legend>{$ICONS['Access Permissions']['small']}Permissions</legend>
-
-			<h2>'$actualPageTitle' at path '$pageFullPath'</h2>
-
-			<form name="grantpermissions" method="POST" action="./+grant" style="padding: 8px">
-				<fieldset style="padding: 8px"><legend>Select Action</legend>
-					$actionsBox
-					<br /><input type="button" value="Check All" onclick="checkAllPermissions(true)" /> <input type="button" value="Uncheck All" onclick="checkAllPermissions(false)" /> <input type="button" value="Toggle Selection" onclick="toggleAllPermissions()" />
-				</fieldset>
-
-				<br />
-			<fieldset style="padding: 8px"><legend>Select User/Group</legend>
-				<label><input type="radio" name="optusergroup" value="group" onclick="enableGroups()" checked />Group:</label>
-				<label><input type="radio" name="optgroup012" value="group0" onclick="document.getElementById('modifiableGroupsList').disabled = true" />Everyone</label>
-				<label><input type="radio" name="optgroup012" value="group3" onclick="document.getElementById('modifiableGroupsList').disabled = true" />Non-logged in users *only*</label>
-				<label><input type="radio" name="optgroup012" value="group1" onclick="document.getElementById('modifiableGroupsList').disabled = true" />Logged in users</label>
-				<label><input type="radio" name="optgroup012" value="group2" onclick="document.getElementById('modifiableGroupsList').disabled = false" />Others:</label> $groupsBox
-				<input type="submit" name="btnGroupPermTable" id="btnGroupPermTable" value="View Group's Permission Table" />
-
-				<br />
-				<label><input type="radio" name="optusergroup" value="user" onclick="enableUsers()" />User:</label>
-					$usersBox
-				<input type="submit" name="btnUserPermTable" id="btnUserPermTable" value="View User's Permission Table" disabled="disabled" />
-				<br />
-		  		<input type="submit" name="btnEveryonePermTable" id="btnEveryonePermTable" value="View Everyone's Permission Table" />
-	  		</fieldset>
-
-				<br />
-				<script language="javascript" type="text/javascript">
-				<!--
-					var userBox = new SuggestionBox(document.getElementById('userEmail'), document.getElementById('suggestionsBox'), "./+grant&doaction=getsuggestions&forwhat=%pattern%");
-					userBox.loadingImageUrl = '$imagesFolder/ajaxloading.gif';
-				-->
-				</script>
-	  		<fieldset style="padding: 8px"><legend>Permission</legend>
-		  		<label><input type="radio" name="optpermtype" value="allowed" />Allowed</label>
-		  		<label><input type="radio" name="optpermtype" value="denied" />Denied</label>
-		  		<label><input type="radio" name="optpermtype" value="unset" />Unset</label>
-	  		</fieldset>
-
-				<br />
-				<input type="submit" name="btnSubmit" value="Grant Permissions" />
-			</form>
-		</fieldset>
-		<br />
-		<fieldset style="padding: 8px">
-			<legend>Groups</legend>
-			$groupsForm
-		</fieldset>
-FORMHTML;
-
-	return $displayForm;
-}
-
 
 
 /**
@@ -1487,407 +894,6 @@ function getGroupPermissions($groupids, $pagepath, $userid = -1) {
 	}
 
 	return $permList;
-}
-
-
-function getGroupsForm($currentUserId, $modifiableGroups, &$pagePath) {
-	require_once("group.lib.php");
-
-	global $urlRequestRoot, $cmsFolder, $templateFolder, $moduleFolder,$sourceFolder;
-	$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
-	$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
-
-	/// Parse any get variables, do necessary validation and stuff, so that we needn't check inside every if
-	$groupRow = $groupId = $userId = null;
-	$subAction = ''; //isset($_GET['subaction']) ? $_GET['subaction'] : '';
-	if ((isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editgroup' && isset($_GET['groupname'])) || (isset($_POST['btnEditGroup']) && isset($_POST['selEditGroups'])))
-		$subAction = 'showeditform';
-	elseif(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'associateform')
-		$subAction = 'associateform';
-	elseif (isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'deleteuser' && isset($_GET['groupname']) && isset($_GET['useremail']))
-		$subAction = 'deleteuser';
-	elseif (isset($_POST['btnAddUserToGroup']))
-		$subAction = 'addusertogroup';
-	elseif (isset($_POST['btnSaveGroupProperties']))
-		$subAction = 'savegroupproperties';
-	elseif (isset($_POST['btnEditGroupPriorities']) || (isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editgrouppriorities'))
-		$subAction = 'editgrouppriorities';
-
-	if(isset($_POST['selEditGroups']) || isset($_GET['groupname'])) {
-		$groupRow = getGroupRow( isset($_POST['selEditGroups']) ? escape($_POST['selEditGroups']) : escape($_GET['groupname']) );
-		$groupId = $groupRow['group_id'];
-		if($subAction != 'editgrouppriorities' && (!$groupRow || !$groupId || $groupId < 2)) {
-			displayerror('Error! Invalid group requested.');
-			return ;
-		}
-
-		if(!is_null($groupId)) {
-			if($modifiableGroups[count($modifiableGroups) - 1]['group_priority'] < $groupRow['group_priority']) {
-				displayerror('You do not have the permission to modify the selected group.');
-				return '';
-			}
-		}
-	}
-	if(isset($_GET['useremail'])) {
-		$userId = getUserIdFromEmail($_GET['useremail']);
-	}
-
-	if($subAction != 'editgrouppriorities' && (isset($_GET['subaction']) && $_GET['subaction'] == 'editgroups' && !is_null($groupId))) {
-		if ($subAction == 'deleteuser') {
-			if($groupRow['form_id'] != 0) {
-				displayerror('The group is associated with a form. To remove a user, use the edit registrants in the assoicated form.');
-			}
-			elseif (!$userId) {
-				displayerror('Unknown E-mail. Could not find a registered user with the given E-mail Id');
-			}
-			else {
-				$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = ' . $userId . ' AND `group_id` = ' . $groupId;
-				$deleteResult = mysql_query($deleteQuery);
-				if(!$deleteResult || mysql_affected_rows() != 1) {
-					displayerror('Could not delete user with the given E-mail from the given group.');
-				}
-				else {
-					displayinfo('Successfully removed user from the current group');
-
-					if($userId == $currentUserId) {
-						$virtue = '';
-						$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
-						$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
-					}
-				}
-			}
-		}
-		elseif ($subAction == 'savegroupproperties' && isset($_POST['txtGroupDescription'])) {
-			$updateQuery = "UPDATE `" . MYSQL_DATABASE_PREFIX . "groups` SET `group_description` = '".escape($_POST['txtGroupDescription'])."' WHERE `group_id` = $groupId";
-			$updateResult = mysql_query($updateQuery);
-			if (!$updateResult) {
-				displayerror('Could not update database.');
-			}
-			else {
-				displayinfo('Changes to the group have been successfully saved.');
-			}
-			$groupRow = getGroupRow($groupRow['group_name']);
-		}
-		elseif ($subAction == 'addusertogroup' && isset($_POST['txtUserEmail']) && trim($_POST['txtUserEmail']) != '') {
-			if($groupRow['form_id'] != 0) {
-				displayerror('The selected group is associated with a form. To add a user, register the user to the form.');
-			}
-			else {
-				$passedEmails = explode(',', escape($_POST['txtUserEmail']));
-
-				for($i = 0; $i < count($passedEmails); $i++) {
-					$hyphenPos = strpos($passedEmails[$i], '-');
-					if ($hyphenPos >= 0) {
-						$userEmail = trim(substr($passedEmails[$i], 0, $hyphenPos - 1));
-					}
-					else {
-						$userEmail = escape($_POST['txtUserEmail']);
-					}
-
-					$userId = getUserIdFromEmail($userEmail);
-					if(!$userId || $userId < 1) {
-						displayerror('Unknown E-mail. Could not find a registered user with the given E-mail Id');
-					}
-
-					if(!addUserToGroupName($groupRow['group_name'], $userId)) {
-						displayerror('Could not add the given user to the current group.');
-					}
-					else {
-						displayinfo('User has been successfully inserted into the given group.');
-					}
-				}
-			}
-		}
-		elseif ($subAction == 'associateform') {
-			if(isset($_POST['btnAssociateGroup'])) {
-				$pageIdArray = array();
-				$formPageId = parseUrlReal(escape($_POST['selFormPath']), $pageIdArray);
-				if($formPageId <= 0 || getPageModule($formPageId) != 'form') {
-					displayerror('Invalid page selected! The page you selected is not a form.');
-				}
-				elseif (!getPermissions($currentUserId, $formPageId, 'editregistrants', 'form'))
-					displayerror('You do not have the permissions to associate the selected form with a group.');
-				else {
-					$formModuleId = getModuleComponentIdFromPageId($formPageId, 'form');
-					require_once("$sourceFolder/$moduleFolder/form.lib.php");
-
-					if(isGroupEmpty($groupId) || form::getRegisteredUserCount($formModuleId) == 0) {
-						associateGroupWithForm($groupId, $formModuleId);
-						$groupRow = getGroupRow($groupRow['group_name']);
-					}
-					else
-						displayerror('Both the group and the form already contain registered users, and the group cannot be associated with the selected form.');
-				}
-			}
-			elseif(isset($_POST['btnUnassociateGroup'])) {
-				if($groupRow['form_id'] <= 0) {
-					displayerror('The selected group is currently not associated with any form.');
-				}
-				elseif(!getPermissions($currentUserId, getPageIdFromModuleComponentId('form', $groupRow['form_id']), 'editregistrants', 'form')) {
-					displayerror('You do not have the permissions to unassociate the form from this group.');
-				}
-				else {
-					unassociateFormFromGroup($groupId);
-					$virtue = '';
-					$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
-					$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
-					$groupRow = getGroupRow($groupRow['group_name']);
-				}
-			}
-		}
-
-		if($modifiableGroups[count($modifiableGroups) - 1]['group_priority'] < $groupRow['group_priority']) {
-			displayerror('You do not have the permission to modify the selected group.');
-			return '';
-		}
-
-		$usersTable = '`' . MYSQL_DATABASE_PREFIX . 'users`';
-		$usergroupTable = '`' . MYSQL_DATABASE_PREFIX . 'usergroup`';
-		$userQuery = "SELECT `user_email`, `user_fullname` FROM $usergroupTable, $usersTable WHERE `group_id` =  $groupId AND $usersTable.`user_id` = $usergroupTable.`user_id` ORDER BY `user_email`";
-		$userResult = mysql_query($userQuery);
-		if(!$userResult) {
-			displayerror('Error! Could not fetch group information.');
-			return '';
-		}
-
-		$userEmails = array();
-		$userFullnames = array();
-		while($userRow = mysql_fetch_row($userResult)) {
-			$userEmails[] = $userRow[0];
-			$userFullnames[] = $userRow[1];
-		}
-
-		$groupEditForm = <<<GROUPEDITFORM
-			<h2>Group '{$groupRow['group_name']}' - '{$groupRow['group_description']}'</h2><br />
-			<fieldset style="padding: 8px">
-				<legend>Group Properties</legend>
-				<form name="groupeditform" method="POST" action="./+grant&subaction=editgroups&groupname={$groupRow['group_name']}">
-					Group Description: <input type="text" name="txtGroupDescription" value="{$groupRow['group_description']}" />
-					<input type="submit" name="btnSaveGroupProperties" value="Save Group Properties" />
-				</form>
-			</fieldset>
-
-			<br />
-			<fieldset style="padding: 8px">
-				<legend>Existing Users in Group:</legend>
-GROUPEDITFORM;
-
-		$userCount = mysql_num_rows($userResult);
-		global $urlRequestRoot, $cmsFolder, $templateFolder,$sourceFolder;
-		$deleteImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Remove user from the group\" />";
-
-		for($i = 0; $i < $userCount; $i++) {
-			$isntAssociatedWithForm = ($groupRow['form_id'] == 0);
-			if($isntAssociatedWithForm)
-				$groupEditForm .= '<a onclick="return confirm(\'Are you sure you wish to remove this user from this group?\')" href="./+grant&subaction=editgroups&subsubaction=deleteuser&groupname=' . $groupRow['group_name'] . '&useremail=' . $userEmails[$i] . '">' . $deleteImage . "</a>";
-			$groupEditForm .= "{$userEmails[$i]} - {$userFullnames[$i]}<br />\n";
-		}
-
-		$associateForm = '';
-		if($groupRow['form_id'] == 0) {
-			$associableForms = getAssociableFormsList($currentUserId, !isGroupEmpty($groupId));
-			$associableFormCount = count($associableForms);
-			$associableFormsBox = '<select name="selFormPath">';
-			for($i = 0; $i < $associableFormCount; ++$i) {
-				$associableFormsBox .= '<option value="' . $associableForms[$i][2] . '">' . $associableForms[$i][1] . ' - ' . $associableForms[$i][2] . '</option>';
-			}
-			$associableFormsBox .= '</select>';
-			$associateForm = <<<GROUPASSOCIATEFORM
-
-			Select a form to associate the group with: $associableFormsBox
-			<input type="submit" name="btnAssociateGroup" value="Associate Group with Form" />
-GROUPASSOCIATEFORM;
-		}
-		else {
-			$associatedFormPageId = getPageIdFromModuleComponentId('form', $groupRow['form_id']);
-			$associateForm = 'This group is currently associated with the form: ' . getPageTitle($associatedFormPageId) . ' (' . getPagePath($associatedFormPageId) . ')<br />' .
-					'<input type="submit" name="btnUnassociateGroup" value="Unassociate" />';
-		}
-
-		$groupEditForm .= '</fieldset>';
-		if($groupRow['form_id'] == 0) {
-			$groupEditForm .= <<<GROUPEDITFORM
-				<br />
-				<fieldset style="padding: 8px">
-					<legend>Add Users to Group</legend>
-					<form name="addusertogroup" method="POST" action="./+grant&subaction=editgroups&groupname={$groupRow['group_name']}">
-						Email ID: <input type="text" name="txtUserEmail" id="txtUserEmail" value="" style="width: 256px" autocomplete="off" />
-						<div id="suggestionDiv" class="suggestionbox"></div>
-
-						<script language="javascript" type="text/javascript" src="$scriptsFolder/ajaxsuggestionbox.js"></script>
-						<script language="javascript" type="text/javascript">
-						<!--
-							var addUserBox = new SuggestionBox(document.getElementById('txtUserEmail'), document.getElementById('suggestionDiv'), "./+grant&doaction=getsuggestions&forwhat=%pattern%");
-							addUserBox.loadingImageUrl = '$imagesFolder/ajaxloading.gif';
-						-->
-						</script>
-
-						<input type="submit" name="btnAddUserToGroup" value="Add User to Group" />
-					</form>
-				</fieldset>
-GROUPEDITFORM;
-		}
-		$groupEditForm .= <<<GROUPEDITFORM
-			<br />
-			<fieldset style="padding: 8px">
-				<legend>Associate With Form</legend>
-				<form name="groupassociationform" action="./+grant&subaction=editgroups&subsubaction=associateform&groupname={$groupRow['group_name']}" method="POST">
-					$associateForm
-				</form>
-			</fieldset>
-GROUPEDITFORM;
-
-		return $groupEditForm;
-	}
-
-	if ($subAction == 'editgrouppriorities') {
-		$modifiableCount = count($modifiableGroups);
-		$userMaxPriority = $maxPriorityGroup = 1;
-		if($modifiableCount != 0) {
-			$userMaxPriority = max($modifiableGroups[0]['group_priority'], $modifiableGroups[$modifiableCount - 1]['group_priority']);
-			$maxPriorityGroup = $modifiableGroups[0]['group_priority'] > $modifiableGroups[$modifiableCount - 1]['group_priority'] ? $modifiableGroups[0]['group_id'] : $modifiableGroups[$modifiableCount - 1]['group_id'];
-		}
-
-		if(isset($_GET['dowhat']) && !is_null($groupId)) {
-			if($_GET['dowhat'] == 'incrementpriority' || $_GET['dowhat'] == 'decrementpriority') {
-				shiftGroupPriority($currentUserId, $groupRow['group_name'], $_GET['dowhat'] == 'incrementpriority' ? 'up' : 'down', $userMaxPriority, true);
-			}
-			elseif($_GET['dowhat'] == 'movegroupup' || $_GET['dowhat'] == 'movegroupdown') {
-				shiftGroupPriority($currentUserId, $groupRow['group_name'], $_GET['dowhat'] == 'movegroupup' ? 'up' : 'down', $userMaxPriority, false);
-			}
-			elseif($_GET['dowhat'] == 'emptygroup') {
-				emptyGroup($groupRow['group_name']);
-			}
-			elseif($_GET['dowhat'] == 'deletegroup') {
-				if(deleteGroup($groupRow['group_name'])) {
-					$virtue = '';
-					$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
-					$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
-				}
-			}
-
-			$modifiableGroups = reevaluateGroupPriorities($modifiableGroups);
-		}
-		elseif(isset($_GET['dowhat']) && $_GET['dowhat'] == 'addgroup') {
-			if(isset($_POST['txtGroupName']) && isset($_POST['txtGroupDescription']) && isset($_POST['selGroupPriority'])) {
-				$existsQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_name` = '".escape($_POST['txtGroupName'])."'";
-				$existsResult = mysql_query($existsQuery);
-				if(trim($_POST['txtGroupName']) == '') {
-					displayerror('Cannot create a group with an empty name. Please type in a name for the new group.');
-				}
-				elseif(mysql_num_rows($existsResult) >= 1) {
-					displayerror('A group with the name you specified already exists.');
-				}
-				else {
-					$idQuery = 'SELECT MAX(`group_id`) FROM `' . MYSQL_DATABASE_PREFIX . 'groups`';
-					$idResult = mysql_query($idQuery);
-					$idRow = mysql_fetch_row($idResult);
-					$newGroupId = 2;
-					if(!is_null($idRow[0])) {
-						$newGroupId = $idRow[0] + 1;
-					}
-
-					$newGroupPriority = 1;
-					if($_POST['selGroupPriority'] <= $userMaxPriority && $_POST['selGroupPriority'] > 0) {
-						$newGroupPriority = escape($_POST['selGroupPriority']);
-					}
-
-					$addGroupQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'groups` (`group_id`, `group_name`, `group_description`, `group_priority`) ' .
-							"VALUES($newGroupId, '".escape($_POST['txtGroupName'])."', '".escape($_POST['txtGroupDescription'])."', $newGroupPriority)";
-					$addGroupResult = mysql_query($addGroupQuery);
-					if($addGroupResult) {
-						displayinfo('New group added successfully.');
-
-						if(isset($_POST['chkAddMe'])) {
-							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ($currentUserId, $newGroupId)";
-							if(!mysql_query($insertQuery)) {
-								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysql_query());
-							}
-						}
-						$virtue = '';
-						$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
-						$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
-					}
-					else {
-						displayerror('Could not run MySQL query. New group could not be added.');
-					}
-				}
-			}
-
-			$modifiableGroups = reevaluateGroupPriorities($modifiableGroups);
-		}
-
-		$modifiableCount = count($modifiableGroups);
-		if($modifiableGroups[0]['group_priority'] < $modifiableGroups[$modifiableCount - 1]['group_priority']) {
-			$modifiableGroups = array_reverse($modifiableGroups);
-		}
-		$previousPriority = $modifiableGroups[0]['group_priority'];
-		global $cmsFolder, $urlRequestRoot, $moduleFolder, $templateFolder,$sourceFolder;
-		$iconsFolderUrl = "$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16";
-		$moveUpImage = '<img src="' . $iconsFolderUrl . '/actions/go-up.png" title="Increment Group Priority" alt="Increment Group Priority" />';
-		$moveDownImage = '<img src="' . $iconsFolderUrl . '/actions/go-down.png" alt="Decrement Group Priority" title="Decrement Group Priority" />';
-		$moveTopImage = '<img src="' . $iconsFolderUrl . '/actions/go-top.png" alt="Move to next higher priority level" title="Move to next higher priority level" />';
-		$moveBottomImage = '<img src="' . $iconsFolderUrl . '/actions/go-bottom.png" alt="Move to next lower priority level" title="Move to next lower priority level" />';
-		$emptyImage = '<img src="' . $iconsFolderUrl . '/actions/edit-clear.png" alt="Empty Group" title="Empty Group" />';
-		$deleteImage = '<img src="' . $iconsFolderUrl . '/actions/edit-delete.png" alt="Delete Group" title="Delete Group" />';
-
-		$groupsForm = '<h3>Edit Group Priorities</h3><br />';
-		for($i = 0; $i < $modifiableCount; $i++) {
-			if($modifiableGroups[$i]['group_priority'] != $previousPriority) {
-				$groupsForm .= '<br /><br /><hr /><br />';
-			}
-			$groupsForm .=
-					'<span style="margin: 4px;" title="' . $modifiableGroups[$i]['group_description'] . '">' .
-					'<a href="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=incrementpriority&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveUpImage . '</a>' .
-					'<a href="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=decrementpriority&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveDownImage . '</a>' .
-					'<a href="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=movegroupup&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveTopImage . '</a>' .
-					'<a href="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=movegroupdown&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveBottomImage . '</a>' .
-					'<a onclick="return confirm(\'Are you sure you want to empty this group?\')" href="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=emptygroup&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $emptyImage . '</a>' .
-					'<a onclick="return confirm(\'Are you sure you want to delete this group?\')" href="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=deletegroup&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $deleteImage . '</a>' .
-					'<a href="./+grant&subaction=editgroups&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $modifiableGroups[$i]['group_name'] . "</a></span>\n";
-			$previousPriority = $modifiableGroups[$i]['group_priority'];
-		}
-
-		$priorityBox = '<option value="1">1</option>';
-		for($i = 2; $i <= $userMaxPriority; ++$i) {
-			$priorityBox .= '<option value="' . $i . '">' . $i . '</option>';
-		}
-		$groupsForm .= <<<GROUPSFORM
-		<br /><br />
-		<fieldset style="padding: 8px">
-			<legend>Create New Group:</legend>
-
-			<form name="groupaddform" method="POST" action="./+grant&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=addgroup">
-				<label>Group Name: <input type="text" name="txtGroupName" value="" /></label><br />
-				<label>Group Description: <input type="text" name="txtGroupDescription" value="" /></label><br />
-				<label>Group Priority: <select name="selGroupPriority">$priorityBox</select><br />
-				<label><input type="checkbox" name="chkAddMe" value="addme" /> Add me to group</label><br />
-				<input type="submit" name="btnAddNewGroup" value="Add Group" />
-			</form>
-		</fieldset>
-GROUPSFORM;
-
-		return $groupsForm;
-	}
-
-
-	$modifiableCount = count($modifiableGroups);
-	$groupsBox = '<select name="selEditGroups">';
-	for($i = 0; $i < $modifiableCount; ++$i) {
-		$groupsBox .= '<option value="' . $modifiableGroups[$i]['group_name'] . '">' . $modifiableGroups[$i]['group_name'] . ' - ' . $modifiableGroups[$i]['group_description'] . "</option>\n";
-	}
-	$groupsBox .= '</select>';
-
-	$groupsForm = <<<GROUPSFORM
-		<form name="groupeditform" method="POST" action="./+grant&subaction=editgroups">
-			$groupsBox
-			<input type="submit" name="btnEditGroup" value="Edit Selected Group" /><br /><br />
-			<input type="submit" name="btnEditGroupPriorities" value="Add/Shuffle/Remove Groups" />
-		</form>
-
-GROUPSFORM;
-
-	return $groupsForm;
 }
 
 /**

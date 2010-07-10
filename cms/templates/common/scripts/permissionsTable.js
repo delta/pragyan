@@ -1,5 +1,6 @@
 var xmlhttp;
 var xmlhttp2;
+var changes = {'group' : {}, 'user' : {}};
 
 function changePerm(e, permid, usergroupid, ug) {
 	var permsDesc = {'Y' : 'grant', 'N' : 'deny', 'U' : 'unset'};
@@ -8,7 +9,7 @@ function changePerm(e, permid, usergroupid, ug) {
 		question = 'Are you sure want to ' + permsDesc[e.value] + ' ' + permissions[permid] + ' permission for user ' + users[usergroupid] + '?';
 	else
 		question = 'Are you sure want to ' + permsDesc[e.value] + ' ' + permissions[permid] + ' permission for group ' + groups[usergroupid] + '?';
-	if(confirm(question)) {
+	if(document.getElementById('skipAlerts').checked||confirm(question)) {
 		xmlhttp = GetXmlHttpObject();
 		if (xmlhttp == null) {
 			alert ("Browser does not support HTTP Request");
@@ -88,7 +89,7 @@ function userPerm(userid, permid) {
 }
 
 function generateTable() {
-	var table = "<table name='permtable id='permtable' class='userlisttable display'><thead><td>User/Group--></td>";
+	var table = "<table><thead><td>Permissions</td>";
 	var selPerms = selected['permissions'];
 	var selGroups = selected['groups'];
 	var selUsers = selected['users'];
@@ -111,7 +112,6 @@ function generateTable() {
 	table += "</tbody></table>";
 	document.getElementById('permTable').innerHTML = table;
 	selected = backup; // i found the selected object getting deleted lost inside the loop, when someone finds how to fix it, this backup can be avoided.
-	//initSmartTable();
 }
 
 function cmsShow(type,message) {
@@ -150,7 +150,7 @@ function inArray(list, ele) {
 function removeByElement(arrayName,arrayElement) {
 	for(var i=0; i<arrayName.length;i++ ) { 
 		if(arrayName[i]==arrayElement)
-		arrayName.splice(i,1); 
+			arrayName.splice(i,1); 
 	}
 }
 
@@ -176,16 +176,6 @@ function render(arr,class) {
 	var ret = '';
 	var isChecked = '';
 	for(var key in arr) {
-		if(arr[key].substr(0,8) == '<b><big>') {
-			isChecked= '';
-			if(inArray(selected[class],key))
-				isChecked = ' checked';
-			ret += "<tr><td><INPUT type=checkbox class='check_" + class + "' value='" + key + "' onChange='checkClick(this)'" + isChecked + ">&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
-			delete arr[key];
-			//unset arr[key]
-		}
-	}
-	for(var key in arr) {
 		isChecked = '';
 		if(inArray(selected[class],key))
 			isChecked = ' checked';
@@ -195,62 +185,11 @@ function render(arr,class) {
 }
 
 function populateList() {
-	if(document.getElementById('searchAction').value.length == 0)
-		document.getElementById('actionsList').innerHTML = render(permissions,'permissions');
-	if(document.getElementById('searchUsers').value.length == 0) {
-		//document.getElementById('usersList').innerHTML = '<tr><td>Groups:</td></tr>';
-		document.getElementById('usersList').innerHTML += render(groups,'groups');
-		//document.getElementById('usersList').innerHTML += '<tr><td>Users:</td></tr>';
-		document.getElementById('usersList').innerHTML += render(users,'users');
-	}
+	document.getElementById('actionsList').innerHTML = render(permissions,'permissions');
+	document.getElementById('usersList').innerHTML = render(groups,'groups');
+	document.getElementById('usersList').innerHTML += render(users,'users');
 	initSmartTable();
-}
-
-function search(list, search) {
-	var obj = {};
-	for(var lkey in list)
-		for(var skey in search)
-			if(list[lkey].indexOf(search[skey]) != -1)
-				if(obj[lkey])
-					obj[lkey] = '<b><big>' + list[lkey] + '</big></b>';
-				else
-					obj[lkey] = list[lkey];
-	return obj;
-}
-
-function searchUsers() {
-	document.getElementById('usersList').innerHTML = "";
-	var words = document.getElementById('searchUsers').value.split(' ');
-	var obj = search(groups, words);
-	var count = 0;
-	for(var key in obj)
-		count++;
-	document.getElementById('usersList').innerHTML += '<tr><td>Groups:</td></tr>';
-	if(count > 0)
-		document.getElementById('usersList').innerHTML += render(obj,'groups');
-	else
-		document.getElementById('usersList').innerHTML = "<tr><td>Oops!! nothing matched search '" + document.getElementById('searchUsers').value + "'</td></tr>";
-	obj = search(users, words);
-	count = 0;
-	for(var key in obj)
-		count++;
-	document.getElementById('usersList').innerHTML += '<tr><td>Users:</td></tr>';
-	if(count > 0)
-		document.getElementById('usersList').innerHTML += render(obj,'users');
-	else
-		document.getElementById('usersList').innerHTML += "<tr><td>Oops!! nothing matched search '" + document.getElementById('searchUsers').value + "'</td></tr>";
-}
-
-function searchAction() {
-	var words = document.getElementById('searchAction').value.split(' ');
-	var obj = search(permissions, words);
-	var count = 0;
-	for(var key in obj)
-		count++;
-	if(count > 0)
-		document.getElementById('actionsList').innerHTML = render(obj,'permissions');
-	else
-		document.getElementById('actionsList').innerHTML = "<tr><td>Oops!! nothing matched search '" + document.getElementById('searchAction').value + "'</td></tr>";
+	cmsShow('info','select the permissions and users/groups to change the permission for the user/group');
 }
 
 function selectAll1() {

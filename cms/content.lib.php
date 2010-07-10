@@ -83,7 +83,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 
 	if($action=="admin") {
 		require_once("admin.lib.php");
-		return admin();
+		return admin($pageId,$userId);
 	}
 	///default actions also to be defined here (and not outside)
 	/// Coz work to be done after these actions do involve the page

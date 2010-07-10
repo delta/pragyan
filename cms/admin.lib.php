@@ -205,7 +205,35 @@ function delDir($dirname) {
 	return true;
 }
 
-function admin() {
+function getSuggestions($pattern) {
+	$suggestionsQuery = "SELECT IF(user_email LIKE \"$pattern%\", 1, " .
+			"IF(`user_fullname` LIKE \"$pattern%\", 2, " .
+			"IF(`user_fullname` LIKE \"% $pattern%\", 3, " .
+			"IF(`user_email` LIKE \"%$pattern%\", 4, " .
+			"IF(`user_fullname` LIKE \"%$pattern%\", 5, 6" .
+			"))))) AS `relevance`,	`user_email`, `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE " .
+			"  `user_activated`=1 AND(`user_email` LIKE \"%$pattern%\" OR `user_fullname` LIKE \"%$pattern%\" ) ORDER BY `relevance`";
+//			echo $suggestionsQuery;
+	$suggestionsResult = mysql_query($suggestionsQuery);
+
+	$suggestions = array($pattern);
+
+	while($suggestionsRow = mysql_fetch_row($suggestionsResult)) {
+		$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
+	}
+
+	return join($suggestions, ',');
+}
+
+function admin($pageid, $userid) {
+	
+	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getsuggestions' && isset($_GET['forwhat'])) {
+		if(strlen($_GET['forwhat']) >= 3) {
+			echo getSuggestions($_GET['forwhat']);
+			disconnect();
+			exit();
+		}
+	}
 	global $urlRequestRoot,$templateFolder,$cmsFolder,$ICONS;
     if(isset($_GET['indexsite'])) {
 		global $cmsFolder;
@@ -240,12 +268,13 @@ function admin() {
 	<table class="iconspanel">
 	<tr>
 	<td><a href="./+admin&subaction=global">{$ICONS['Global Settings']['large']}<br/>Global Settings</a></td>
-	<td><a href="./+admin&subaction=useradmin">{$ICONS['User Management']['large']}<br/>User Management</a></td>
+	<td><a href="./+admin&subaction=expert">{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</a></td>
 	<td><a href="./+admin&subaction=template">{$ICONS['Templates Management']['large']}<br/>Templates Management</a></td>
 	<td><a href="./+admin&subaction=email">{$ICONS['Email Registrants']['large']}<br/>Email Registrants</a></td>
 	</tr>
 	<tr>
-	<td colspan=4><a href="./+admin&subaction=expert">{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</a></td>
+	<td colspan=2><a href="./+admin&subaction=useradmin">{$ICONS['User Management']['large']}<br/>User Management</a></td>
+	<td colspan=2><a href="./+admin&subaction=editgroups">{$ICONS['User Groups']['large']}<br/>Group Management</a></td>
 	
 	</tr>
 
@@ -287,6 +316,16 @@ ADMINPAGE;
 		if ($_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
 		
 		else if ($_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="User Management"; }
+		else if ($_GET['subaction'] == 'editgroups') {
+			require_once("permission.lib.php");
+			$pagepath = array();
+			parseUrlDereferenced($pageid, $pagepath);
+			$virtue = '';
+			$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, array_reverse(getGroupIds($userid)), $virtue);
+			$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
+			$op .= groupManagementForm($userid, $modifiableGroups, $pagepath);
+			$ophead="Group Management";
+		}
 		else if ($_GET['subaction'] == 'reloadtemplates'){ $op .= reloadTemplates(); $ophead="Reloading Templates"; }
 		
 		else if ($_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="Checking Permissions Consistency"; }
@@ -309,6 +348,9 @@ ADMINPAGE;
 	
 	if($_GET['subaction']=='global')
 	 $str .= globalSettingsForm();
+	else if($_GET['subaction']=='editgroups') {
+		//do nothing so that "expert only" doesn't comes up
+	}
 	else if($_GET['subaction']=='useradmin')
 	{
 		
@@ -797,3 +839,402 @@ function admin_editRegistrants() {
 }
 
 
+function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
+	require_once("group.lib.php");
+
+	global $urlRequestRoot, $cmsFolder, $templateFolder, $moduleFolder,$sourceFolder;
+	$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
+	$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
+
+	/// Parse any get variables, do necessary validation and stuff, so that we needn't check inside every if
+	$groupRow = $groupId = $userId = null;
+	$subAction = ''; //isset($_GET['subaction']) ? $_GET['subaction'] : '';
+	if ((isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editgroup' && isset($_GET['groupname'])) || (isset($_POST['btnEditGroup']) && isset($_POST['selEditGroups'])))
+		$subAction = 'showeditform';
+	elseif(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'associateform')
+		$subAction = 'associateform';
+	elseif (isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'deleteuser' && isset($_GET['groupname']) && isset($_GET['useremail']))
+		$subAction = 'deleteuser';
+	elseif (isset($_POST['btnAddUserToGroup']))
+		$subAction = 'addusertogroup';
+	elseif (isset($_POST['btnSaveGroupProperties']))
+		$subAction = 'savegroupproperties';
+	elseif (isset($_POST['btnEditGroupPriorities']) || (isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editgrouppriorities'))
+		$subAction = 'editgrouppriorities';
+
+	if(isset($_POST['selEditGroups']) || isset($_GET['groupname'])) {
+		$groupRow = getGroupRow( isset($_POST['selEditGroups']) ? escape($_POST['selEditGroups']) : escape($_GET['groupname']) );
+		$groupId = $groupRow['group_id'];
+		if($subAction != 'editgrouppriorities' && (!$groupRow || !$groupId || $groupId < 2)) {
+			displayerror('Error! Invalid group requested.');
+			return ;
+		}
+
+		if(!is_null($groupId)) {
+			if($modifiableGroups[count($modifiableGroups) - 1]['group_priority'] < $groupRow['group_priority']) {
+				displayerror('You do not have the permission to modify the selected group.');
+				return '';
+			}
+		}
+	}
+	if(isset($_GET['useremail'])) {
+		$userId = getUserIdFromEmail($_GET['useremail']);
+	}
+
+	if($subAction != 'editgrouppriorities' && (isset($_GET['subaction']) && $_GET['subaction'] == 'editgroups' && !is_null($groupId))) {
+		if ($subAction == 'deleteuser') {
+			if($groupRow['form_id'] != 0) {
+				displayerror('The group is associated with a form. To remove a user, use the edit registrants in the assoicated form.');
+			}
+			elseif (!$userId) {
+				displayerror('Unknown E-mail. Could not find a registered user with the given E-mail Id');
+			}
+			else {
+				$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = ' . $userId . ' AND `group_id` = ' . $groupId;
+				$deleteResult = mysql_query($deleteQuery);
+				if(!$deleteResult || mysql_affected_rows() != 1) {
+					displayerror('Could not delete user with the given E-mail from the given group.');
+				}
+				else {
+					displayinfo('Successfully removed user from the current group');
+
+					if($userId == $currentUserId) {
+						$virtue = '';
+						$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
+						$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
+					}
+				}
+			}
+		}
+		elseif ($subAction == 'savegroupproperties' && isset($_POST['txtGroupDescription'])) {
+			$updateQuery = "UPDATE `" . MYSQL_DATABASE_PREFIX . "groups` SET `group_description` = '".escape($_POST['txtGroupDescription'])."' WHERE `group_id` = $groupId";
+			$updateResult = mysql_query($updateQuery);
+			if (!$updateResult) {
+				displayerror('Could not update database.');
+			}
+			else {
+				displayinfo('Changes to the group have been successfully saved.');
+			}
+			$groupRow = getGroupRow($groupRow['group_name']);
+		}
+		elseif ($subAction == 'addusertogroup' && isset($_POST['txtUserEmail']) && trim($_POST['txtUserEmail']) != '') {
+			if($groupRow['form_id'] != 0) {
+				displayerror('The selected group is associated with a form. To add a user, register the user to the form.');
+			}
+			else {
+				$passedEmails = explode(',', escape($_POST['txtUserEmail']));
+
+				for($i = 0; $i < count($passedEmails); $i++) {
+					$hyphenPos = strpos($passedEmails[$i], '-');
+					if ($hyphenPos >= 0) {
+						$userEmail = trim(substr($passedEmails[$i], 0, $hyphenPos - 1));
+					}
+					else {
+						$userEmail = escape($_POST['txtUserEmail']);
+					}
+
+					$userId = getUserIdFromEmail($userEmail);
+					if(!$userId || $userId < 1) {
+						displayerror('Unknown E-mail. Could not find a registered user with the given E-mail Id');
+					}
+
+					if(!addUserToGroupName($groupRow['group_name'], $userId)) {
+						displayerror('Could not add the given user to the current group.');
+					}
+					else {
+						displayinfo('User has been successfully inserted into the given group.');
+					}
+				}
+			}
+		}
+		elseif ($subAction == 'associateform') {
+			if(isset($_POST['btnAssociateGroup'])) {
+				$pageIdArray = array();
+				$formPageId = parseUrlReal(escape($_POST['selFormPath']), $pageIdArray);
+				if($formPageId <= 0 || getPageModule($formPageId) != 'form') {
+					displayerror('Invalid page selected! The page you selected is not a form.');
+				}
+				elseif (!getPermissions($currentUserId, $formPageId, 'editregistrants', 'form'))
+					displayerror('You do not have the permissions to associate the selected form with a group.');
+				else {
+					$formModuleId = getModuleComponentIdFromPageId($formPageId, 'form');
+					require_once("$sourceFolder/$moduleFolder/form.lib.php");
+
+					if(isGroupEmpty($groupId) || form::getRegisteredUserCount($formModuleId) == 0) {
+						associateGroupWithForm($groupId, $formModuleId);
+						$groupRow = getGroupRow($groupRow['group_name']);
+					}
+					else
+						displayerror('Both the group and the form already contain registered users, and the group cannot be associated with the selected form.');
+				}
+			}
+			elseif(isset($_POST['btnUnassociateGroup'])) {
+				if($groupRow['form_id'] <= 0) {
+					displayerror('The selected group is currently not associated with any form.');
+				}
+				elseif(!getPermissions($currentUserId, getPageIdFromModuleComponentId('form', $groupRow['form_id']), 'editregistrants', 'form')) {
+					displayerror('You do not have the permissions to unassociate the form from this group.');
+				}
+				else {
+					unassociateFormFromGroup($groupId);
+					$virtue = '';
+					$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
+					$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
+					$groupRow = getGroupRow($groupRow['group_name']);
+				}
+			}
+		}
+
+		if($modifiableGroups[count($modifiableGroups) - 1]['group_priority'] < $groupRow['group_priority']) {
+			displayerror('You do not have the permission to modify the selected group.');
+			return '';
+		}
+
+		$usersTable = '`' . MYSQL_DATABASE_PREFIX . 'users`';
+		$usergroupTable = '`' . MYSQL_DATABASE_PREFIX . 'usergroup`';
+		$userQuery = "SELECT `user_email`, `user_fullname` FROM $usergroupTable, $usersTable WHERE `group_id` =  $groupId AND $usersTable.`user_id` = $usergroupTable.`user_id` ORDER BY `user_email`";
+		$userResult = mysql_query($userQuery);
+		if(!$userResult) {
+			displayerror('Error! Could not fetch group information.');
+			return '';
+		}
+
+		$userEmails = array();
+		$userFullnames = array();
+		while($userRow = mysql_fetch_row($userResult)) {
+			$userEmails[] = $userRow[0];
+			$userFullnames[] = $userRow[1];
+		}
+
+		$groupEditForm = <<<GROUPEDITFORM
+			<h2>Group '{$groupRow['group_name']}' - '{$groupRow['group_description']}'</h2><br />
+			<fieldset style="padding: 8px">
+				<legend>Group Properties</legend>
+				<form name="groupeditform" method="POST" action="./+admin&subaction=editgroups&groupname={$groupRow['group_name']}">
+					Group Description: <input type="text" name="txtGroupDescription" value="{$groupRow['group_description']}" />
+					<input type="submit" name="btnSaveGroupProperties" value="Save Group Properties" />
+				</form>
+			</fieldset>
+
+			<br />
+			<fieldset style="padding: 8px">
+				<legend>Existing Users in Group:</legend>
+GROUPEDITFORM;
+
+		$userCount = mysql_num_rows($userResult);
+		global $urlRequestRoot, $cmsFolder, $templateFolder,$sourceFolder;
+		$deleteImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Remove user from the group\" />";
+
+		for($i = 0; $i < $userCount; $i++) {
+			$isntAssociatedWithForm = ($groupRow['form_id'] == 0);
+			if($isntAssociatedWithForm)
+				$groupEditForm .= '<a onclick="return confirm(\'Are you sure you wish to remove this user from this group?\')" href="./+admin&subaction=editgroups&subsubaction=deleteuser&groupname=' . $groupRow['group_name'] . '&useremail=' . $userEmails[$i] . '">' . $deleteImage . "</a>";
+			$groupEditForm .= "{$userEmails[$i]} - {$userFullnames[$i]}<br />\n";
+		}
+
+		$associateForm = '';
+		if($groupRow['form_id'] == 0) {
+			$associableForms = getAssociableFormsList($currentUserId, !isGroupEmpty($groupId));
+			$associableFormCount = count($associableForms);
+			$associableFormsBox = '<select name="selFormPath">';
+			for($i = 0; $i < $associableFormCount; ++$i) {
+				$associableFormsBox .= '<option value="' . $associableForms[$i][2] . '">' . $associableForms[$i][1] . ' - ' . $associableForms[$i][2] . '</option>';
+			}
+			$associableFormsBox .= '</select>';
+			$associateForm = <<<GROUPASSOCIATEFORM
+
+			Select a form to associate the group with: $associableFormsBox
+			<input type="submit" name="btnAssociateGroup" value="Associate Group with Form" />
+GROUPASSOCIATEFORM;
+		}
+		else {
+			$associatedFormPageId = getPageIdFromModuleComponentId('form', $groupRow['form_id']);
+			$associateForm = 'This group is currently associated with the form: ' . getPageTitle($associatedFormPageId) . ' (' . getPagePath($associatedFormPageId) . ')<br />' .
+					'<input type="submit" name="btnUnassociateGroup" value="Unassociate" />';
+		}
+
+		$groupEditForm .= '</fieldset>';
+		if($groupRow['form_id'] == 0) {
+			$groupEditForm .= <<<GROUPEDITFORM
+				<br />
+				<fieldset style="padding: 8px">
+					<legend>Add Users to Group</legend>
+					<form name="addusertogroup" method="POST" action="./+admin&subaction=editgroups&groupname={$groupRow['group_name']}">
+						Email ID: <input type="text" name="txtUserEmail" id="txtUserEmail" value="" style="width: 256px" autocomplete="off" />
+						<div id="suggestionDiv" class="suggestionbox"></div>
+
+						<script language="javascript" type="text/javascript" src="$scriptsFolder/ajaxsuggestionbox.js"></script>
+						<script language="javascript" type="text/javascript">
+						<!--
+							var addUserBox = new SuggestionBox(document.getElementById('txtUserEmail'), document.getElementById('suggestionDiv'), "./+admin&doaction=getsuggestions&forwhat=%pattern%");
+							addUserBox.loadingImageUrl = '$imagesFolder/ajaxloading.gif';
+						-->
+						</script>
+
+						<input type="submit" name="btnAddUserToGroup" value="Add User to Group" />
+					</form>
+				</fieldset>
+GROUPEDITFORM;
+		}
+		$groupEditForm .= <<<GROUPEDITFORM
+			<br />
+			<fieldset style="padding: 8px">
+				<legend>Associate With Form</legend>
+				<form name="groupassociationform" action="./+admin&subaction=editgroups&subsubaction=associateform&groupname={$groupRow['group_name']}" method="POST">
+					$associateForm
+				</form>
+			</fieldset>
+GROUPEDITFORM;
+
+		return $groupEditForm;
+	}
+
+	if ($subAction == 'editgrouppriorities') {
+		$modifiableCount = count($modifiableGroups);
+		$userMaxPriority = $maxPriorityGroup = 1;
+		if($modifiableCount != 0) {
+			$userMaxPriority = max($modifiableGroups[0]['group_priority'], $modifiableGroups[$modifiableCount - 1]['group_priority']);
+			$maxPriorityGroup = $modifiableGroups[0]['group_priority'] > $modifiableGroups[$modifiableCount - 1]['group_priority'] ? $modifiableGroups[0]['group_id'] : $modifiableGroups[$modifiableCount - 1]['group_id'];
+		}
+
+		if(isset($_GET['dowhat']) && !is_null($groupId)) {
+			if($_GET['dowhat'] == 'incrementpriority' || $_GET['dowhat'] == 'decrementpriority') {
+				shiftGroupPriority($currentUserId, $groupRow['group_name'], $_GET['dowhat'] == 'incrementpriority' ? 'up' : 'down', $userMaxPriority, true);
+			}
+			elseif($_GET['dowhat'] == 'movegroupup' || $_GET['dowhat'] == 'movegroupdown') {
+				shiftGroupPriority($currentUserId, $groupRow['group_name'], $_GET['dowhat'] == 'movegroupup' ? 'up' : 'down', $userMaxPriority, false);
+			}
+			elseif($_GET['dowhat'] == 'emptygroup') {
+				emptyGroup($groupRow['group_name']);
+			}
+			elseif($_GET['dowhat'] == 'deletegroup') {
+				if(deleteGroup($groupRow['group_name'])) {
+					$virtue = '';
+					$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
+					$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
+				}
+			}
+
+			$modifiableGroups = reevaluateGroupPriorities($modifiableGroups);
+		}
+		elseif(isset($_GET['dowhat']) && $_GET['dowhat'] == 'addgroup') {
+			if(isset($_POST['txtGroupName']) && isset($_POST['txtGroupDescription']) && isset($_POST['selGroupPriority'])) {
+				$existsQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_name` = '".escape($_POST['txtGroupName'])."'";
+				$existsResult = mysql_query($existsQuery);
+				if(trim($_POST['txtGroupName']) == '') {
+					displayerror('Cannot create a group with an empty name. Please type in a name for the new group.');
+				}
+				elseif(mysql_num_rows($existsResult) >= 1) {
+					displayerror('A group with the name you specified already exists.');
+				}
+				else {
+					$idQuery = 'SELECT MAX(`group_id`) FROM `' . MYSQL_DATABASE_PREFIX . 'groups`';
+					$idResult = mysql_query($idQuery);
+					$idRow = mysql_fetch_row($idResult);
+					$newGroupId = 2;
+					if(!is_null($idRow[0])) {
+						$newGroupId = $idRow[0] + 1;
+					}
+
+					$newGroupPriority = 1;
+					if($_POST['selGroupPriority'] <= $userMaxPriority && $_POST['selGroupPriority'] > 0) {
+						$newGroupPriority = escape($_POST['selGroupPriority']);
+					}
+
+					$addGroupQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'groups` (`group_id`, `group_name`, `group_description`, `group_priority`) ' .
+							"VALUES($newGroupId, '".escape($_POST['txtGroupName'])."', '".escape($_POST['txtGroupDescription'])."', $newGroupPriority)";
+					$addGroupResult = mysql_query($addGroupQuery);
+					if($addGroupResult) {
+						displayinfo('New group added successfully.');
+
+						if(isset($_POST['chkAddMe'])) {
+							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ($currentUserId, $newGroupId)";
+							if(!mysql_query($insertQuery)) {
+								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysql_query());
+							}
+						}
+						$virtue = '';
+						$maxPriorityGroup = getMaxPriorityGroup($pagePath, $currentUserId, array_reverse(getGroupIds($currentUserId)), $virtue);
+						$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
+					}
+					else {
+						displayerror('Could not run MySQL query. New group could not be added.');
+					}
+				}
+			}
+
+			$modifiableGroups = reevaluateGroupPriorities($modifiableGroups);
+		}
+
+		$modifiableCount = count($modifiableGroups);
+		if($modifiableGroups[0]['group_priority'] < $modifiableGroups[$modifiableCount - 1]['group_priority']) {
+			$modifiableGroups = array_reverse($modifiableGroups);
+		}
+		$previousPriority = $modifiableGroups[0]['group_priority'];
+		global $cmsFolder, $urlRequestRoot, $moduleFolder, $templateFolder,$sourceFolder;
+		$iconsFolderUrl = "$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16";
+		$moveUpImage = '<img src="' . $iconsFolderUrl . '/actions/go-up.png" title="Increment Group Priority" alt="Increment Group Priority" />';
+		$moveDownImage = '<img src="' . $iconsFolderUrl . '/actions/go-down.png" alt="Decrement Group Priority" title="Decrement Group Priority" />';
+		$moveTopImage = '<img src="' . $iconsFolderUrl . '/actions/go-top.png" alt="Move to next higher priority level" title="Move to next higher priority level" />';
+		$moveBottomImage = '<img src="' . $iconsFolderUrl . '/actions/go-bottom.png" alt="Move to next lower priority level" title="Move to next lower priority level" />';
+		$emptyImage = '<img src="' . $iconsFolderUrl . '/actions/edit-clear.png" alt="Empty Group" title="Empty Group" />';
+		$deleteImage = '<img src="' . $iconsFolderUrl . '/actions/edit-delete.png" alt="Delete Group" title="Delete Group" />';
+
+		$groupsForm = '<h3>Edit Group Priorities</h3><br />';
+		for($i = 0; $i < $modifiableCount; $i++) {
+			if($modifiableGroups[$i]['group_priority'] != $previousPriority) {
+				$groupsForm .= '<br /><br /><hr /><br />';
+			}
+			$groupsForm .=
+					'<span style="margin: 4px;" title="' . $modifiableGroups[$i]['group_description'] . '">' .
+					'<a href="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=incrementpriority&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveUpImage . '</a>' .
+					'<a href="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=decrementpriority&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveDownImage . '</a>' .
+					'<a href="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=movegroupup&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveTopImage . '</a>' .
+					'<a href="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=movegroupdown&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $moveBottomImage . '</a>' .
+					'<a onclick="return confirm(\'Are you sure you want to empty this group?\')" href="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=emptygroup&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $emptyImage . '</a>' .
+					'<a onclick="return confirm(\'Are you sure you want to delete this group?\')" href="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=deletegroup&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $deleteImage . '</a>' .
+					'<a href="./+admin&subaction=editgroups&groupname=' . $modifiableGroups[$i]['group_name'] . '">' . $modifiableGroups[$i]['group_name'] . "</a></span>\n";
+			$previousPriority = $modifiableGroups[$i]['group_priority'];
+		}
+
+		$priorityBox = '<option value="1">1</option>';
+		for($i = 2; $i <= $userMaxPriority; ++$i) {
+			$priorityBox .= '<option value="' . $i . '">' . $i . '</option>';
+		}
+		$groupsForm .= <<<GROUPSFORM
+		<br /><br />
+		<fieldset style="padding: 8px">
+			<legend>Create New Group:</legend>
+
+			<form name="groupaddform" method="POST" action="./+admin&subaction=editgroups&subsubaction=editgrouppriorities&dowhat=addgroup">
+				<label>Group Name: <input type="text" name="txtGroupName" value="" /></label><br />
+				<label>Group Description: <input type="text" name="txtGroupDescription" value="" /></label><br />
+				<label>Group Priority: <select name="selGroupPriority">$priorityBox</select><br />
+				<label><input type="checkbox" name="chkAddMe" value="addme" /> Add me to group</label><br />
+				<input type="submit" name="btnAddNewGroup" value="Add Group" />
+			</form>
+		</fieldset>
+GROUPSFORM;
+
+		return $groupsForm;
+	}
+
+
+	$modifiableCount = count($modifiableGroups);
+	$groupsBox = '<select name="selEditGroups">';
+	for($i = 0; $i < $modifiableCount; ++$i) {
+		$groupsBox .= '<option value="' . $modifiableGroups[$i]['group_name'] . '">' . $modifiableGroups[$i]['group_name'] . ' - ' . $modifiableGroups[$i]['group_description'] . "</option>\n";
+	}
+	$groupsBox .= '</select>';
+
+	$groupsForm = <<<GROUPSFORM
+		<form name="groupeditform" method="POST" action="./+admin&subaction=editgroups">
+			$groupsBox
+			<input type="submit" name="btnEditGroup" value="Edit Selected Group" /><br /><br />
+			<input type="submit" name="btnEditGroupPriorities" value="Add/Shuffle/Remove Groups" />
+		</form>
+
+GROUPSFORM;
+
+	return $groupsForm;
+}
