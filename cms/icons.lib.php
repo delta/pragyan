@@ -1,13 +1,26 @@
 <?php
+/**
+ * @package pragyan
+ * @author Abhishek Shrivastava
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+ // To get : Select All, Clear All, Toggle All for permissions. Groups properties, users and form assocs. 
+ 
 $ICON_ARRAY=array(
 'Refresh'=>"actions/view-refresh.png",
 'Edit'=>"apps/accessories-text-editor.png",
 'Delete'=>"actions/edit-delete.png",
+'Add'=>'actions/list-add.png',
+'Remove'=>'actions/list-remove.png',
 'Deactivate'=>"emblems/emblem-readonly.png",
 'Activate'=>"emblems/emblem-symbolic-link.png",
+'Search'=>"actions/system-search.png",
+'Home'=>"actions/go-home.png",
+'News'=>'apps/internet-news-reader.png',
 'Edit Page'=>"actions/edit-select-all.png",
 'New User'=>"actions/contact-new.png",
-'Search'=>"actions/system-search.png",
 'Uploaded Files'=>"actions/document-open.png",
 'Page Revisions'=>"apps/preferences-system-session.png",
 'Page Comments'=>"apps/internet-group-chat.png",
@@ -28,18 +41,18 @@ $ICON_ARRAY=array(
 'Access Permissions'=>"status/network-wireless-encrypted.png",
 'User Profile'=>"places/user-home.png",
 'User Groups'=>"apps/system-users.png",
+'Group Management'=>"apps/system-users.png",
 'PR Add User'=>"apps/system-users.png",
 'Form Edit'=>'actions/edit-paste.png',
 'Form Registrants'=>'apps/system-users.png',
 'Gallery Edit'=>'apps/preferences-desktop-screensaver.png',
-'News'=>'apps/internet-news-reader.png',
 'News Edit'=>'apps/internet-news-reader.png',
 'News Add'=>'apps/internet-news-reader.png',
 'Database Information'=>'places/network-server.png',
 'SQL Query'=>'apps/utilities-terminal.png',
 'Quiz Edit'=>'categories/applications-games.png',
-'Quiz Correct'=>'categories/applications-office.png'
-
+'Quiz Correct'=>'categories/applications-office.png',
+'Group Associate Form'=>'actions/format-indent-more.png'
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)

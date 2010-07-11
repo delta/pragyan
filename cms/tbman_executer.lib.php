@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package pragyan
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+ 
 class tbman_executer {
 	private $pv; //postvariables
 	private $actions;

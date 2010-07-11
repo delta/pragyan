@@ -1,4 +1,11 @@
 <?php
+/**
+ * @package pragyan
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+ 
 /** College information management suite
  *
  * COMMONLY USED FUNCTIONS
@@ -491,17 +498,18 @@ function getAvailableTemplates()
 	return $templates;
 }
 
-function getTableFieldsName($tablename)
+function getTableFieldsName($tablename,$exclude="user_profilepic")
 {
 	$query="SELECT * FROM ".MYSQL_DATABASE_PREFIX.$tablename;
 	$result=mysql_query($query);
 	$numfields=mysql_num_fields($result);
 	$fields=array();
 	$i=0;
+	$exclist=explode(",",$exclude);
 	while($i<$numfields)
 	{
 		$meta=mysql_fetch_field($result,$i);
-		if($meta)
+		if($meta && array_search($meta->name,$exclist)===FALSE)
 		{
 			$fields[$i]=$meta->name;
 		}

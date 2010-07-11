@@ -1,10 +1,11 @@
 <?php
-/*
- * Created on May 22, 2008
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
+/**
+ * @package pragyan
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
  */
+ 
 
 class sqlquery implements module {
 	private $userId;

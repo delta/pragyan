@@ -1,4 +1,12 @@
 <?php
+/**
+ * @package pragyan
+ * @author Chakra
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+ 
 global $cmsFolder;
 require_once("$cmsFolder/modules/search/settings/conf.php");
 require_once("$cmsFolder/modules/search/include/commonfuncs.php");

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package pragyan
- * @copyright (c) 2008 Pragyan Team
+ * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
@@ -315,7 +315,7 @@ ADMINPAGE;
 	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
 		if ($_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
 		
-		else if ($_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="User Management"; }
+		else if ($_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="{$ICONS['User Management']['small']}User Management"; }
 		else if ($_GET['subaction'] == 'editgroups') {
 			require_once("permission.lib.php");
 			$pagepath = array();
@@ -324,22 +324,22 @@ ADMINPAGE;
 			$maxPriorityGroup = getMaxPriorityGroup($pagepath, $userid, array_reverse(getGroupIds($userid)), $virtue);
 			$modifiableGroups = getModifiableGroups($userid, $maxPriorityGroup);
 			$op .= groupManagementForm($userid, $modifiableGroups, $pagepath);
-			$ophead="Group Management";
+			$ophead="{$ICONS['Group Management']['small']}Group Management";
 		}
-		else if ($_GET['subaction'] == 'reloadtemplates'){ $op .= reloadTemplates(); $ophead="Reloading Templates"; }
+		else if ($_GET['subaction'] == 'reloadtemplates'){ $op .= reloadTemplates(); $ophead="{$ICONS['Templates Management']['small']}Reloading Templates"; }
 		
-		else if ($_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="Checking Permissions Consistency"; }
+		else if ($_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="{$ICONS['Access Permissions']['small']}Checking Permissions Consistency"; }
 		elseif ($_GET['subaction'] == 'checkAdminUser'){ $op .= admin_checkAdminUser(); $ophead="Checking Administrator User"; }
 		elseif ($_GET['subaction'] == 'checkAdminPerms'){ $op .= admin_checkAdminPerms(); $ophead="Checking Administrator Permissions"; }
-		elseif (($_GET['subaction'] == 'changePermRank')){ $op .= admin_changePermRank(); $ophead="Changing Permissions Rank"; }
+		elseif (($_GET['subaction'] == 'changePermRank')){ $op .= admin_changePermRank(); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; }
 		elseif (($_GET['subaction'] == 'editprofileform') ||
 			(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editprofileform'))
-			{ $op .= admin_editProfileForm(); $ophead="Edit User Profile Form"; }
+			{ $op .= admin_editProfileForm(); $ophead="{$ICONS['User Profile']['small']}Edit User Profile Form"; }
 		elseif (($_GET['subaction']) == 'viewsiteregistrants' || $_GET['subaction'] == 'editsiteregistrants') 
 			$op .= admin_editRegistrants(); 
 		elseif (isset ($_GET['id'])) $op .= admin_userAdmin();
-		elseif (isset ($_GET['movePermId'])){ $op .= admin_changePermRank(); $ophead="Changing Permissions Rank"; }
-		elseif (isset ($_GET['module'])){ $op .= admin_changePermRank(escape($_GET['module'])); $ophead="Changing Permissions Rank for module '".escape($_GET['module'])."'"; }
+		elseif (isset ($_GET['movePermId'])){ $op .= admin_changePermRank(); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; }
+		elseif (isset ($_GET['module'])){ $op .= admin_changePermRank(escape($_GET['module'])); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank for module '".escape($_GET['module'])."'"; }
 	}
 	if($op!="")
 	{
@@ -841,7 +841,7 @@ function admin_editRegistrants() {
 
 function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 	require_once("group.lib.php");
-
+	global $ICONS;
 	global $urlRequestRoot, $cmsFolder, $templateFolder, $moduleFolder,$sourceFolder;
 	$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
 	$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
@@ -998,18 +998,18 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 			displayerror('Error! Could not fetch group information.');
 			return '';
 		}
-
+	
 		$userEmails = array();
 		$userFullnames = array();
 		while($userRow = mysql_fetch_row($userResult)) {
 			$userEmails[] = $userRow[0];
 			$userFullnames[] = $userRow[1];
 		}
-
+		
 		$groupEditForm = <<<GROUPEDITFORM
 			<h2>Group '{$groupRow['group_name']}' - '{$groupRow['group_description']}'</h2><br />
 			<fieldset style="padding: 8px">
-				<legend>Group Properties</legend>
+				<legend>{$ICONS['User Groups']['small']}Group Properties</legend>
 				<form name="groupeditform" method="POST" action="./+admin&subaction=editgroups&groupname={$groupRow['group_name']}">
 					Group Description: <input type="text" name="txtGroupDescription" value="{$groupRow['group_description']}" />
 					<input type="submit" name="btnSaveGroupProperties" value="Save Group Properties" />
@@ -1018,18 +1018,18 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 
 			<br />
 			<fieldset style="padding: 8px">
-				<legend>Existing Users in Group:</legend>
+				<legend>{$ICONS['User Groups']['small']}Existing Users in Group:</legend>
 GROUPEDITFORM;
 
 		$userCount = mysql_num_rows($userResult);
 		global $urlRequestRoot, $cmsFolder, $templateFolder,$sourceFolder;
-		$deleteImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Remove user from the group\" />";
+		$deleteImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Remove user from the group\" title=\"Remove user from the group\" />";
 
 		for($i = 0; $i < $userCount; $i++) {
 			$isntAssociatedWithForm = ($groupRow['form_id'] == 0);
 			if($isntAssociatedWithForm)
 				$groupEditForm .= '<a onclick="return confirm(\'Are you sure you wish to remove this user from this group?\')" href="./+admin&subaction=editgroups&subsubaction=deleteuser&groupname=' . $groupRow['group_name'] . '&useremail=' . $userEmails[$i] . '">' . $deleteImage . "</a>";
-			$groupEditForm .= "{$userEmails[$i]} - {$userFullnames[$i]}<br />\n";
+			$groupEditForm .= " {$userEmails[$i]} - {$userFullnames[$i]}<br />\n";
 		}
 
 		$associateForm = '';
@@ -1058,7 +1058,7 @@ GROUPASSOCIATEFORM;
 			$groupEditForm .= <<<GROUPEDITFORM
 				<br />
 				<fieldset style="padding: 8px">
-					<legend>Add Users to Group</legend>
+					<legend>{$ICONS['Add']['small']}Add Users to Group</legend>
 					<form name="addusertogroup" method="POST" action="./+admin&subaction=editgroups&groupname={$groupRow['group_name']}">
 						Email ID: <input type="text" name="txtUserEmail" id="txtUserEmail" value="" style="width: 256px" autocomplete="off" />
 						<div id="suggestionDiv" class="suggestionbox"></div>
@@ -1079,7 +1079,7 @@ GROUPEDITFORM;
 		$groupEditForm .= <<<GROUPEDITFORM
 			<br />
 			<fieldset style="padding: 8px">
-				<legend>Associate With Form</legend>
+				<legend>{$ICONS['Group Associate Form']['small']}Associate With Form</legend>
 				<form name="groupassociationform" action="./+admin&subaction=editgroups&subsubaction=associateform&groupname={$groupRow['group_name']}" method="POST">
 					$associateForm
 				</form>
