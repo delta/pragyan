@@ -1,11 +1,12 @@
 <?php
 /**
  * @package pragyan
+ * @author Abhishek Shrivastava
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
-
+//TODO : Implement Search based on user profile fields
 function userManagementForm()
 {
 	global $ICONS;
@@ -618,9 +619,9 @@ USERLIST;
 	global $ICONS_SRC;
 	for($i=0; $i<count($userId); $i++)
 	{
-		if($type=="activated" && $userActivated[$i]==0)
+		if($type=="activated" && $userActivated[$i]=="No")
 			continue;
-		if($type=="nonactivated" && $userActivated[$i]==1)
+		if($type=="nonactivated" && $userActivated[$i]=="Yes")
 			continue;
 		$flag=true;
 		$userlist.="<tr class='$rowclass'>";
@@ -634,7 +635,7 @@ USERLIST;
 		if($act=="edit")
 		{
 			$userlist.="<td id='user_editactions'>";
-			if($userActivated[$i]==0)
+			if($userActivated[$i]=="No")
 				$userlist.="<input title='Activate User' type='image' src='{$ICONS_SRC['Activate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_activate' value='Activate'>\n";
 			else $userlist.="<input  title='Deactivate User' type='image' src='{$ICONS_SRC['Deactivate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_deactivate' value='Deactivate'>\n";
 			$userlist.="<input  title='Edit User' type='image' src='{$ICONS_SRC['Edit']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_info' value='Edit'>\n";
@@ -648,8 +649,7 @@ USERLIST;
 	}
 	$userlist.="</tbody></table>";
 	if($act=="edit") $userlist.="</form>";
-	if($usercount>0)
-		displayinfo("<a href='#userlist'>Click Here to view the $usercount users found.</a>");
+	
 	
 	return ($flag)?$userlist:"No Users Found!";
 }

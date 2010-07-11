@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @package pragyan
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+ 
 $newsItems = "<div style=\"display: none;\" id=\"newscontainer\">";
 
   global $sourceFolder;
