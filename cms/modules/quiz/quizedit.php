@@ -344,10 +344,29 @@ function getSubmittedQuestionOptionListHtml($questionType) {
 		$html .= '<tr><td><input type="' . $inputType . '" name="' . $elementName . '" id="' . $elementName . '" value="' . $i . '" ';
 		if (($questionType == 'sso' && $_POST['optOption'] == $i) || isset($_POST[$elementName]))
 			$html .= 'checked="checked" ';
-		$html .= '/></td><td><input type="text" name="txtOption' . $i . '" id="txtOption' . $i . '" value="' . $_POST["txtOption$i"] . '" /></td></tr>';
+		$html .= '/></td><td><input type="text" name="txtOption' . $i . '" id="txtOption' . $i . '" value="' . safe_html($_POST["txtOption$i"]) . '" /></td></tr>';
 	}
 	$html .= "</table>\n";
 	return $html;
+}
+
+function setWeightMark($quizId, $weight, $positive, $negative) {
+	$result = mysql_query("SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId AND `question_weight` = $weight");
+	if(mysql_fetch_assoc($result))
+		mysql_query("UPDATE `quiz_weightmarks` SET `question_positivemarks` = $positive, `question_negativemarks` = $negative WHERE `page_modulecomponentid` = $quizId AND `question_weight` = $weight");
+	else
+		mysql_query("INSERT INTO `quiz_weightmarks`(`page_modulecomponentid`, `question_weight`, `question_positivemarks`, `question_negativemarks`) VALUES ($quizId, $weight, $positive, $negative)");
+	return mysql_affected_rows();
+}
+
+function weightMarksForm($quizId) {
+	$result = mysql_query("SELECT DISTINCT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId AND `quiz_questionweight` NOT IN (SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId)");
+	if(mysql_num_rows($result) == 0)
+		return 'Marks for all Weight are set';
+	$ret = "<table><thead><th>Weight</th><th>Marks</th></thead>";
+	while($row = mysql_fetch_assoc($result))
+		$ret .= "<tr><td>{$row['quiz_questionweight']}</td><td><form method=POST action='./+edit&subaction=setweightmark'><input type=hidden name=weight value='{$row['quiz_questionweight']}'><input type=hidden name=quizId value='{$quizId}'>+ve:<input type=text name='pos' value='{$row['quiz_questionweight']}' size=5>; -ve:<input type=text name='neg' value='{$row['quiz_questionweight']}' size=5> <input type=submit name=btnSetWeightMarks value='Set Marks'></form></td></tr>";
+	return $ret . "</table>";
 }
 
 /** get*Form() series of functions */
@@ -358,7 +377,7 @@ function getQuizEditForm($quizId, $dataSource) {
 			if ($fieldMap[$i][3] == 'chk')
 				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? 'checked="checked"' : '';
 			else
-				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? htmlentities($_POST[$fieldMap[$i][0]]) : '';
+				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? htmlentities(safe_html($_POST[$fieldMap[$i][0]])) : '';
 		}
 	}
 	elseif ($dataSource == 'db') {
@@ -376,7 +395,9 @@ function getQuizEditForm($quizId, $dataSource) {
 	}
 
 	$quizTypeBox = getQuizTypeBox($quiz_quiztype);
-
+	
+	$setWeightMarks = weightMarksForm($quizId);
+	
 	global $moduleFolder, $cmsFolder, $urlRequestRoot;
 	$calpath = "$urlRequestRoot/$cmsFolder/$moduleFolder";
 	$quizEditForm = <<<QUIZEDITFORM
@@ -405,7 +426,12 @@ function getQuizEditForm($quizId, $dataSource) {
 				<tr><td><label for="txtCloseTime">Closing Time:</label></td><td><input type="text" name="txtCloseTime" id="txtCloseTime" value="$quiz_closedatetime" /><input name="calc" type="reset" value="  ...  " onclick="return showCalendar('txtCloseTime', '%Y-%m-%d %H:%M:%S', '24', true);" /></td></tr>
 			</table>
 		</fieldset>
-
+		
+		<fieldset id="quizWeightMarks">
+		<legend>Weight - Marks</legend>
+		{$setWeightMarks}
+		</fieldset>
+		
 		<fieldset style="padding:8px" id="quizTypeSpecificProperties">
 			<legend>Quiz Type Specific Properties</legend>
 QUIZEDITFORM;
@@ -484,6 +510,7 @@ QUIZEDITFORM;
 
 	$quizSections = getSectionList($quizId);
 	$questionTypes = getQuestionTypes();
+
 	$sectionCount = count($quizSections);
 	for ($i = 0; $i < $sectionCount; ++$i) {
 		$moveUp = ($i == 0 ? '' : "<a href=\"./+edit&subaction=movesection&direction=up&sectionid={$quizSections[$i]['quiz_sectionid']}\" />$moveUpImage</a>");
@@ -542,7 +569,7 @@ function getSectionEditForm($quizId, $sectionId, $dataSource) {
 			if ($fieldMap[$i][3] == 'chk')
 				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? 'checked="checked"' : '';
 			else
-				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? htmlentities($_POST[$fieldMap[$i][0]]) : '';
+				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? htmlentities(safe_html($_POST[$fieldMap[$i][0]])) : '';
 		}
 	}
 	elseif ($dataSource == 'db') {
@@ -592,7 +619,7 @@ function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 			if ($fieldMap[$i][3] == 'chk')
 				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? 'checked="checked"' : '';
 			else
-				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? htmlentities($_POST[$fieldMap[$i][0]]) : '';
+				$$fieldMap[$i][2] = isset($_POST[$fieldMap[$i][0]]) ? htmlentities(safe_html($_POST[$fieldMap[$i][0]])) : '';
 		}
 	}
 	elseif ($dataSource == 'db') {
@@ -614,7 +641,7 @@ function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 	if ($question_type == 'subjective') {
 		$solutionContainer .= '<textarea name="txtRightAnswer" id="txtRightAnswer" rows="5" cols="36">';
 		if ($dataSource == 'POST') {
-			$solutionContainer .= (isset($_POST['txtRightAnswer']) ? htmlentities($_POST['txtRightAnswer']) : '') . '</textarea>';
+			$solutionContainer .= (isset($_POST['txtRightAnswer']) ? htmlentities(safe_html($_POST['txtRightAnswer'])) : '') . '</textarea>';
 		}
 		elseif ($dataSource == 'db') {
 			$solutionContainer .= (isset($questionRow['quiz_rightanswer']) ? htmlentities($questionRow['quiz_rightanswer']) : '');
@@ -631,7 +658,7 @@ function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 	}
 
 	$questionEditForm = <<<QUESTIONEDITFORM
-		<h3>Question Properties</h3>
+		<fieldset><legend>Question Properties</legend>
 		<form name="questioneditform" method="POST" action="">
 			<table border="0" width="100%">
 				<tr><td><label for="txtQuestion">Question:</label></td><td><textarea name="txtQuestion" id="txtQuestion" rows="5" cols="36">$question_question</textarea></td></tr>
@@ -726,11 +753,9 @@ function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 
 				document.getElementById('selQuestionType').onchange = questionTypeChanged;
 			</script>
-
-			<br />
 			<input type="submit" name="btnSubmit" id="btnSubmit" value="Save Question" />
 		</form>
-
+		</fieldset>
 		<p><a href="./+edit">&laquo; Back to Quiz Properties</a></p>
 QUESTIONEDITFORM;
 	return $questionEditForm;
@@ -750,7 +775,7 @@ function submitQuizEditForm($quizId) {
 		else {
 			if (!isset($_POST[$fieldMap[$i][0]]))
 				continue;
-			$update .= "'{$_POST[$fieldMap[$i][0]]}'";
+			$update .= "'" . safe_html($_POST[$fieldMap[$i][0]]) . "'";
 		}
 		$updates[] = $update;
 	}
@@ -779,7 +804,7 @@ function submitSectionEditForm($quizId, $sectionId) {
 		else {
 			if (!isset($_POST[$fieldMap[$i][0]]))
 				continue;
-			$update .= "'{$_POST[$fieldMap[$i][0]]}'";
+			$update .= "'" . safe_html($_POST[$fieldMap[$i][0]]) . "'";
 		}
 		$updates[] = $update;
 	}
@@ -798,27 +823,27 @@ function submitSectionEditForm($quizId, $sectionId) {
 function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 	$updates = array();
 	if (isset($_POST['txtQuestion']))
-		$updates[] = "`quiz_question` = '{$_POST['txtQuestion']}'";
+		$updates[] = "`quiz_question` = '" . escape($_POST['txtQuestion']) . "'";
 	if (isset($_POST['selQuestionType']) && in_array($_POST['selQuestionType'], array_keys(getQuestionTypes())))
-		$updates[] = "`quiz_questiontype` = '{$_POST['selQuestionType']}'";
+		$updates[] = "`quiz_questiontype` = '" . escape($_POST['selQuestionType']) . "'";
 	else {
 		displayerror('No or invalid question type specified.');
 		return false;
 	}
 
 	if (isset($_POST['txtQuestionWeight']) && is_numeric($_POST['txtQuestionWeight']) && $_POST['txtQuestionWeight'] > 0)
-		$updates[] = "`quiz_questionweight` = {$_POST['txtQuestionWeight']}";
+		$updates[] = "`quiz_questionweight` = " . escape($_POST['txtQuestionWeight']);
 
 	deleteQuestionOptions($quizId, $sectionId, $questionId);
 
-	$questionType = $_POST['selQuestionType'];
+	$questionType = escape($_POST['selQuestionType']);
 	if ($questionType != 'subjective') {
 		$i = 0;
 		$rightAnswer = array();
 		while (true) {
 			if (!isset($_POST['txtOptionText' . $i]) || $_POST["txtOptionText$i"] == '')
 				break;
-			$optionText = $_POST['txtOptionText' . $i];
+			$optionText = escape($_POST['txtOptionText' . $i]);
 			$insertQuery = "INSERT INTO `quiz_objectiveoptions`(`page_modulecomponentid`, `quiz_sectionid`, `quiz_questionid`, `quiz_optiontext`, `quiz_optionrank`) " .
 					"SELECT $quizId, $sectionId, $questionId, '{$optionText}', IFNULL(MAX(`quiz_optionrank`), 0) + 1 FROM `quiz_objectiveoptions` WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId AND `quiz_questionid` = $questionId LIMIT 1";
 			if (!mysql_query($insertQuery)) {
@@ -837,7 +862,7 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 		$rightAnswer = implode('|', $rightAnswer);
 	}
 	else {
-		$rightAnswer = isset($_POST['txtRightAnswer']) ? $_POST['txtRightAnswer'] : '';
+		$rightAnswer = isset($_POST['txtRightAnswer']) ? safe_html($_POST['txtRightAnswer']) : '';
 	}
 	$updates[] = "`quiz_rightanswer` = '{$rightAnswer}'";
 
