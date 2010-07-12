@@ -83,7 +83,7 @@ class quiz implements module {
 						displayerror('Error. No count specified.');
 					}
 					else {
-						$count = $_POST['txtSectionCount'];
+						$count = escape($_POST['txtSectionCount']);
 						if (addSections($this->moduleComponentId, $count) !== false)
 							displayinfo('Section(s) added successfully.');
 					}
@@ -181,6 +181,13 @@ class quiz implements module {
 			}
 		}
 
+		if (isset($_POST['btnSetWeightMarks'])) {
+			if(setWeightMark(intval($_POST['quizId']), intval($_POST['weight']), intval($_POST['pos']), intval($_POST['neg']))) {
+				displayinfo('Weight - Marks saved.');
+			} else {
+				displayerror('Error in changing weight mark');
+			}
+		}
 		$dataSource = 'db';
 		if (isset($_POST['btnSubmit'])) {
 			$dataSource = 'POST';
@@ -188,12 +195,33 @@ class quiz implements module {
 				$dataSource = 'db';
 		}
 
-		$html= getQuizEditForm($this->moduleComponentId, $dataSource);
-		global $ICONS;
-		return "<fieldset><legend>{$ICONS['Quiz Edit']['small']} Edit Quiz Information</legend>$html</fieldset>";
+		return getQuizEditForm($this->moduleComponentId, $dataSource);
 	}
 
 	public function actionCorrect() {
+
+		if (isset($_POST['btnSetMark'])) {
+			$quizid = escape($_POST['quizid']);
+			$sectionid = escape($_POST['sectionid']);
+			$questionid = escape($_POST['questionid']);
+			$userid = escape($_POST['userid']);
+			$mark = escape($_POST['mark']);
+			$condition = "`page_modulecomponentid` = '$quizid' AND `quiz_sectionid` = '$sectionid' AND `quiz_questionid` = '$questionid' AND `user_id` = '$userid'";
+			$result = mysql_query("SELECT `quiz_submittedanswer` FROM `quiz_answersubmissions` WHERE $condition");
+			if($row = mysql_fetch_array($result)) {
+				$result = mysql_fetch_array(mysql_query("SELECT `question_positivemarks`, `question_negativemarks` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizid' AND `question_weight` = (SELECT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = '$quizid' AND `quiz_sectionid` = '$sectionid' AND `quiz_questionid` = '$questionid')"));
+				if($_POST['mark'] > $result['question_positivemarks'] || $_POST['mark'] < -1 * $result['question_negativemarks'])
+					displaywarning('Mark out of range for this question, so mark not set');
+				else {
+					mysql_query("UPDATE `quiz_answersubmissions` SET `quiz_marksallotted` = $mark WHERE $condition");
+					updateSectionMarks($quizid);
+					displayinfo('Mark set');
+				}
+			}
+			else
+				displayerror('Unable to set value');
+		}
+
 		if (isset($_GET['useremail'])) {
 			$userId = getUserIdFromEmail($_GET['useremail']);
 			if ($userId)
@@ -207,9 +235,7 @@ class quiz implements module {
 				$quizObject->deleteEntries(intval($_POST['hdnUserId']));
 		}
 
-		$html=getQuizUserListHtml($this->moduleComponentId);
-		global $ICONS;
-		return "<fieldset><legend>{$ICONS['Quiz Correct']['small']} Quiz Correct Scores</legend>$html</fieldset>";
+		return getQuizUserListHtml($this->moduleComponentId);
 	}
 
 	public function actionViewResults() {

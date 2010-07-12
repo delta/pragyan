@@ -273,7 +273,7 @@ QUIZSTARTFORM;
 			}
 			elseif ($questionType == 'subjective') {
 				$fieldName = 'txtAnswer' . $questionRow['quiz_sectionid'] . '_' . $questionRow['quiz_questionid'];
-				$submittedAnswers[] = array($questionRow['quiz_sectionid'], $questionRow['quiz_questionid'], $questionRow['quiz_questiontype'], isset($_POST[$fieldName]) ? $_POST[$fieldName] : '');
+				$submittedAnswers[] = array($questionRow['quiz_sectionid'], $questionRow['quiz_questionid'], $questionRow['quiz_questiontype'], isset($_POST[$fieldName]) ? escape($_POST[$fieldName]) : '');
 			}
 		}
 
