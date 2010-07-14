@@ -2,30 +2,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title><? echo  $TITLE; ?></title>
-    <meta name="description" content="<? echo $SITEDESCRIPTION ?>" />
-    <meta name="keywords" content="<? echo $SITEKEYWORDS ?>" /> 
-	<?global $urlRequestRoot;	global $PAGELASTUPDATED;
+    <title><?php echo  $TITLE; ?></title>
+    <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
+    <meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
+	<?php global $urlRequestRoot;	global $PAGELASTUPDATED;
 	if($PAGELASTUPDATED!="")
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
 	?>
     <link rel="index" href="./" title="Home" />
-    <link rel="stylesheet" media="screen,projection" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/main.css" />
-    <link rel="stylesheet" media="print" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/print.css" />
-    <link rel="stylesheet" media="aural" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/aural.css" />
-    <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/css/other.css" />
-    <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
-    <link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+    <link rel="stylesheet" media="screen,projection" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/main.css" />
+    <link rel="stylesheet" media="print" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/print.css" />
+    <link rel="stylesheet" media="aural" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/aural.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/other.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
     
 
 	<script language="javascript" type="text/javascript">
 		//defined here for use in javascript
-		var templateBrowserPath = "<? echo $TEMPLATEBROWSERPATH ?>";
-		var urlRequestRoot = "<? echo $urlRequestRoot?>";
+		var templateBrowserPath = "<?php echo $TEMPLATEBROWSERPATH ?>";
+		var urlRequestRoot = "<?php echo $urlRequestRoot?>";
 	</script>
 </head>
 
-<body onload="<? echo $STARTSCRIPTS;?>">
+<body onload="<?php echo $STARTSCRIPTS;?>">
 
 <!-- Main -->
 <div id="main" class="box">
@@ -33,7 +33,7 @@
     <!-- Header -->
     <div id="header">
         <!-- Logotyp -->
-        <h1 id="logo"><? echo  $TITLE; ?></h1>
+        <h1 id="logo"><?php echo  $TITLE; ?></h1>
       
     </div> <!-- /header -->
 
@@ -43,10 +43,10 @@
         <div id="strip" class="box noprint">
             <!-- Breadcrumbs -->
             <div id="breadcrumbs">
-	           	<? echo  $BREADCRUMB; ?>
+	           	<?php echo  $BREADCRUMB; ?>
 
-				<? echo $ACTIONBARPAGE;?>
-				<? echo $ACTIONBARMODULE;?>
+				<?php echo $ACTIONBARPAGE;?>
+				<?php echo $ACTIONBARMODULE;?>
             </div>
             <hr class="noscreen" />
             
@@ -57,10 +57,10 @@
 
             <!-- Article -->
             <div class="article">
-              <? echo $INFOSTRING;?>
-	          <? echo $WARNINGSTRING;?>
-	          <? echo $ERRORSTRING;?>
-	          <? echo  $CONTENT; ?>
+              <?php echo $INFOSTRING;?>
+	          <?php echo $WARNINGSTRING;?>
+	          <?php echo $ERRORSTRING;?>
+	          <?php echo  $CONTENT; ?>
             </div> <!-- /article -->
         </div> <!-- /content -->
 
@@ -68,7 +68,7 @@
         <div id="col" class="noprint">
             <div id="col-in">
                 <!-- Category -->
-				<? echo $MENUBAR;?>
+				<?php echo $MENUBAR;?>
 
 				<hr class="noscreen" />
 				<h3><span>Links</span></h3>
@@ -87,7 +87,7 @@
     <div id="footer">
         <div id="top" class="noprint"><p><span class="noscreen">Back to top</span> <a href="#header" title="Back to top ^">^<span></span></a></p></div>
         <hr class="noscreen" />
-        <p id="copyright"><? echo $FOOTER; ?></p>
+        <p id="copyright"><?php echo $FOOTER; ?></p>
     </div> <!-- /footer -->
 
 </div> <!-- /main -->
