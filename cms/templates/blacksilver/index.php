@@ -4,23 +4,23 @@
 	 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="<? echo $SITEDESCRIPTION ?>" />
     <meta name="keywords" content="<? echo $SITEKEYWORDS ?>" /> 
-<?
+<?php
 	global $urlRequestRoot;
 	$pageStyle="";
 	if($MENUBAR!="")	$pageStyle=" <link rel=\"stylesheet\" href=\"$TEMPLATEBROWSERPATH/style/style-bothbars.css\" />";
 	else $pageStyle=" <link rel=\"stylesheet\" href=\"$TEMPLATEBROWSERPATH/style/style-rightbar.css\" />";
  ?>
-  <title><? echo  $TITLE ?></title>
-  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/style.css" />
-  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/admin.css" />
-  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/error.css" />
-  <? echo  $pageStyle; ?>
-  <link rel="stylesheet" href="<? echo  $TEMPLATEBROWSERPATH; ?>/style/other.css" />
-<link rel="stylesheet" type="text/css" href="<? echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
-  <script language='javascript' src="<? echo  $TEMPLATEBROWSERPATH; ?>>/scripts/ajaxbasic.js" ></script>
+  <title><?php echo  $TITLE ?></title>
+  <link rel="stylesheet" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/style/style.css" />
+  <link rel="stylesheet" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/style/admin.css" />
+  <link rel="stylesheet" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/style/error.css" />
+  <?php echo  $pageStyle; ?>
+  <link rel="stylesheet" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/style/other.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+  <script language='javascript' src="<?php echo  $TEMPLATEBROWSERPATH; ?>>/scripts/ajaxbasic.js" ></script>
 
 </head>
-<body onload='<? echo  $STARTSCRIPTS ?>'>
+<body onload='<?php echo  $STARTSCRIPTS ?>'>
   <div id="outer_wrapper">
     <div id="wrapper">
       <div id="header">
@@ -28,29 +28,29 @@
       </div><!-- /header -->
       <div id="container">
         <div id="left">
-          <? echo $MENUBAR;?>
+          <?php echo $MENUBAR;?>
         </div><!-- /left -->
 
         <div id="main">
       	   <div id="breadcrumbs">
-	           	<? echo  $BREADCRUMB; ?>
+	           	<?php echo  $BREADCRUMB; ?>
 	           	<?php
 	           		global $userId;
 	           		if($userId == 0) {
 	           			echo "<div id=\"cms-actionbarPage\"><span class=\"cms-actionbarPageItem\"><a href=\"./+login\">Login</a></span></div>";
 	           		}
 	           	?>
-	           		<? echo (($userId==0)?"":$ACTIONBARPAGE);?>
-	           		<? echo (($userId==0)?"":$ACTIONBARMODULE);?>
+	           		<?php echo (($userId==0)?"":$ACTIONBARPAGE);?>
+	           		<?php echo (($userId==0)?"":$ACTIONBARMODULE);?>
 				
 				
             </div>
           <div id="content">
-          <div id="pageheading">          <? echo  $TITLE; ?></div>
-            <? echo $INFOSTRING;?>
-	          <? echo $WARNINGSTRING;?>
-	          <? echo $ERRORSTRING;?>
-	          <? echo  $CONTENT; ?>
+          <div id="pageheading">          <?php echo  $TITLE; ?></div>
+            <?php echo $INFOSTRING;?>
+	          <?php echo $WARNINGSTRING;?>
+	          <?php echo $ERRORSTRING;?>
+	          <?php echo  $CONTENT; ?>
           
 	
 	
