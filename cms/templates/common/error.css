@@ -10,7 +10,7 @@
 
 div.cms-error, div.cms-warning, div.cms-notice, div.cms-info {vertical-align: middle; margin: 11px; border-width: 1px; border-style: solid; z-index: 1; padding: 8px 8px 8px 58px; background-position: left 50%; background-repeat: no-repeat; min-height: 30px;-moz-opacity:.75; filter:alpha(opacity=75);color:#000}
 div.cms-error { background-image: url('icons/32x32/status/dialog-error.png'); background-color: #ffe4c3; border-color: #ffb643 color:#023455;}
-.cms-error, .cms-warning, .cms-notice, .cms-info a:link, a:visited, a{color:#023455;}
+.cms-error, .cms-warning, .cms-notice, .cms-info a:link, .cms-info a:visited, .cms-info a{color:#023455;}
 div.cms-warning { background-image: url('icons/32x32/status/dialog-warning.png'); background-color: #cccccc; border-color: #ffdc79 }
 div.cms-notice { background-image: url('icons/32x32/status/dialog-information.png'); background-color: #dde4ef; border-color: #6894da }
 div.cms-info { background-image: url('icons/32x32/status/dialog-information.png'); background-color: #dde4ef; border-color: #6894da }
