@@ -25,7 +25,7 @@ function displayNews2()
 	
 		
 		
-			$divopen = "<div class=\"news_style\" rel=\"$newsArray[$i][news_title]\" id=\"news$i\">"
+			$divopen = "<div class=\"news_style\" rel=\"$newsArray[$i][news_title]\" id=\"news$i\">";
 			$heading = "<h4>$newsArray[$i][news_title]</h4>";
 			$content = "$newsArray[$i][news_feed]";
 		  $divclose = "</div>";
