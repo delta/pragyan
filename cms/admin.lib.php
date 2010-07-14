@@ -567,18 +567,18 @@ function admin_checkAdminPerms()
 						$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "userpageperm` (`perm_type`,`page_id`,`usergroup_id`,`perm_id`,`perm_permission`) VALUES ('user','0','$user_Id','$val','Y')";
 						$result2 = mysql_query($query);
 						if (mysql_affected_rows())
-							$returnStr.="User Admin userId=$user_Id has been allotted permission $temp1[perm_action] of module $temp1[page_module] over page 0";
+							$returnStr.="\n<br>User Admin userId=$user_Id has been allotted permission $temp1[perm_action] of module $temp1[page_module] over page 0";
 						else
-							$returnStr.="Failed to create permission $temp1[perm_action] of module $temp1[page_module] over page 0 for User Admin userId=$user_Id";
+							$returnStr.="\n<br>Failed to create permission $temp1[perm_action] of module $temp1[page_module] over page 0 for User Admin userId=$user_Id";
 					} else {
 						$str .= "";
-						$str .= "<br>" . $temp1[perm_action] . " of module " . $temp1[page_module];
+						$str .= "\n<tr><td>" . $temp1[page_module] . "</td><td>" . $temp1[perm_action] . "</td></tr>";
 					}
 				}
 			}
 		}
 		if ($str != '')
-			$returnStr.="The following permissions exist for user admin<br>" .$str;
+			$returnStr.="The following permissions exist for user admin: <table border=\"1\"><tr><th>Module</th><th>Permission</th></tr>" .$str. "</table>";
 
 	} else {
 		$returnStr.=admin_checkAdminUser();
