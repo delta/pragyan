@@ -2,8 +2,8 @@
 <html>
 <head>
 	 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="description" content="<? echo $SITEDESCRIPTION ?>" />
-    <meta name="keywords" content="<? echo $SITEKEYWORDS ?>" /> 
+    <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
+    <meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
 <?php
 	global $urlRequestRoot;
 	$pageStyle="";
