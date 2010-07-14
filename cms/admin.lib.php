@@ -821,7 +821,7 @@ FORM;
 function admin_changePermRank($module="") {
 	require_once("tbman_executer.lib.php");
 
-	$table = new tbman_executer("SELECT * FROM pragyanV2_permissionlist");
+	$table = new tbman_executer("SELECT * FROM `". MYSQL_DATABASE_PREFIX ."permissionlist`");
 	$table->formaction="./+admin&subaction=changePermRank";
 	return $table->execute();
 	
