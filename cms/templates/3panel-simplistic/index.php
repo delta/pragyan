@@ -65,7 +65,7 @@
       <div class="clearing">&nbsp;</div>
 
       <div id="footerbar">
-      <center>Pragyan CMS</center>
+      <center><?php echo $FOOTER; ?></center>
       </div><!-- /footer -->
     </div><!-- /wrapper -->
   </div><!-- /outer_wrapper -->
