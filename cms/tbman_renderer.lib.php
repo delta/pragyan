@@ -22,8 +22,10 @@ class tbman
     $this->querystring=$querystring;
   //  echo "<br/>querystring in tbman_renderer.lib.php: ".$querystring;
     @ $result=mysql_query($querystring);//@suppresses error messages
-    if(!$result)                              // and allows to put custom error messages like this one - Error: (used here)
-    	return ("Error(tbman_renderer.lib.php): ".mysql_error());
+    if(!$result) {                             // and allows to put custom error messages like this one - Error: (used here)
+    	displayerror("Error(tbman_renderer.lib.php): ".mysql_error());
+    	return;
+    }
 	  else
       $this->result=$result;
     if(stristr($querystring,"select"))
@@ -83,7 +85,7 @@ STR;
 	    {
 		$str.="<td>".$key."</td>";
 		#to get the fields array:
-		$fields=$key."|";//to pass all the fields (later)
+		$fields.=$key."|";//to pass all the fields (later)
 	    }
 	    $fields=substr($fields,0,-1);
 	    $str.="\n</tr>";
