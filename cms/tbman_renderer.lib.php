@@ -81,6 +81,7 @@ STR;
 		      }
 		    $str_addRow.="\n</tr>";
 	    }
+	    $fields = "";
 	    foreach($a_rows as $key=>$value)
 	    {
 		$str.="<td>".$key."</td>";
