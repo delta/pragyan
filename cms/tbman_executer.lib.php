@@ -31,11 +31,12 @@ class tbman_executer {
 		//to generate the "WHERE..." string
 //		if ($this->pv['querystring'] == "")
 //			$this->pv['querystring'] = "SHOW TABLES";
-//		@ $result = mysql_query($this->pv['querystring']);
-//		if (!$result) {
-//			echo ("Error line 26: " . mysql_error());
-//		} else
-//			$this->result = $result;
+		@ $result = mysql_query($this->pv['querystring']);
+		if (!$result) {
+			displayerror("Error line 26: " . mysql_error());
+			return;
+		} else
+			$this->result = $result;
 	}
 
 	function execute() {
@@ -46,12 +47,13 @@ class tbman_executer {
 				if ($tok == "")
 					continue;
 				@ $result = mysql_query($tok);
-				if (!$result)
-					return ("Error line 42 (tbman_executer.lib.php): " . mysql_error());
+				if (!$result) {
+					displayerror("Error line 42 (tbman_executer.lib.php): " . mysql_error());
+					return;
+				} 
 			}
 		}
 		require_once ("tbman_renderer.lib.php");
-		echo $this->pv['querystring'];
 		$rendertable = new tbman($this->externalquery);
 		$rendertable->formaction = $this->formaction;
 		return $rendertable->make_table();

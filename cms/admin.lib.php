@@ -820,7 +820,9 @@ FORM;
 function admin_changePermRank($module="") {
 	require_once("tbman_executer.lib.php");
 
-	$table = new tbman_executer("SELECT * FROM `". MYSQL_DATABASE_PREFIX ."permissionlist`");
+	$pv = $_POST;
+	$pv['querystring'] = "SELECT * FROM `". MYSQL_DATABASE_PREFIX ."permissionlist`";
+	$table = new tbman_executer($pv);
 	$table->formaction="./+admin&subaction=changePermRank";
 	return $table->execute();
 	
