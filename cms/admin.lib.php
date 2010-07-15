@@ -311,7 +311,7 @@ ADMINPAGE;
 	global $sourceFolder;	
 	if(!isset($_GET['subaction'])) return $quicklinks;
 	require_once("users.lib.php");
-	$op="";$ophead="";
+	$op="";$ophead=""; $str="";
 	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
 		if ($_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
 		
@@ -550,6 +550,7 @@ function admin_checkAdminPerms()
  */
  {
 	$returnStr="";
+	$str="";
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_name`='admin' ";
 	$result = mysql_query($query);
 	if (mysql_num_rows($result) > 0) {
@@ -571,7 +572,7 @@ function admin_checkAdminPerms()
 							$returnStr.="\n<br>Failed to create permission $temp1[perm_action] of module $temp1[page_module] over page 0 for User Admin userId=$user_Id";
 					} else {
 						$str .= "";
-						$str .= "\n<tr><td>" . $temp1[page_module] . "</td><td>" . $temp1[perm_action] . "</td></tr>";
+						$str .= "\n<tr><td>" . $temp1['page_module'] . "</td><td>" . $temp1['perm_action'] . "</td></tr>";
 					}
 				}
 			}
