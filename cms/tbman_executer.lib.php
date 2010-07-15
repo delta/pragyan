@@ -65,7 +65,7 @@ class tbman_executer {
 		$j = 1;
 		if ($actions[0] == "updatebutton") {
 			$i = 0;
-			for (; $i < $pv['noOfRows']; $i++) {
+			for (; $i < escape($pv['noOfRows']); $i++) {
 				if ($actions[$j] == $i) {
 					$j++;
 					$this->update($i);
@@ -77,7 +77,7 @@ class tbman_executer {
 			}
 		}
 		elseif ($this->actions[0] == "deletebutton") {
-			for ($i = 0; $i < $pv['noOfRows']; $i++) {
+			for ($i = 0; $i < escape($pv['noOfRows']); $i++) {
 				if ($actions[$j] == $i) {
 					$j++;
 					$this->delete($i);
@@ -92,9 +92,9 @@ class tbman_executer {
 	function update($i) //also for addrow
 	{
 		$pv = $this->pv;
-		$str = " UPDATE " . $pv['tablename'] . " SET ";
+		$str = " UPDATE " . escape($pv['tablename']) . " SET ";
 		foreach ($this->fields as $field) {
-			$str .= "`" . $field . "` = '" . $pv[$field . $i] . "' ,";
+			$str .= "`" . $field . "` = '" . escape($pv[$field . $i]) . "' ,";
 		}
 		$str = substr($str, 0, -1);
 		$str .= $this->get_wherestring($i);
@@ -113,7 +113,7 @@ class tbman_executer {
 	}
 	function addrow($i) {
 		$pv = $this->pv;
-		$str = " INSERT INTO " . $pv['tablename'] . " (";
+		$str = " INSERT INTO " . escape($pv['tablename']) . " (";
 		$s = 1;
 		$ss = sizeof($this->fields);
 		foreach ($this->fields as $field) {
@@ -126,7 +126,7 @@ class tbman_executer {
 
 		$str .= " ) VALUES ( ";
 		foreach ($this->fields as $field) {
-			$str .= " '" . $pv[$field . "addRow"] . "' ,";
+			$str .= " '" . escape($pv[$field . "addRow"]) . "' ,";
 		}
 		$str = substr($str, 0, -1);
 		$str .= " ) ";

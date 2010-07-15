@@ -345,7 +345,7 @@ ADMINPAGE;
 	{
 		$op ="<fieldset><legend>$ophead</legend>$op</fieldset>";
 	}
-	
+
 	if($_GET['subaction']=='global')
 	 $str .= globalSettingsForm();
 	else if($_GET['subaction']=='editgroups') {
@@ -821,8 +821,13 @@ FORM;
 function admin_changePermRank($module="") {
 	require_once("tbman_executer.lib.php");
 
-	$pv = $_POST;
-	$pv['querystring'] = "SELECT * FROM `". MYSQL_DATABASE_PREFIX ."permissionlist`";
+	//checking if this is the first time it is being called
+	$pv = "";
+	if(isset($_POST['querystring'])) {
+		$pv = $_POST;
+	} else {
+		$pv = "SELECT * FROM `". MYSQL_DATABASE_PREFIX ."permissionlist`";
+	}
 	$table = new tbman_executer($pv);
 	$table->formaction="./+admin&subaction=changePermRank";
 	return $table->execute();
