@@ -98,7 +98,8 @@ else
 	
 			</strong>
 			<br />
-			Copyright <a href="copyright.html">&copy;</a> 2008 Webteam @ NIT Trichy<br />
+			<?php echo $FOOTER; ?>
+			<br />
 		 	National Institute of Technology, Tiruchirapalli - 620015, INDIA
 							</div><!--footer-->
 						</div><!--content_container-->
