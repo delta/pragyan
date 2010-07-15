@@ -64,6 +64,7 @@ function reloadTemplates()
 	global $templateFolder;
 	$templates=scandir($sourceFolder.'/'.$templateFolder);
 	$res="<table>";
+	$temparrr=array();
 	foreach($templates as $tdir)
 	{
 		$tdir=escape($tdir);
@@ -72,10 +73,17 @@ function reloadTemplates()
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."templates` (`template_name`) VALUES ('$tdir')";
 			mysql_query($query);
 			if(mysql_affected_rows())
-				$res.="<tr><td>$tdir</td><td><b>NOT IN DB! FIXED!</b></td></tr>";
+				$res.="<tr><td>$tdir</td><td><b>Not in Database! Fixed!</b></td></tr>";
 			else $res.="<tr><td>$tdir</td><td>OK</td></tr>";
+			$temparr[]=$tdir;
 		}
+		
 	}
+	$templist=join("','",$temparr);	
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."templates` WHERE `template_name` NOT IN ('$templist')";
+	mysql_query($query);
+	if($delc=mysql_affected_rows()>0)
+		$res.="<tr><td colspan=2>$delc template(s) removed from database</td></tr>";
 	return $res."</table>";
 }
 

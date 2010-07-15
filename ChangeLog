@@ -1,3 +1,54 @@
+Revision 89  by  sahilahuja  on  2010-07-15 10:39:3
+Description : Adding footer to templates
+--------------------------------------------------------------------------------
+Revision 88  by  sahilahuja  on  2010-07-15 10:30:2
+Description : Adding two templates
+--------------------------------------------------------------------------------
+Revision 87  by  sahilahuja  on  2010-07-15 10:00:0
+Description : Fixing perm rank admin page
+--------------------------------------------------------------------------------
+Revision 86  by  sahilahuja  on  2010-07-15 09:34:5
+Description : Changing layout of admin page
+--------------------------------------------------------------------------------
+Revision 85  by  sahilahuja  on  2010-07-15 02:11:4
+Description : Adding default timezone config
+--------------------------------------------------------------------------------
+Revision 84  by  sahilahuja  on  2010-07-15 01:56:2
+Description : Changing layout of check admin permissions page
+--------------------------------------------------------------------------------
+Revision 83  by  sahilahuja  on  2010-07-15 01:41:5
+Description : Limiting scope of error.css
+--------------------------------------------------------------------------------
+Revision 82  by  sahilahuja  on  2010-07-14 21:12:0
+Description : Changing layout of check admin permissions page
+--------------------------------------------------------------------------------
+Revision 81  by  sahilahuja  on  2010-07-14 20:12:2
+Description : Changing <? in template to <?php (php 5.3 compatibility)
+--------------------------------------------------------------------------------
+Revision 80  by  sahilahuja  on  2010-07-14 20:11:5
+Description : Changing <? in template to <?php (php 5.3 compatibility)
+--------------------------------------------------------------------------------
+Revision 79  by  sahilahuja  on  2010-07-14 20:08:1
+Description : Changing <? in template to <?php (php 5.3 compatibility)
+--------------------------------------------------------------------------------
+Revision 78  by  sahilahuja  on  2010-07-14 18:06:3
+Description : Correcting typo
+--------------------------------------------------------------------------------
+Revision 77  by  abhishekdelta  on  2010-07-13 04:33:3
+Description : Quiz module fixes : reject submission button on all entries, assign marks form, made secure and bug fixes
+--------------------------------------------------------------------------------
+Revision 76  by  abhishekdelta  on  2010-07-12 04:19:2
+Description : Bugfixes in users,permissions and removed edittable.lib.php
+--------------------------------------------------------------------------------
+Revision 75  by  abhishekdelta  on  2010-07-11 04:16:3
+Description : Enhanced permissions table structure with AJAX by Chakra
+--------------------------------------------------------------------------------
+Revision 74  by  abhishekdelta  on  2010-07-11 04:06:2
+Description : Adding forum styling by balanivash
+--------------------------------------------------------------------------------
+Revision 73  by  abhishekdelta  on  2010-07-09 02:41:5
+Description : Updated changelog and DEVELOPER-README
+--------------------------------------------------------------------------------
 Revision 72  by  abhishekdelta  on  2010-07-08 19:11:4
 Description : Improved SQL module, removed defunct modules and added module icons
 --------------------------------------------------------------------------------
