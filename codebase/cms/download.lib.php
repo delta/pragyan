@@ -6,36 +6,50 @@
  * For more details, see README
  */
 
-function download($pageId, $userId, $fileName) {
-displayinfo($pageId.$userId.$fileName);
+function download($pageId, $userId, $fileName,$action="") {
+	
+
 	if($pageId===false) {
 		header("http/1.0 404 Not Found" );
 		echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
-			 "<p>The requested URL ".$_SERVER['SCRIPT_URL']." was not found on this server.</p><hr>" .
+			 "<p>The requested URL ".$_SERVER['SCRIPT_UR']." was not found on this server.</p><hr>" .
 			 "$_SERVER[SERVER_SIGNATURE]</body></html>";
 		disconnect();
 		exit;
 	}
-	$actualPageId = getDereferencedPageId($pageId);
-	$moduleType = getPageModule($actualPageId);
-	$moduleComponentId = getPageModuleComponentId($actualPageId);
-	/**
-	 * TODO: the following is only until PHP 2.3 comes
-	 * In php 2.3 we can call static function directly without making an instance of the class.
-	 */
+	
+	if($action=="") $action="view";
+	// Profile Image exception added by Abhishek
 	global $sourceFolder;
 	global $moduleFolder;
-	require_once ($sourceFolder . "/content.lib.php");
-	require_once ($sourceFolder . "/" . $moduleFolder . "/" . $moduleType . ".lib.php");
-	$moduleInstance = new $moduleType ();
+	if($action!="profile")
+	{
+		$actualPageId = getDereferencedPageId($pageId);
+		$moduleType = getPageModule($actualPageId);
+		$moduleComponentId = getPageModuleComponentId($actualPageId);
+		
+		require_once ($sourceFolder . "/content.lib.php");
+		require_once ($sourceFolder . "/" . $moduleFolder . "/" . $moduleType . ".lib.php");
+		$moduleInstance = new $moduleType ();
 
-	if (!($moduleInstance instanceof fileuploadable)) {
-		echo "The module \"$moduleType\" does not implement the inteface upload";
-		return "";
+		if (!($moduleInstance instanceof fileuploadable)) {
+			echo "The module \"$moduleType\" does not implement the inteface upload.";
+			return "";
+		}
+		if (!($moduleInstance->getFileAccessPermission($pageId,$moduleComponentId,$userId, $fileName))) {
+			echo "Access Denied.";
+			return "";
+		}
+		
 	}
-	if (!($moduleInstance->getFileAccessPermission($pageId,$moduleComponentId,$userId, $fileName))) {
-		echo "Access Denied.";
-		return "";
+	else //Exception for 'profile' images as its not a module
+	{
+		$actualPageId = getDereferencedPageId($pageId);
+		$moduleType = "profile";
+		$moduleComponentId = $userId;
+		
+		// Since the moduleComponentId is equal to userId, the image could be retrieved only if the userId is valid, hence no need for security check for file access here :)
+		
 	}
 
 	//return the file the particular page id.
@@ -56,7 +70,7 @@ displayinfo($pageId.$userId.$fileName);
 	$file = $sourceFolder . "/" . $uploadFolder . "/" . $moduleType . "/" . $filename;
 	
 	disconnect();
-
+	
 	$filePointer = @fopen($file, 'r') ;
 	if($filePointer==FALSE){
 		header("http/1.0 404 Not Found" );

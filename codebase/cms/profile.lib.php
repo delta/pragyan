@@ -22,7 +22,44 @@ function isProfileFormCaptchaEnabled() {
 function profile($userId, $forEditRegistrant = false) {
 	global $sourceFolder, $moduleFolder;
 
-	/// Retrieve existing information
+
+	if(isset($_POST['profileimgaction']) && $_POST['profileimgaction']=='uploadnew')
+	{
+		require_once("$sourceFolder/upload.lib.php");
+		//Upload profile image
+		$allowableTypes = array (
+				'jpeg',
+				'jpg',
+				'png',
+				'gif'
+			);
+		$fakeModuleComponentId=$userId;
+		$uploadSuccess = submitFileUploadForm($fakeModuleComponentId, "profile", $userId, 512*1024, $allowableTypes, 'profileimage');
+	
+		if(!is_array($uploadSuccess) && $uploadSuccess===false) displayerror("Profile image could not be uploaded. Maximum size should be 512 KB.");
+		else if(is_array($uploadSuccess))
+		{
+			//Deleting old profile image
+			$profileimgnames = getUploadedFiles($fakeModuleComponentId,'profile');
+		
+			foreach($profileimgnames as $img)
+			{
+			 if($img['upload_filename']!=$uploadSuccess[0])
+			 	deleteFile($fakeModuleComponentId,'profile',$img['upload_filename']);
+			}
+		}
+	}
+	else if(isset($_POST['profileimgaction']) && $_POST['profileimgaction']=='noimage')
+	{
+		require_once("$sourceFolder/upload.lib.php");
+		$fakeModuleComponentId=$userId;
+		$profileimgnames = getUploadedFiles($fakeModuleComponentId,'profile');
+		
+		foreach($profileimgnames as $img)
+		 	deleteFile($fakeModuleComponentId,'profile',$img['upload_filename']);
+	}
+		
+		/// Retrieve existing information
 	$profileQuery = 'SELECT `user_name`, `user_fullname`, `user_password` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = ' . $userId;
 	$profileResult = mysql_query($profileQuery);
 	if(!$profileResult) {
@@ -105,7 +142,25 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 	global $urlRequestRoot, $moduleFolder, $cmsFolder,$sourceFolder, $templateFolder;
 	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
 	require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
+	require_once("$sourceFolder/upload.lib.php");
+	
+	$fakeModuleComponentId=$userId;
+	
+	$profileimgname = getUploadedFiles($fakeModuleComponentId,'profile');
+	if($profileimgname==NULL) 
+	{ 
+	 	$profileimgname = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images/no-img.jpg";
+	}
+	else
+	{
+		$profileimgname = "./+profile&fileget={$profileimgname[0]['upload_filename']}";
+	}
 
+	
+	$profileimg= "<img id=profileimg src='$profileimgname' alt='Profile Image' title='Profile Image' height=120 width=100><br/>";
+	
+	$profileimgupload = getFileUploadField('profileimage','profile',512*1024);
+	
 	$jsValidationFunctions = array();
 	$containsFileUploadFields = false;
 	$dynamicFields = getFormElementsHtmlAsArray(0, $userId, $jsValidationFunctions, $containsFileUploadFields);
@@ -133,6 +188,8 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 		$formAction = './+admin&subaction=editsiteregistrants&subsubaction=editregistrant';
 	}
 global $ICONS;
+global $STARTSCRIPTS;
+$STARTSCRIPTS.="document.getElementsByName('profileimage[]')[0].disabled=true;";
 	$profileForm =<<<PREF
 
 <script language="javscript" type="text/javascript" src="$abhiValidatorPath"></script>
@@ -170,15 +227,26 @@ global $ICONS;
 
 		return $jsValidationFunctions;
 	}
+	
+	function toggle_img_upform()
+	{
+		var obj1=document.getElementsByName('profileimage[]')[0];
+		var obj2=document.getElementById('upnewradio');
+		obj1.disabled=(obj2.checked==true?false:true); 
+	}
+	
 
 </script>
 <br />
 <div class="cms-registrationform">
-	<form id="cms-registrationform" class="fValidator-form" method="POST" name="user_profile_usrFrm" onsubmit="return checkProfileForm(this)" action="$formAction">
+	<form id="cms-registrationform" class="fValidator-form" method="POST" name="user_profile_usrFrm" onsubmit="return checkProfileForm(this)" action="$formAction" enctype="multipart/form-data">
 		<fieldset style="width:80%">
 			<legend>{$ICONS['User Profile']['small']}Profile Preferences</legend>
 
 			<table>
+				<tr>
+				<td colspan=2 style="text-align:center">$profileimg</td>
+				</tr>
 				<tr>
 					<td><label for="user_name" class="labelrequired">Name</label></td>
 					<td><input name="user_name" id="user_name" class="fValidate['required']" type="text" value="$userName"></td>
@@ -186,6 +254,17 @@ global $ICONS;
 				<tr>
 					<td><label for="user_fullname" class="labelrequired">Full Name</label></td>
 					<td><input name="user_fullname" id="user_fullname" class="fValidate['required']" type="text" value="$userFullname"></td>
+				</tr>
+				<tr>
+					<td>Profile image</td>
+					<td>
+					<input type="radio" name="profileimgaction" value="usecurrent" checked onclick="toggle_img_upform()"> Use existing image<br/>
+					<input id='upnewradio' type="radio" name="profileimgaction" value="uploadnew" onclick="toggle_img_upform()"> Upload new image<br/>
+					<input type="radio" name="profileimgaction" value="noimage" onclick="toggle_img_upform()"> Remove your image
+					</td>
+				<tr>
+					<td><label for="profileimage">Upload new profile image (maximum size is 512 KB)</td>
+					<td>$profileimgupload</td>
 				</tr>
 PREF;
 
@@ -276,6 +355,7 @@ function getProfileFormEditForm() {
 	return generateFormElementDescBody($moduleComponentId, 'admin&subsubaction=editprofileform');
 }
 
+// Is the below function required ??? User account can be deleted via user mgmt, then why this ?? Should be confirmed & removed.
 function deleteUserAccount($userId) {
 	/// $deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = ' . $userId;
 	displayinfo('To be implemented');

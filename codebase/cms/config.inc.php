@@ -26,9 +26,6 @@ define("MYSQL_DATABASE_PREFIX","pragyanV3_");
 // defining the user id of the administrator. WARNING: Only experts should alter this.
 define("ADMIN_USERID",1);
 
-//define default timezone
-date_default_timezone_set('Asia/Calcutta');
-
 /*******CONFIGURATION SETTINGS************************/
 /**
  * Error reporting level -
