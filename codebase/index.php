@@ -100,7 +100,10 @@ if(URLSecurityCheck($_GET))
 
 if(isset($_GET['fileget'])) {
 	require_once($sourceFolder."/download.lib.php");
-	download($pageId,$userId,$_GET['fileget']);
+	$action="";
+	if(isset($_GET['action']))
+	 $action=$_GET['action'];
+	download($pageId,$userId,$_GET['fileget'],$action);
 	exit();
 }
 
