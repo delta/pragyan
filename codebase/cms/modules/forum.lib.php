@@ -114,7 +114,7 @@ class forum implements module {
 					"`forum_description`='$forum_description',`allow_delete_posts`='$del_post',`allow_like_posts`='$like_post' WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 			$res = mysql_query($q);
 			$q = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_title`='$forum_name' WHERE `page_id`='$pageId' LIMIT 1";
-			$res = mysql_query($q) or die(mysql_error());
+			$res = mysql_query($q) or displayerror(mysql_error() . "Update failed L:117");
 			displayinfo("Forum settings updated successfully!");
 		}
 				$query = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
@@ -209,6 +209,8 @@ PRE;
 				$result = mysql_query($query);
 				$query1 = "DELETE FROM `forum_posts` WHERE `forum_thread_id`=$thread_id AND `page_modulecomponentid`='$this->moduleComponentId'";
 				$result1 = mysql_query($query1);
+				$query2 = "DELETE FROM `forum_like` WHERE `forum_thread_id`=$thread_id AND `page_modulecomponentid`='$this->moduleComponentId'";
+				$result2 = mysql_query($query2);
 				if (!$result)
 					displayerror("Could not perform the delete operation!");
 				else
@@ -218,6 +220,8 @@ PRE;
 				$thread_id = escape($_GET['forum_id']);
 				$post_id = escape($_GET['post_id']);
 				$query1 = "DELETE FROM `forum_posts` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=$post_id AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
+				$result1 = mysql_query($query1);
+				$query1 = "DELETE FROM `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=$post_id AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 				$result1 = mysql_query($query1);
 				if (!$result1)
 					displayerror("Could not perform the delete operation!");
@@ -258,9 +262,9 @@ PRE;
 						$query2 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
 						$result2 = mysql_query($query2);
 						$reply_count = mysql_num_rows($result2);
-						$topic = parseubb(parsesmileys(htmlspecialchars($rows['forum_thread_topic'])));
-						$name = getUserName($rows['forum_thread_user_id']);
-						$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
+						$topic = ucfirst(parseubb(parsesmileys(htmlspecialchars($rows['forum_thread_topic']))));
+						$name = ucfirst(getUserName($rows['forum_thread_user_id']));
+						$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
 						if ($rows['forum_post_approve'] == 0)
 							{
 								$text = "Approve";
@@ -301,9 +305,9 @@ PRE;
 					$query1 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1'";
 					$result1 = mysql_query($query1);
 					$reply_count = mysql_num_rows($result1);
-					$topic = parseubb(parsesmileys($rows['forum_thread_topic']));
-					$name = getUserName($rows['forum_thread_user_id']);
-					$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
+					$topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
+					$name = ucfirst(getUserName($rows['forum_thread_user_id']));
+					$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
 						if ($rows['forum_post_approve'] == 0)
 							{
 								$text = "Approve";
@@ -341,6 +345,9 @@ PRE;
 			}
 			return $moderate;
 		} else {
+			$q = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
+			$r = mysql_query($q) or displayerror(mysql_error() . "Moderate failed L:349");
+			$r = mysql_fetch_array($r);
 			$forum_id = escape($_GET['forum_id']); //Parent Thread ID
 			$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`=$forum_id AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 			$result1 = mysql_query($sql);
@@ -366,7 +373,7 @@ PRE;
 		<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
         <p align="left"><a href="+post&subaction=post_reply&thread_id=$forum_id"><img title="Reply" src="$temp/reply.gif" /></a>&nbsp;
         <a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
-        <p align="right"><a href="+view"> << Go Back to Forum</a>&nbsp;
+        <p align="right"><a href="+view"><img title="Go Back to Forum" src="$temp/go_back.gif" /></a>
 		<table id="forum" width="100%" cellpadding="3" cellspacing="1" bordercolor="1" >
 		<tr>
         <td class="forumThreadRow" rowspan="2"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]">
@@ -402,7 +409,7 @@ PRE;
 	        <td class="forumThreadRow"><br /> $forum_detail </td>
 	        </tr><tr><td class="blank" colspan="2"></td></tr>
 PRE;
-			//$postpart .= "</table><br />";
+
 			$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`=$forum_id AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY forum_post_id ASC";
 			$result2 = mysql_query($sql2);
 			while ($rows = mysql_fetch_array($result2)) {
@@ -426,13 +433,24 @@ PRE;
 				$postpart .=<<<PRE
 
 	        <td class="forumThreadRow" rowspan="2" width="3%">
-	        <a href="+moderate&subaction=delete&forum_id=$rows[forum_thread_id]&post_id=$rows[forum_post_id]"><img src="$temp/b_drop.png" /></a></td>
+	        <a href="+moderate&subaction=delete&forum_id=$rows[forum_thread_id]&post_id=$rows[forum_post_id]"><img src="$temp/delete1.gif" /></a></td>
 			<td class="forumThreadRow" rowspan="2" width="3%">
 			<a href="+moderate&subaction=$subaction&forum_id=$rows[forum_thread_id]&post_id=$rows[forum_post_id]"><img src="$temp/$img" /></a></td>
 	        <td class="forumThreadRow"><strong>Re:- $post_title </strong><br /><img src="$temp/post_icon.gif" />
-	        <small">by $name on $rows[forum_post_datetime] <small></td>
-			<td class="forumThreadRow" rowspan="2" width="20%"><strong>$name<br />
+	        <small">by $name on $rows[forum_post_datetime] <small>
 PRE;
+			if($r['allow_like_posts'] == 1){
+					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$rows[forum_thread_id] AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
+					$likeres = mysql_query($likequery) or displayerror(mysql_error() . "Moderate failed L:444");;
+					$likeres = mysql_num_rows($likeres);
+					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$rows[forum_thread_id] AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
+					$dlikeres = mysql_query($dlikequery) or displayerror(mysql_error() . "Moderate failed L:447");
+					$dlikeres = mysql_num_rows($dlikeres);
+					$postpart .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';
+					$postpart .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
+					}
+			$postpart .= '</td><td class="forumThreadRow" rowspan="2" width="20%"><strong>$name<br />';
+
 				if ($userId > 0 && $name != "Anonymous") {
 					if ($rows['forum_post_user_id'] == $userId)
 						$lastLogin = $_SESSION['last_to_last_login_datetime'];
@@ -492,8 +510,8 @@ PRE;
 		$subaction="";
 		if(isset($_GET['subaction']))
 			$subaction = escape($_GET['subaction']);
-		global $sourceFolder;
-		global $moduleFolder;
+		global $urlRequestRoot, $moduleFolder, $cmsFolder,$templateFolder,$sourceFolder;
+		$temp = $urlRequestRoot . "/" . $cmsFolder . "/" . $moduleFolder . "/forum/images";
 		require_once ("$sourceFolder/$moduleFolder/forum/bbeditor.php");
 		require_once ("$sourceFolder/$moduleFolder/forum/bbparser.php");
 		$q = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
@@ -511,9 +529,6 @@ PRE;
 		if($moderator) {
 			$approve = 1;
 		}
-		$temp= <<<PRE
-		<p align="right"><a href="+view"> << Go Back to Forum</a>&nbsp;
-PRE;
 		if (isset ($_POST['post'])) {
 			if (($subaction == "create_thread") ||( $subaction == "")) {
 
@@ -539,7 +554,7 @@ PRE;
 							"`forum_thread_viewcount` ,`forum_thread_last_post_userid` ,`forum_thread_lastpost_date`)" .
 							" VALUES('$threadid', '$this->moduleComponentId', '$category', '$access', '$subject', '$message'," .
 							" '$userId', '$datetime', '$approve', '1','$userId', '$datetime')";
-					$result = mysql_query($sql) or die(mysql_error());
+					$result = mysql_query($sql) or displayerror(mysql_error() . "Create New Thread failed L:556");
 					if ($result) {
 						$sql1 = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
 						$result1 = mysql_query($sql1);
@@ -583,7 +598,7 @@ PRE;
 						$sql = "INSERT INTO `$table1_name`( `page_modulecomponentid` , `forum_thread_id` , `forum_post_id` , `forum_post_user_id` , `forum_post_title` , " .
 								"`forum_post_content` , `forum_post_datetime` , `forum_post_approve` ) VALUES( '$this->moduleComponentId','$forum_id', '$Max_id'," .
 								" '$userId', '$subject', '$message', '$datetime', '$approve')";
-						$result = mysql_query($sql) or die(mysql_error());
+						$result = mysql_query($sql) or displayerror(mysql_error() . "Post failed L:600");
 						if ($result) {
 							$sql1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`=$this->moduleComponentId AND `forum_thread_id`=$forum_id" .
 									" LIMIT 1";
@@ -668,11 +683,12 @@ public function actionView() {
 		$forumHtml = <<<PRE
 		<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
 PRE;
-		$postpart = '';
+		$forum_lastVisit = $this->forumLastVisit();
+		$moderator=getPermissions($this->userId, getPageIdFromModuleComponentId("forum",$this->moduleComponentId), "moderate");
 		//to check last visit to the forum
 		$table_visit = "forum_visits";
 		$query_checkvisit = "SELECT * from `$table_visit` WHERE `user_id`=$userId AND `page_modulecomponentid`=$this->moduleComponentId";
-		$result_checkvisit = mysql_query($query_checkvisit)or die(mysql_error());
+		$result_checkvisit = mysql_query($query_checkvisit);
 		$check_visits = mysql_fetch_array($result_checkvisit);
 		if(mysql_num_rows($result_checkvisit)<1) {
 			$forum_lastviewed = date("Y-m-d H:i:s");
@@ -683,7 +699,7 @@ PRE;
 		//set user's last visit
 		$time_visit = date("Y-m-d H:i:s");
 		$query_visit = "SELECT * FROM `$table_visit` WHERE `user_id`=$userId AND `page_modulecomponentid`=$this->moduleComponentId";
-		$result_visit = mysql_query($query_visit)or die(mysql_error());
+		$result_visit = mysql_query($query_visit);
 		$num_rows_visit = mysql_num_rows($result_visit);
 		if($num_rows_visit<1) {
 		  $query_setvisit = "INSERT INTO `$table_visit`(`page_modulecomponentid`,`user_id`,`last_visit`) VALUES($this->moduleComponentId,$userId,'$time_visit')";
@@ -705,12 +721,66 @@ PRE;
 				if (!res || !res1)
 					displayerror("Could not perform the delete operation on the selected thread!");
 			}
+			if($userId>0 )
+			{
+			$new_mt='0';
+			$new_mp='0';
+			$new_p='0';
+			$new_t='0';
+			if($moderator)
+			{
+			$qum_0 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 0";
+			$resm_0 = mysql_query($qum_0);
+			$numm_0 = mysql_num_rows($resm_0);
+			for ($j = 1; $j <= $numm_0; $j++) {
+				$rows = mysql_fetch_array($resm_0,MYSQL_ASSOC);
+				if($forum_lastVisit<$rows['forum_thread_datetime'])
+					$new_mt = $new_mt + '1';
+			}
+			$qum_1 = "SELECT * FROM `$table1_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 0";
+			$resm_1 = mysql_query($qum_1);
+			$numm_1 = mysql_num_rows($resm_1);
+			for ($j = 1; $j <= $numm_1; $j++) {
+				$rows = mysql_fetch_array($resm_1,MYSQL_ASSOC);
+				if($forum_lastVisit<$rows['forum_post_datetime'])
+					$new_mp = $new_mp + '1';
+			}
+			if($new_mt){
+			$show_t = $new_mt. " new threads to be moderated since your last visit";
+			displayinfo($show_t);}
+			if($new_mp) {
+			$show_p = $new_mp. " new posts to be moderated since your last visit";
+			displayinfo($show_p);}
+			}
+			$qu_0 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 1";
+			$res_0 = mysql_query($qu_0);
+			$num_0 = mysql_num_rows($res_0);
+			for ($j = 1; $j <= $num_0; $j++) {
+				$rows = mysql_fetch_array($res_0,MYSQL_ASSOC);
+				if($forum_lastVisit<$rows['forum_thread_datetime'])
+					$new_t = $new_t + '1';
+			}
+			$qu_1 = "SELECT * FROM `$table1_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 1";
+			$res_1 = mysql_query($qu_1);
+			$num_1 = mysql_num_rows($res_1);
+			for ($j = 1; $j <= $num_1; $j++) {
+				$rows = mysql_fetch_array($res_1,MYSQL_ASSOC);
+				if($forum_lastVisit<$rows['forum_post_datetime'])
+					$new_p = $new_p + '1';
+			}
+			if($new_t && $new_t!=$new_mt){
+			$show_t = $new_t. " new threads since your last visit";
+			displayinfo($show_t);}
+			if($new_p && $new_p!=$new_mp) {
+			$show_p = $new_p. " new posts since your last visit";
+			displayinfo($show_p);}
+			}
 			$query = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "' AND " .
 					"`forum_thread_category`='general' ORDER BY `forum_thread_lastpost_date` DESC";
-			$result = mysql_query($query);
+			$result = mysql_query($query) or displayerror(mysql_error() . "View of General Threads failed L:752");;
 			$query1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "' AND " .
 					"`forum_thread_category`='sticky' ORDER BY `forum_thread_datetime` DESC";
-			$result1 = mysql_query($query1)or die(mysql_error());
+			$result1 = mysql_query($query1)or displayerror(mysql_error() . "View of sticjy Threads failed L:755");
 			$num_rows1 = mysql_num_rows($result1); //counts the total no of sticky threads
 			if ($result) {
 				$action = "+post&subaction=create_thread";
@@ -786,7 +856,7 @@ PRE;
 					$res = mysql_query($query);
 					if(mysql_num_rows($res)==0) {
 					$query = "INSERT INTO`forum_like` (`page_modulecomponentid`,`forum_thread_id`,`forum_post_id`,`forum_like_user_id`,`like_status`) VALUES ($this->moduleComponentId,$thread_id,$post_id,$userId,'0')";
-					$res = mysql_query($query) or die(mysql_error());
+					$res = mysql_query($query);
 					if ( !$res )
 						displayerror("Could not perform the dislike operation on the selected post!");
 						}
@@ -861,8 +931,8 @@ PRE;
 							$img_src = "thread_hot.gif";
 						}
 				$topic = ucfirst((parseubb(parsesmileys($rows['forum_thread_topic']))));
-				$name = getUserName($rows['forum_thread_user_id']);
-				$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
+				$name = ucfirst(getUserName($rows['forum_thread_user_id']));
+				$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
 				if($rows['forum_thread_category']=='sticky') {
 						$img_src = 'sticky.gif';
 						}
@@ -889,31 +959,30 @@ PRE1;
 				$thread_Header .=<<<PRE
 				<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
 				&nbsp<a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
-				<p align="right"><a href="+view"> << Go Back to Forum</a>&nbsp;
+				<p align="right"><a href="+view"> <img title="Go Back to Forum" src="$temp/go_back.gif" /></a>
 				<table width="100%" cellpadding="4" cellspacing="2" id="forum" >
 PRE;
 			$forumHtml = $thread_Header;
 		}
 		if($type == 'threadMain') {
 			$q = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
-			$r = mysql_query($q) or die(mysql_error());
+			$r = mysql_query($q) or displayerror(mysql_error() . "View of Thread failed L:941");;
 			$r = mysql_fetch_array($r);
 		if($post == 0){
-			$topic = parseubb(parsesmileys($rows['forum_thread_topic']));
-			$name = getUserName($rows['forum_thread_user_id']);
-			$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
+			$topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
+			$name = ucfirst(getUserName($rows['forum_thread_user_id']));
+			$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
 			$threadUserId = $rows['forum_thread_user_id'];
 			$detail = parseubb(parsesmileys($rows['forum_detail']));
-			$name = getUserName($rows['forum_thread_user_id']);
 			$posts = $this->getTotalPosts($rows['forum_thread_user_id']);
 			$reg_date = $this->getRegDateFromUserID($rows['forum_thread_user_id']);
 			$postTime = $rows['forum_thread_datetime'];
 			}
 			if($post == 1){
 			$postUserId = $rows['forum_post_user_id'];
-			$topic = (parseubb(parsesmileys($rows['forum_post_title'])));
+			$topic = ucfirst(parseubb(parsesmileys($rows['forum_post_title'])));
 			$detail = (parseubb(parsesmileys($rows['forum_post_content'])));
-			$name = getUserName($rows['forum_post_user_id']);
+			$name = ucfirst(getUserName($rows['forum_post_user_id']));
 			$posts = $this->getTotalPosts($rows['forum_post_user_id']);
 			$reg_date = $this->getRegDateFromUserID($rows['forum_post_user_id']);
 			$postTime = $rows['forum_post_datetime'];
@@ -922,21 +991,21 @@ PRE;
 			$datetime = date("Y-m-d H:i:s")-$postTime;
 					$threadHtml = '<tr class="ThreadHeadRow" cellspacing="10">
 					        <td class="forumThreadRow"><strong> ' . $topic . ' </strong><br />' .
-					        		'<img src="' . $temp . '/post_icon.gif" /><small>&nbsp&nbsp by ' . ucfirst($name) . ' </a>' .
+					        		'<img src="' . $temp . '/post_icon.gif" /><small>&nbsp&nbsp by ' . $name . ' </a>' .
 					        				' on ' . $postTime  . ' </small>';
 					if($post == 1)						
 					if($r['allow_like_posts'] == 1){
 					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$likeres = mysql_query($likequery) or die(mysql_error());
+					$likeres = mysql_query($likequery);
 					$likeres = mysql_num_rows($likeres);
 					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$thread_id AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$dlikeres = mysql_query($dlikequery) or die(mysql_error());
+					$dlikeres = mysql_query($dlikequery);
 					$dlikeres = mysql_num_rows($dlikeres);
 						$threadHtml .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';
 						$threadHtml .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
 					}
 					$threadHtml .='</td>
-					        <td class="forumThreadRow" width="25%" rowspan="2"><strong> ' . ucfirst($name) . ' </a><br />';
+					        <td class="forumThreadRow" width="25%" rowspan="2"><strong> ' . $name . ' </a><br />';
 				if ($threadUserId > 0) {
 					if ($threadUserId == $userId)
 						$lastLogin = $_SESSION['last_to_last_login_datetime'];
@@ -969,9 +1038,9 @@ if($post==1 && $userId>0 && ( ($r['allow_delete_posts'] == 1) ||($r['allow_like_
 						{
 						$postId=$rows['forum_post_id'];
 						$qu = " SELECT * FROM `forum_like` WHERE `forum_like_user_id` = $userId AND`forum_thread_id` = $thread_id AND `forum_post_id` = $postId AND `page_modulecomponentid`=$this->moduleComponentId AND `like_status`='1'";
-						$re = mysql_query($qu) or die (mysql_error());
+						$re = mysql_query($qu) ;
 						$qu1 = " SELECT * FROM `forum_like` WHERE `forum_like_user_id` = $userId AND`forum_thread_id` = $thread_id AND `forum_post_id` = $postId AND `page_modulecomponentid`=$this->moduleComponentId AND `like_status`='0'";
-						$re1 = mysql_query($qu1) or die (mysql_error());
+						$re1 = mysql_query($qu1);
 						if(mysql_num_rows($re)==0 && mysql_num_rows($re1)==0)
 							{
 							$threadHtml .= '  <a href="+view&subaction=like_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
@@ -1012,7 +1081,7 @@ PRE;
 		if(!isset($_SESSION['forum_lastVisit'])){
 		$table_visit = "forum_visits";
 		$query_checkvisit = "SELECT * from `$table_visit` WHERE `user_id`=$userId AND `page_modulecomponentid`=$this->moduleComponentId";
-		$result_checkvisit = mysql_query($query_checkvisit)or die(mysql_error());
+		$result_checkvisit = mysql_query($query_checkvisit);
 		$check_visits = mysql_fetch_array($result_checkvisit);
 		if(mysql_num_rows($result_checkvisit)<1) {
 			$forum_lastViewed = date("Y-m-d H:i:s");
@@ -1024,7 +1093,7 @@ PRE;
 		//set user's last visit
 		$time_visit = date("Y-m-d H:i:s");
 		$query_visit = "SELECT * FROM `$table_visit` WHERE `user_id`=$userId AND `page_modulecomponentid`=$this->moduleComponentId";
-		$result_visit = mysql_query($query_visit)or die(mysql_error());
+		$result_visit = mysql_query($query_visit);
 		$num_rows_visit = mysql_num_rows($result_visit);
 		if($num_rows_visit<1) {
 		  $query_setvisit = "INSERT INTO `$table_visit`(`page_modulecomponentid`,`user_id`,`last_visit`) VALUES($this->moduleComponentId,$userId,'$time_visit')";
@@ -1043,11 +1112,11 @@ PRE;
 public function createModule(& $moduleComponentId) {
 
 		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
-		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:989");
+		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1087");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 		$query = "INSERT INTO `forum_module` (`page_modulecomponentid`,`forum_name`,`forum_description`,`last_post_userid` )VALUES ('$compId','Forum','New Forum','1')";
-		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:993");
+		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1091");
 		if (mysql_affected_rows()) {
 			$moduleComponentId = $compId;
 			return true;
@@ -1071,7 +1140,7 @@ public function createModule(& $moduleComponentId) {
 
 	public function copyModule($moduleComponentId) {
 $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "Copy for forum failed L:866");
+		$result = mysql_query($query) or displayerror(mysql_error() . "Copy for forum failed L:1115");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 		//insert a new row in forum_module
@@ -1088,7 +1157,7 @@ $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
 //													"'".mysql_escape_string($forummodule_content['total_reply_count'])."' ," .
 															" '".mysql_escape_string($forummodule_content['last_post_userid'])."', " .
 																	"'".mysql_escape_string($forummodule_content['last_post_datetime'])."')";
-			mysql_query($forummodule_query) or displayerror(mysql_error()."Copy for forum failed L:878");
+			mysql_query($forummodule_query) or displayerror(mysql_error()."Copy for forum failed L:1131");
 			$rows -= mysql_affected_rows();
 		}
 		if($rows!=0)
@@ -1104,7 +1173,7 @@ $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
 							" '".mysql_escape_string($forumanswer_content['forum_post_id'])."', '".mysql_escape_string($forumanswer_content['forum_post_user_id']).
 "', '".mysql_escape_string($forumanswer_content['forum_post_title'])."' , '".mysql_escape_string($forumanswer_content['forum_post_content'])."" .
 		"' , '".mysql_escape_string($forumanswer_content['forum_post_datetime'])."', '".mysql_escape_string($forumanswer_content['forum_post_approve'])."')";
-			mysql_query($forumanswer_query) or displayerror(mysql_error()."Copy for forum failed L:1204");
+			mysql_query($forumanswer_query) or displayerror(mysql_error()."Copy for forum failed L:1148");
 			$rows -= mysql_affected_rows();
 		}
 		if($rows!=0)
@@ -1129,7 +1198,7 @@ $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
 //									" '".mysql_escape_string($forumquestion_content['reply_count'])."'," .
 											" '".mysql_escape_string($forumquestion_content['forum_thread_last_post_userid'])."', " .
 													"'".mysql_escape_string($forumquestion_content['forum_thread_lastpost_date'])."')";
-			mysql_query($forumquestion_query) or displayerror(mysql_error()."Copy for forum failed L:1229");
+			mysql_query($forumquestion_query) or displayerror(mysql_error()."Copy for forum failed L:1173");
 			$rows -= mysql_affected_rows();
 		}
 		if($rows!=0)
