@@ -264,12 +264,12 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 
 
 			$optionsHtml = '';
-
+			$values=explode("|",$value);
 			for($i = 0; $i < count($options); $i++) {
 				$optionsHtml .= '<label><input type="checkbox" id="'.$elementName.'_'.$i.'" name="'.$elementName.'_'.$i.'" value="'.
 												htmlentities($options[$i]).'"';
 
-				if($options[$i] == $value) {
+				if(array_search($options[$i],$values)!==FALSE) {
 					$optionsHtml .= ' checked="checked"';
 				}
 
