@@ -80,9 +80,8 @@ class forum implements module {
 		$forumHtml ='';
 		if(isset($_POST['mod_permi']))
 		{
-			if($_POST['forum_name'] && $_POST['forum_desc'])
+			if($_POST['forum_desc'])
 			{
-				$forum_name = addslashes(htmlspecialchars($_POST['forum_name']));
 				$forum_description = addslashes(htmlspecialchars($_POST['forum_desc']));
 				if($_POST['del_post'] == "allow")
 						$del_post=1;
@@ -95,7 +94,6 @@ class forum implements module {
 			}
 			else
 			{
-				$forum_name = "";
 				$forum_description = "";
 			}
 			if($_POST['mod_permi']=="public")
@@ -110,17 +108,14 @@ class forum implements module {
 			else
 				{$access_level = 1;}
 			$pageId=getPageIdFromModuleComponentId("forum",$this->moduleComponentId);
-			$q = "UPDATE `$table2_name` SET `forum_moderated`='$access_level', `forum_name`='$forum_name', " .
+			$q = "UPDATE `$table2_name` SET `forum_moderated`='$access_level',  " .
 					"`forum_description`='$forum_description',`allow_delete_posts`='$del_post',`allow_like_posts`='$like_post' WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$res = mysql_query($q);
-			$q = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_title`='$forum_name' WHERE `page_id`='$pageId' LIMIT 1";
-			$res = mysql_query($q) or displayerror(mysql_error() . "Update failed L:117");
+			$res = mysql_query($q) or displayerror(mysql_error() . "Update failed L:113");
 			displayinfo("Forum settings updated successfully!");
 		}
 				$query = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
 				$result = mysql_query($query);
 				$rows = mysql_fetch_array($result);
-				$forum_name = stripslashes($rows['forum_name']);
 				$forum_description = stripslashes($rows['forum_description']);
 				$forum_moderated = $rows['forum_moderated'];
 				$allow_delete_posts = $rows['allow_delete_posts'];
@@ -148,10 +143,6 @@ class forum implements module {
 				<option value="moderated" $moderatedselected >Moderated</option>
 				<option value="public" $publicselected >Public</option>
 				</select></td>
-				</tr><tr><td>
-				Enter New Forum Name </td><td><input type="text" name="forum_name" value="$forum_name" size="30"></td>
-				</tr><tr><td>
-				Enter New Forum Description </td><td> <input type="text" name="forum_desc" value="$forum_description" size="30"></td>
 				</tr>
 				<tr><td>
 				Allow users to Delete their posts  </td><td><select name="del_post" style="width:100px;">
@@ -164,6 +155,9 @@ class forum implements module {
 				<option value="allow" $lallowselected >Allow</option>
 				<option value="dontallow" $ldontallowselected >Don't Allow</option>
 				</select></td>
+				</tr>
+				<tr><td>
+				Enter New Forum Description </td><td><textarea name="forum_desc" cols="50" rows="5" class="textbox" >$forum_description</textarea></td>
 				</tr></table>
 				<input type="submit" value="submit">
 				</form>
@@ -346,7 +340,7 @@ PRE;
 			return $moderate;
 		} else {
 			$q = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
-			$r = mysql_query($q) or displayerror(mysql_error() . "Moderate failed L:349");
+			$r = mysql_query($q) or displayerror(mysql_error() . "Moderate failed L:343");
 			$r = mysql_fetch_array($r);
 			$forum_id = escape($_GET['forum_id']); //Parent Thread ID
 			$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`=$forum_id AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
@@ -397,7 +391,7 @@ PRE;
 				$postpart .= <<<PRE
 						</strong><br /><br />
 						<script type="text/javascript" languauge="javascript" src="$js"></script>
-						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a>
+						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
 						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
 						$lastLogin </small></div>
 PRE;
@@ -441,10 +435,10 @@ PRE;
 PRE;
 			if($r['allow_like_posts'] == 1){
 					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$rows[forum_thread_id] AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$likeres = mysql_query($likequery) or displayerror(mysql_error() . "Moderate failed L:444");;
+					$likeres = mysql_query($likequery) or displayerror(mysql_error() . "Moderate failed L:438");;
 					$likeres = mysql_num_rows($likeres);
 					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`=$rows[forum_thread_id] AND `forum_post_id`=".$rows['forum_post_id']." AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$dlikeres = mysql_query($dlikequery) or displayerror(mysql_error() . "Moderate failed L:447");
+					$dlikeres = mysql_query($dlikequery) or displayerror(mysql_error() . "Moderate failed L:441");
 					$dlikeres = mysql_num_rows($dlikeres);
 					$postpart .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';
 					$postpart .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
@@ -464,7 +458,7 @@ PRE;
 					$postpart .= <<<PRE
 						</strong><br /><br />
 						<script type="text/javascript" languauge="javascript" src="$js"></script>
-						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a>
+						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
 						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
 						$lastLogin </small></div>
 PRE;
@@ -507,7 +501,6 @@ PRE;
 		$table_name = "forum_threads";
 		$table1_name = "forum_posts";
 		$table2_name = "forum_module";
-		$subaction="";
 		if(isset($_GET['subaction']))
 			$subaction = escape($_GET['subaction']);
 		global $urlRequestRoot, $moduleFolder, $cmsFolder,$templateFolder,$sourceFolder;
@@ -554,7 +547,7 @@ PRE;
 							"`forum_thread_viewcount` ,`forum_thread_last_post_userid` ,`forum_thread_lastpost_date`)" .
 							" VALUES('$threadid', '$this->moduleComponentId', '$category', '$access', '$subject', '$message'," .
 							" '$userId', '$datetime', '$approve', '1','$userId', '$datetime')";
-					$result = mysql_query($sql) or displayerror(mysql_error() . "Create New Thread failed L:556");
+					$result = mysql_query($sql) or displayerror(mysql_error() . "Create New Thread failed L:550");
 					if ($result) {
 						$sql1 = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
 						$result1 = mysql_query($sql1);
@@ -598,7 +591,7 @@ PRE;
 						$sql = "INSERT INTO `$table1_name`( `page_modulecomponentid` , `forum_thread_id` , `forum_post_id` , `forum_post_user_id` , `forum_post_title` , " .
 								"`forum_post_content` , `forum_post_datetime` , `forum_post_approve` ) VALUES( '$this->moduleComponentId','$forum_id', '$Max_id'," .
 								" '$userId', '$subject', '$message', '$datetime', '$approve')";
-						$result = mysql_query($sql) or displayerror(mysql_error() . "Post failed L:600");
+						$result = mysql_query($sql) or displayerror(mysql_error() . "Post failed L:594");
 						if ($result) {
 							$sql1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`=$this->moduleComponentId AND `forum_thread_id`=$forum_id" .
 									" LIMIT 1";
@@ -752,7 +745,7 @@ PRE;
 			$show_p = $new_mp. " new posts to be moderated since your last visit";
 			displayinfo($show_p);}
 			}
-			$qu_0 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 1";
+			$qu_0 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 1 AND `forum_thread_user_id` !=". $this->userId;
 			$res_0 = mysql_query($qu_0);
 			$num_0 = mysql_num_rows($res_0);
 			for ($j = 1; $j <= $num_0; $j++) {
@@ -760,8 +753,8 @@ PRE;
 				if($forum_lastVisit<$rows['forum_thread_datetime'])
 					$new_t = $new_t + '1';
 			}
-			$qu_1 = "SELECT * FROM `$table1_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 1";
-			$res_1 = mysql_query($qu_1);
+			$qu_1 = "SELECT * FROM `$table1_name` WHERE `page_modulecomponentid`=" . $this->moduleComponentId ." AND `forum_post_approve` = 1 AND `forum_post_user_id` !=". $this->userId;
+			$res_1 = mysql_query($qu_1) or die(mysql_error());
 			$num_1 = mysql_num_rows($res_1);
 			for ($j = 1; $j <= $num_1; $j++) {
 				$rows = mysql_fetch_array($res_1,MYSQL_ASSOC);
@@ -775,18 +768,22 @@ PRE;
 			$show_p = $new_p. " new posts since your last visit";
 			displayinfo($show_p);}
 			}
+			$query_d = "SELECT `forum_description` FROM `forum_module` WHERE `page_modulecomponentid`='" . $this->moduleComponentId ."' LIMIT 1";
+			$result_d = mysql_query($query_d) or die(mysql_error());
+			$result_d = mysql_fetch_array($result_d);
 			$query = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "' AND " .
 					"`forum_thread_category`='general' ORDER BY `forum_thread_lastpost_date` DESC";
-			$result = mysql_query($query) or displayerror(mysql_error() . "View of General Threads failed L:752");;
+			$result = mysql_query($query) or displayerror(mysql_error() . "View of General Threads failed L:776");
 			$query1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "' AND " .
 					"`forum_thread_category`='sticky' ORDER BY `forum_thread_datetime` DESC";
-			$result1 = mysql_query($query1)or displayerror(mysql_error() . "View of sticjy Threads failed L:755");
+			$result1 = mysql_query($query1)or displayerror(mysql_error() . "View of sticjy Threads failed L:779");
 			$num_rows1 = mysql_num_rows($result1); //counts the total no of sticky threads
 			if ($result) {
 				$action = "+post&subaction=create_thread";
 				$num_rows = mysql_num_rows($result); //counts the total no of general threads				
 				$forum_header =<<<PRE
 			<p align="left"><a href="$action"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
+			<div style="text-align:center;"><b>" $result_d[0] "</b></div>
 	        <table width="100%" border="1" align="center" cellpadding="4" cellspacing="2" id="forum">
 	        <tr class="TableHeader">
 	        <td class="forumTableHeader" colspan="2"><strong>TOPICS</strong><br /></td>
@@ -915,10 +912,6 @@ PRE;
 		$forum_threads = '';
 		$rows = $data;
 		$action = "+post&subaction=create_thread";
-		$query = "SELECT `forum_name`, `forum_description` FROM `forum_module` WHERE `page_modulecomponentid`=$this->moduleComponentId";
-		$resource = mysql_query($query);
-		$result = mysql_fetch_assoc($resource);
-		$forum_name = $result['forum_name'];
 		$forum_lastVisit = $this->forumLastVisit();
 		if($type == 'threadRow')
 			{
@@ -966,7 +959,7 @@ PRE;
 		}
 		if($type == 'threadMain') {
 			$q = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`=$this->moduleComponentId LIMIT 1";
-			$r = mysql_query($q) or displayerror(mysql_error() . "View of Thread failed L:941");;
+			$r = mysql_query($q) or displayerror(mysql_error() . "View of Thread failed L:962");
 			$r = mysql_fetch_array($r);
 		if($post == 0){
 			$topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
@@ -1019,7 +1012,7 @@ PRE;
 					$threadHtml .= <<<PRE
 						</strong><br /><br />
 						<script type="text/javascript" languauge="javascript" src="$js"></script>
-						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a>
+						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
 						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
 						$lastLogin </small></div>
 PRE;
@@ -1029,7 +1022,7 @@ if($post==1 && $userId>0 && ( ($r['allow_delete_posts'] == 1) ||($r['allow_like_
 			if ($post==1 && $userId > 0 && $userId == $rows['forum_post_user_id'])
 					 //compare the userID of the logged in user with that of the author of the current reply
 						{
-						$threadHtml .= '<br /><br /><a href="+view&subaction=delete_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
+						$threadHtml .= '<br /><a href="+view&subaction=delete_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
 										'<img src="'.$temp.'/delete1.gif"></a></span>';
 					}
 			}
@@ -1112,11 +1105,11 @@ PRE;
 public function createModule(& $moduleComponentId) {
 
 		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
-		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1087");
+		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1108");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
-		$query = "INSERT INTO `forum_module` (`page_modulecomponentid`,`forum_name`,`forum_description`,`last_post_userid` )VALUES ('$compId','Forum','New Forum','1')";
-		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1091");
+		$query = "INSERT INTO `forum_module` (`page_modulecomponentid`,`forum_description`,`last_post_userid` )VALUES ('$compId','Forum Description Here!!!','1')";
+		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1112");
 		if (mysql_affected_rows()) {
 			$moduleComponentId = $compId;
 			return true;
@@ -1140,7 +1133,7 @@ public function createModule(& $moduleComponentId) {
 
 	public function copyModule($moduleComponentId) {
 $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "Copy for forum failed L:1115");
+		$result = mysql_query($query) or displayerror(mysql_error() . "Copy for forum failed L:1136");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 		//insert a new row in forum_module
@@ -1148,16 +1141,16 @@ $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
 		$result = mysql_query($query);
 		$rows = mysql_num_rows($result);
 		while($forummodule_content = mysql_fetch_assoc($result)){
-			$forummodule_query="INSERT INTO `forum_module` (`page_modulecomponentid` ,`forum_name` ,`forum_description` ,`forum_moderated` ," .
+			$forummodule_query="INSERT INTO `forum_module` (`page_modulecomponentid` ,`forum_description` ,`forum_moderated` ," .
 					"`total_thread_count` ,`last_post_userid` ,`last_post_datetime` )" .
-					" VALUES ($compId, '".mysql_escape_string($forummodule_content['forum_name'])."', " .
+					" VALUES ($compId," .
 							"'".mysql_escape_string($forummodule_content['forum_description'])."'," .
 									" '".mysql_escape_string($forummodule_content['forum_moderated'])."'," .
 											" '".mysql_escape_string($forummodule_content['total_thread_count'])."' , " .
 //													"'".mysql_escape_string($forummodule_content['total_reply_count'])."' ," .
 															" '".mysql_escape_string($forummodule_content['last_post_userid'])."', " .
 																	"'".mysql_escape_string($forummodule_content['last_post_datetime'])."')";
-			mysql_query($forummodule_query) or displayerror(mysql_error()."Copy for forum failed L:1131");
+			mysql_query($forummodule_query) or displayerror(mysql_error()."Copy for forum failed L:1153");
 			$rows -= mysql_affected_rows();
 		}
 		if($rows!=0)
@@ -1173,7 +1166,7 @@ $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
 							" '".mysql_escape_string($forumanswer_content['forum_post_id'])."', '".mysql_escape_string($forumanswer_content['forum_post_user_id']).
 "', '".mysql_escape_string($forumanswer_content['forum_post_title'])."' , '".mysql_escape_string($forumanswer_content['forum_post_content'])."" .
 		"' , '".mysql_escape_string($forumanswer_content['forum_post_datetime'])."', '".mysql_escape_string($forumanswer_content['forum_post_approve'])."')";
-			mysql_query($forumanswer_query) or displayerror(mysql_error()."Copy for forum failed L:1148");
+			mysql_query($forumanswer_query) or displayerror(mysql_error()."Copy for forum failed L:1169");
 			$rows -= mysql_affected_rows();
 		}
 		if($rows!=0)
@@ -1198,7 +1191,7 @@ $query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
 //									" '".mysql_escape_string($forumquestion_content['reply_count'])."'," .
 											" '".mysql_escape_string($forumquestion_content['forum_thread_last_post_userid'])."', " .
 													"'".mysql_escape_string($forumquestion_content['forum_thread_lastpost_date'])."')";
-			mysql_query($forumquestion_query) or displayerror(mysql_error()."Copy for forum failed L:1173");
+			mysql_query($forumquestion_query) or displayerror(mysql_error()."Copy for forum failed L:1194");
 			$rows -= mysql_affected_rows();
 		}
 		if($rows!=0)
