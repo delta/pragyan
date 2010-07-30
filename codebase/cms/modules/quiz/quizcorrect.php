@@ -91,7 +91,7 @@ function getQuizUserListHtml($quizId) {
 	if (!isQuizEvaluated($quizId))
 		evaluateQuiz($quizId);
 	updateSectionMarks($quizId);
-	
+	$tableJqueryStuff="";
 	$userTable = MYSQL_DATABASE_PREFIX . 'users';
 	$markQuery = "SELECT `$userTable`.`user_email` AS `email`, `$userTable`.`user_id` AS `user_id`, SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `$userTable`, `quiz_userattempts` WHERE " .
 			"`$userTable`.`user_id` = `quiz_userattempts`.`user_id` AND " .
@@ -102,42 +102,118 @@ function getQuizUserListHtml($quizId) {
 		displayerror($markQuery . '  ' . mysql_error());
 	}
 	$query = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = $quizId"));
-	$userListHtml = "<h3>User Submissions for Quiz: {$query[0]}</h3><table border=\"0\" cellpadding=\"4\" cellspacing=\"4\">\n" .
-		"<tr><th>User Email</th><th>Marks</th><th>Time Taken</th><th>Started</th><th>Finished</th><th></th></tr>\n";
+	$result = mysql_query("SELECT `quiz_sectiontitle` FROM `quiz_sections` WHERE `page_modulecomponentid` = '$quizId' ORDER BY `quiz_sectionid`");
+	$sectionHead = "";
+	$secCols="";
+	$toggleColumns="<td><input type='checkbox' onclick='fnShowHide(0);' checked />User Full Name<br/></td>";
+	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(1);' />User Email<br/></td>";
+	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(2);' checked />Marks<br/></td>";
+	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(3);' checked />Time Taken<br/></td>";
+	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(4);' />Started<br/></td>";
+	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(5);' />Finished<br/></td>";
+	
+	$c=6;
+	while($row = mysql_fetch_array($result))
+	{
+		$sectionHead .= "<th>Section : {$row['quiz_sectiontitle']}</th>";
+		$tableJqueryStuff.="null,";
+		$secCols.="<td><input type='checkbox' onclick='fnShowHide($c);' checked />Section : {$row['quiz_sectiontitle']}<br/></td>";
+		$c++;
+	}
+	$toggleColumns.=$secCols;
+	global $urlRequestRoot, $cmsFolder;
+	$userListHtml = <<<HEAD
+	<style type="text/css" title="currentStyle">
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
+			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
+	</style>
+	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() {
+				oTable = $('#userstable').dataTable({
+					"bJQueryUI": true,
+					"sPaginationType": "full_numbers",
+					"aoColumns": [ 
+							null,
+							{ "bVisible": false },
+							null,
+							null,
+							{ "bVisible": false },
+							{ "bVisible": false },
+							$tableJqueryStuff
+							null
+						]
+				});
+			} );
+			function fnShowHide( iCol )
+			{
+				var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+				oTable.fnSetColumnVis( iCol, bVis ? false : true );
+			}
+
+	</script>
+
+HEAD;
+	
+	global $ICONS_SRC,$ICONS;
+	$userListHtml .= "<h3>User Submissions for Quiz: {$query[0]}</h3>
+		<fieldset><legend>Select Columns</legend><table><tr>$toggleColumns</tr></table></fieldset>
+		<table class=\"userlisttable display\" border=\"1\" id='userstable'>" .
+		"<thead><tr><th>User Full Name</th><th>User Email</th><th>Total Marks</th><th>Time Taken</th><th>Started</th><th>Finished</th>$sectionHead<th>Action</th></tr></thead><tbody>";
 	while ($markRow = mysql_fetch_assoc($markResult)) {
+		$userMarks = "";
+		$marksResult = mysql_query("SELECT `quiz_marksallotted` FROM `quiz_userattempts` WHERE `user_id` = {$markRow['user_id']} AND `page_modulecomponentid` = $quizId ORDER BY `quiz_sectionid`");
+		
+		while($row = mysql_fetch_array($marksResult))
+			$userMarks .= "<td>{$row['quiz_marksallotted']}</td>";
 		if (is_null($markRow['finishtime'])) {
 			$markRow['finished'] = 0;
 			$markRow['finishtime'] = 'NULL';
 		}
-
-		$userListHtml .= "<tr><td><a href=\"./+correct&useremail={$markRow['email']}\">{$markRow['email']}</a></td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>";
-		$userListHtml .= '<td><form name="userclearform" method="POST" action=""><input type="hidden" name="hdnUserId" id="hdnUserId" value="' . $markRow['user_id'] . '" /><input type="submit" name="btnDeleteUser" id="btnDeleteUser" value="Reject Submission" /></form></td>';
+		$userfullname=getUserFullNameFromEmail($markRow['email']);
+		if($userfullname=="") $userfullname="Anonymous";
+		$userListHtml .= "<tr><td>$userfullname</td><td>{$markRow['email']}</a></td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks";
+		$userListHtml .= '<td><form name="userclearform" method="POST" action=""><input type="hidden" name="hdnUserId" id="hdnUserId" value="' . $markRow['user_id'] . "\" /><a href=\"./+correct&useremail={$markRow['email']}\">".$ICONS['Correct']['small'].'</a><input type="image" src="'.$ICONS_SRC["Delete"]["small"].'" name="btnDeleteUser" id="btnDeleteUser" value="Reject Submission" title="Reject Submission"/></form></td>';
 		$userListHtml .= "</tr>\n";
 	}
-	$userListHtml .= "</table>\n";
+	$userListHtml .= "</tbody></table>\n";
 
 	return $userListHtml;
 }
 
 function getQuizCorrectForm($quizId, $userId) {
+	$marks = mysql_fetch_array(mysql_query("SELECT SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `quiz_userattempts` WHERE `user_id` = {$userId} AND `page_modulecomponentid` = $quizId"));
+	$title = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = '$quizId'"));
 
-	$questionQuery = "SELECT `quiz_questions`.`quiz_sectionid` AS `quiz_sectionid`, `quiz_questions`.`quiz_questionid` AS `quiz_questionid`, " .
+	$correctFormHtml = "";
+	$sectionHead="";
+
+	$sections = mysql_query("SELECT `quiz_sections`.`quiz_sectiontitle` AS `quiz_sectiontitle`, `quiz_sections`.`quiz_sectionid` AS `quiz_sectionid`, `quiz_marksallotted` FROM `quiz_userattempts` JOIN `quiz_sections` ON `quiz_userattempts`.`quiz_sectionid` = `quiz_sections`.`quiz_sectionid` WHERE `user_id` = $userId AND `quiz_userattempts`.`page_modulecomponentid` = $quizId AND `quiz_sections`.`page_modulecomponentid` = $quizId");
+	
+	while($sectionsRow = mysql_fetch_array($sections)) {
+	$correctFormHtml .= "<h4>{$sectionsRow['quiz_sectiontitle']}(Marks: {$sectionsRow['quiz_marksallotted']})</h4>";
+	$sectionHead .="<td><b>{$sectionsRow['quiz_sectiontitle']}</b> section marks: {$sectionsRow['quiz_marksallotted']}</td>";
+	
+	
+	$questionQuery = "SELECT `quiz_questions`.`quiz_questionid` AS `quiz_questionid`, " .
 			"`quiz_questions`.`quiz_question` AS `quiz_question`, `quiz_questiontype`, " .
-			"`quiz_rightanswer`, `quiz_submittedanswer`, `quiz_marksallotted` " .
+			"`quiz_rightanswer`, `quiz_submittedanswer`, `quiz_marksallotted`,`quiz_questions`.`quiz_sectionid` " .
 			"FROM `quiz_questions`, `quiz_answersubmissions` WHERE " .
 			"`quiz_questions`.`page_modulecomponentid` = $quizId AND " .
 			"`quiz_questions`.`page_modulecomponentid` = `quiz_answersubmissions`.`page_modulecomponentid` AND " .
 			"`quiz_questions`.`quiz_sectionid` = `quiz_answersubmissions`.`quiz_sectionid` AND " .
 			"`quiz_questions`.`quiz_questionid` = `quiz_answersubmissions`.`quiz_questionid` AND " .
+			"`quiz_questions`.`quiz_sectionid` = {$sectionsRow['quiz_sectionid']} AND " .
 			"`user_id` = $userId ORDER BY `quiz_answersubmissions`.`quiz_questionrank`";
+
+
 	$questionResult = mysql_query($questionQuery);
 
 	if (!$questionResult)
 		displayerror($questionQuery . '<br />' . mysql_error());
 	
-	$marks = mysql_fetch_array(mysql_query("SELECT SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `quiz_userattempts` WHERE `user_id` = {$userId} AND `page_modulecomponentid` = $quizId"));
-	$title = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = '$quizId'"));
-	$correctFormHtml = "<h3>{$title['quiz_title']} - Quiz Answers Correct form for user: " . safe_html($_GET['useremail']) . "</h3><form name='userclearform' method='POST' action='./+correct'><a href='./+correct'>&lt;&lt;Back</a> &nbsp;&nbsp;&nbsp;<input type='hidden' name='hdnUserId' id='hdnUserId' value='{$userId}' /><input type='submit' name='btnDeleteUser' id='btnDeleteUser' value='Reject Submission' /></form><table width=100%><tr><td>Total marks: {$marks['total']}</td><td>Start time: {$marks['starttime']}</td><td>Finish time: {$marks['finishtime']}</td><td>Time taken: {$marks['timetaken']}</td></tr></table>";
 	while ($questionRow = mysql_fetch_assoc($questionResult)) {
 		$correctFormHtml .= '<table class="quiz_' . (is_null($questionRow['quiz_marksallotted']) || floatval($questionRow['quiz_marksallotted']) <= 0 ? 'wrong' : 'right') . "answer\"><tr><td colspan=\"2\">{$questionRow['quiz_question']}</td></tr>\n";
 		if ($questionRow['quiz_questiontype'] == 'subjective') {
@@ -150,7 +226,7 @@ function getQuizCorrectForm($quizId, $userId) {
 			$correctFormHtml .= "<tr><td>Mark:</td><td><form method=POST action='./+correct&useremail=" . safe_html($_GET['useremail']) . "'><input type=hidden name=quizid value='{$quizId}'><input type=hidden name=sectionid value={$questionRow['quiz_sectionid']}><input type=hidden name=questionid value={$questionRow['quiz_questionid']}><input type=hidden name=userid value={$userId}><input type=text name=mark size=5 value='{$questionRow['quiz_marksallotted']}'><input type=submit value='Submit' name=btnSetMark></form></td></tr>";
 		}
 		elseif ($questionRow['quiz_questiontype'] == 'sso' || $questionRow['quiz_questiontype'] == 'mso') {
-			$optionList = getQuestionOptionList($quizId, $questionRow['quiz_sectionid'], $questionRow['quiz_questionid']);
+			$optionList = getQuestionOptionList($quizId, $sectionsRow['quiz_sectionid'], $questionRow['quiz_questionid']);
 			$options = array();
 			for ($i = 0; $i < count($optionList); ++$i)
 				$options[$optionList[$i]['quiz_optionid']] = $optionList[$i];
@@ -164,13 +240,14 @@ function getQuizCorrectForm($quizId, $userId) {
 			$submittedAnswerIds = explode('|', $questionRow['quiz_submittedanswer']);
 			for ($i = 0; $i < count($submittedAnswerIds); ++$i)
 				$submittedAnswers[] = $options[$submittedAnswerIds[$i]]['quiz_optiontext'];
-
 			$correctFormHtml .= '<tr><td nowrap="nowrap" width="10%">Submitted Answer:</td><td>' . implode("<br />\n", $submittedAnswers) . "</td></tr>\n";
 			$correctFormHtml .= "<tr><td nowrap=\"nowrap\" width=\"10%\">Correct Answer:</td><td>" . implode("<br />\n", $correctAnswers) . "</td></tr>\n";
 			$correctFormHtml .= "<tr><td>Mark:</td><td>{$questionRow['quiz_marksallotted']}</td></tr>";
 		}
 		$correctFormHtml .= "</table>\n";
 	}
+	}
+	$quizcorrectinfo="<h3>{$title['quiz_title']} - Quiz Answers Correct form for user: " . safe_html($_GET['useremail']) . "</h3><form name='userclearform' method='POST' action='./+correct'><a href='./+correct'>&lt;&lt;Back</a> &nbsp;&nbsp;&nbsp;<input type='hidden' name='hdnUserId' id='hdnUserId' value='{$userId}' /><input type='submit' name='btnDeleteUser' id='btnDeleteUser' value='Reject Submission' /></form><table width=100%><tr><td>Total marks: {$marks['total']}</td>$sectionHead<td>Start time: {$marks['starttime']}</td><td>Finish time: {$marks['finishtime']}</td><td>Time taken: {$marks['timetaken']}</td></tr></table>";
 	$correctFormHtml .= "<a href='./+correct'>&lt;&lt;Back</a>";
-	return $correctFormHtml;
+	return $quizcorrectinfo.$correctFormHtml;
 }

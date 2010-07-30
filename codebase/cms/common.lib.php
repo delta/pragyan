@@ -196,6 +196,19 @@ function getUserFullName($userId) {
 }
 
 /**
+ * Determines the Full Name of a user, given his/her Email ID
+ * @param $email Email Id of the user, whose Full Name is to be determined
+ * @return string containing the Full Name of the user, null representing failure
+ */
+function getUserFullNameFromEmail($email) {
+	$query = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_email` = '".$email."'";
+	$result = mysql_query($query);
+	
+	$row = mysql_fetch_row($result);
+	return $row[0];
+}
+
+/**
  * Determines the Email-Id of a user, given his/her User Id
  * @param $userid User Id of the user, whose E-mail address is to be determined
  * @return string containing the e-mail address of the user, null representing failure

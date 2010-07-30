@@ -681,8 +681,8 @@ CREATE TABLE IF NOT EXISTS `quiz_answersubmissions` (
   `user_id` int(11) NOT NULL COMMENT 'User ID',
   `quiz_questionrank` int(11) NOT NULL COMMENT 'The rank of the question in the page',
   `quiz_submittedanswer` text NOT NULL COMMENT 'Answer submitted by the user',
-  `quiz_questionviewtime` datetime NOT NULL COMMENT 'When the user saw this question for the first time',
-  `quiz_answersubmittime` datetime NOT NULL COMMENT 'When the user submitted his answer',
+  `quiz_questionviewtime` datetime default NULL COMMENT 'When the user saw this question for the first time',
+  `quiz_answersubmittime` datetime default NULL COMMENT 'When the user submitted his answer',
   `quiz_marksallotted` decimal(5,2) default NULL COMMENT 'Marks allotted for the given question',
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`quiz_sectionid`,`quiz_questionid`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -755,7 +755,7 @@ CREATE TABLE IF NOT EXISTS `quiz_questions` (
 
 CREATE TABLE IF NOT EXISTS `quiz_sections` (
   `page_modulecomponentid` int(11) NOT NULL COMMENT 'Quiz ID',
-  `quiz_sectionid` int(11) NOT NULL auto_increment COMMENT 'Section ID',
+  `quiz_sectionid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Section ID',
   `quiz_sectiontitle` varchar(260) NOT NULL COMMENT 'Section Title',
   `quiz_sectionssocount` int(11) NOT NULL COMMENT 'Number of Single Select Objective questions to be taken from this section',
   `quiz_sectionmsocount` int(11) NOT NULL COMMENT 'Number of Multiselect Objective questions to be taken from this section',
@@ -763,9 +763,9 @@ CREATE TABLE IF NOT EXISTS `quiz_sections` (
   `quiz_sectiontimelimit` time NOT NULL COMMENT 'Amount of time a user may spend on this section (taken from the time when he first opened this section)',
   `quiz_sectionquestionshuffled` tinyint(1) NOT NULL COMMENT 'Whether questions should be shuffled (1), or taken in the order given by question_rank (0)',
   `quiz_sectionrank` int(11) NOT NULL,
-  PRIMARY KEY  (`page_modulecomponentid`,`quiz_sectionid`)
+  `quiz_sectionshowlimit` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Whether the section remaining time limit should be displayed(1) or not(0)',
+  PRIMARY KEY (`page_modulecomponentid`,`quiz_sectionid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
 -- --------------------------------------------------------
 
 --
