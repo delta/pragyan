@@ -387,6 +387,13 @@ QUIZSTARTFORM;
 			$scripts[] = "var pageTimer = new JSTimer('pageTimerContainer', 0, 0, 0);\n";
 		}
 
+		$sectionRow = getSectionRow($this->quizId, $sectionId);
+		if ($sectionRow['quiz_sectionshowlimit']) {
+			$sectionRow = getSectionRow($this->quizId,$sectionId);
+			$limit = $sectionRow['quiz_sectiontimelimit'];
+			$divs[] = '<div id="pageTimerlimit" class="quiz_limit">Section Limit: ' . $limit . '</div>';
+		}
+
 		global $urlRequestRoot, $cmsFolder, $moduleFolder;
 		$timerScriptSrc = "$urlRequestRoot/$cmsFolder/$moduleFolder/quiz/timer.js";
 

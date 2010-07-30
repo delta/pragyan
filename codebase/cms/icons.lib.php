@@ -19,6 +19,7 @@ $ICON_ARRAY=array(
 'Search'=>"actions/system-search.png",
 'Home'=>"actions/go-home.png",
 'News'=>'apps/internet-news-reader.png',
+'Correct'=>'categories/applications-office.png',
 'Edit Page'=>"actions/edit-select-all.png",
 'New User'=>"actions/contact-new.png",
 'Uploaded Files'=>"actions/document-open.png",

@@ -6,7 +6,7 @@
 
 /** get*Types() series of functions */
 function getQuizTypes() {
-	return array('simple', 'gre');
+	return array('simple');
 }
 
 function getQuestionTypes() {
@@ -92,6 +92,7 @@ function getSectionEditFormFieldMap() {
 		array('txtSubjectiveCount', 'quiz_sectionsubjectivecount', 'section_subjectivecount', 'text'),
 		array('txtSessionTimeLimit', 'quiz_sectiontimelimit', 'section_timelimit', 'text'),
 		array('chkShuffle', 'quiz_sectionquestionshuffled', 'section_shuffle', 'checkbox'),
+		array('chkShowLimit', 'quiz_sectionshowlimit', 'section_showlimit', 'checkbox'),
 	);
 }
 
@@ -405,7 +406,7 @@ function getQuizEditForm($quizId, $dataSource) {
 	<link rel="stylesheet" type="text/css" media="all" href="$calpath/form/calendar/calendar.css" title="Aqua" />
 	<script type="text/javascript" src="$calpath/form/calendar/calendar.js"></script>
 
-	<form name="quizpropertiesform" action="" method="POST">
+	<form name="quizpropertiesform" action="./+edit" method="POST">
 		<h3>Quiz Properties</h3>
 
 		<fieldset style="padding:8px">
@@ -597,6 +598,7 @@ function getSectionEditForm($quizId, $sectionId, $dataSource) {
 					<tr><td><label for="txtMSOCount">Number of Multi-select Objective Questions:</label></td><td><input type="text" name="txtMSOCount" id="txtMSOCount" value="$section_msocount" /></td></tr>
 					<tr><td><label for="txtSubjectiveCount">Number of Subjective Questions:</label></td><td><input type="text" name="txtSubjectiveCount" id="txtSubjectiveCount" value="$section_subjectivecount" /></td></tr>
 					<tr><td><label for="txtSessionTimeLimit">Time Limit:</label></td><td><input type="text" name="txtSessionTimeLimit" id="txtSessionTimeLimit" value="$section_timelimit" /></td></tr>
+					<tr><td><label>Show Limit?</label></td><td><label><input type="checkbox" name="chkShowLimit" id="chkShowLimit" value="yes" $section_showlimit /> Yes</label></td></tr>
 					<tr><td><label>Shuffle Questions?</label></td><td><label><input type="checkbox" name="chkShuffle" id="chkShuffle" value="yes" $section_shuffle /> Yes</label></td></tr>
 				</table>
 			</fieldset>
@@ -659,7 +661,7 @@ function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 
 	$questionEditForm = <<<QUESTIONEDITFORM
 		<fieldset><legend>Question Properties</legend>
-		<form name="questioneditform" method="POST" action="">
+		<form name="questioneditform" method="POST" onSubmit="return validate();" action="">
 			<table border="0" width="100%">
 				<tr><td><label for="txtQuestion">Question:</label></td><td><textarea name="txtQuestion" id="txtQuestion" rows="5" cols="36">$question_question</textarea></td></tr>
 				<tr><td><label for="selQuestionType">Question Type:</label></td><td>$questionTypeBox</td></tr>
@@ -675,6 +677,13 @@ function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 				var questionType = '$question_type';
 				var objectiveOptions = new Array();
 				var subjectiveAnswer = '';
+				function validate() {
+					var elementCount = document.getElementById('optionsTable').getElementsByTagName('tr').length;
+					if(elementCount > 1)
+						return true;
+					alert('No answer/option specified');
+					return false;
+				}
 
 				function addOption() {
 					var optionsTable = document.getElementById('optionsTable');
@@ -795,7 +804,9 @@ function submitQuizEditForm($quizId) {
 function submitSectionEditForm($quizId, $sectionId) {
 	$fieldMap = getSectionEditFormFieldMap();
 	$updates = array();
-
+	print_r($fieldMap);
+	echo "<br/>";
+	print_r($_POST);
 	for ($i = 0; $i < count($fieldMap); ++$i) {
 		$update = "`{$fieldMap[$i][1]}` = ";
 		if ($fieldMap[$i][3] == 'checkbox') {
@@ -813,6 +824,7 @@ function submitSectionEditForm($quizId, $sectionId) {
 		return true;
 
 	$updateQuery = "UPDATE `quiz_sections` SET " . implode(', ', $updates) . " WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId";
+	echo $updateQuery;
 	if (!mysql_query($updateQuery)) {
 		displayerror('Database Error. Could not save section details.');
 		return false;
@@ -858,6 +870,10 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 			)
 				$rightAnswer[] = $optionId;
 			++$i;
+		}
+		if(!isset($rightAnswer[0])) {
+			displayerror('No options specified for objective answer');
+			return false;
 		}
 		$rightAnswer = implode('|', $rightAnswer);
 	}
