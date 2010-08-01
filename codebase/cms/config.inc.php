@@ -17,7 +17,7 @@ define("MYSQL_USERNAME","pragyan");
 define("MYSQL_PASSWORD","pragyan");
 
 // defining the name of the database to connect to.
-define("MYSQL_DATABASE","pragyan");
+define("MYSQL_DATABASE","inductions");
 
 // defining the prefix which is appended to every table of Pragyan CMS.
 // this feature allows you to have multiple websites using the same database.
