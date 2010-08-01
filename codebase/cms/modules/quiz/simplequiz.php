@@ -207,8 +207,10 @@ QUIZSTARTFORM;
 				"`quiz_questions`.`quiz_sectionid` = `quiz_answersubmissions`.`quiz_sectionid` AND " .
 				"`quiz_questions`.`quiz_questionid` = `quiz_answersubmissions`.`quiz_questionid` AND " .
 				"`quiz_questions`.`page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId AND " .
-				"`quiz_questionviewtime` IS NOT NULL AND `quiz_answersubmittime` IS NULL " .
-				"ORDER BY `quiz_answersubmissions`.`quiz_questionrank` LIMIT {$this->quizRow['quiz_questionsperpage']}";
+				"`quiz_questionviewtime` IS NOT NULL AND `quiz_answersubmittime` IS NULL ";
+		if($this->quizRow['quiz_allowsectionrandomaccess'] == 1)
+			$questionQuery .= "AND `quiz_answersubmissions`.`quiz_sectionid` = {$_GET['sectionid']} ";
+		$questionQuery .= "ORDER BY `quiz_answersubmissions`.`quiz_questionrank` LIMIT {$this->quizRow['quiz_questionsperpage']}";
 		$questionResult = mysql_query($questionQuery);
 		if (!$questionResult) {
 			displayerror('Invalid query. ' . $questionQuery . ' ' . mysql_error());
@@ -216,14 +218,14 @@ QUIZSTARTFORM;
 		}
 
 		// Put in check about user's time elapsed here
-		if ($this->checkUserTimedOut($userId, -1, '1 MINUTE')) {
+		if ($this->checkUserTimedOut($userId, -1, '0 MINUTE')) {
 			displayerror('Sorry, you have exceeded your time limit for the quiz. Your latest submission cannot be evaluated.');
 			return false;
 		}
 
 		if ($this->quizRow['quiz_allowsectionrandomaccess']) {
 			$sectionId = intval($_GET['sectionid']);
-			if ($this->checkUserTimedOut($userId, $sectionId, '1 MINUTE')) {
+			if ($this->checkUserTimedOut($userId, $sectionId, '0 MINUTE')) {
 				displayerror('Sorry, you have exceeded your time limit for this section. Your latest submission cannot be evaluated.');
 				return false;
 			}

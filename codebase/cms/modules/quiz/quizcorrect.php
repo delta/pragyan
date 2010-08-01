@@ -92,6 +92,7 @@ function getQuizUserListHtml($quizId) {
 		evaluateQuiz($quizId);
 	updateSectionMarks($quizId);
 	$tableJqueryStuff="";
+	$numSecColumns=0;
 	$userTable = MYSQL_DATABASE_PREFIX . 'users';
 	$markQuery = "SELECT `$userTable`.`user_email` AS `email`, `$userTable`.`user_id` AS `user_id`, SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `$userTable`, `quiz_userattempts` WHERE " .
 			"`$userTable`.`user_id` = `quiz_userattempts`.`user_id` AND " .
@@ -105,7 +106,7 @@ function getQuizUserListHtml($quizId) {
 	$result = mysql_query("SELECT `quiz_sectiontitle` FROM `quiz_sections` WHERE `page_modulecomponentid` = '$quizId' ORDER BY `quiz_sectionid`");
 	$sectionHead = "";
 	$secCols="";
-	$toggleColumns="<td><input type='checkbox' onclick='fnShowHide(0);' checked />User Full Name<br/></td>";
+	$toggleColumns="<tr><td><input type='checkbox' onclick='fnShowHide(0);' checked />User Full Name<br/></td>";
 	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(1);' />User Email<br/></td>";
 	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(2);' checked />Marks<br/></td>";
 	$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide(3);' checked />Time Taken<br/></td>";
@@ -117,9 +118,12 @@ function getQuizUserListHtml($quizId) {
 	{
 		$sectionHead .= "<th>Section : {$row['quiz_sectiontitle']}</th>";
 		$tableJqueryStuff.="null,";
-		$secCols.="<td><input type='checkbox' onclick='fnShowHide($c);' checked />Section : {$row['quiz_sectiontitle']}<br/></td>";
+		if($c%6==0) $secCols.="</tr><tr>";
+		$secCols.="<td><input type='checkbox' onclick='fnShowHide($c);' checked />Section : {$row['quiz_sectiontitle']}<br/></td>";		
+		$numSecColumns++;
 		$c++;
 	}
+	$secCols.="</tr>";
 	$toggleColumns.=$secCols;
 	global $urlRequestRoot, $cmsFolder;
 	$userListHtml = <<<HEAD
@@ -159,22 +163,34 @@ HEAD;
 	
 	global $ICONS_SRC,$ICONS;
 	$userListHtml .= "<h3>User Submissions for Quiz: {$query[0]}</h3>
-		<fieldset><legend>Select Columns</legend><table><tr>$toggleColumns</tr></table></fieldset>
+		<fieldset><legend>Select Columns</legend><table>$toggleColumns</table></fieldset>
 		<table class=\"userlisttable display\" border=\"1\" id='userstable'>" .
 		"<thead><tr><th>User Full Name</th><th>User Email</th><th>Total Marks</th><th>Time Taken</th><th>Started</th><th>Finished</th>$sectionHead<th>Action</th></tr></thead><tbody>";
 	while ($markRow = mysql_fetch_assoc($markResult)) {
 		$userMarks = "";
-		$marksResult = mysql_query("SELECT `quiz_marksallotted` FROM `quiz_userattempts` WHERE `user_id` = {$markRow['user_id']} AND `page_modulecomponentid` = $quizId ORDER BY `quiz_sectionid`");
+		$marksResult = mysql_query("SELECT `quiz_marksallotted`,`quiz_sectionid` FROM `quiz_userattempts` WHERE `user_id` = {$markRow['user_id']} AND `page_modulecomponentid` = $quizId ORDER BY `quiz_sectionid`");
+		$cc=1;
 		
 		while($row = mysql_fetch_array($marksResult))
+		{
+			
+			if($row['quiz_sectionid']!=$cc) // To check if some sections are missing, if yes then add NA value
+			{	
+				while($row['quiz_sectionid']>$cc) { $userMarks .= "<td>-0</td>"; $cc++; }
+			}
 			$userMarks .= "<td>{$row['quiz_marksallotted']}</td>";
+			$cc++;
+			
+		}
+		
+		while($cc<=$numSecColumns) {  $userMarks .= "<td>-0</td>"; $cc++;}
 		if (is_null($markRow['finishtime'])) {
 			$markRow['finished'] = 0;
 			$markRow['finishtime'] = 'NULL';
 		}
 		$userfullname=getUserFullNameFromEmail($markRow['email']);
 		if($userfullname=="") $userfullname="Anonymous";
-		$userListHtml .= "<tr><td>$userfullname</td><td>{$markRow['email']}</a></td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks";
+		$userListHtml .= "<tr><td>$userfullname</td><td>{$markRow['email']}</td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks";
 		$userListHtml .= '<td><form name="userclearform" method="POST" action=""><input type="hidden" name="hdnUserId" id="hdnUserId" value="' . $markRow['user_id'] . "\" /><a href=\"./+correct&useremail={$markRow['email']}\">".$ICONS['Correct']['small'].'</a><input type="image" src="'.$ICONS_SRC["Delete"]["small"].'" name="btnDeleteUser" id="btnDeleteUser" value="Reject Submission" title="Reject Submission"/></form></td>';
 		$userListHtml .= "</tr>\n";
 	}
