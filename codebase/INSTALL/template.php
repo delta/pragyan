@@ -14,9 +14,9 @@
 		<title>Pragyan CMS v3 - Installation</title>
 
 		<link rel="index" href="./" title="Home" />
-		<link rel="stylesheet" media="screen,projection" type="text/css" href="<?= $templateFolder ?>/css/main.css" />
-		<link rel="stylesheet" media="print" type="text/css" href="<?= $templateFolder ?>/css/print.css" />
-		<link rel="stylesheet" media="aural" type="text/css" href="<?= $templateFolder ?>/css/aural.css" />
+		<link rel="stylesheet" media="screen,projection" type="text/css" href="<?php echo $templateFolder ?>/css/main.css" />
+		<link rel="stylesheet" media="print" type="text/css" href="<?php echo $templateFolder ?>/css/print.css" />
+		<link rel="stylesheet" media="aural" type="text/css" href="<?php echo $templateFolder ?>/css/aural.css" />
 	</head>
 
 	<body>
@@ -49,7 +49,7 @@
 				<?php echo $installPageContent; ?>
 
 				</div> <!-- /page-in -->
-			</div> <!-- /page -->
+		</div> <!-- /page -->
 
 			<!-- Footer -->
 			<div id="footer" style="text-align: right; color: #AEAEB8; background: url(images/inst_footer.jpg)">
