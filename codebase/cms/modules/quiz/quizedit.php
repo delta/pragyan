@@ -361,12 +361,28 @@ function setWeightMark($quizId, $weight, $positive, $negative) {
 }
 
 function weightMarksForm($quizId) {
-	$result = mysql_query("SELECT DISTINCT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId AND `quiz_questionweight` NOT IN (SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId)");
-	if(mysql_num_rows($result) == 0)
-		return 'Marks for all Weight are set';
+	$result = mysql_query("SELECT DISTINCT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId");
+	
 	$ret = "<table><thead><th>Weight</th><th>Marks</th></thead>";
+	$pmarks="";
+	$nmarks="";
 	while($row = mysql_fetch_assoc($result))
-		$ret .= "<tr><td>{$row['quiz_questionweight']}</td><td><form method=POST action='./+edit&subaction=setweightmark'><input type=hidden name=weight value='{$row['quiz_questionweight']}'><input type=hidden name=quizId value='{$quizId}'>+ve:<input type=text name='pos' value='{$row['quiz_questionweight']}' size=5>; -ve:<input type=text name='neg' value='{$row['quiz_questionweight']}' size=5> <input type=submit name=btnSetWeightMarks value='Set Marks'></form></td></tr>";
+	{
+		$result2= mysql_query("SELECT `question_positivemarks`,`question_negativemarks` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId AND `question_weight`={$row['quiz_questionweight']}");
+		
+		if(mysql_num_rows($result2)==0)
+		{
+			$pmarks=$row['quiz_questionweight'];
+			$nmarks=$row['quiz_questionweight'];
+		}
+		else
+		{
+			$row2=mysql_fetch_assoc($result2);
+			$pmarks=$row2["question_positivemarks"];
+			$nmarks=$row2["question_negativemarks"];
+		}
+		$ret .= "<tr><td>{$row['quiz_questionweight']}</td><td><form method=POST action='./+edit&subaction=setweightmark'><input type=hidden name=weight value='{$row['quiz_questionweight']}'><input type=hidden name=quizId value='{$quizId}'>Positive<input type=text name='pos' value='$pmarks' size=5> Negative<input type=text name='neg' value='$nmarks' size=5> <input type=submit name=btnSetWeightMarks value='Set Marks'></form></td></tr>";
+	}
 	return $ret . "</table>";
 }
 
@@ -804,9 +820,6 @@ function submitQuizEditForm($quizId) {
 function submitSectionEditForm($quizId, $sectionId) {
 	$fieldMap = getSectionEditFormFieldMap();
 	$updates = array();
-	print_r($fieldMap);
-	echo "<br/>";
-	print_r($_POST);
 	for ($i = 0; $i < count($fieldMap); ++$i) {
 		$update = "`{$fieldMap[$i][1]}` = ";
 		if ($fieldMap[$i][3] == 'checkbox') {
@@ -824,7 +837,7 @@ function submitSectionEditForm($quizId, $sectionId) {
 		return true;
 
 	$updateQuery = "UPDATE `quiz_sections` SET " . implode(', ', $updates) . " WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId";
-	echo $updateQuery;
+
 	if (!mysql_query($updateQuery)) {
 		displayerror('Database Error. Could not save section details.');
 		return false;
@@ -865,7 +878,7 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 			$optionId = mysql_insert_id();
 
 			if (
-				($questionType == 'sso' && $_POST['optOption'] == $i) ||
+				($questionType == 'sso' && isset($_POST['optOption']) && $_POST['optOption'] == $i) ||
 				($questionType == 'mso' && isset($_POST['chkOption' . $i]))
 			)
 				$rightAnswer[] = $optionId;

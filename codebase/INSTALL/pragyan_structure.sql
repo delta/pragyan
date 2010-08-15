@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `article_comments` (
 
 CREATE TABLE IF NOT EXISTS `form_desc` (
   `page_modulecomponentid` int(11) NOT NULL,
-  `form_heading` varchar(200) NOT NULL,
+  `form_heading` varchar(1000) NOT NULL,
   `form_loginrequired` tinyint(1) NOT NULL DEFAULT '1',
   `form_headertext` text,
   `form_footertext` text,
@@ -105,14 +105,14 @@ CREATE TABLE IF NOT EXISTS `form_elementdata` (
 CREATE TABLE IF NOT EXISTS `form_elementdesc` (
   `page_modulecomponentid` int(11) NOT NULL DEFAULT '0',
   `form_elementid` int(11) NOT NULL DEFAULT '0',
-  `form_elementname` varchar(100) NOT NULL,
-  `form_elementdisplaytext` varchar(500) NOT NULL COMMENT 'Description of data held',
+  `form_elementname` varchar(1000) NOT NULL,
+  `form_elementdisplaytext` varchar(5000) NOT NULL COMMENT 'Description of data held',
   `form_elementtype` enum('text','textarea','radio','checkbox','select','password','file','date','datetime') NOT NULL DEFAULT 'text',
   `form_elementsize` int(11) DEFAULT NULL,
   `form_elementtypeoptions` text,
-  `form_elementdefaultvalue` varchar(400) DEFAULT NULL,
-  `form_elementmorethan` varchar(400) DEFAULT NULL,
-  `form_elementlessthan` varchar(400) DEFAULT NULL,
+  `form_elementdefaultvalue` varchar(4000) DEFAULT NULL,
+  `form_elementmorethan` varchar(4000) DEFAULT NULL,
+  `form_elementlessthan` varchar(4000) DEFAULT NULL,
   `form_elementcheckint` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Check if it is int if 1',
   `form_elementtooltiptext` text NOT NULL,
   `form_elementisrequired` tinyint(1) NOT NULL DEFAULT '0',

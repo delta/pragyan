@@ -91,7 +91,7 @@ QUIZSTARTFORM;
 			// if btnStartSection and hdnSectionId are set
 			if (isset($_POST['btnStartSection']) && $this->isValidId($_POST['hdnSectionId']) && sectionBelongsToQuiz($this->quizId, $_POST['hdnSectionId']))
 				$sectionId = intval($_POST['hdnSectionId']);
-			elseif ($this->isValidId($_GET['sectionid']))
+			elseif (isset($_GET['sectionid']) && $this->isValidId($_GET['sectionid']))
 				$sectionId = intval($_GET['sectionid']);
 
 			if (!isset($sectionId))
@@ -99,7 +99,7 @@ QUIZSTARTFORM;
 
 			$attemptRow = getAttemptRow($this->quizId, $sectionId, $userId);
 			$sectionStarted = $attemptRow ? true : false;
-			$sectionCompleted = !is_null($attemptRow['quiz_submittime']);
+			$sectionCompleted = !is_null($attemptRow['quiz_submissiontime']);
 
 			if (!$sectionStarted) {
 				if (!isset($_POST['btnStartSection'])) {
@@ -218,14 +218,14 @@ QUIZSTARTFORM;
 		}
 
 		// Put in check about user's time elapsed here
-		if ($this->checkUserTimedOut($userId, -1, '0 MINUTE')) {
+		if ($this->checkUserTimedOut($userId, -1, '1 MINUTE')) {
 			displayerror('Sorry, you have exceeded your time limit for the quiz. Your latest submission cannot be evaluated.');
 			return false;
 		}
 
 		if ($this->quizRow['quiz_allowsectionrandomaccess']) {
 			$sectionId = intval($_GET['sectionid']);
-			if ($this->checkUserTimedOut($userId, $sectionId, '0 MINUTE')) {
+			if ($this->checkUserTimedOut($userId, $sectionId, '1 MINUTE')) {
 				displayerror('Sorry, you have exceeded your time limit for this section. Your latest submission cannot be evaluated.');
 				return false;
 			}
@@ -302,7 +302,9 @@ QUIZSTARTFORM;
 	private function checkQuizInitialized($userId) {
 		$countQuery = "SELECT COUNT(*) FROM `quiz_answersubmissions` WHERE `page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId";
 		$countResult = mysql_query($countQuery);
-		$countRow = mysql_fetch_assoc($countResult);
+		
+		$countRow = mysql_fetch_row($countResult);
+		
 		return $countRow[0] == $this->quizRow['quiz_questionspertest'];
 	}
 
@@ -371,7 +373,7 @@ QUIZSTARTFORM;
 	}
 
 	private function getTimerHtml($userId, $sectionId = -1) {
-		$elapsedTime = $this->getElapsedTime($userId, $sectionId);
+		$elapsedTime = $this->getElapsedTime($userId);
 		$elapsedTime = explode(':', $elapsedTime);
 		$elapsedTime = implode(', ', $elapsedTime);
 
@@ -732,7 +734,7 @@ QUESTIONPAGESCRIPT;
 			if ($sectionRow['quiz_sectiontimelimit'] == '00:00:00')
 				return false;
 
-			$timeoutQuery = "SELECT IF(DATE_ADD(NOW(), INTERVAL $offset) > ADDTIME(`quiz_attemptstarttime`, '{$sectionRow['quiz_sectiontimelimit']}'), 1, 0) AS `quiz_expired` FROM " .
+			$timeoutQuery = "SELECT IF(DATE_SUB(NOW(), INTERVAL $offset) > ADDTIME(`quiz_attemptstarttime`, '{$sectionRow['quiz_sectiontimelimit']}'), 1, 0) AS `quiz_expired` FROM " .
 					"`quiz_userattempts` WHERE `page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = $sectionId AND `user_id` = $userId";
 		}
 
