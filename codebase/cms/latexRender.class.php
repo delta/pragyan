@@ -6,7 +6,7 @@
  * For more details, see README
  */
 
-class render {
+class latexrender {
 
 	var $LATEX_PATH = "/usr/bin/latex";
 	var $DVIPS_PATH = "/usr/bin/dvips";

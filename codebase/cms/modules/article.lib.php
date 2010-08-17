@@ -108,11 +108,17 @@ RET;
 		}
 		global $sourceFolder;
 		global $moduleFolder;
-		require_once($sourceFolder."/latexRender.php");
+		require_once($sourceFolder."/latexRender.class.php");
 		if (get_magic_quotes_gpc())
 			$text = stripslashes($text);
-		$render = new render();
+		$render = new latexrender();
 		$ret = $render->transform($text);
+		
+		require_once($sourceFolder."/googleMaps.class.php");
+		$maps = new googlemaps();
+		$ret = $maps->render($ret);
+		
+		
 		if($this->isCommentsEnabled()) {
 			$comments = mysql_query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
 			if(mysql_num_rows($comments)>0)
