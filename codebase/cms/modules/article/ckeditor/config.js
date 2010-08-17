@@ -8,6 +8,8 @@ CKEDITOR.editorConfig = function( config )
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';
-	config.extraPlugins='tex';
+	config.extraPlugins='tex,googlemaps';
 	config.toolbar_Full.push(['tex']);
+
+	config.toolbar_Full.push(['googlemaps']);
 };
