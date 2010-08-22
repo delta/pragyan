@@ -373,18 +373,30 @@ QUIZSTARTFORM;
 	}
 
 	private function getTimerHtml($userId, $sectionId = -1) {
-		$elapsedTime = $this->getElapsedTime($userId);
-		$elapsedTime = explode(':', $elapsedTime);
-		$elapsedTime = implode(', ', $elapsedTime);
+		$testElapsedTime = $this->getElapsedTime($userId);
+		$testElapsedTime = explode(':', $testElapsedTime);
+		$testElapsedTime = implode(', ', $testElapsedTime);
+		$sectionElapsedTime = $this->getElapsedTime($userId,$sectionId);
+		$sectionElapsedTime = explode(':', $sectionElapsedTime);
+		$sectionElapsedTime = implode(', ', $sectionElapsedTime);
+
+		$testTime = $this->quizRow['quiz_testduration'];
+		$testTime = explode(':', $testTime);
+		$testTime = implode(', ', $testTime);
+		
+		$sectionTime = mysql_fetch_array(mysql_query("SELECT `quiz_sectiontimelimit` FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId'"));
+		$sectionTime = $sectionTime[0];
+		$sectionTime = explode(':', $sectionTime);
+		$sectionTime = implode(', ', $sectionTime);
+
+		$scripts[] = "var testTimer = new JSTimer('testTimerContainer', $testElapsedTime);\ntestTimer.addTickHandler($testTime, forceQuizSubmit)";
+		$scripts[] = "var sectionTimer = new JSTimer('sectionTimerContainer', $sectionElapsedTime);\nsectionTimer.addTickHandler($sectionTime, forceQuizSubmit)";
 
 		$divs = array();
 		if ($this->quizRow['quiz_showquiztimer']) {
-			$testTime = $this->quizRow['quiz_testduration'];
-			$testTime = explode(':', $testTime);
-
+		
 			$divs[] = '<div id="testTimerContainer" class="quiz_testtimer">Total Quiz Time Elapsed: </div>';
-			$scripts[] = "var testTimer = new JSTimer('testTimerContainer', $elapsedTime);\ntestTimer.addTickHandler({$testTime[0]}, {$testTime[1]}, {$testTime[2]}, forceQuizSubmit)";
-		}
+			}
 
 		if ($this->quizRow['quiz_showpagetimer']) {
 			$divs[] = '<div id="pageTimerContainer" class="quiz_pagetimer"></div>';
@@ -396,6 +408,7 @@ QUIZSTARTFORM;
 			$sectionRow = getSectionRow($this->quizId,$sectionId);
 			$limit = $sectionRow['quiz_sectiontimelimit'];
 			$divs[] = '<div id="pageTimerlimit" class="quiz_limit">Section Limit: ' . $limit . '</div>';
+			$divs[] = '<div id="sectionTimerContainer" class="quiz_testtimer">Section Time Elapsed: </div>';
 		}
 
 		global $urlRequestRoot, $cmsFolder, $moduleFolder;
@@ -463,8 +476,8 @@ TIMERSCRIPT;
 		if ($questionNumber > 0) $questionDesc = $questionNumber . ') ' . $questionDesc;
 
 		global $sourceFolder, $moduleFolder;
-		require_once($sourceFolder."/latexRender.php");
-		$render = new render();
+		require_once($sourceFolder."/latexRender.class.php");
+		$render = new latexrender();
 		$questionDesc = $render->transform($questionDesc);
 		$answer = $render->transform($answer);
 
