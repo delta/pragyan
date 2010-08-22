@@ -7,7 +7,7 @@
  * For more details, see README
  */
 var a= {  
-        exec:function(editor){  
+        exec:function(editor){ 
 			var theSelectedText = editor.getSelection().getNative();
 			var FormattedText = '[tex]'+theSelectedText+'[/tex]';
 			editor.insertHtml(FormattedText);

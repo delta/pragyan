@@ -10,6 +10,5 @@ CKEDITOR.editorConfig = function( config )
 	// config.uiColor = '#AADC6E';
 	config.extraPlugins='tex,googlemaps';
 	config.toolbar_Full.push(['tex']);
-
 	config.toolbar_Full.push(['googlemaps']);
 };
