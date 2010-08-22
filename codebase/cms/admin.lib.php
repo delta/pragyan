@@ -274,8 +274,8 @@ function admin($pageid, $userid) {
 	</tr>
 	<tr>
 	<td colspan=2><a href="./+admin&subaction=useradmin">{$ICONS['User Management']['large']}<br/>User Management</a></td>
-	<td colspan=2><a href="./+admin&subaction=editgroups">{$ICONS['User Groups']['large']}<br/>Group Management</a></td>
-	
+	<td><a href="./+admin&subaction=editgroups">{$ICONS['User Groups']['large']}<br/>Group Management</a></td>
+	<td><a href="./+admin&subaction=widgets">{$ICONS['Widgets']['large']}<br/>Widgets</a></td>
 	</tr>
 
 	</table>
@@ -311,11 +311,13 @@ ADMINPAGE;
 	global $sourceFolder;	
 	if(!isset($_GET['subaction'])) return $quicklinks;
 	require_once("users.lib.php");
+	require_once("widget.lib.php");
 	$op="";$ophead=""; $str="";
 	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
 		if ($_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
 		
 		else if ($_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="{$ICONS['User Management']['small']}User Management"; }
+		else if ($_GET['subaction'] == 'widgets') { $op .= handleWidgetMgmt($pageid); $ophead="{$ICONS['Widgets']['small']}Widgets Management"; }
 		else if ($_GET['subaction'] == 'editgroups') {
 			require_once("permission.lib.php");
 			$pagepath = array();
@@ -335,8 +337,6 @@ ADMINPAGE;
 		elseif (($_GET['subaction'] == 'editprofileform') ||
 			(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editprofileform'))
 			{ $op .= admin_editProfileForm(); $ophead="{$ICONS['User Profile']['small']}Edit User Profile Form"; }
-		elseif (($_GET['subaction']) == 'viewsiteregistrants' || $_GET['subaction'] == 'editsiteregistrants') 
-			$op .= admin_editRegistrants(); 
 		elseif (isset ($_GET['id'])) $op .= admin_userAdmin();
 		elseif (isset ($_GET['movePermId'])){ $op .= admin_changePermRank(); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; }
 		elseif (isset ($_GET['module'])){ $op .= admin_changePermRank(escape($_GET['module'])); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank for module '".escape($_GET['module'])."'"; }
@@ -356,7 +356,7 @@ ADMINPAGE;
 		
 		$op .= userManagementForm();
 	}
-	else 
+	else if($_GET['subaction']=='expert')
 	{
 		$str .= "<fieldset><legend>{$ICONS['Site Maintenance']['small']}Experts Only</legend>";
 		$str .= '<a href="./+admin&subaction=checkPerm">Check Permission List</a><br />';
@@ -589,231 +589,6 @@ function admin_checkAdminPerms()
 
 
 /*
- * 7) User management: List of all users, ability to edit everything about them,
- *  ability to activate users, ability to create users
- *
- */
-
-function admin_userAdmin() {
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` ORDER BY `user_id` ASC";
-	$result = mysql_query($query) or die(mysql_error() . "admin.lib L192");
-	$table .=<<<HEAD
-	<script language="javascript">
-	function checkDelete(butt,userDel,userId)
-							{
-								 if(confirm('Are you sure you want to delete '+userDel+'?'))
-								{
-
-
-									window.location+="&id="+userId+"&userDel="+userDel;
-
-								}
-								else return false;
-							}
-					    </script>
-	<table border="1">
-	<td id="user_id">User Id</td>
-	<td id="user_name">User Name</td>
-	<td id="user_email">User Email</td>
-	<td id="user_fullname">Full Name</td>
-	<td id="user_password">Password Hash(MD5)</td>
-	<td id="user_regdate">Registration date</td>
-	<td id="user_lastlogin">Last Login</td>
-	<td id="user_activated">Active</td>
-	<td id="user_delete">Delete</td>
-HEAD;
-	$links =<<<LINKS
-	<input type="button" onclick="window.open('./+admin&id=search','_top')" value="Search User" />
-	<input type="button" onclick="window.open('./+admin&id=new','_top')" value="New User" /><hr/>
-
-LINKS;
-	$count = count($_GET);
-	if ((!(isset ($_GET['id'])))) {
-		while ($temp = mysql_fetch_assoc($result)) {
-			$table .= "<tr>";
-			foreach ($temp as $var => $val) {
-				$table .= "<td><a style=\"cursor:pointer;\" onclick=\"window.location='./+admin&id=$temp[user_id]'\"> $val</a></td>";
-			}
-						$table.="<td><input type=\"Button\" name=\"deleteUser\" value=\"Delete\" onclick=\"return checkDelete(this,'".$temp['user_name']."','".$temp['user_id']."');\"></td>";
-			$table .= "</tr> ";
-		}
-		$table .= "</table>";
-		return  $links.$table;
-	}
-	if ($_POST['userAdminAction'] == 'Create') {
-		foreach ($_POST as $var => $val) {
-			$$var = $val;
-			{
-				if ($val == '') {
-					if ((($var == 'user_regdate')) || (($var == 'user_lastlogin')) || ($var == 'user_activated'));
-					else {
-						displayerror('Please enter ' . $var . ' <a href="./+admin&id=new">Go Back</a>');
-						$err = 1;
-					}
-				}
-			}
-		}
-		if ($err) {
-			return null;
-		}
-		$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` (`user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password` ,`user_regdate` ,`user_lastlogin` ,`user_activated`)VALUES ('$user_id' ,'$user_name' ,'$user_email' ,'$user_fullname' , MD5('$user_password') ,CURRENT_TIMESTAMP , '', '$user_activated')";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_affected_rows()) {
-			displayinfo("User Created");
-			$user_Id = $_POST['user_id'];
-		} else {
-			displayerror("Failed to create user");
-			return null;
-		}
-
-	}
-	if(isset($_GET['userDel'])){
-
-//		displaywarning("You are going to delete user $_GET[userDel] <a href=\"./+admin&userDel=$_GET[userDel]&id=$_GET[id]&confirmed\"><I>continue</I></a> Cancel");
-		$userId = escape($_GET['id']);
-		$userName = escape($_GET['userDel']);
-		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId AND `user_name`='$userName'";
-		$resultDel=mysql_query($query) or displayerror(mysql_error());
-		if($resultDel)displayinfo("User $userId $userName deleted");
-		else displayerror("$resultDel Failed to delete user $userName");
-		return null;
-
-
-	}
-	if ((isset ($_GET['id']))) {
-		if (($_GET['id'] != 'new') && ($_GET['id'] != 'search') && ($_POST['userAdminAction'] != 'Search')&&(!isset($_GET['userDel']))) {
-
-			$user_Id = escape($_GET['id']);
-			if ($user_Id == '')
-				$user_Id = $_POST['user_id'];
-			$user_Id = $user_Id;
-			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id`=$user_Id";
-			{
-				$result = mysql_query($query);
-				if (mysql_num_rows($result) > 0) {
-					$temp = mysql_fetch_assoc($result);
-					$readonly = "readonly";
-					$submitValue = "Save";
-					$chngPass =<<<CHG
-<td><INPUT type="checkbox" name="changePassword" value="">Change Password?</td>
-CHG;
-					foreach ($temp as $var => $val) {
-						$$var = $val;
-					}
-				} else {
-					displayerror("User id $user_Id Does not exist");
-					return null;
-				}
-			}
-			if (isset ($_POST['userAdminAction'])) {
-				foreach ($_POST as $var => $val) {
-					$$var = $val;
-				}
-				if (isset ($_POST['changePassword'])) {
-					$user_password = md5($user_password);
-					$chngPasswd = "`user_password`='$user_password',";
-				}
-				$querySave = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_name`='$user_name',`user_email`='$user_email',`user_fullname`='$user_fullname',$chngPasswd`user_activated`='$user_activated',`user_loginmethod`='$user_loginmethod' WHERE `user_id`=$user_id";
-				$resultSave = mysql_query($querySave) or die(mysql_error());
-				if (!mysql_error())
-					displayinfo("User data saved");
-				else
-					displayerror("Failed to save data");
-			}
-		}
-		elseif ($_GET['id'] == 'search') {
-			$readonly = "";
-			$submitValue = "Search";
-			$user_Id = "search";
-			$user_activated = 1;
-			displayinfo("Search uses AND operator");
-
-		}
-		elseif ($_GET['id'] == 'new') {
-			$readonly = "readonly";
-			$submitValue = "Create";
-			$query = "SELECT MAX(user_id) AS MAX FROM `" . MYSQL_DATABASE_PREFIX . "users`";
-			$result = mysql_query($query) or die(mysql_error() . "check.lib L:266");
-			$row = mysql_fetch_assoc($result);
-			$user_id = $row['MAX'] + 1;
-			$user_activated = 0;
-		}
-		if ($_POST['userAdminAction'] == 'Search') {
-
-			$i = 0;
-			$readonly = "";
-			$submitValue = "Search";
-			foreach ($_POST as $var => $val) {
-				if ($val == 'Search');
-				else {
-					if ($val != '') {
-						if ($i == 1)
-							$string .= " AND ";
-						$val = $val;
-						$$var = $val;
-						$string .= "`$var` LIKE CONVERT( _utf8 '%$val%'USING latin1 ) ";
-						$i = 1;
-					}
-				}
-			}
-			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE $string ";
-			$resultSearch = mysql_query($query);
-			if (mysql_num_rows($resultSearch) > 0) {
-				$num = mysql_num_rows($resultSearch);
-				displayinfo("$num results found");
-				while ($temp = mysql_fetch_assoc($resultSearch)) {
-					$table .= "<tr>";
-					foreach ($temp as $var => $val) {
-						$table .= "<td><a style=\"cursor:pointer;\" onclick=\"window.location='./+admin&id=$temp[user_id]'\"> $val</a></td>";
-
-					}
-					$table.="<td><input type=\"Button\" name=\"deleteUser\" value=\"Delete\" onclick=\"return checkDelete(this,'".$temp[user_name]."','".$temp[user_id]."');\"></td>";
-					$table .= "</tr> ";
-				}
-				$table .= "</table>";
-				return $table . $links;
-			} else
-				displayerror("User not found!");
-			$user_Id = "search";
-		}
-		if ($user_activated == 0)
-			$user_active = 1;
-		else
-			$user_active = 0;
-		$editUserForm =<<<FORM
-<form method="POST" action="./+admin&id=$user_Id">
-<br />
-<table>
-<input type="hidden" id="userAdminAction" name="userAdminAction" value="$submitValue">
-
-<tr><td>User Id </td><td><input type="text" maxlength="11" id="user_id" name="user_id" value="$user_id" $readonly></td></tr>
-<tr><td>User Name </td><td><input type="text" maxlength="100" id="user_name" name="user_name" value="$user_name"></td></tr>
-<tr><td>User Email </td><td><input type="text" maxlength="100" id="user_email" name="user_email" value="$user_email"></td></tr>
-<tr><td>User FullName </td><td><input type="text" maxlength="100" id="user_fullname" name="user_fullname" value="$user_fullname"></td></tr>
-<tr><td>User Password </td><td><input type="password" maxlength="100" id="user_password" name="user_password" value="$user_password"></td>$chngPass</tr>
-<tr><td>User Reg Date </td><td><input type="text" maxlength="100" id="user_regdate" name="user_regdate" value="$user_regdate" $readonly></td></tr>
-<tr><td>Last Login </td><td><input type="text" maxlength="100" id="user_lastlogin" name="user_lastlogin" value="$user_lastlogin" $readonly></td></tr>
-<tr><td>User Activated </td><td><select id="user_activated" name="user_activated" style="width: 10mm" >
-<option selected="selected">$user_activated</option>
-<option>$user_active</option>
-</select>
-</td></tr>
-<tr><td>User Login Method </td><td><select id="user_loginmethod" name="user_loginmethod" style="width: 60mm" >
-<option selected="selected">ldap</option>
-<option>imap</option>
-<option>ads</option>
-<option>db</option>
-</select>
-</td></tr>
-<tr><td><input type="submit" value="$submitValue" > <input type="reset"></td></tr></table>
-</form>
-FORM;
-		return $editUserForm . $links;
-	}
-}
-
-
-/*
  * 8) Ability to change perm ranks (like page move up and move )
  *
  * */
@@ -839,12 +614,6 @@ function admin_editProfileForm() {
 	include_once('profile.lib.php');
 	return getProfileFormEditForm();
 }
-
-function admin_editRegistrants() {
-	include_once('profile.lib.php');
-	return getProfileViewRegistrantsForm();
-}
-
 
 function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 	require_once("group.lib.php");

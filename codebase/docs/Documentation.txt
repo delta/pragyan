@@ -40,7 +40,7 @@ Pragyan CMS - Credits
 	Anshu Prateek
 	Ankit Srivastava
 
-- Abhishek Shrivastava <abhishekdelta[at]users.sourceforget.net>
+- Abhishek Shrivastava <abhishek[at]pragyan.org>
     * version 3.0 release
     * page-specific templates
     * new user management

@@ -2,6 +2,7 @@
 /**
  * @package pragyan
  * @author Abhishek Shrivastava
+ * @description User management for Pragyan CMS : Ability to create, search, activate, delete and edit user information.
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
