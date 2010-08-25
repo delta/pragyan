@@ -392,9 +392,9 @@ Ck1;
 		$result = mysql_query($query);
 		$revisionTable = "<fieldset>
 					        <legend><a name='revisions'>{$ICONS['Page Revisions']['small']}Page Revisions : </a></legend>" .
-					        		"<table border='1'><tr><td>Revision Number</td><td>Date Updated</td><td>User Email</td></tr>";
+					        		"<table border='1'><tr><td>Revision Number</td><td>Date Updated</td><td>User Fullname</td><td>User Email</td></tr>";
 		while ($row = mysql_fetch_assoc($result)) {
-			$revisionTable .= "<tr><td><a href=\"./+edit&version=".$row['article_revision']."#preview\">".$row['article_revision']."</a></td><td>".$row['article_updatetime']."</td><td>".getUserEmail($row['user_id'])."</td></tr>";
+			$revisionTable .= "<tr><td><a href=\"./+edit&version=".$row['article_revision']."#preview\">".$row['article_revision']."</a></td><td>".$row['article_updatetime']."</td><td>".getUserFullName($row['user_id'])."</td><td>".getUserEmail($row['user_id'])."</td></tr>";
 		}
 		$revisionTable .="</table>" .
 				"<input type=\"button\" value=\"<<\" onclick=\"window.location='./+edit&revisionno=0'\" /> " .

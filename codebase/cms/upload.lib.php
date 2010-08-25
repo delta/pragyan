@@ -280,11 +280,13 @@ function getUploadedFilePreviewDeleteForm($moduleComponentId, $moduleName, $dele
 	$uploadedFilesString = "";
 	foreach($uploadedFiles as $file) {
 		$uploadedUserEmail = getUserEmail($file['user_id']);
+		$uploadedUserName = getUserFullName($file['user_id']);
 		$fileDelete=addslashes($file['upload_filename']);
 
 		$uploadedFilesString .= <<<UPLOADEDFILESSTRING
 		<tr>
 			<td><a href="./{$file['upload_filename']}"   onMouseOver="javascript:showPath('$fileDelete')"  target="previewIframe_$uploadedFormNumber">{$file['upload_filename']}</a></td>
+			<td>$uploadedUserName</td>
 			<td>$uploadedUserEmail</td>
 			<td>{$file['upload_time']}</td>
 			<td><input type='submit' value='Delete'  onclick="return checkDeleteUpload(this, '$fileDelete');"></td>
@@ -351,6 +353,7 @@ UPLOADEDFILESSTRING;
 						<tr>
 							<th>File</th>
 							<th>Uploaded By</th>
+							<th>Email Id</th>
 							<th>Upload Time</th>
 							<th>Delete</th>
 						</tr>
