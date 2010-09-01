@@ -129,7 +129,7 @@ function profile($userId, $forEditRegistrant = false) {
 
 			$errors = !submitRegistrationForm(0, $userId, true, true) || $errors;
 			if(!$errors) {
-				displayinfo('All fields updated successfully!.<br />' .
+				displayinfo('All fields updated successfully!<br />' .
 						'<input type="button" onclick="history.go(-2)" value="Go back" />');
 			}
 		}

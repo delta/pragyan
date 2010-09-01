@@ -75,7 +75,9 @@
 		if(!$disableCaptcha && $formRow['form_usecaptcha'] == 1)
 			$body .= getCaptchaHtml();
 
-		$body .= '</table></fieldset>' .
+		$body .= '<tr>'.
+				'<td colspan="2">* - Required Fields&nbsp;</td>'.
+			'</tr></table></fieldset>' .
 							'<br /><input type="submit" name="submitreg_form_'.$moduleCompId.'" value="Submit" />' .
 							'<br /><br />' . $formRow['form_footertext'] .
 							'</form></div>';
@@ -152,7 +154,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 	$elementResult = mysql_query($elementQuery);
 
 	if($elementResult && $elementRow = mysql_fetch_assoc($elementResult)) {
-		$htmlOutput = '<td>' . $elementRow['form_elementdisplaytext'] . '</td><td>';
+		$htmlOutput = '<td>' . $elementRow['form_elementdisplaytext'];
 		$jsOutput = array();
 
 		$elementHelpName = $elementRow['form_elementname'];
@@ -171,6 +173,9 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			$jsOutput[] = "isFilled('$elementName', '$elementHelpName')";
 		}
 
+		if($isRequired)
+			$htmlOutput .= '*';
+		$htmlOutput .='</td><td>';
 		$functionName = "getFormElement".ucfirst(strtolower($elementType));
 		if($functionName($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,$jsOutput,$htmlOutput)==false)
 			displayerror("Unable to run function ".$functionName);
