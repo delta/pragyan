@@ -7,6 +7,17 @@
  */
  
 function getRegistrationForm() {
+	global $urlRequestRoot, $moduleFolder, $cmsFolder,$sourceFolder, $templateFolder;
+	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
+	require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
+	$jsValidationFunctions = array();
+	$containsFileUploadFields = false;
+	$dynamicFields = getFormElementsHtmlAsArray(0, 0, $jsValidationFunctions, $containsFileUploadFields);
+	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+	if($dynamicFields != '') {
+		$dynamicFields = "<tr>$dynamicFields</tr>";
+	}
+	$jsValidationFunctions = join($jsValidationFunctions, ' && ');
 	$captchaHtml = getCaptchaHtml();
 	$reg_str =<<<REG
 <script language="javascript">
@@ -41,26 +52,27 @@ function getRegistrationForm() {
 	<fieldset>
 	<legend> Sign Up</legend>
 		<table>
-	       <tr>	<td><label for="user_email" class="labelrequired">Email</label></td>
+	       <tr>	<td><label for="user_email" class="labelrequired">Email *</label></td>
 				<td><input name="user_email" id="user_email" class="required" onchange="if(this.length!=0) return checkEmail(this);" type="text"></td>
            </tr>
-           <tr>	<td><label for="user_password" class="labelrequired">Password</label></td>
+           <tr>	<td><label for="user_password" class="labelrequired">Password *</label></td>
 	     		<td>  <input name="user_password" id="user_password" class="required" type="password"></td>
 	     	</tr>
-			<tr> <td><label for="user_repassword" class="labelrequired">Re-enter Password</label></td>
+			<tr> <td><label for="user_repassword" class="labelrequired">Re-enter Password *</label></td>
 	   			<td> <input name="user_repassword" id="user_repassword" class="required" onchange="if(this.length!=0) return checkPassword(this);" type="password"></td>
   			</tr>
   			<tr>
-  				<td><label for="user_name" class="labelrequired">User name</label></td>
+  				<td><label for="user_name" class="labelrequired">User name *</label></td>
 				<td><input name="user_name" id="user_name" class="required" type="text"></td>
    			</tr>
    			<tr>
-   				<td><label for="user_fullname" class="labelrequired">Full Name</label></td>
+   				<td><label for="user_fullname" class="labelrequired">Full Name *</label></td>
    				<td><input name="user_fullname" id="user_fullname" class="required" type="text"></td>
    			</tr>
+			$dynamicFields
    			$captchaHtml
    			<tr>
-				<td colspan="2">&nbsp;</td>
+				<td colspan="2">* - Required Fields&nbsp;</td>
 			</tr>
 
 			<tr>
@@ -199,7 +211,12 @@ FORM;
 			$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
 					"(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`) " .
 					"VALUES ('".escape($_POST['user_name'])."', '".escape($_POST['user_email'])."', '".escape($_POST['user_fullname'])."', '$passwd', ".ACTIVATE_USER_ON_REG.")";
-			if (mysql_query($query))
+			$result = mysql_query($query);
+			$query1 = "SELECT `user_id` FROM `". MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` ='".escape($_POST['user_email'])."' LIMIT 1";
+			$result1 = mysql_query($query1);
+			$result1 = mysql_fetch_array($result1);
+			submitRegistrationForm(0, $result1[0], true, true); 
+			if ($result)
 			{
 				if(ACTIVATE_USER_ON_REG)
 					displayinfo("You have been successfully registered. You can now <a href=\"./+login\">log in</a>.");

@@ -40,11 +40,10 @@ function userManagementForm()
 	<table><tr><td>Field Name</td><td>Display ?</td><td>Field Name</td><td>Display ?</td><td>Field Name</td><td>Display ?</td></tr>
 USERFORM;
 	
-	$xcolumnNames=array_values(getColumnList(0, false, false, false, false, false));
-	
+	$xcolumnNames=array_keys(getColumnList(0, false, false, false, false, false));
+	$xcolumnPrettyNames=array_values(getColumnList(0, false, false, false, false, false));
 	$usertablefields=array_merge(getTableFieldsName('users'),$xcolumnNames);
-	$userfieldprettynames=array_merge(array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method"),array_map('ucfirst',$xcolumnNames));
-	
+	$userfieldprettynames=array_merge(array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method"),array_map('ucfirst',$xcolumnPrettyNames));
 	$cols=3;
 	for($i=0;$i<count($usertablefields);$i=$i+$cols)
 	{	
@@ -263,6 +262,7 @@ function handleUserMgmt()
 				
 			
 		}
+		
 		$userid=$_GET['userid'];
 		$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`=$userid";
 		$columnList=getColumnList(0,false,false,false,false,false);
@@ -323,7 +323,7 @@ function handleUserMgmt()
 	{
 	
 		$results="";
-		//TODO : Implement Search based on user profile fields
+		
 		
 		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");	
 		
@@ -374,7 +374,7 @@ function handleUserMgmt()
 		}
 		
 		$searchForm="<form name='user_search_form' action='./+admin&subaction=useradmin&subsubaction=search' method='POST'><h3>Search User</h3>";
-		$xcolumnNames=array_values(getColumnList(0, false, false, false, false, false));
+		$xcolumnNames=array_keys(getColumnList(0, false, false, false, false, false));
 		$usertablefields2=array_merge($usertablefields,$xcolumnNames);
 		for($i=0;$i<count($usertablefields2);$i++)
 			if(isset($_POST[$usertablefields2[$i].'_sel']))
@@ -497,8 +497,6 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 {
 	global $urlRequestRoot, $cmsFolder, $moduleFolder, $templateFolder,$sourceFolder;
 	require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
-	
-
 	$extraColumns=getColumnList(0, false, false, false, false, false);
 	$xcolumnIds=array(); $xcolumnNames=array(); $xcolumnFieldVars=array();
 	foreach($extraColumns as $columnid=>$colname)
@@ -591,7 +589,7 @@ USERLIST;
 		
 	
 	$defCols=getTableFieldsName('users');
-	$usertablefields=array_merge($defCols,$xcolumnNames);
+	$usertablefields=array_merge($defCols,$xcolumnIds);
 	$displayfieldsindex=array();
 	$c=0;
 	for($i=0;$i<count($usertablefields);$i++)

@@ -206,7 +206,7 @@ function getTo($desc) {
 function sendEmail() {
 	$to = getTo($_POST['recipients']);
 	$subject = CMS_TITLE . $_POST['emailtemplates'];
-	if(mail($to,$_POST['subject'],$_POST['templateContent']))
+	if(@mail($to,$_POST['subject'],$_POST['templateContent']))
 		displayinfo("Mail sent successfully.");
 	else
 		displayerror("Error in sending mail.");
