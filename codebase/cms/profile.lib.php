@@ -306,11 +306,10 @@ PREF;
 		</fieldset>
 	</form>
 </div>
-<br />
 PREF;
 
 	// TODO: implement getProfileNewsletterList completely. return $profileForm . getProfileGroupsAndFormsList($userId) . getProfileNewsletterList($userId);
-	return  $profileForm . getProfileGroupsAndFormsList($userId); 
+	return  $profileForm . getProfileForms($userId).getProfileGroupsAndFormsList($userId); 
 }
 
 
@@ -438,6 +437,25 @@ function getProfileRegistrantsList($showEditButtons = false) {
 	return '<br /><br /><br /><table border="1">' . $tableCaptions . $tableBody . '</table>';
 }
 
+function getProfileForms($userId) {
+	global $ICONS,$urlRequestRoot;
+	$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms I Have Registered To</legend>";
+	$regforms .= '<ol>';
+	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = $userId";
+	$result2 = mysql_query($query);
+	while($result = mysql_fetch_row($result2)) {
+		if($result[0]!=0){
+		$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
+		$formPathLink = $urlRequestRoot . $formPath;
+		$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` =". $result[0];		
+		$result1 = mysql_query($query1);
+		$result1 = mysql_fetch_row($result1);
+		$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
+		}
+	}
+	$regforms .= '</ol></fieldset> ';
+	return $regforms;
+}
 function getProfileGroupsAndFormsList($userId) {
 	global $sourceFolder;
 	require_once("$sourceFolder/group.lib.php");
