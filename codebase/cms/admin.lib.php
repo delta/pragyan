@@ -63,6 +63,7 @@ function globalSettingsForm()
 	$activate_useronreg=$default_user_activate==0?"":"checked";
 	$default_mailverify=$default_mail_verify==0?"":"checked";
 	$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
+	$allow_login=$allow_login==0?"":"checked";
 	$templates = getAvailableTemplates();
 	
 	global $ICONS;
@@ -136,6 +137,10 @@ $globalform.=<<<globalform
 	<tr>
 	<td>Activate User On Registration ?</td>
 	<td><input name='activate_useronreg' type='checkbox' $activate_useronreg></td>
+	</tr>
+	<tr>
+	<td>Allow Users to Login/Register ?</td>
+	<td><input name='allow_login' type='checkbox' $allow_login></td>
 	</tr>
 	<tr>
 	<td><input type='hidden' name='update_global_settings' /><input type='submit' value='Update' />
@@ -383,6 +388,7 @@ function updateGlobalSettings()
 	$global['default_mail_verify']=isset($_POST['send_mail_on_reg'])?1:0;
 	$global['breadcrumb_submenu']=isset($_POST['breadcrumb_submenu'])?1:0;
 
+	$global['allow_login']=isset($_POST['allow_login'])?1:0;
 	$global['cms_title']=escape($_POST['cms_title']);
 	$global['default_template']=escape($_POST['default_template']);
 	$global['cms_email']=escape($_POST['cms_email']);

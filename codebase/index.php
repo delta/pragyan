@@ -76,25 +76,39 @@ $FOOTER=$cms_footer;
 
 
 require_once($sourceFolder."/parseurl.lib.php");
+require_once($sourceFolder."/template.lib.php");
+require_once($sourceFolder."/menu.lib.php");
+require_once($sourceFolder."/breadcrumbs.lib.php");
+require_once($sourceFolder."/permission.lib.php");
+require_once($sourceFolder."/content.lib.php");
+require_once($sourceFolder."/inheritedinfo.lib.php");
+require_once($sourceFolder."/actionbar.lib.php");
+require_once($sourceFolder."/registration.lib.php");
+
+//parseurl.lib.php
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
 
-require_once($sourceFolder."/permission.lib.php");
-logInfo (getUserEmail($userId),$userId, $pageId, $pageFullPath, getPageModule($pageId), $action, $_SERVER['REMOTE_ADDR']);
-
 if ($pageId === false) { ///<Following also used in download.lib.php
-	header("http/1.0 404 Not Found" );
-	echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .
-		 "<p>The requested URL was not found on this server.</p><hr>" .
-		 "$_SERVER[SERVER_SIGNATURE]</body></html>";
+	define("TEMPLATE", getPageTemplate(0));
+	$pageId = parseUrlReal("home", $pageIdArray);
+	$TITLE = CMS_TITLE;
+	$MENUBAR = '';
+	$CONTENT = "The requested URL was not found on this server.<br />$_SERVER[SERVER_SIGNATURE]".
+		"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
 	exit();
 }
+logInfo (getUserEmail($userId),$userId, $pageId, $pageFullPath, getPageModule($pageId), $action, $_SERVER['REMOTE_ADDR']);
+
 if(URLSecurityCheck($_GET))
 {
-	header("http/1.0 400 Bad Request" );
-	echo "<html><head><title>400 Bad Request</title></head><body><h1>Bad Request</h1>" .
-		 "<p>The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/>
-		 If you believe its a correct URL, please contact the administrator immediately.</p><hr>" .
-		 "$_SERVER[SERVER_SIGNATURE]</body></html>";
+	define("TEMPLATE", getPageTemplate(0));
+	$pageId = parseUrlReal("home", $pageIdArray);
+	$TITLE = CMS_TITLE;
+	$MENUBAR = '';
+	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
+			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
 	exit();
 }
 
@@ -106,32 +120,33 @@ if(isset($_GET['fileget'])) {
 	download($pageId,$userId,$_GET['fileget'],$action);
 	exit();
 }
-
+//Permission.lib.php
 $permission = getPermissions($userId, $pageId, $action);
-require_once($sourceFolder."/template.lib.php");
+
 define("TEMPLATE", getPageTemplate($pageId));
-require_once($sourceFolder."/content.lib.php");
+
 if (getTitle($pageId, $action, $TITLE))
 	$TITLE = CMS_TITLE . " - $TITLE";
 else
 	$TITLE = CMS_TITLE;
 
+//Content.lib.php
 $CONTENT = getContent($pageId, $action, $userId, $permission);
 
-require_once($sourceFolder."/inheritedinfo.lib.php");
+//inheritedinfo.lib.php
 $INHERITEDINFO = inheritedinfo($pageIdArray);
 
-require_once($sourceFolder."/menu.lib.php");
-require_once($sourceFolder."/breadcrumbs.lib.php");
+//breadcrumbs.lib.php
 $BREADCRUMB = breadcrumbs($pageIdArray,"&nbsp;»&nbsp;");
 
+//menu.lib.php
 $MENUBAR = getMenu($userId, $pageIdArray);
 
-require_once($sourceFolder."/actionbar.lib.php");
+//actionbar.lib.php
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 
-require_once($sourceFolder."/registration.lib.php");
+
 
 if($debugSet == "on") {
 	$DEBUGINFO .= "Page Full text path : ".$pageFullPath."<br /><br />\n";
@@ -152,7 +167,8 @@ if($debugSet == "on") {
 
 	setcookie("cookie_support", "enabled", 0, "/"); ///<used to check in subsequent requests if cookies are supported or not
 	
-	
+		
+
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
 
 disconnect();

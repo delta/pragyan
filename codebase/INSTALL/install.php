@@ -310,6 +310,7 @@ function importDatabase() {
 	setGlobalSettingByAttribute("cms_desc",CMS_TITLE);
 	setGlobalSettingByAttribute("cms_keywords",CMS_TITLE);
 	setGlobalSettingByAttribute("reindex_frequency","2");
+	setGlobalSettingByAttribute("allow_login","1");
 	setGlobalSettingByAttribute("cms_footer","&copy; 2010 - powered by <a href=\"http://sourceforge.net/projects/pragyan\" title=\"Praygan CMS\">Pragyan CMS v3.0</a>");
 	
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (

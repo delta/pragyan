@@ -93,8 +93,12 @@ function reloadWidgets()
 function getWidgetInfo($widgetid)
 {
 	$query="SELECT `widget_id` AS 'id',`widget_name` AS 'name',`widget_description` AS 'description' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetid";
-	$res=mysql_query($query);
-	return mysql_fetch_array($res);
+	$arr=mysql_fetch_assoc(mysql_query($query));
+	$query2="SELECT `config_name` AS 'name', `config_value` AS 'value', `config_displaytext` AS 'display_text', `config_type` AS 'type',`config_options` AS 'options', `config_id` AS 'id'" .
+			" FROM `".MYSQL_DATABASE_PREFIX."widgetsglobalconfig` WHERE `widget_id`=$widgetid";
+	$res2=mysql_query($query2);
+	$arr['globalconfigs']=mysql_fetch_assoc($res2);
+	return $arr;
 }
 function getAllWidgetsInfo()
 {
@@ -131,7 +135,11 @@ function updateGlobalConf($widgetid)
 }
 function getWidgetInstances($widgetid)
 {
-	
+	return array();
+}
+function renderInputField($config)
+{
+	return "<input type='{$config['type']}' name='{$config['name']}' value='{$config['value']}'";
 }
 function handleWidgetAdmin($pageId)
 {
@@ -157,6 +165,7 @@ function handleWidgetAdmin($pageId)
 					"{$instance['name']} [{instance['url']}]</li>";
 		}
 		if(count($instances)>0) $html.="</ol>";
+		print_r($widgetinfo);
 		foreach($widgetinfo['globalconfigs'] as $configentry)
 		{
 			$html.="<tr><td>{$configentry['display_text']}</td><td>".renderInputField($configentry)."</td></tr>";
