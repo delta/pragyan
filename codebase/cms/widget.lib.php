@@ -31,28 +31,98 @@
  The template's index.php will have variables $WIDGET1, $WIDGET2 to $WIDGETn where n is user-defined.
  Each $WIDGETi represents a unique-location and NOT a unique widget i.e. $WIDGETi can have multiple widgets, but in same location.
  
- Database Structure :
+ 
+ 
+ SQL QUERY ::
+ -- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgets`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (Database Structure :
  
  PragyanV3_widgetsinfo table :
- *widget_id	widget_name	widget_description	widget_config 
- 
- PragyanV3_widgetsconfiginfo table :
- *widget_id	*config_id	config_name	config_type	config_options	config_displaytext	config_default
- 
-  
+ *widget_id	widget_name *config_id	config_name	config_type	config_options	config_displaytext	config_default	is_global
+
  PragyanV3_widgets table :
  *widget_id	*widget_instanceid	page_id		widget_location		widget_order
- 
- PragyanV3_widgetsconfig table :
- *widget_id	*widget_instanceid	*config_id		config_data
 
- PragyanV3_widgetsglobalconfig table :
- *widget_id	*config_id 	config_name		config_value	config_displaytext	config_type	config_options
+  PragyanV3_widgetsconfig
+ widget_id	widget_instanceid	config_id	config_value
+ 
+ PragyanV3_widgetsdata
+ widget_id	widget_instanceid	widget_datakey		widget_datavalue
+  `widget_id` int(11) NOT NULL,
+  `widget_instanceid` int(11) NOT NULL,
+  `page_id` int(11) NOT NULL,
+  `widget_location` int(11) NOT NULL,
+  `widget_order` int(11) NOT NULL,
+  PRIMARY KEY (`widget_id`,`widget_instanceid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsconfig`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfig` (
+  `widget_id` int(11) NOT NULL,
+  `widget_instanceid` int(11) NOT NULL,
+  `config_id` int(11) NOT NULL,
+  `config_value` longtext NOT NULL,
+  PRIMARY KEY (`widget_id`,`widget_instanceid`,`config_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsdata`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsdata` (
+  `widget_id` int(11) NOT NULL,
+  `widget_instanceid` int(11) NOT NULL,
+  `widget_datakey` varchar(500) NOT NULL,
+  `widget_datavalue` longtext NOT NULL,
+  PRIMARY KEY (`widget_id`,`widget_instanceid`,`widget_datakey`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsinfo`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsinfo` (
+  `widget_id` int(11) NOT NULL,
+  `widget_name` varchar(100) NOT NULL,
+  `config_id` int(11) NOT NULL,
+  `config_name` varchar(27) NOT NULL,
+  `config_type` enum('text','textarea','bool','integer','date','select','hidden') NOT NULL,
+  `config_options` text NOT NULL,
+  `config_displaytext` text NOT NULL,
+  `config_default` longtext NOT NULL,
+  `is_global` int(1) NOT NULL,
+  PRIMARY KEY (`widget_id`,`config_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-----------------------------------------------------------------
+Database Structure :
+ 
+ PragyanV3_widgetsinfo table :
+ *widget_id	widget_name *config_id	config_name	config_type	config_options	config_displaytext	config_default	is_global
+
+ PragyanV3_widgets table :
+ *widget_id	*widget_instanceid	page_id		widget_location		widget_order
+
+  PragyanV3_widgetsconfig
+ widget_id	widget_instanceid	config_id	config_value
  
  PragyanV3_widgetsdata
  widget_id	widget_instanceid	widget_datakey		widget_datavalue
 
- 
  Algo ::
  
  When a page is being opened.
@@ -103,6 +173,7 @@ function getWidgetInfo($widgetid)
 function getAllWidgetsInfo()
 {
 	$query="SELECT `widget_id` AS 'id',`widget_name` AS 'name',`widget_description` AS 'description' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo`";
+	echo $query;
 	$res=mysql_query($query);
 	$ret=array();
 	while($row=mysql_fetch_array($res))

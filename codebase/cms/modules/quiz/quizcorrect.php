@@ -88,7 +88,7 @@ function getQuizUserListHtml($quizId) {
 		return '';
 	}
 
-	if (!isQuizEvaluated($quizId))
+	if (!isQuizEvaluated($quizId)||isset($_POST['btnRecalculateMarks']))
 		evaluateQuiz($quizId);
 	updateSectionMarks($quizId);
 	$tableJqueryStuff="";
@@ -163,7 +163,8 @@ HEAD;
 	
 	global $ICONS_SRC,$ICONS;
 	$userListHtml .= "<h3>User Submissions for Quiz: {$query[0]}</h3>
-		<fieldset><legend>Select Columns</legend><table>$toggleColumns</table></fieldset>
+		<fieldset><legend>Select Columns</legend><table>$toggleColumns</table></fieldset>" .
+		"<form action='./+correct' method=POST><input type='submit' value='Recalculate Marks' name='btnRecalculateMarks' /></form>
 		<table class=\"userlisttable display\" border=\"1\" id='userstable'>" .
 		"<thead><tr><th>User Full Name</th><th>User Email</th><th>Total Marks</th><th>Time Taken</th><th>Started</th><th>Finished</th>$sectionHead<th>Action</th></tr></thead><tbody>";
 	while ($markRow = mysql_fetch_assoc($markResult)) {

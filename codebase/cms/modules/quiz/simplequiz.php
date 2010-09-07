@@ -384,19 +384,24 @@ QUIZSTARTFORM;
 		$testTime = explode(':', $testTime);
 		$testTime = implode(', ', $testTime);
 		
-		$sectionTime = mysql_fetch_array(mysql_query("SELECT `quiz_sectiontimelimit` FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId'"));
-		$sectionTime = $sectionTime[0];
-		$sectionTime = explode(':', $sectionTime);
-		$sectionTime = implode(', ', $sectionTime);
+		if ($this->quizRow['quiz_allowsectionrandomaccess']) {
+		    $sectionTime = mysql_fetch_array(mysql_query("SELECT `quiz_sectiontimelimit` FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId'"));
+		
+		    $sectionTime = $sectionTime[0];
+		    $sectionTime = explode(':', $sectionTime);
+		    $sectionTime = implode(', ', $sectionTime);		    
+    		$scripts[] = "var sectionTimer = new JSTimer('sectionTimerContainer', $sectionElapsedTime);\nsectionTimer.addTickHandler($sectionTime, forceQuizSubmit)";
+		}
+
 
 		$scripts[] = "var testTimer = new JSTimer('testTimerContainer', $testElapsedTime);\ntestTimer.addTickHandler($testTime, forceQuizSubmit)";
-		$scripts[] = "var sectionTimer = new JSTimer('sectionTimerContainer', $sectionElapsedTime);\nsectionTimer.addTickHandler($sectionTime, forceQuizSubmit)";
-
+		
 		$divs = array();
 		if ($this->quizRow['quiz_showquiztimer']) {
-		
+
 			$divs[] = '<div id="testTimerContainer" class="quiz_testtimer">Total Quiz Time Elapsed: </div>';
-			}
+
+		}
 
 		if ($this->quizRow['quiz_showpagetimer']) {
 			$divs[] = '<div id="pageTimerContainer" class="quiz_pagetimer"></div>';
