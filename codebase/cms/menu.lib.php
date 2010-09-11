@@ -23,48 +23,79 @@ function findMenuIndex($menuArray, $pageId) {
 
 function getMenu($userId, $pageIdArray) {
 
-	$pageId = $pageIdArray[count($pageIdArray) - 1];
+	
+	$pageId = $pageIdArray[count($pageIdArray) - 1]; 
 	$pageRow = getPageInfo($pageId);
-
+	$depth = $pageRow['page_menudepth'];
+	if ($depth == 0) $depth=1;
 	if ($pageRow['page_displaymenu'] == 0)
 		return '';
-
+	$menutype=$pageRow['page_menutype'];
 	$menuHtml =<<<MENUHTML
 		<div id="menubar">
 			<div id="menubarcontent">
 MENUHTML;
-
-	$childMenu = getChildren($pageId, $userId);
-
-	if ($pageId == 0) {
-		$menuHtml .= '<a href="./"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
-		$menuHtml .= htmlMenuRenderer($childMenu);
-	}
-	else if (count($childMenu) == 0) {
-		if ($pageRow['page_displaysiblingmenu']) {
-			$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
-			$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-			$menuHtml .= '<a href="../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
-		}
-	}
-	else {
-		if ($pageRow['page_displaysiblingmenu']) {
-			$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
-			$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-			$menuHtml .= '<a href="../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
-		}
-
-		$menuHtml .= '<a href="./"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
-		$menuHtml .= htmlMenuRenderer($childMenu);
-	}
-
-	$menuHtml .= '</div></div>';
 	
+	
+	if($menutype=="classic")
+	{
+		$childMenu = getChildren($pageId, $userId);
+
+		if ($pageId == 0) {
+			$menuHtml .= '<a href="./"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
+			$menuHtml .= htmlMenuRenderer($childMenu);
+		}
+		else if (count($childMenu) == 0) {
+			if ($pageRow['page_displaysiblingmenu']) {
+				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
+				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
+				$menuHtml .= '<a href="../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
+				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
+			}
+		}
+		else {
+			if ($pageRow['page_displaysiblingmenu']) {
+				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
+				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
+				$menuHtml .= '<a href="../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
+				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
+			}
+
+			$menuHtml .= '<a href="./"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
+			$menuHtml .= htmlMenuRenderer($childMenu);
+		}
+
+		$menuHtml .= '</div></div>';
+	}
+	else
+	{
+
+		$menuHtml .= '<a href="./"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
+	
+		$rootUri =  substr($_SERVER['REQUEST_URI'],0,strpos($_SERVER['REQUEST_URI'],'/home/')+5);
+		$pageId = ($pageId!=0)?getParentPage($pageId):$pageId;
+	
+		$pageRow = getPageInfo($pageId);
+		//$menuHtml .= $pageRow['page_title'];
+		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId);
+		$menuHtml .= '</div></div>';
+	}
 	return $menuHtml;
+
 }
 
+function getChildList($pageId,$depth,$rootUri,$userId) {
+  if($depth>0) {
+  $pageRow = getChildren($pageId,$userId);
+  $var = "<ul>";
+  for($i=0;$i<count($pageRow);$i+=1) {
+  $var .= "<li><div class='cms-menuitem'><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\">".$pageRow[$i][2]."</div></a></li>";
+  $var .= getChildList($pageRow[$i][0],$depth-1,$rootUri,$userId);
+}
+  $var .= "</ul>";
+  return $var;
+  }
+}
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 	$menuHtml = '';
 	for ($i = 0; $i < count($menuArray); ++$i) {

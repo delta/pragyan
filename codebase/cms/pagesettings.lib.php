@@ -35,7 +35,7 @@ function getCreatablePageTypes($userid, $pageid) {
  */
 function getSettingsForm($pageId, $userId) {
 	$pageId=escape($pageId);
-	$page_query = "SELECT `page_name`, `page_title`, `page_displaymenu`, `page_displayinmenu`, `page_displaysiblingmenu` , `page_module`, `page_displaypageheading`,`page_template` " .
+	$page_query = "SELECT `page_name`, `page_title`, `page_displaymenu`, `page_displayinmenu`, `page_displaysiblingmenu` , `page_module`, `page_displaypageheading`,`page_template`,`page_modulecomponentid`, `page_menutype`, `page_menudepth` " .
 	"FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id`=" . $pageId;
 	$page_result = mysql_query($page_query);
 	$page_values = mysql_fetch_assoc($page_result);
@@ -55,6 +55,7 @@ function getSettingsForm($pageId, $userId) {
 	$showsiblingmenu = $page_values['page_displaysiblingmenu'] == 1 ? 'checked="checked" ' : '';
 	$showheading = ($page_values['page_displaypageheading'] == 1 ? 'checked="checked"' : '');
 	$dbPageTemplate = $page_values['page_template'];
+	$modulecomponentid=$page_values['page_modulecomponentid'];
 	$templates = getAvailableTemplates();
 	$page_query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = $pageId AND `page_parentid` != `page_id` ORDER BY `page_menurank` ASC  ";
 	$page_result = mysql_query($page_query) or die(mysql_error());
@@ -294,13 +295,20 @@ CREATE;
 MOVECOPY;
 
 	global $pageFullPath;
+	global $STARTSCRIPTS;
+	$STARTSCRIPTS.="toggleMenuType();";
 	$parentPath = ($pageId==0?'':'<a href="../+settings">Parent page link.</a>');
-	$pageType=$page_values['page_module'];
+	$pageType=ucfirst($page_values['page_module']);
+	$menuType=$page_values['page_menutype'];
+	$menudepth=$page_values['page_menudepth'];
+	$classictype="";
+	$dropdowntype="";
+	if($menuType=="classic") $classictype="selected";
+	else $dropdowntype="selected";
 	
-	$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
-	$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 	$row = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
 	$allowComments = $row['allowComments'] == 1 ? 'checked="checked" ' : '';
+	
 	$formDisplay =<<<FORMDISPLAY
 
 	<div id="page_settings">
@@ -327,6 +335,20 @@ MOVECOPY;
 					obj.disabled=(obj.disabled==true?false:true);
 		
 				}
+			function toggleMenuType()
+				{
+					var obj=document.getElementById('menutype');
+					if(obj.value=="classic")
+					{
+						document.getElementById('showsiblingmenu').disabled=false;
+						document.getElementById('menudepth').disabled=true;
+					}
+					else 
+					{
+						document.getElementById('showsiblingmenu').disabled=true;
+						document.getElementById('menudepth').disabled=false;
+					}
+				}
 		</script>
 
 
@@ -352,19 +374,41 @@ MOVECOPY;
 				<tr><td>Page path:</td><td>$pageFullPath</td></tr>
 	        	<tr><td>Page name:</td><td><input type="text" id="pagename" name="pagename" value="{$page_values['page_name']}" $modifiers/></td></tr>
 	  			<tr><td>Page title:</td><td><input type="text" id="pagetitle" name="pagetitle" value="{$page_values['page_title']}" $modifiers/></td></tr>
-	  				$showInMenuBox
-	  			<tr><td><label for="showheading">Show page heading</label></td><td><input type="checkbox" id="showheading" name="showheading" $showheading /></td></tr>
-
+	  			<tr><td >Page type: </td><td>$pageType</td></tr>
+				<tr><td>Allow comments: </td><td><input type='checkbox' id='allowComments' name='allowComments' $allowComments></td></tr>
+	  				
+	  			
+		</table>
+		<fieldset><legend>Menu Settings</legend>
+		<table border="1" cellpadding="2px" cellspacing="2px">
+		$showInMenuBox
+			<tr><td><label for="showheading">Show page heading</label></td><td><input type="checkbox" id="showheading" name="showheading" $showheading /></td></tr>
+			
+				<tr>
+					<td><label for='menutype'>Menu type</label></td>
+					<td>
+					<select name="menutype" id="menutype" onchange="toggleMenuType();">
+						<option value='classic' $classictype>Classic</option>
+						<option value='dropdown' $dropdowntype>Drop-Down</option>
+					</select>
+					</td>
 				<tr>
 					<td><label for='showmenubar'>Show menu bar in page</label></td>
 					<td><input type='checkbox' id='showmenubar' name='showmenubar' $showmenubar/></td>
 				</tr><tr>
-					<td ><label for='showsiblingmenu'> Show sibling menu in page</label></td>
+					<td><label for='showsiblingmenu'> Show sibling menu in page</label></td>
 					<td><input type='checkbox' name='showsiblingmenu' id='showsiblingmenu' $showsiblingmenu /></td>
 				</tr>
-	        	
-				<tr><td >Page type: </td><td>$pageType</td></tr>
-				<tr><td>Allow comments: </td><td><input type='checkbox' id='allowComments' name='allowComments' $allowComments></td></tr>
+				<tr>
+					<td><label for='menudepth'>Menu Depth</label></td>
+					<td><input type='text' name='menudepth' id='menudepth' value='$menudepth'/>  </td>
+				</tr>
+				
+	        </table>
+	        </fieldset>
+	        <fieldset><legend>Template</legend>
+	        <table border="1" cellpadding="2px" cellspacing="2px">
+				
 				<tr>
 					<td>Use Default Template ?</td>
 					<td><input type='checkbox' name='default_template' value='yes' onchange="toggleSelTemplate2()" $dbPageDefTemplate /></td>
@@ -386,13 +430,13 @@ FORMDISPLAY;
 					</select>
 	
 				</tr>
-
-				<tr><td colspan="2">Child pages: (Click on links for children's settings.) $parentPath <br />
-			  	$childList
-	          		</td>
-	          	</tr>
-	        </table>
-
+		</table></fieldset>
+		
+		<fieldset><legend>Child Pages</legend>
+		Child pages: (Click on links for children's settings.) $parentPath <br />
+		$childList
+	        </fieldset>
+	     
 
     		<input type="submit" name="btnSubmit" value="Submit"/>&nbsp;&nbsp;<input type="reset" name="btnReset" value="Reset" />
       	</fieldset>
@@ -422,7 +466,7 @@ FORMDISPLAY;
  * @param $showMenuBar Boolean indicating whether the page shows its menubar
  * @return String containing a description of any errors encountered, a null string indicating success
  */
-function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList, $page_template, $template_propogate) {
+function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList, $page_template, $template_propogate, $menu_type, $menu_depth) {
 
 	$updateQuery = '';
 	$updates = array ();
@@ -443,9 +487,6 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		$updates[] = '`page_displaymenu` = ' . ($showMenuBar == true ? 1 : 0);
 	}
 
-	if (is_bool($showSiblingMenu)) {
-		$updates[] = '`page_displaysiblingmenu` = ' . ($showSiblingMenu == true ? 1 : 0);
-	}
 
 	if (is_bool($showHeading)) {
 		$updates[] = '`page_displaypageheading` = ' . ($showHeading == true ? 1 : 0);
@@ -476,6 +517,21 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	{
 		setChildTemplateFromParentID($pageId,$page_template);	
 	}
+	
+	if($menu_type!=NULL)
+	{
+		$updates[] = "`page_menutype` = '$menu_type'";
+		
+		if($menu_type=="dropdown" && $menu_depth!=NULL)
+		{
+			$updates[] = "`page_menudepth` = $menu_depth";
+		}
+		else if($menu_type=="classic" && is_bool($showSiblingMenu))
+		{
+			$updates[] = '`page_displaysiblingmenu` = ' . ($showSiblingMenu == true ? 1 : 0);
+		}
+	}
+	
 	if (count($updates) > 0) {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = $pageId;";
 		mysql_query($updateQuery);
@@ -557,7 +613,7 @@ function pagesettings($pageId, $userId) {
 				$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
 				$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 				mysql_query("UPDATE `article_content` SET `allowComments` = $var WHERE `page_modulecomponentid` = '{$modulecomponentid}'");
-				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate);
+				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL);
 
 				
 
