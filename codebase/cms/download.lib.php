@@ -107,14 +107,7 @@ function download($pageId, $userId, $fileName,$action="") {
 	}
 	
 	
-	//yslow ends
 
-/*	$fileSize = filesize($file);
-	$numOfDownloads = $fileSize/10240;
-	$lastDownloadBytes = $fileSize%10240;
-	for($i=0;$i<$numOfDownloads;$i++)
-		echo @fread($filePointer, 10240);
-	echo @fread($filePointer, $lastDownloadBytes);*/
 	echo @fread($filePointer, filesize($file));
 	@fclose($filePointer);
 

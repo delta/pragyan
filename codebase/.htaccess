@@ -74,7 +74,7 @@ RewriteRule ^(.*)$ home/$1	[R,L]
 # pragyan/home/a to pragyan/home/a/
 RewriteCond %{REQUEST_FILENAME}	!-f
 RewriteCond %{REQUEST_URI}	^([^+?&]+[^/])$
-RewriteCond %{REQUEST_URI}	!^([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|ods|odt|oft|pps|ppt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
+RewriteCond %{REQUEST_URI}	!^([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
 RewriteRule ^([^+?]+[^/])$ $1/ 	[R,L]
 
 # pragyan/home/a&a=b&c=d to pragyan/home/a/&a=b&c=d
@@ -93,7 +93,7 @@ RewriteRule ^(.*)home(.*)$ $1index.php$2
 ##Case 0 : The requested page is a file for file module
 # pragyan.org/.../index.php/a/b/xxx.jpg to pragyan.org/.../index.php?page=/a/b/&file=xxx.jpg
 
-RewriteCond %{REQUEST_URI}	^(.*)index.php([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|ods|odt|oft|pps|ppt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
+RewriteCond %{REQUEST_URI}	^(.*)index.php([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
 RewriteRule ^(.*)index.php(.*)/([^/]+)$ $1index.php?page=$2/&fileget=$3	[L]
 
 ##Case 1 : no action given

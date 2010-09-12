@@ -302,9 +302,9 @@ MOVECOPY;
 	$menuType=$page_values['page_menutype'];
 	$menudepth=$page_values['page_menudepth'];
 	$classictype="";
-	$dropdowntype="";
+	$multidepthtype="";
 	if($menuType=="classic") $classictype="selected";
-	else $dropdowntype="selected";
+	else $multidepthtype="selected";
 	
 	$row = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
 	$allowComments = $row['allowComments'] == 1 ? 'checked="checked" ' : '';
@@ -358,10 +358,10 @@ MOVECOPY;
         <legend>{$ICONS['Page Settings']['small']}Page Settings</legend>
         <table class='iconspanel'>
         <tr>
-        <td><a href='#pageinfoform'>{$ICONS['Page Information']['large']}<br/>Page Information</a></td>
-        <td><a href='#childpageform'>{$ICONS['Create New Page']['large']}<br/>Create New Page</a></td>
-        <td><a href='#copymovepageform'>{$ICONS['Copy or Move Page']['large']}<br/>Copy or Move Page</a></td>
-        <td><a href='#inheritinfoform'>{$ICONS['Page Inherited Info']['large']}<br/>Page Inherited Information</a></td>
+        <td><a href='#pageinfoform'><div>{$ICONS['Page Information']['large']}<br/>Page Information</div></a></td>
+        <td><a href='#childpageform'><div>{$ICONS['Create New Page']['large']}<br/>Create New Page</div></a></td>
+        <td><a href='#copymovepageform'><div>{$ICONS['Copy or Move Page']['large']}<br/>Copy or Move Page</div></a></td>
+        <td><a href='#inheritinfoform'><div>{$ICONS['Page Inherited Info']['large']}<br/>Page Inherited Information</div></a></td>
         </tr>
         </table>   
         </fieldset>
@@ -389,7 +389,7 @@ MOVECOPY;
 					<td>
 					<select name="menutype" id="menutype" onchange="toggleMenuType();">
 						<option value='classic' $classictype>Classic</option>
-						<option value='dropdown' $dropdowntype>Drop-Down</option>
+						<option value='multidepth' $multidepthtype>Multi-Depth</option>
 					</select>
 					</td>
 				<tr>
@@ -522,7 +522,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	{
 		$updates[] = "`page_menutype` = '$menu_type'";
 		
-		if($menu_type=="dropdown" && $menu_depth!=NULL)
+		if($menu_type=="multidepth" && $menu_depth!=NULL)
 		{
 			$updates[] = "`page_menudepth` = $menu_depth";
 		}

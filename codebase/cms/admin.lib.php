@@ -272,16 +272,16 @@ function admin($pageid, $userid) {
 	<a name='quicklinks'></a>
 	<table class="iconspanel">
 	<tr>
-	<td><a href="./+admin&subaction=global">{$ICONS['Global Settings']['large']}<br/>Global Settings</a></td>
-	<td><a href="./+admin&subaction=expert">{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</a></td>
-	<td><a href="./+admin&subaction=template">{$ICONS['Templates Management']['large']}<br/>Templates Management</a></td>
-	<td><a href="./+admin&subaction=email">{$ICONS['Email Registrants']['large']}<br/>Email Registrants</a></td>
+	<td><a href="./+admin&subaction=global"><div>{$ICONS['Global Settings']['large']}<br/>Global Settings</div></a></td>
+	<td><a href="./+admin&subaction=expert"><div>{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</div></a></td>
+	<td><a href="./+admin&subaction=template"><div>{$ICONS['Templates Management']['large']}<br/>Templates Management</div></a></td>
+	<td><a href="./+admin&subaction=email"><div>{$ICONS['Email Registrants']['large']}<br/>Email Registrants</div></a></td>
 	</tr>
 	<tr>
-	<td><a href="./+admin&subaction=useradmin">{$ICONS['User Management']['large']}<br/>User Management</a></td>
-	<td><a href="./+admin&subaction=editprofileform">{$ICONS['User Profile']['large']}<br/>User Profiles</a></td>
-	<td><a href="./+admin&subaction=editgroups">{$ICONS['User Groups']['large']}<br/>Group Management</a></td>
-	<td><a href="./+admin&subaction=widgets">{$ICONS['Widgets']['large']}<br/>Widgets</a></td>
+	<td><a href="./+admin&subaction=useradmin"><div>{$ICONS['User Management']['large']}<br/>User Management</div></a></td>
+	<td><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
+	<td><a href="./+admin&subaction=editgroups"><div>{$ICONS['User Groups']['large']}<br/>Group Management</div></a></td>
+	
 	</tr>
 
 	</table>

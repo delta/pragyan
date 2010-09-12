@@ -1,25 +1,37 @@
 <?php
 /**
  * @package pragyan
+ * @author Abhishek Shrivastava, Abhilash R, Sahil Ahuja, Anshu Prateek, Ankit Srivastav, Chakradar Raju,
+ * @brief Pragyan CMS v3.0 Project
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
+ * @mainpage Pragyan CMS
+ * @section intro_sec Introduction
+ * Pragyan CMS is a simple and fast multiuser CMS(Content Management System) to organize collaborative web-content. 
+ * This CMS allows very fine user & group permissions and generating pages like articles, forms, quizzes, forums, gallery, etc.
+ * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps, Latex, etc.
+ * 
+ * @section credits License, Credits and other details
+ * Please see README.
+ * 
+ * For more details, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
  */
 
-$cmsFolder="cms";///<Folder containing all library files
-$moduleFolder = "modules"; ///<Folder containing all the modules
-$templateFolder = "templates"; ///<Folder containing all the modules
+$cmsFolder="cms";///Folder containing all library files
+$moduleFolder = "modules"; ///Folder containing all the modules
+$templateFolder = "templates"; ///Folder containing all the modules
 $uploadFolder = "uploads";
-$debugSet = "off";///<Will get overridden by the config value
+$debugSet = "off";///Will get overridden by the config value
 $sourceFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'))."/".$cmsFolder;
-$PAGELASTUPDATED=""; ///<Can be used to update the last updated time
-$ERRORSTRING; ///<Defined here. Will get appended by displayerror() in common.lib.php
-$INFOSTRING; ///<Defined here. Will get appended by displayinfo() in common.lib.php
-$WARNINGSTRING; ///<Defined here. Will get appended by displaywarning() in common.lib.php
-$STARTSCRIPTS; ///<Will contain a string containing all that has to be executed on window load
-$urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); ///<Root of the request - that path to cms base
-$TEMPLATEBROWSERPATH; ///<Full path to template folder as seen from the browser (defined in template.lib.php)
-$TEMPLATECODEPATH; ///<Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
+$PAGELASTUPDATED=""; ///Can be used to update the last updated time
+$ERRORSTRING; ///Defined here. Will get appended by displayerror() in common.lib.php
+$INFOSTRING; ///Defined here. Will get appended by displayinfo() in common.lib.php
+$WARNINGSTRING; ///Defined here. Will get appended by displaywarning() in common.lib.php
+$STARTSCRIPTS; ///Will contain a string containing all that has to be executed on window load
+$urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); ///Root of the request - that path to cms base
+$TEMPLATEBROWSERPATH; ///Full path to template folder as seen from the browser (defined in template.lib.php)
+$TEMPLATECODEPATH; ///Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
 $SITEDESCRIPTION;
 $SITEKEYWORDS;
 $DEBUGINFO = "";
@@ -85,10 +97,10 @@ require_once($sourceFolder."/inheritedinfo.lib.php");
 require_once($sourceFolder."/actionbar.lib.php");
 require_once($sourceFolder."/registration.lib.php");
 
-//parseurl.lib.php
+
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
 
-if ($pageId === false) { ///<Following also used in download.lib.php
+if ($pageId === false) { 
 	define("TEMPLATE", getPageTemplate(0));
 	$pageId = parseUrlReal("home", $pageIdArray);
 	$TITLE = CMS_TITLE;
@@ -120,7 +132,7 @@ if(isset($_GET['fileget'])) {
 	download($pageId,$userId,$_GET['fileget'],$action);
 	exit();
 }
-//Permission.lib.php
+
 $permission = getPermissions($userId, $pageId, $action);
 
 define("TEMPLATE", getPageTemplate($pageId));
@@ -130,19 +142,16 @@ if (getTitle($pageId, $action, $TITLE))
 else
 	$TITLE = CMS_TITLE;
 
-//Content.lib.php
+
 $CONTENT = getContent($pageId, $action, $userId, $permission);
 
-//inheritedinfo.lib.php
 $INHERITEDINFO = inheritedinfo($pageIdArray);
 
-//breadcrumbs.lib.php
+
 $BREADCRUMB = breadcrumbs($pageIdArray,"&nbsp;»&nbsp;");
 
-//menu.lib.php
 $MENUBAR = getMenu($userId, $pageIdArray);
 
-//actionbar.lib.php
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 

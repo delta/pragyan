@@ -1,6 +1,7 @@
 <?php
 /**
  * @package pragyan
+ * @author Ankit Srivastava
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README

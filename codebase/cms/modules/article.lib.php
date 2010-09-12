@@ -219,10 +219,10 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		<fieldset><legend><a name='topquicklinks'>Quicklinks</a></legend>
 		<table class='iconspanel'>
 		<tr>
-		<td><a href='#editor'>{$ICONS['Edit Page']['large']}<br/>Edit Page</a></td>
-		<td><a href='#files'>{$ICONS['Uploaded Files']['large']}<br/>Manage Uploaded Files</a></td>
-		<td><a href='#revisions'>{$ICONS['Page Revisions']['large']}<br/>Page Revisions</a></td>
-		<td><a href='#comments'>{$ICONS['Page Comments']['large']}<br/>Page Comments</a></td>
+		<td><a href='#editor'><div>{$ICONS['Edit Page']['large']}<br/>Edit Page</div></a></td>
+		<td><a href='#files'><div>{$ICONS['Uploaded Files']['large']}<br/>Manage Uploaded Files</div></a></td>
+		<td><a href='#revisions'><div>{$ICONS['Page Revisions']['large']}<br/>Page Revisions</div></a></td>
+		<td><a href='#comments'><div>{$ICONS['Page Comments']['large']}<br/>Page Comments</div></a></td>
 		</tr>
 		</table>
 	
