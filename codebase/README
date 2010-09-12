@@ -1,78 +1,111 @@
 Pragyan CMS - Readme
 ====================
+ * Top
+ * Introduction
+ * Important Documents
+ * Features
+ * Requirements
+ * Download
+ * Installation
+ * Documentation
+ * Support
+ * License
+ * Bugs and Feature Requests
+ * ChangeLog
+ * Links
+ * Credits
+ 
+ Introduction:
+ 
+ Pragyan CMS is a multi user based cms to organize & facilitate collaborative content 
+ creation & updation on a website, written in PHP and MySql. It provides tools to manage
+ permissions for users and groups and modules like article, form, quiz, forums etc.
+ Pragyan CMS is used to handle the creation, updation and administration of a website.
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version
+  
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
- A CMS to facilitate collaborative content creation and updation.
-
- Important Documents
- ===================
- + Developer's Instructions	: docs/DEVELOPER-README.txt
- + Pragyan CMS Working Overview	: docs/DeveloperNotes.txt
- + About Pragyan CMS and Team	: docs/Documentation.txt
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ Important Documents:
+ 
+ + Documentation		: docs/documentation.tar.bz2
+ + Developer's Guide		: docs/DEVELOPER-README.txt
  + GNU GPL License 		: docs/LICENSE
  + Installation Instructions 	: INSTALL/INSTALL.txt
+ + Change Log			: ChangeLog
+ + Credits			: CREDITS
 
-  Version 3.0
-  --------------
-  http://www.pragyan.org
+ Features:
 
-    Copyright (C) 2010-2011
-						Abhishek Shrivastava <i.abhi27@gmail.com>
-						Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
-    						Anshu Prateek<anshprat[at]users.sourceforge.net>
-    						Ankit Srivastav<ansh2201[at]users.sourceforge.net>
-    						Abhilash R<abhithekid[at]users.sourceforge.net>
-						[check Documentation.txt file for more details]
-					 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  * Multi-user open source content management system
+  * Used to organize and facilitate collaborative content creation and updation
+  * Handy tools to manage permissions for groups and users
+  * Modules article, gallery, quiz, form and forum
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-  Requirements:
+ Requirements:
+ 
     php 5.2.4 or later
     MySQL 5.0.45 or later
     a web-browser (duh!)
 
-  Summary:
-    Pragyan CMS is used to handle the creation, updation and administration of a website.
-    For a summary of features, please see the Documentation.txt file.
+ Download:
+ 
+    You can get the newest version at http://sourceforge.net/projects/pragyan
 
-  Download:
-    You can get the newest version at http://sf.net/projects/pragyan
-
-  Credits:
-    Please see the INSTALL/Documentation.txt file.
-
-  Installation:
+ Installation:
+ 
     Please see the INSTALL/INSTALL.txt file.
 
-  ChangeLog:
-    Now in ChangeLog
+ Documentation:
+ 
+    Extract the contents of the file docs/documentation.tar.bz2
+    Documentation is available in documentation/html/index.html
 
-  Documentation:
-    Basic documentation available in INSTALL/Documentation.txt
-
-  Support:
+ Support:
+ 
     See reference about support forums under http://sf.net/forum/?groupid=220286
+    For any kind of queries, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
+    
+ License:
+ 
+    Please see the docs/LICENSE file.
+    
+ Bugs and Feature Requests:
+ 
+    For reporting any bugs or request new feature, goto this link :
+    http://sourceforge.net/apps/trac/pragyan/newticket
+ 
+ ChangeLog:
+ 
+    Please see the ChangeLog file.
+    
+ Links:
 
-  Pragyan CMS Links:
-
-   * Pragyan CMS homepage			http://pragyan.sf.net/
-   * SourceForge Pragyan CMS project page	http://sf.net/projects/pragyan
+   * Pragyan CMS homepage			http://pragyan.sourceforge.net/
+   * Pragyan CMS TRAC				http://sourceforge.net/apps/trac/pragyan
+   * SourceForge Pragyan CMS project page	http://sourceforge.net/projects/pragyan
    * Local documents:
       + Version history: 	ChangeLog
       + General notes: 		README
-      + License: 		LICENSE
-   * Documentation : 		INSTALL/Documentation.txt
-   * Developer Notes : 		INSTALL/DeverloperNotes.txt
+      + License: 		docs/LICENSE
+      + Documentation : 	docs/documentation.tar.bz2
+      + Developer's Guide : 	docs/DEVELOPER-README.txt
+      + Credits :		CREDITS
 
-    Enjoy!
+  Credits:
+  
+     Please see the CREDITS file.
+     	 
+	 
+  Enjoy!
         The Pragyan CMS Development team
+        

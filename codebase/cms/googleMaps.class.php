@@ -1,8 +1,8 @@
 <?php
 /**
  * @package pragyan
+ * @class googlemaps Class to render Google maps using its API and Geocoding technique
  * @author Abhishek Shrivastava
- * @description Class to render Google maps using its API and Geocoding technique
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README

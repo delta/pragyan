@@ -6,11 +6,6 @@
  * For more details, see README
  */
  
-/** College information management suite
- *
- * COMMONLY USED FUNCTIONS
- * connect,disconnect,displayerror.
-*/
 
 /** To connect to the database*/
 function connect() {

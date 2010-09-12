@@ -1,0 +1,125 @@
+  Pragyan CMS - Credits
+  =====================
+  
+  Version 3.0
+  --------------
+  http://pragyan.sourceforge.net/
+
+    Copyright (C) 2010-2011
+						Abhishek Shrivastava <i.abhi27[at]gmail.com>
+						Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+    						Anshu Prateek<anshprat[at]users.sourceforge.net>
+    						Ankit Srivastav<ansh2201[at]users.sourceforge.net>
+    						Abhilash R<abhithekid[at]users.sourceforge.net>
+
+- Abhilash R <abhithekid[at]users.sourceforge.net>
+    * url parsing
+    * permissions
+    * group management
+    * directory tree
+    * forms
+    * AJAX suggestion box
+    * quiz timer
+    
+- Abhishek Shrivastava <i.abhi27[at]gmail.com>
+    * page-specific templates
+    * user management
+    * global settings
+    * security
+    * Google Maps & Tex plugin for ckEditor  
+    * profile images
+    * sql query helper
+    * bugs in article,forms,quiz,login
+    * support for images in PDF plugin
+    * support for icons
+    * widget framework
+    
+- Ankit Srivastava <ansh2201[at]users.sourceforge.net>
+    * designer
+    * forms
+    * news module
+    * qaos module
+    * copy and move for pages
+    * breadcrumbs
+
+- Anshu Prateek <anshprat[at]users.sourceforge.net>
+    * article
+    * forum
+    * forms module
+    * hospi module
+    * uploads
+    
+- Balanivash <balanivash[at]gmail.com>
+   * forum
+   * enable/disable login
+   * user profile form
+    
+- Chakradar Raju <chakradarraju[at]gmail.com>
+    * template installation module
+    * PDF plugin
+    * improvements in quiz and gallery
+    * email registrants
+    * sphider
+    * article comments
+    * new permissions AJAX interface
+    * book module
+ 
+- Mrinal Kumar <mrinalkumar123[at]gmail.com>
+    * forum
+
+- Harini A <scistu[at]gmail.com>
+    * gallery  
+    
+- Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+    * creator and architecture of the CMS
+    * authentication
+    * article
+    * forms
+    * uploads
+    * menu
+
+- Shivanandan <seekshiva[at]gmail.com>
+   * multi-depth side menu
+
+- The Architects
+	Sahil Ahuja
+	Abhilash R
+	Anshu Prateek
+	Ankit Srivastava
+	
+- Version 3.0
+	Abhishek Shrivastava
+	Chakradar Raju
+	Balanivash
+	
+And also to the following people who have contributed minor changes,
+enhancements, bugfixes or support for a new language since version 2.1.0:
+M. Surya Sankar, Sapna Shukla, Shruti J, Ashwathi Krishnan, K.R Arvind,
+T.V. Karthik, Shivanandan, P. Mohnish.
+
+Templates: 
+ Blue : Nitin Kumar
+
+Original Credits of Version 1
+-----------------------------
+
+    This work is based on Parijat Mukherjee's Pragyan CMS v1. It was his idea
+    to create a web-based interface to MySQL using PHP4. Although I have not
+    used any of his source-code, there are some concepts I've borrowed from
+    him. Pragyan CMS v2 was created to make up for the shortcomings of 
+    Pragyan CMS v1.
+    
+    Thanks go to [in chronological order]
+    - Sahil Ahuja <sahilahuja[at]gmail.com> who created the form and quiz
+      module in Pragyan CMS v1 and contributed to its design.
+    - Abhishek Verma <vermaabhishekp[at]gmail.com> who created the form and quiz
+      module in Praygan CMS v1.
+    - Vishal Patel <vkp_patel[at]yahoo.co.in> made the gallery module.
+    The following people have contributed minor changes, enhancements, bugfixes
+    or support for a new language:
+    Ankit Srivastava, Aishwarya T, Srikanth M
+
+And thanks to everyone else who sent emails with suggestions, bug-reports
+and or just some feedback.
+
+    

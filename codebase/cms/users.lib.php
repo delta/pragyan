@@ -383,12 +383,14 @@ function handleUserMgmt()
 		
 		$infoarray=array();
 		foreach ($usertablefields as $field)
-			$infoarray[$field]=${$field.'_lastval'};
+			if(isset(${$field.'_lastval'}))
+				$infoarray[$field]=${$field.'_lastval'};
+			else $infoarray[$field]="";
 			
 		$searchForm.=userProfileForm($userfieldprettynames,$infoarray,true,false);
 		
 		$searchForm.="Operation : <input type='radio' name='user_search_op' value='and'  />AND  <input type='radio' name='user_search_op' value='or' checked='true' />OR<br/><br/><input type='submit' onclick name='user_search_submit' value='Search' /><input type='reset' value='Clear' /></form>";
-		return $searchForm.$results;
+		return $results.$searchForm;
 		
 		
 	}
@@ -671,6 +673,7 @@ function userProfileForm($userfieldprettynames,$profileInfoRows,$editID=false,$s
 		}
 		else if($field=='user_loginmethod')
 		{
+			$ldapsel=$imapsel=$adssel=$dbsel="";
 			${$profileInfoRows[$field].'sel'}=" selected = 'selected' ";
 			$userinfo.="<tr><td>{$userfieldprettynames[$i++]}</td><td><select id='$field' name='$field'>
 			<option></option>

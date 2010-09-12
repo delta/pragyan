@@ -1,6 +1,7 @@
 <?php
 /**
  * @package pragyan
+ * @author Chakradar Raju
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
@@ -208,8 +209,8 @@ function addfatalissue(&$issues,$str,$id)
 
 function reportIssues($templatePath,&$issues) {
 	$content = file_get_contents($templatePath . "index.php");
-	$reqd = array("\$CONTENT","\$ACTIONBARMODULE","\$ACTIONBARPAGE","\$SITEDESCRIPTION","\$SITEKEYWORDS","\$FOOTER");
-	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$DEBUGINFO","\$MENUBAR","\$INHERITEDINFO","\$ERRORSTRING","\$WARNINGSTRING","\$INFOSTRING");
+	$reqd = array("\$CONTENT","\$ACTIONBARMODULE","\$ACTIONBARPAGE","\$SITEDESCRIPTION","\$SITEKEYWORDS","\$FOOTER","\$ERRORSTRING","\$WARNINGSTRING","\$INFOSTRING");
+	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$DEBUGINFO","\$MENUBAR","\$INHERITEDINFO",);
 	$id = 0;
 	$i = 0;
 	$j = 0;
