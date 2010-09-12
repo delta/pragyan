@@ -376,13 +376,14 @@ MOVECOPY;
 	  			<tr><td>Page title:</td><td><input type="text" id="pagetitle" name="pagetitle" value="{$page_values['page_title']}" $modifiers/></td></tr>
 	  			<tr><td >Page type: </td><td>$pageType</td></tr>
 				<tr><td>Allow comments: </td><td><input type='checkbox' id='allowComments' name='allowComments' $allowComments></td></tr>
+				$showInMenuBox
+			<tr><td><label for="showheading">Show page heading</label></td><td><input type="checkbox" id="showheading" name="showheading" $showheading /></td></tr>
 	  				
 	  			
 		</table>
 		<fieldset><legend>Menu Settings</legend>
 		<table border="1" cellpadding="2px" cellspacing="2px">
-		$showInMenuBox
-			<tr><td><label for="showheading">Show page heading</label></td><td><input type="checkbox" id="showheading" name="showheading" $showheading /></td></tr>
+		
 			
 				<tr>
 					<td><label for='menutype'>Menu type</label></td>
@@ -392,6 +393,7 @@ MOVECOPY;
 						<option value='multidepth' $multidepthtype>Multi-Depth</option>
 					</select>
 					</td>
+					<td rowspan="4"><input type="checkbox" name='menustyle_propogate' value='yes' />Propogate Menu settings to all child pages</td>
 				<tr>
 					<td><label for='showmenubar'>Show menu bar in page</label></td>
 					<td><input type='checkbox' id='showmenubar' name='showmenubar' $showmenubar/></td>
@@ -466,7 +468,7 @@ FORMDISPLAY;
  * @param $showMenuBar Boolean indicating whether the page shows its menubar
  * @return String containing a description of any errors encountered, a null string indicating success
  */
-function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList, $page_template, $template_propogate, $menu_type, $menu_depth) {
+function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList, $page_template, $template_propogate, $menu_type, $menu_depth, $menu_propogate) {
 
 	$updateQuery = '';
 	$updates = array ();
@@ -478,7 +480,10 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	$page_template=escape($page_template);
 	
 	if ($pageId == 0) {
-		if (is_bool($showInMenu)) {
+		if (is_bool($showInMenu)) {if($template_propogate==true)
+	{
+		setChildTemplateFromParentID($pageId,$page_template);	
+	}
 			$updates[] = '`page_displayinmenu` = ' . ($showInMenu == true ? 1 : 0);
 		}
 	}
@@ -516,6 +521,10 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	if($template_propogate==true)
 	{
 		setChildTemplateFromParentID($pageId,$page_template);	
+	}
+	if($menu_propogate==true)
+	{
+		setChildMenuStyleFromParentID($pageId,$menu_type,$showMenuBar,$showSiblingMenu,$menu_depth);	
 	}
 	
 	if($menu_type!=NULL)
@@ -556,7 +565,6 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 function setChildTemplateFromParentID($parentId,$page_template)
 {
 	$parentId=escape($parentId);
-	$page_template=escape($page_template);
 	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
 	$result=mysql_query($query);
 	while($row=mysql_fetch_row($result))
@@ -567,6 +575,33 @@ function setChildTemplateFromParentID($parentId,$page_template)
 		setChildTemplateFromParentID($childPageId,$page_template);
 	}
 }
+function setChildMenuStyleFromParentID($parentId,$menu_type,$showMenuBar,$showSiblingMenu,$menu_depth)
+{
+	$parentId=escape($parentId);
+	$menu_type=escape($menu_type);
+	$menu_depth=escape($menu_depth);
+	$bshowMenuBar=($showMenuBar==true)?1:0;
+	$bshowSiblingMenu=($showSiblingMenu==true)?1:0;
+	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
+	$result=mysql_query($query);
+	$menu="";
+	$sibling="";
+	if($menu_depth!=NULL)
+		$menu=", `page_menudepth`=$menu_depth ";
+	
+	if(is_bool($showSiblingMenu))
+		$sibling=", `page_displaysiblingmenu`=$bshowSiblingMenu ";
+	
+	while($row=mysql_fetch_row($result))
+	{
+		$childPageId=$row[0];
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_displaymenu`=$bshowMenuBar, `page_menutype`='$menu_type' $sibling  $menu WHERE `page_id`=$childPageId";
+		mysql_query($query);
+		
+		setChildMenuStyleFromParentID($childPageId,$menu_type,$showMenuBar,$showSiblingMenu,$menu_depth);
+	}
+}
+
 
 
 /**
@@ -607,13 +642,14 @@ function pagesettings($pageId, $userId) {
 				else $page_template=escape($_POST['page_template']);
 	
 				$template_propogate=isset($_POST['template_propogate'])?true:false;
+				$menu_propogate=isset($_POST['menustyle_propogate'])?true:false;
 				$_POST['pagename']=isset($_POST['pagename'])?$_POST['pagename']:"";
 				$_POST['pagetitle']=isset($_POST['pagetitle'])?$_POST['pagetitle']:"";
 				$var = (isset($_POST['allowComments'])?1:0);
 				$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
 				$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 				mysql_query("UPDATE `article_content` SET `allowComments` = $var WHERE `page_modulecomponentid` = '{$modulecomponentid}'");
-				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL);
+				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL,$menu_propogate);
 
 				
 
