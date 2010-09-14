@@ -39,7 +39,13 @@ function getSettingsForm($pageId, $userId) {
 	"FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id`=" . $pageId;
 	$page_result = mysql_query($page_query);
 	$page_values = mysql_fetch_assoc($page_result);
-
+	
+	
+	
+	$chkquery="SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute`='allow_pagespecific_template'";
+	$row=mysql_fetch_row(mysql_query($chkquery));
+ 	$allow_pagespecific_templates=$row[0]; // 0 if disabled, 1 if enabled
+	
 	if (!$page_values) {
 		return '';
 	}
@@ -54,7 +60,7 @@ function getSettingsForm($pageId, $userId) {
 	$showmenubar = ($page_values['page_displaymenu'] == 1 ? 'checked="checked" ' : '');
 	$showsiblingmenu = $page_values['page_displaysiblingmenu'] == 1 ? 'checked="checked" ' : '';
 	$showheading = ($page_values['page_displaypageheading'] == 1 ? 'checked="checked"' : '');
-	$dbPageTemplate = $page_values['page_template'];
+	$dbPageTemplate = $page_values['page_template']; 
 	$modulecomponentid=$page_values['page_modulecomponentid'];
 	$templates = getAvailableTemplates();
 	$page_query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = $pageId AND `page_parentid` != `page_id` ORDER BY `page_menurank` ASC  ";
@@ -212,30 +218,46 @@ INHERITEDINFO;
 				</td>
 			</tr>
 		</table>
-		<fieldset id="fieldsetTemplate">
-		<legend>Template</legend>
-		<table>
-		<tr>
-		<td>Use Default Template ?</td>
-		<td><input type='checkbox' name='default_template' value='yes' onchange="toggleSelTemplate1()" $dbPageDefTemplate /></td>
-		</tr>
-		<tr>
-		<td>Select Template</td>
-		<td><select name='page_template' $dbPageTemplateDisabled>
 CREATE;
-		for($i=0; $i<count($templates); $i++)
-		{
-			if($templates[$i]==$dbPageTemplate)
-			$createdPageSettingsText.="<option value='".$templates[$i]."' selected >".ucwords($templates[$i])."</option>";
-			else
-			$createdPageSettingsText.="<option value='".$templates[$i]."' >".ucwords($templates[$i])."</option>";
-		}
+	
+		
+			$createdPageSettingsText.=<<<CREATE
+			<fieldset id="fieldsetTemplate">
+			<legend>Template</legend>
+CREATE;
+	if($allow_pagespecific_templates==1)
+	{
 		$createdPageSettingsText.=<<<CREATE
-		</select>
+			<table>
+			<tr>
+			<td>Use Default Template ?</td>
+			<td><input type='checkbox' name='default_template' value='yes' onchange="toggleSelTemplate1()" $dbPageDefTemplate /></td>
+			</tr>
+			<tr>
+			<td>Select Template</td>
+			<td><select name='page_template' $dbPageTemplateDisabled>
+CREATE;
+			for($i=0; $i<count($templates); $i++)
+			{
+				if($templates[$i]==$dbPageTemplate)
+				$createdPageSettingsText.="<option value='".$templates[$i]."' selected >".ucwords($templates[$i])."</option>";
+				else
+				$createdPageSettingsText.="<option value='".$templates[$i]."' >".ucwords($templates[$i])."</option>";
+			}
+			$createdPageSettingsText.="
+			</select>
 	
-		</tr>
+			</tr>
 	
-		</table>
+			</table>";
+	}
+	else 
+	$createdPageSettingsText.="Page-specific templates are disabled. Please enable it from Global Settings in Admin or click <a href='./+admin&subaction=global'>here</a>";
+			
+		
+		
+		
+		$createdPageSettingsText.=<<<CREATE
 		</fieldset><br/>
 	   	<input type="submit" name="btnSubmit2" value="Submit" />&nbsp;&nbsp;<input type="reset" name="btnReset" value="Reset" />
       </fieldset>
@@ -409,6 +431,10 @@ MOVECOPY;
 	        </table>
 	        </fieldset>
 	        <fieldset><legend>Template</legend>
+FORMDISPLAY;
+	if($allow_pagespecific_templates==1)
+	{
+		$formDisplay.=<<<FORMDISPLAY
 	        <table border="1" cellpadding="2px" cellspacing="2px">
 				
 				<tr>
@@ -428,11 +454,16 @@ FORMDISPLAY;
 						else
 						$formDisplay.="<option value='".$templates[$i]."' >".ucwords($templates[$i])."</option>";
 					}
-					$formDisplay.=<<<FORMDISPLAY
+					$formDisplay.="
 					</select>
 	
 				</tr>
-		</table></fieldset>
+		</table>";
+	}
+	else $formDisplay.="Page-specific templates are disabled. Please enable it from Global Settings in Admin or click <a href='./+admin&subaction=global'>here</a>";
+	
+	$formDisplay.=<<<FORMDISPLAY
+		</fieldset>
 		
 		<fieldset><legend>Child Pages</legend>
 		Child pages: (Click on links for children's settings.) $parentPath <br />

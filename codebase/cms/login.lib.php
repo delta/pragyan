@@ -135,7 +135,7 @@ function login() {
 									<td><input type="password" name="user_password"  id="user_password"  class="required" /><br /></td>
 								</tr>
 								<tr>
-									<td><br /><input type="submit" value="Login" /></td>
+									<td><input type="submit" value="Login" /></td>
 									<td><a href="./+login&subaction=resetPasswd">Lost Password?</a> <a href="./+login&subaction=register">Sign Up</a></td>
 								</tr>
 							</table>

@@ -194,7 +194,7 @@ function checkDatabaseAccess() {
 			<p>To create a database and a user with all priviliges to that database, run the following queries after replacing <b>pragyandatabase</b>, <b>localhost</b>, <b>pragyanuser</b> and <b>pragyanpassword</b> as required. </p>
 			<pre>CREATE DATABASE `pragyandatabase`;
 CREATE USER 'pragyanuser'@'localhost' IDENTIFIED BY 'pragyanpassword';
-GRANT ALL PRIVILEGES ON `pragyan\_v3` . * TO 'pragyanuser'@'localhost';</pre>
+GRANT ALL PRIVILEGES ON `pragyandatabase` . * TO 'pragyanuser'@'localhost';</pre>
 			<p>After you run these queries successfully in your MySQL client, please run this install script again.</p>
 WHATEVER;
 

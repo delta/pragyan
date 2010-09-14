@@ -32,14 +32,15 @@ function getMenu($userId, $pageIdArray) {
 	if ($pageRow['page_displaymenu'] == 0)
 		return '';
 	$menutype=$pageRow['page_menutype'];
-	$menuHtml =<<<MENUHTML
-		<div id="menubar">
-			<div id="menubarcontent">
-MENUHTML;
 	
+	$menuHtml = "";
 	
 	if($menutype=="classic")
 	{
+		$menuHtml =<<<MENUHTML
+		<div id="menubar">
+			<div id="menubarcontent">
+MENUHTML;
 		$childMenu = getChildren($pageId, $userId);
 
 		if ($pageId == 0) {
@@ -70,30 +71,38 @@ MENUHTML;
 	}
 	else
 	{
-
-		$menuHtml .= '<a href="./"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
+	
+		
 	
 		$rootUri =  substr($_SERVER['REQUEST_URI'],0,strpos($_SERVER['REQUEST_URI'],'/home/')+5);
 		$pageId = ($pageId!=0)?getParentPage($pageId):$pageId;
-	
+		
 		$pageRow = getPageInfo($pageId);
-		//$menuHtml .= $pageRow['page_title'];
-		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId);
-		$menuHtml .= '</div></div>';
+		
+		
+		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId,1);
+		
+		
 	}
 	return $menuHtml;
 
 }
 
-function getChildList($pageId,$depth,$rootUri,$userId) {
+function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   if($depth>0) {
+  if($curdepth==1) $topclass="topnav";
+  else $topclass="subnav";
+  
   $pageRow = getChildren($pageId,$userId);
-  $var = "<ul>";
+  $var = "<ul class='$topclass'>";
   for($i=0;$i<count($pageRow);$i+=1) {
-  $var .= "<li><div class='cms-menuitem'><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\">".$pageRow[$i][2]."</div></a></li>";
-  $var .= getChildList($pageRow[$i][0],$depth-1,$rootUri,$userId);
+  $newdepth=$curdepth+1;
+  $var .= "<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\">".$pageRow[$i][2]."</a>";
+  $var .= getChildList($pageRow[$i][0],$depth-1,$rootUri,$userId,$newdepth);
+  $var .= "</li>";
 }
   $var .= "</ul>";
+  if(count($pageRow)==0) return "";
   return $var;
   }
 }
