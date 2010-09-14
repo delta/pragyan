@@ -17,10 +17,11 @@ Pragyan CMS - Readme
  
  Introduction:
  
- Pragyan CMS is a multi user based cms to organize & facilitate collaborative content 
- creation & updation on a website, written in PHP and MySql. It provides tools to manage
- permissions for users and groups and modules like article, form, quiz, forums etc.
- Pragyan CMS is used to handle the creation, updation and administration of a website.
+ Pragyan CMS is a multi user based cms to organize & facilitate collaborative 
+ content creation & updation on a website, written in PHP and MySql. It 
+ provides tools to manage permissions for users and groups and modules like 
+ article, form, quiz, forums etc.Pragyan CMS is used to handle the creation, 
+ updation and administration of a website.
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -49,17 +50,24 @@ Pragyan CMS - Readme
   * Multi-user open source content management system
   * Used to organize and facilitate collaborative content creation and updation
   * Handy tools to manage permissions for groups and users
-  * Modules article, gallery, quiz, form and forum
-
+  * Quickly create pages of type article, gallery, quiz, form and forum
+  * Template installation module with compatibility check
+  * Have page-specific templates so every page can have its own template
+  * Easily convert pages into PDF
+  * Google Maps and Latex plugin in pages of type articles
+  * Powerful search engine powered by Sphider
+  * Send mass emails to site registrants
+  * Security and protection against hacking attempts ( like XSS and Injections )
+  
  Requirements:
  
     php 5.2.4 or later
     MySQL 5.0.45 or later
-    a web-browser (duh!)
-
+    a javascript and cookies enabled web-browser (duh!)
+    
  Download:
  
-    You can get the newest version at http://sourceforge.net/projects/pragyan
+    You can get the latest version at http://sourceforge.net/projects/pragyan
 
  Installation:
  
@@ -73,7 +81,9 @@ Pragyan CMS - Readme
  Support:
  
     See reference about support forums under http://sf.net/forum/?groupid=220286
-    For any kind of queries, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
+    For any kind of queries, contact :
+	Abhishek Shrivastava 
+	i.abhi27 [at] gmail [dot] com
     
  License:
  
@@ -90,9 +100,9 @@ Pragyan CMS - Readme
     
  Links:
 
-   * Pragyan CMS homepage			http://pragyan.sourceforge.net/
-   * Pragyan CMS TRAC				http://sourceforge.net/apps/trac/pragyan
-   * SourceForge Pragyan CMS project page	http://sourceforge.net/projects/pragyan
+   * Pragyan CMS homepage		http://pragyan.sourceforge.net/
+   * Pragyan CMS TRAC			http://sourceforge.net/apps/trac/pragyan
+   * Pragyan CMS SourceForge project	http://sourceforge.net/projects/pragyan
    * Local documents:
       + Version history: 	ChangeLog
       + General notes: 		README

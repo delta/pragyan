@@ -2,15 +2,16 @@
   =====================
   
   Version 3.0
-  --------------
+  -----------
   http://pragyan.sourceforge.net/
 
-    Copyright (C) 2010-2011
-						Abhishek Shrivastava <i.abhi27[at]gmail.com>
-						Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
-    						Anshu Prateek<anshprat[at]users.sourceforge.net>
-    						Ankit Srivastav<ansh2201[at]users.sourceforge.net>
-    						Abhilash R<abhithekid[at]users.sourceforge.net>
+	Copyright (C) 2010-2011
+    
+	Abhishek Shrivastava <i.abhi27[at]gmail.com>
+	Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+	Anshu Prateek<anshprat[at]users.sourceforge.net>
+	Ankit Srivastav<ansh2201[at]users.sourceforge.net>
+	Abhilash R<abhithekid[at]users.sourceforge.net>
 
 - Abhilash R <abhithekid[at]users.sourceforge.net>
     * url parsing

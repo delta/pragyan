@@ -68,7 +68,7 @@ function reloadTemplates()
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."templates` (`template_name`) VALUES ('$tdir')";
 			mysql_query($query);
 			if(mysql_affected_rows())
-				$res.="<tr><td>$tdir</td><td><b>Not in Database! Fixed!</b></td></tr>";
+				$res.="<tr><td>$tdir</td><td><b>Found new template! Installed.</b></td></tr>";
 			else $res.="<tr><td>$tdir</td><td>OK</td></tr>";
 			$temparr[]=$tdir;
 		}
