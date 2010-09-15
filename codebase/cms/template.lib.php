@@ -23,7 +23,7 @@ function getPageTemplate($pageId)
  	return $row[0];
 }
 
-function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$BREADCRUMB,&$INHERITEDINFO,&$CONTENT,&$FOOTER,&$DEBUGINFO,&$ERRORSTRING,&$WARNINGSTRING,&$INFOSTRING,&$STARTSCRIPTS) {
+function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$BREADCRUMB,&$INHERITEDINFO,&$CONTENT,&$FOOTER,&$DEBUGINFO,&$ERRORSTRING,&$WARNINGSTRING,&$INFOSTRING,&$STARTSCRIPTS,&$COMPLETEMENU) {
 	global $cmsFolder;
 	global $sourceFolder;
 	global $templateFolder;
@@ -33,6 +33,7 @@ function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$B
 	global $TEMPLATECODEPATH;
 	global $SITEDESCRIPTION;
 	global $SITEKEYWORDS;
+	global $COMPLETEMENU;
 	global $STARTSCRIPTS;
 	$TEMPLATEBROWSERPATH = "$urlRequestRoot/$cmsFolder/$templateFolder/".TEMPLATE;
 	$TEMPLATECODEPATH = "$sourceFolder/$templateFolder/".TEMPLATE;
