@@ -155,6 +155,7 @@ $COMPLETEMENU = getMenu($userId, $pageIdArray, true);
 // The third parameter indicates whether menu is obtained from / or the current page.
 // true --> generate from / till depth
 // false --> generate from current page till depth relatively.
+$COMPLETEMENU = getMenu($userId, $pageIdArray, true);
 
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 $ACTIONBARMODULE = getActionbarModule($userId, $pageId);

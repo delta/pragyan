@@ -1,7 +1,7 @@
 <?php
-	$database="pragyan";
-	$mysql_user = "pragyan";
-	$mysql_password = "pragyan"; 
+	$database="pragyan11";
+	$mysql_user = "pragyan11";
+	$mysql_password = "PragyanNova123"; 
 	$mysql_host = "localhost";
 	$mysql_table_prefix = ""; // This doesn't work in sphider
 
