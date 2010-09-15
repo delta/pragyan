@@ -1,7 +1,6 @@
 <?php
 /**
  * @package pragyan
- * @author Sahil Ahuja
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
@@ -22,10 +21,13 @@ function findMenuIndex($menuArray, $pageId) {
 	return -1;
 }
 
-function getMenu($userId, $pageIdArray) {
+function getMenu($userId, $pageIdArray, $complete = false) {
 
 	
-	$pageId = $pageIdArray[count($pageIdArray) - 1]; 
+	if(!$complete)
+		$pageId = $pageIdArray[count($pageIdArray) - 1];
+	else
+		$pageId = 0;
 	$pageRow = getPageInfo($pageId);
 	$depth = $pageRow['page_menudepth'];
 	if ($depth == 0) $depth=1;
@@ -89,16 +91,16 @@ MENUHTML;
 }
 
 function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
-  if($depth>0) {
-  if($curdepth==1) $topclass="topnav";
-  else $topclass="subnav";
+  if($depth>0 || $depth==-1) {
+  if($curdepth==1 || $pageId==0) $classname="topnav";
+  else $classname="subnav";
   
   $pageRow = getChildren($pageId,$userId);
-  $var = "<ul class='$topclass'>";
+  $var = "<ul class='$classname'>";
   for($i=0;$i<count($pageRow);$i+=1) {
   $newdepth=$curdepth+1;
   $var .= "<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\">".$pageRow[$i][2]."</a>";
-  $var .= getChildList($pageRow[$i][0],$depth-1,$rootUri,$userId,$newdepth);
+  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
   $var .= "</li>";
 }
   $var .= "</ul>";
