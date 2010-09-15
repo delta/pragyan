@@ -14,10 +14,12 @@
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/layout.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/countdown.css" />
  <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
 
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
+    <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery.lwtCountdown-1.0.js" ></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.utils.min.js"></script>
 	<script language="javascript" type="text/javascript">
 		//defined here for use in javascript
@@ -57,8 +59,58 @@
 			</div>
 			<div id="rightContent">
 				<div id="right1" class="cont">
-					<h1 id="countdown">155 Days to go</h1>
+					<!-- Countdown dashboard start -->
+					<div id="countdown_dashboard">
+						<div class="dash weeks_dash">
+							<span class="dash_title">weeks</span>
+							<div class="digit">0</div>
+							<div class="digit">0</div>
+						</div>
+
+						<div class="dash days_dash">
+							<span class="dash_title">days</span>
+							<div class="digit">0</div>
+							<div class="digit">0</div>
+						</div>
+
+						<div class="dash hours_dash">
+							<span class="dash_title">hours</span>
+							<div class="digit">0</div>
+							<div class="digit">0</div>
+						</div>
+
+						<div class="dash minutes_dash">
+							<span class="dash_title">minutes</span>
+							<div class="digit">0</div>
+							<div class="digit">0</div>
+						</div>
+
+						<div class="dash seconds_dash">
+							<span class="dash_title">seconds</span>
+							<div class="digit">0</div>
+							<div class="digit">0</div>
+						</div>
+
+					</div>
+					<!-- Countdown dashboard end -->
+					<h4 id='countdown'>... before Pragyan 2011</h1>
 				</div>
+				 <script language="javascript" type="text/javascript">
+					jQuery(document).ready(function() {
+						$('#countdown_dashboard').countDown({
+							targetDate: {
+								'day': 		18,
+								'month': 	2,
+								'year': 	2011,
+								'hour': 	5,
+								'min': 		0,
+								'sec': 		0
+							}
+						});
+				
+			
+					});
+				</script>
 				<div id="right2" class="cont">
 					<h3>Links</h3>
 					Facebook<br />
