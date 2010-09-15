@@ -415,7 +415,7 @@ MOVECOPY;
 						<option value='multidepth' $multidepthtype>Multi-Depth</option>
 					</select>
 					</td>
-					<td rowspan="4"><input type="checkbox" name='menustyle_propogate' value='yes' />Propogate Menu settings to all child pages</td>
+					<td rowspan="4"><input type="checkbox" name='menustyle_propogate' value='yes' />Propogate Menu settings to all child pages <br /><br /> Menu Depth = -1 : Generate Complete Menu till the last child page.</td>
 				<tr>
 					<td><label for='showmenubar'>Show menu bar in page</label></td>
 					<td><input type='checkbox' id='showmenubar' name='showmenubar' $showmenubar/></td>
@@ -646,6 +646,10 @@ function pagesettings($pageId, $userId) {
 	$pageId=escape($pageId);
 	$userId=escape($userId);
 	global $sourceFolder;
+	$chkquery="SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute`='allow_pagespecific_template'";
+	$row=mysql_fetch_row(mysql_query($chkquery));
+ 	$allow_pagespecific_templates=$row[0]; // 0 if disabled, 1 if enabled
+ 	
 	require_once($sourceFolder."/tree.lib.php");
 
 	if(isset($_GET['displayinfo'])) {
@@ -668,7 +672,7 @@ function pagesettings($pageId, $userId) {
 				}
 
 				$pageInfoRow = getPageInfo($pageId);
-				if(isset($_POST['default_template']))
+				if(isset($_POST['default_template']) || $allow_pagespecific_templates==0)
 					$page_template=DEF_TEMPLATE;
 				else $page_template=escape($_POST['page_template']);
 	
@@ -776,7 +780,7 @@ function pagesettings($pageId, $userId) {
 			 */
 			if(isset($_POST['childpagetype'])&&isset($_POST['childpagename'])) {
 
-				if(isset($_POST['default_template']))
+				if(isset($_POST['default_template']) || $allow_pagespecific_templates==0)
 					$page_template=DEF_TEMPLATE;
 				else $page_template=escape($_POST['page_template']);
 

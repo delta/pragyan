@@ -107,7 +107,7 @@ if ($pageId === false) {
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was not found on this server.<br />$_SERVER[SERVER_SIGNATURE]".
 		"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
 	exit();
 }
 logInfo (getUserEmail($userId),$userId, $pageId, $pageFullPath, getPageModule($pageId), $action, $_SERVER['REMOTE_ADDR']);
@@ -120,7 +120,7 @@ if(URLSecurityCheck($_GET))
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
 			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
 	exit();
 }
 
@@ -150,7 +150,11 @@ $INHERITEDINFO = inheritedinfo($pageIdArray);
 
 $BREADCRUMB = breadcrumbs($pageIdArray,"&nbsp;»&nbsp;");
 
-$MENUBAR = getMenu($userId, $pageIdArray);
+$MENUBAR = getMenu($userId, $pageIdArray); 
+$COMPLETEMENU = getMenu($userId, $pageIdArray, true);
+// The third parameter indicates whether menu is obtained from / or the current page.
+// true --> generate from / till depth
+// false --> generate from current page till depth relatively.
 
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
@@ -178,7 +182,7 @@ if($debugSet == "on") {
 	
 		
 
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
 
 disconnect();
 exit();
