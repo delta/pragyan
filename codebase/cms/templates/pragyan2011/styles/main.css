@@ -7,7 +7,7 @@ body {
 	-x-system-font:none;
 	
 	font-family:normal Arial,Helvetica,sans-serif;
-	font-size:10px;
+	font-size:11px;
 	font-size-adjust:none;
 	font-stretch:normal;
 	font-style:normal;
@@ -33,14 +33,11 @@ body {
 #actionbar {height: 16px;}
 .contentcontainer div#actionbar a{
 	color: black;
-	padding: 3px 10px;
+	padding: 0px 10px;
 	text-decoration: none;
 	font-size: 12px; 
 	font-family:normal Arial,Helvetica,sans-serif;
 	border: solid 1px white;
-}
-.contentcontainer div#actionbar a:hover{
-	border: solid 1px black;
 }
 /*MENUBAR */
 #menubar cms-menuhead {
@@ -86,19 +83,24 @@ border:0;
 #quicklinks * { border : 0; border-color : #EAEAEA; }
 /*CONTENT*/
 .contentcontainer{
-	color: black;
+	color: #121212;
 	background: #EAEAEA;
 	font-family:normal Arial,Helvetica,sans-serif;
-	font-size: 13px;
+	font-size: 14px;
 }
 .cont{
 	background: #fff;
 	padding: 5px 10px;
 	margin: 10px;
 	border: solid 1px #D6D6D6;
-	color: black;
 }
-#content {color: black;padding: 2px;}
+#content {
+padding: 2px;
+ line-height : 20px;
+        text-align : justify;
+        word-spacing : 1px;
+
+}
 #centerContent {
 	border-radius: 5px 50px 5px 5px;
 	-moz-border-radius: 5px 50px 5px 5px;
@@ -153,5 +155,36 @@ h1,h2,h3,h4,h5,h6 {
 .introbox a:hover
 {
  color : #1C51A8;
+}
+
+blockquote {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #FFFFFF;
+	background-color: #999999;
+	margin: 10px;
+	padding: 0;
+	border-radius: 5px 50px 5px 50px;
+        -moz-border-radius: 5px 50px 5px 50px;
+        -webkit-border-radius: 5px 50px 5px 50px;
+	font-size : 19px;
+	line-height : 25px;
+
+
+}
+span.quote {
+	font-family : "Times New Roman";
+	font-size : 30px;
+}
+blockquote p {
+	margin: 10px 0px 0px 10px;
+	padding: 10px 10px 0px;
+	text-indent: 20px;
+}
+#quote_attrib {
+	font-size: 70%;
+	text-align: right;
+	text-indent: 0px;
+	margin-top: 0px;
+	padding-bottom: 10px;
 }
 

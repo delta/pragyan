@@ -11,6 +11,7 @@
 	margin-left: 10px;
 	margin-bottom : 10px;
 	position: relative;
+	
 }
 
 .dash .digit {
@@ -23,6 +24,7 @@
 	font-family: Times;
 	color: #555;
 	position: relative;
+
 }
 
 .dash_title {

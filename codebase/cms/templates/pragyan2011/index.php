@@ -16,6 +16,8 @@
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/countdown.css" />
  <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+ <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
+
  <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
 
     
@@ -53,7 +55,7 @@
 				<table border="1" cellspacing="0" cellpadding="7.5">
 				<tr><td><a href="./+login"><img id="userLog" src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/login.jpg" alt="Login" /></a></td></tr>
 				<tr><td><a href="<?php echo $urlRequestRoot; ?>/home/contacts"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/contactus.jpg" alt="" /></a></td></tr>
-				<tr><td><a href="http://www.facebook.com/pages/pragyan"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/facebook.jpg" alt="" /></a></td></tr>
+				<tr><td><a href="http://www.facebook.com/pragyan.nitt"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/facebook.jpg" alt="" /></a></td></tr>
 				<tr><td><a href="http://www.twitter.com/pragyan"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/twitter.jpg" alt="" /></a></td></tr>
 				</table>
 				</div>
@@ -112,7 +114,9 @@
 			
 					});
 				</script>
-		<!--		<div id="right2" class="cont">
+<!-- facebook like button -->
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpragyan.nitt&amp;layout=standard&amp;show_faces=false&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; margin: 10px;overflow:hidden; width:200px; height:35px;" allowTransparency="true"></iframe>		
+<!--		<div id="right2" class="cont">
 					<h3>Links</h3>
 					Facebook<br />
 					Twitter

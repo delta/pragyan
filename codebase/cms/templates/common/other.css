@@ -1,52 +1,31 @@
 /**
-*For action bar and breadcrumbs
+*For action bar
 */
 
 div#cms-actionbarModule, div#cms-actionbarPage{
-	background-color: #f5f5ff;
+	background-color: transparent;
 	font-size: x-small;
 	display: inline;
 	float: right;
 	position: relative;
-	top: -1.6em;
 	}
 .cms-actionbarPageItem, .cms-actionbarModuleItem{
-	padding: 0px 5px 0px 5px;
-	border-left: 1px dotted #cccccc;
+	border : none;
 	}
-.cms-actionbarPageItem:hover , .cms-actionbarModuleItem:hover{
+.cms-actionbarPageItem:hover , .cms-actionbarModuleItem:hover {
 	background-color: #E5E5EE;
-	}
-.cms-actionbarPageItem *:hover , .cms-actionbarModuleItem *:hover{
-	background-color: #E5E5EE;
-	}
-div#cms-breadcrumb *:hover{
-	border:	solid #D5D5DD 1px;background-color: #E5E5EE;
-	}
-div#cms-breadcrumb *{
-	border:	solid #f5f5ff 1px;
-	}
-div#cms-actionbarModule {
-	border-right: 1px dotted #999999;
-	margin-left: 40%;
-	}
-div#cms-breadcrumb {
-	background-color: #f5f5ff;
-	font-size: small;
-	padding-right: 32%;
-	border-bottom: 1px solid #eeeeee;
-	border-top: 1px solid #eeeeee;
-	}
-/**
-* For the page as such
-*/
-#main {
-	min-height: 450px;
-}
-#content,#sidebarcontent {
-	font-size: small;
-}
+	    border-radius: 15px 15px 15px 15px;
+        -moz-border-radius: 15px 15px 15px 15px;
+        -webkit-border-radius: 15px 15px 15px 15px;
 
+	}
+.cms-actionbarPageItem *:hover , .cms-actionbarModuleItem *:hover {
+	background-color: #E5E5EE;
+    border-radius: 15px 15px 15px 15px;
+        -moz-border-radius: 15px 15px 15px 15px;
+        -webkit-border-radius: 15px 15px 15px 15px;
+
+}
 /**
 For Gallery
 */
