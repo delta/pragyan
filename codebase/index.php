@@ -41,7 +41,7 @@ $ICONS_SRC;
 $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
 // For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 
-require_once($sourceFolder."/config.inc.php");
+@include_once($sourceFolder."/config.inc.php"); // If config.inc.php doesn't exists, assume CMS hasn't been installed.
 require_once($sourceFolder."/common.lib.php");
 require_once($sourceFolder."/icons.lib.php");
 
@@ -51,6 +51,8 @@ if(!defined("ADMIN_USERID") )
 	<b>NOTE:</b>If you're not using the <a href='http://sourceforge.net/projects/pragyan'>official package</a> of the Pragyan CMS or you're installing for the second time, then please make sure that the 'RewriteEngine' property is set to 'Off' in the .htaccess file present in the root folder of Pragyan for the above link to work correctly.";
 	exit();
 }
+
+
 
 $dbase; ///< Defined here to set its access as global to the project
 connect(); ///< To connect to server
