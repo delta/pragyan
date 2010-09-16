@@ -279,8 +279,8 @@ BODY;
 					<th>Description</th>
 					<th>Type</th>
 					<th>Tooltip</th>
-					<th title="Only in the case of radio, check or select element type">Extra options*</th>
 					<th>Other Information</th>
+					<th title="Only in the case of radio, check or select element type">Extra options*</th>
 				
 				</tr>
 					$elementData

@@ -169,10 +169,11 @@
 				<td>{$this->elementDescription}</td>
 				<td>{$this->elementType}</td>
 				<td>{$this->toolTipText}</td>
-				<td>{$this->typeOptions}</td>
 				<td>
-				$otherInfo
-				</td>
+                                $otherInfo
+                                </td>
+
+				<td>{$this->typeOptions}</td>
 			</tr>
 ROWSTRING;
 	
