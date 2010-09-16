@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/countdown.css" />
  <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+ <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
 
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
@@ -51,7 +52,7 @@
 				<div id="quicklinks">
 				<table border="1" cellspacing="0" cellpadding="7.5">
 				<tr><td><a href="./+login"><img id="userLog" src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/login.jpg" alt="Login" /></a></td></tr>
-				<tr><td><a href="/contact"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/contactus.jpg" alt="" /></a></td></tr>
+				<tr><td><a href="<?php echo $urlRequestRoot; ?>/home/contacts"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/contactus.jpg" alt="" /></a></td></tr>
 				<tr><td><a href="http://www.facebook.com/pages/pragyan"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/facebook.jpg" alt="" /></a></td></tr>
 				<tr><td><a href="http://www.twitter.com/pragyan"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/twitter.jpg" alt="" /></a></td></tr>
 				</table>
@@ -111,11 +112,11 @@
 			
 					});
 				</script>
-				<div id="right2" class="cont">
+		<!--		<div id="right2" class="cont">
 					<h3>Links</h3>
 					Facebook<br />
 					Twitter
-				</div>
+				</div> -->
 			</div>
 			<div id="centerContent" class="cont">
 				<div id="content">

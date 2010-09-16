@@ -319,7 +319,6 @@
 							$link_id = $row[0];
 							for ($i=0;$i<=15; $i++) {
 								$char = dechex($i);
-								echo "delete from ".$mysql_table_prefix."link_keyword$char where link_id=$link_id";
 								mysql_query ("delete from ".$mysql_table_prefix."link_keyword$char where link_id=$link_id") or die( mysql_error()."-spider.php L:322");
 								
 							}
