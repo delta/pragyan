@@ -9,6 +9,7 @@ Pragyan CMS v3.0 - Developer's Guide
 (3) Coding Guidelines
 	+ Security
 	+ Portability
+	+ Documentation
 (4) CMS Working Overview
 	+ Pages
 	+ Page Path
@@ -51,7 +52,7 @@ The above command will create a folder with the name 'pragyan' in
 the current directory and download the latest sourcecode in there.
 
 You can also use Eclipse Subversion if you don't have SVN installed.
-______________________________________________________________
+______________________________________________________________________
 
 (1)++++++++ INSTALLATION INSTRUCTIONS ++++++++++++++++++++++++++++++++
 ______________________________________________________________________
@@ -184,7 +185,121 @@ ______________________________________________________________________
 	In case its impossible to avoid it, try to find an alternative
 	for Windows and/or Linux-bases OS also and implement it.
 	
+	______________________________________________________________
 	
+	::::::::::::::::::::::: DOCUMENTATION ::::::::::::::::::::::::
+	______________________________________________________________
+	
+ 	When writing code, make sure the documentation (comments, so 
+ 	to speak) follows the guidelines given below. This helps in 
+ 	generating documentation using tools like Doxygen. Note the
+ 	slashes, the stars, the dots and anything else typed here.
+ 
+
+	===== RULE 1 =====
+	
+	GENERAL COMMENTS:
+	
+	Start comments using /** rather than /*, or if you prefer the
+	C style single line comments, use three slashes in atleast two
+	consecutive lines as in
+	///
+	///
+	instead of 
+	//
+	
+	If you use only a single /// line, then that qualifies as a
+	brief description. Use it ONLY when you are sure your comment
+	can be fit in one line. Otherwise, use multiple /// lines.
+ 
+ 	Comments, in general, must look like either
+ 	
+	/**
+  	 * Comment goes here
+  	 */
+
+	OR
+
+  	///Comment goes here (this qualifies as a brief description)
+  	
+  	OR
+  	
+  	///Comment goes here (this qualifies as a detailed
+  	///description, because it has 2 or more lines)	
+  	
+  	===== RULE 2 =====
+
+ 	VARIABLES or STATEMENTS:
+
+ 	/**
+	 * A brief description here. (Note the period (full stop))
+	 * More detailed description goes here.
+	 */
+ 	$xyz = hello("world");
+ 	
+ 	Note that the documentation is BEFORE the statement.
+
+	===== RULE 3 =====
+	
+	When it comes to variables or data members of a class,struct,
+	union,file or enum, you can also put documentation after the
+	declaration. Do:
+
+ 	private $myPrivateMember; ///< Description goes here (note 
+ 	/// the less than symbol)
+
+	===== RULE 4 =====
+	
+ 	FUNCTIONS:
+
+	/**
+	 * A description of the function goes here. Give a 
+	 * description of each of the arguments that the function 
+	 * requires after this, followed by an indication of what the 
+	 * return values represent, as shown below:
+	 * @param $param1 $param1 is the first parameter, and a
+	 * description of the parameter goes here.
+	 * @param $param2 The second parameter, and so on for as many 
+	 * parameters as the function takes
+	 * @return Describe what the function returns here
+	 */
+	function functionName($param1, $param2) {
+
+	}
+
+	===== RULE 5 =====
+	
+	NEW FILE :
+	
+	If you create a new file, make sure the following comment is
+	on top of it :
+	
+	/**
+	 * @package pragyan
+	 * @file filename.php
+	 * @brief Brief description of the file comes here.
+	 * Detailed description here is optional.
+	 * @author Abhishek Shrivastava <i.abhi27[at]gmail.com>
+	 * @copyright (c) 2010 Pragyan Team
+	 * @license http://www.gnu.org/licenses/ GNU Public License
+	 * For more details, see README
+	 */
+	 
+	 
+	 ===== RULE 6 =====
+	 
+	 CLASS :
+	 
+	 /**
+	  * @class myclass
+	  * @brief This is the description of the class myclass.
+	  * Here goes the detailed description, which is optional.
+	  */
+	  class myclass
+	  {
+	   ...
+	  }
+
 ______________________________________________________________________
 
 (4)++++++++ CMS WORKING OVERVIEW +++++++++++++++++++++++++++++++++++++
@@ -511,5 +626,3 @@ images directories inside the cms/templates/template-name folder.
 	Template Installation feature inside "Admin" action and upload
 	your ZIP file and follow the instructions.
 	
-
- 

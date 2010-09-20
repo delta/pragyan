@@ -1,8 +1,11 @@
 <?php
 /**
  * @package pragyan
- * @copyright (c) 2010 Pragyan Team
- * @license http://www.gnu.org/licenses/ GNU Public License
+ * @file common.lib.php
+ * @brief Contains functions which are common to many tasks and very frequently used.
+ * @author Abhishek <i.abhi27[at]gmail.com>.
+ * @copyright (c) 2010 Pragyan Team.
+ * @license http://www.gnu.org/licenses/ GNU Public License.
  * For more details, see README
  */
  

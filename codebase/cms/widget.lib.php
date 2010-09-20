@@ -13,6 +13,7 @@
 
  Put all the widgets inside cms/widgets folder. 
  Every widget should have a folder by its name inside cms/widgets.
+ Inside every folder there will be a description file consisting of widget information and usage details.
  Each such folder will have widget.class.php file having a class which should extend WidgetFramework abstract class.
  The class will have abstract functions like :
 
@@ -40,19 +41,7 @@
 -- Table structure for table `pragyanV3_widgets`
 --
 
-CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (Database Structure :
- 
- PragyanV3_widgetsinfo table :
- *widget_id	widget_name *config_id	config_name	config_type	config_options	config_displaytext	config_default	is_global
-
- PragyanV3_widgets table :
- *widget_id	*widget_instanceid	page_id		widget_location		widget_order
-
-  PragyanV3_widgetsconfig
- widget_id	widget_instanceid	config_id	config_value
- 
- PragyanV3_widgetsdata
- widget_id	widget_instanceid	widget_datakey		widget_datavalue
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (
   `widget_id` int(11) NOT NULL,
   `widget_instanceid` int(11) NOT NULL,
   `page_id` int(11) NOT NULL,
@@ -156,6 +145,14 @@ Database Structure :
  3) Manipulate the ordering and Location ID of the widgets.
  
 */
+
+/**
+ * Reloads the widgets from the widget directoty and update proper entries in database.
+ *
+ * @param
+ *
+ * @return
+ */
 function reloadWidgets()
 {
 	// Load the widgets from widget/ directory and update proper entries in database. Should be there in admin/site-maintenaince
