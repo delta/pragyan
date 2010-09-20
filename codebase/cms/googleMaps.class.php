@@ -10,9 +10,9 @@
  
 class googlemaps
 {
-	var $latlong="-34.397, 150.644"; // Just a random number :) 
+	var $latlong="-34.397, 150.644"; ///< Just a random number :) 
 	var $zoom="14";
-	var $maptype="ROADMAP"; //Other options : SATELLITE, HYBRID, TERRAIN
+	var $maptype="ROADMAP"; ///< Other options : SATELLITE, HYBRID, TERRAIN
 	var $divid="map_canvas";
 	var $divwidth="300px";
 	var $divheight="300px";

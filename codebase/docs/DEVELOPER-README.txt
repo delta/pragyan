@@ -286,20 +286,144 @@ ______________________________________________________________________
 	 */
 	 
 	 
-	 ===== RULE 6 =====
+	===== RULE 6 =====
 	 
-	 CLASS :
+	CLASS :
 	 
-	 /**
-	  * @class myclass
-	  * @brief This is the description of the class myclass.
-	  * Here goes the detailed description, which is optional.
-	  */
-	  class myclass
-	  {
-	   ...
-	  }
+	/**
+	 * @class myclass
+	 * @brief This is the description of the class myclass.
+	 * Here goes the detailed description, which is optional.
+	 */
+	class myclass
+	{
+	 ...
+	}
 
+	===== RULE 7 =====
+	 
+	BUGS or WARNINGS:
+	 
+	If there are any bugs in your code, or any warning which you
+	may want the person who is going to change your code, to 
+	know, or if you want to ask that person to refer to some 
+	other fileyou can use the following tags within the comment 
+	block:
+	 
+	/**
+	 * ... Here are the usual stuff, description, author, etc
+	 * @bug This is a bug in the code
+	 * @bug This is another bug
+	 * @warning This is a warning
+	 * @warning This is another warning
+	 */
+	 
+	===== RULE 8 =====
+	
+	USAGE:
+	
+	If you are documenting a function or a class and you want to
+	also tell the user how to use that function or how to create
+	an object of that class, you can use a similar comment :
+	
+	/**
+	 * Here goes the detailed description.
+	 * Usage :
+	 * @code
+	 * <?php
+	 * 	$example=myfunction(1,2,3);
+	 * ?>
+	 * @endcode
+	 */
+	 
+	Note that the example code should be within the @code, 
+	@endcode sub-block and that should come right below the
+	detail description of the code.
+	
+	===== RULE 8 =====
+	
+	REFERENCING:
+	
+	If you want the reader of the code to also refer to some other
+	function, class, file, or a URL, you can use the following:
+	
+	/**
+	 * ...
+	 * @see a_function()
+	 * @see a_class
+	 * @see a_filename.php
+	 * @see a_class::its_member_variable
+	 */
+	 
+	===== RULE 9 =====
+	
+	NOTES and TODO:
+	
+	/**
+	 *
+	 * @note This is a note for you, or someone else, to remember.
+	 * @todo This is a TODO for the code below.
+	 * @todo Another TODO item for the code.
+	 */
+	 
+	EXAMPLE 1:
+	
+	DOCUMENTATION OF FILE common.lib.php :
+	
+	/**
+	 * @package pragyan
+	 * @file common.lib.php
+	 * @brief Contains the most frequently used functions by CMS
+	 * It has functions related to database connectivity, user
+	 * information retrieval, and other string manipulating
+	 * functions also.
+	 * @todo The templates related functions should be moved to 
+	 * the template.lib.php instead of here.
+	 * @author Abhishek Shrivastava <i.abhi27[at]gmail.com>
+	 * @copyright (c) 2010 Pragyan Team
+	 * @license http://www.gnu.org/licenses/ GNU Public License
+	 * For more details, see README
+	 */ 
+	
+	EXAMPLE 2:
+	
+	DOCUMENTATION OF CLASS googlemaps in GoogleMaps.class.php :
+	
+	/**
+	 * @class googlemaps 
+	 * @brief Class to render Google maps in article module
+	 * It uses the GoogleMaps API and Geocoding technique to
+	 * convert the location name entered by the user into the
+	 * precise location in the map.
+	 * Usage:
+	 * @code
+	 * 	$html = googlemaps::render($location_name);
+	 * @endcode
+	 * The $html will contain the HTML code for the map.
+	 * @todo Add the option for the user to specify the default 
+	 * zoom
+	 * @warning This code requires internet connection to work. 
+	 * So make sure you are connected to internet before 
+	 * modifying and testing.
+	 * @bug Sometimes, the location shown is not precise/correct.
+	 * @author Abhishek Shrivastava <i.abhi27[at]gmail.com>
+	 * @copyright (c) 2010 Pragyan Team
+	 * @license http://www.gnu.org/licenses/ GNU Public License
+	 * For more details, see README
+	 */
+	 
+	EXAMPLE 3:
+	
+	DOCUMENTATION OF FUNCTION arraytostring($array)
+	
+	/**
+	 * Convert an array to a string recursively
+	 * @param $array Array to convert
+	 * @return string containing the array information
+	 */
+	 
+	NOTE : All the documentation blocks should appear BEFORE the 
+	code for which documentation is done.
 ______________________________________________________________________
 
 (4)++++++++ CMS WORKING OVERVIEW +++++++++++++++++++++++++++++++++++++

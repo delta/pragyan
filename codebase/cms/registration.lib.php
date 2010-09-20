@@ -10,6 +10,13 @@ function getRegistrationForm() {
 	global $urlRequestRoot, $moduleFolder, $cmsFolder,$sourceFolder, $templateFolder;
 	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
 	require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
+	$jsPath2 = "$urlRequestRoot/$cmsFolder/$moduleFolder/form/validation.js";//validation.js
+	$jsPath = "$urlRequestRoot/$cmsFolder/templates/common/scripts/formValidator.js";//validation.js
+	$calpath = "$urlRequestRoot/$cmsFolder/$moduleFolder";
+	$jsPathMooTools = "$urlRequestRoot/$cmsFolder/templates/common/scripts/mootools-1.11-allCompressed.js";
+	$body = '<script language="javascript" type="text/javascript" src="'.$jsPath2.'"></script>';
+	$body .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/form/calendar/calendar.css" title="Aqua" />' .
+						 '<script type="text/javascript" src="'.$calpath.'/form/calendar/calendar.js"></script>';
 	$jsValidationFunctions = array();
 	$containsFileUploadFields = false;
 	$dynamicFields = getFormElementsHtmlAsArray(0, 0, $jsValidationFunctions, $containsFileUploadFields);
@@ -48,7 +55,7 @@ function getRegistrationForm() {
 				return (checkEmail(this.user_email)&&checkPassword(this.user_repassword));
 			}
 </script>
-<form class="cms-registrationform"  method="POST" name="user_reg_usrFrm" onsubmit="return checkRegistrationForm(this)" action="./+login&subaction=register">
+<form class="cms-registrationform"  method="POST" name="user_reg_usrFrm" onsubmit="return checkRegistrationForm(this)" action="./+login&subaction=register" enctype="multipart/form-data">
 	<fieldset>
 	<legend> Sign Up</legend>
 		<table>
@@ -83,7 +90,17 @@ function getRegistrationForm() {
 	</fieldset>
 </form>
 REG;
-	return $reg_str;
+	$body .= $reg_str;
+	$body .= <<<SCRIPT
+			<script language="javascript" type="text/javascript">
+			<!--
+				function validate_form(thisform) {
+					return ($jsValidationFunctions);
+				}
+			-->
+			</script>
+SCRIPT;
+	return $body;
 }
 
 function register() {
@@ -215,7 +232,13 @@ FORM;
 			$query1 = "SELECT `user_id` FROM `". MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` ='".escape($_POST['user_email'])."' LIMIT 1";
 			$result1 = mysql_query($query1);
 			$result1 = mysql_fetch_array($result1);
-			submitRegistrationForm(0, $result1[0], true, true); 
+			$form_result = submitRegistrationForm(0, $result1[0], true, true); 
+			if(!$form_result)
+				{
+					$query1 = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` = ".$result1[0];
+					$result = mysql_query($query1); 
+					return getRegistrationForm();
+				}			
 			if ($result)
 			{
 				if(ACTIVATE_USER_ON_REG)
