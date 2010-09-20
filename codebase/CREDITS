@@ -1,114 +1,122 @@
-  Pragyan CMS - Credits
-  =====================
+Pragyan CMS - Credits
+=====================
   
-  Version 3.0
-  -----------
-  http://pragyan.sourceforge.net/
+http://pragyan.sourceforge.net/
 
-	Copyright (C) 2010-2011
-    
-	Abhishek Shrivastava <i.abhi27[at]gmail.com>
-	Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
-	Anshu Prateek<anshprat[at]users.sourceforge.net>
-	Ankit Srivastav<ansh2201[at]users.sourceforge.net>
-	Abhilash R<abhithekid[at]users.sourceforge.net>
+Copyright (C) 2007-2009		Abhilash R <abhithekid[at]users.sourceforge.net>	
+				Ankit Srivastav <ansh2201[at]users.sourceforge.net>
+				Anshu Prateek <anshprat[at]users.sourceforge.net>
+				Sahil Ahuja <sahilahuja[at]users.sourceforge.net>				
+Copyright (C) 2010-2011 	Abhishek Shrivastava <i.abhi27[at]gmail.com>
+				Chakradar Raju <chakradarraju[at]gmail.com>
+				Balanivash <balanivash[at]gmail.com>
 
-- Abhilash R <abhithekid[at]users.sourceforge.net>
-    * url parsing
-    * permissions
-    * group management
-    * directory tree
-    * forms
-    * AJAX suggestion box
-    * quiz timer
-    
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2,
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not see <http://www.gnu.org/licenses/>
+
+
+CREDITS, in chronological order
+-------------------------------
+
+Version 3.0+
+------------
+
 - Abhishek Shrivastava <i.abhi27[at]gmail.com>
-    * page-specific templates
-    * user management
-    * global settings
-    * security
-    * Google Maps & Tex plugin for ckEditor  
-    * profile images
-    * sql query helper
-    * bugs in article,forms,quiz,login
-    * support for images in PDF plugin
-    * support for icons
-    * widget framework
-    
-- Ankit Srivastava <ansh2201[at]users.sourceforge.net>
-    * designer
-    * forms
-    * news module
-    * qaos module
-    * copy and move for pages
-    * breadcrumbs
-
-- Anshu Prateek <anshprat[at]users.sourceforge.net>
-    * article
-    * forum
-    * forms module
-    * hospi module
-    * uploads
-    
-- Balanivash <balanivash[at]gmail.com>
-   * forum
-   * enable/disable login
-   * user profile form
+    * Actively restarted SourceForge Pragyan project in May 2010
+    * Current project maintainer
+    * Page-specific templates
+    * User management
+    * Global settings
+    * Security (esp. SQL Injection and XSS)
+    * Google Maps & Tex plugin
+    * Profile images
+    * SQL query helper
+    * Bugs in article,forms,quiz,login,pdf
+    * Support for icons
+    * Widget framework
     
 - Chakradar Raju <chakradarraju[at]gmail.com>
-    * template installation module
-    * PDF plugin
-    * improvements in quiz and gallery
-    * email registrants
-    * sphider
-    * article comments
-    * new permissions AJAX interface
-    * book module
- 
+    * Template installation module
+    * PDF plugin integration
+    * Improvements in quiz and gallery
+    * Email registrants
+    * Sphider integration
+    * Article comments
+    * AJAX interface for permissions
+    * Book module
+    
+- Balanivash <balanivash[at]gmail.com>
+   * Renovation of forum module
+   * Enable/disable login
+   * User profile form
+   * Target option in links module
+
+Version 2.0-2.6
+---------------
+
+- Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
+    * Creator and architecture of the Pragyan CMS project
+    * Authentication
+    * Article module
+    * Forms module
+    * Uploads
+    * Menu
+    
+- Abhilash R <abhithekid[at]users.sourceforge.net>
+    * URL parsing
+    * Permissions management
+    * Group management
+    * Directory tree
+    * Forms
+    * AJAX suggestion box
+    * Quiz timer
+    
+- Ankit Srivastava <ansh2201[at]users.sourceforge.net>
+    * Designer
+    * Forms
+    * News module
+    * Qaos module
+    * Copy and move for pages
+    * Breadcrumbs
+
+- Anshu Prateek <anshprat[at]users.sourceforge.net>
+    * Article
+    * Forum
+    * Forms module
+    * Uploads
+    
 - Mrinal Kumar <mrinalkumar123[at]gmail.com>
-    * forum
+    * Forum
 
 - Harini A <scistu[at]gmail.com>
-    * gallery  
+    * Gallery  
     
-- Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
-    * creator and architecture of the CMS
-    * authentication
-    * article
-    * forms
-    * uploads
-    * menu
-
-- Shivanandan <seekshiva[at]gmail.com>
-   * multi-depth side menu
-
-- The Architects
-	Sahil Ahuja
-	Abhilash R
-	Anshu Prateek
-	Ankit Srivastava
-	
-- Version 3.0
-	Abhishek Shrivastava
-	Chakradar Raju
-	Balanivash
-	
 And also to the following people who have contributed minor changes,
-enhancements, bugfixes or support for a new language since version 2.1.0:
+enhancements and bugfixes :
 M. Surya Sankar, Sapna Shukla, Shruti J, Ashwathi Krishnan, K.R Arvind,
 T.V. Karthik, Shivanandan, P. Mohnish.
 
 Templates: 
- Blue : Nitin Kumar
+ Crystalx : Vit Dlouhy <vit.dlouhy[at]nuvio.cz>
+ Blacksilver : Abhishek Shrivastava <i.abhi27[at]gmail.com>
 
-Original Credits of Version 1
------------------------------
+Version 1
+---------
 
-    This work is based on Parijat Mukherjee's Pragyan CMS v1. It was his idea
-    to create a web-based interface to MySQL using PHP4. Although I have not
-    used any of his source-code, there are some concepts I've borrowed from
-    him. Pragyan CMS v2 was created to make up for the shortcomings of 
-    Pragyan CMS v1.
+    This project is inspired by Parijat Mukherjee's Pragyan CMS v1. It was his
+    idea to create a CMS to be used for the NIT Trichy's and Pragyan's website
+    (Pragyan is the annual international techno-management festival of NIT Trichy).
+    Hence, the name "Pragyan CMS". <http://www.nitt.edu>,<http://www.pragyan.org>
+    Pragyan CMS v2 was created to make up for the shortcomings of Pragyan CMS v1.
     
     Thanks go to [in chronological order]
     - Sahil Ahuja <sahilahuja[at]gmail.com> who created the form and quiz
@@ -116,8 +124,7 @@ Original Credits of Version 1
     - Abhishek Verma <vermaabhishekp[at]gmail.com> who created the form and quiz
       module in Praygan CMS v1.
     - Vishal Patel <vkp_patel[at]yahoo.co.in> made the gallery module.
-    The following people have contributed minor changes, enhancements, bugfixes
-    or support for a new language:
+    The following people have contributed minor changes, enhancements or bugfixes :
     Ankit Srivastava, Aishwarya T, Srikanth M
 
 And thanks to everyone else who sent emails with suggestions, bug-reports

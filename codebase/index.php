@@ -1,13 +1,19 @@
 <?php
 /**
  * @package pragyan
- * @author Abhishek Shrivastava, Abhilash R, Sahil Ahuja, Anshu Prateek, Ankit Srivastav, Chakradar Raju,
  * @brief Pragyan CMS v3.0 Project
+ * @author Abhilash R
+ * @author Sahil Ahuja
+ * @author Anshu Prateek
+ * @author Ankit Srivastav
+ * @author Abhishek Shrivastava
+ * @author Chakradar Raju
+ * @author Balanivash
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  * @mainpage Pragyan CMS
- * @section intro_sec Introduction
+ * @section Introduction
  * Pragyan CMS is a simple and fast multiuser CMS(Content Management System) to organize collaborative web-content. 
  * This CMS allows very fine user & group permissions and generating pages like articles, forms, quizzes, forums, gallery, etc.
  * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps, Latex, etc.
@@ -21,7 +27,7 @@
 $cmsFolder="cms";///Folder containing all library files
 $moduleFolder = "modules"; ///Folder containing all the modules
 $templateFolder = "templates"; ///Folder containing all the modules
-$uploadFolder = "uploads";
+$uploadFolder = "uploads"; ///Folder containing the upload files, temporary files and session files
 $debugSet = "off";///Will get overridden by the config value
 $sourceFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'))."/".$cmsFolder;
 $PAGELASTUPDATED=""; ///Can be used to update the last updated time
@@ -32,14 +38,14 @@ $STARTSCRIPTS; ///Will contain a string containing all that has to be executed o
 $urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); ///Root of the request - that path to cms base
 $TEMPLATEBROWSERPATH; ///Full path to template folder as seen from the browser (defined in template.lib.php)
 $TEMPLATECODEPATH; ///Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
-$SITEDESCRIPTION;
-$SITEKEYWORDS;
-$DEBUGINFO = "";
-$cookieSupported = false;
-$ICONS;
-$ICONS_SRC;
+$SITEDESCRIPTION; ///Site description to be used in the HTML <meta> tag
+$SITEKEYWORDS; ///Site keywords to be used in the HTML <meta> tag
+$DEBUGINFO = ""; ///Debugging information
+$cookieSupported = false; ///is cookie supported by the client's browser ?
+$ICONS; ///Stores all the icons locations along with <img> tag, indexed by the icon name
+$ICONS_SRC; ///Stores all the icons locations without the <img> tag, indexed by the icon name
 $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
-// For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
+/// For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 
 @include_once($sourceFolder."/config.inc.php"); // If config.inc.php doesn't exists, assume CMS hasn't been installed.
 require_once($sourceFolder."/common.lib.php");
@@ -235,58 +241,6 @@ uids : unauthenticated -> 0, loggedin -> his own uid
 gids : Groups available by default (to which permissions can be given) - unauthenticated users -> 0, logged in users -> 1
 */
 
-/**
- ******************************************************************************
- * 										CODE DOCUMENTATION GUIDELINES
- ******************************************************************************
- * When writing code, make sure the documentation (comments, so to speak)
- * follows the guidelines given below. This helps in generating documentation
- * using tools like Doxygen. Note the slashes, the stars and anything else
- * typed here.
- */
 
-/// GENERAL COMMENTS:
-///
-/// Start comments using /** rather than /*, or if you prefer the C style single
-/// line comments, use three slashes on two consecutive lines, as in
-///	/// instead of //
-///
-/// Comments, in general, must look like
-/// /**
-///  * Comment goes here (the * on this line is optional, but it looks good)
-///  */
-///
-/// Or
-///
-/// ///
-/// /// Comment goes here (two /// lines, see? At least two ///s are necessary to
-///	///	to qualify them as documentation)
-
-/// VARIABLES or DATA MEMBERS:
-///
-/// /**
-///	* A brief description here. (< note the period (full stop))
-///	* Mode detailed description goes here.
-///	*/
-/// private $myPrivateMember;
-///
-/// When it comes to variables or data members, you can also put documentation
-/// after the declaration. Do:
-///
-/// private $myPrivateMember; ///< Description goes here (node the less than symbol)
-
-/// FUNCTIONS:
-///
-/// /**
-/// * A description of the function goes here. Give a description of
-/// * each of the arguments that the function requires after this, followed
-/// * by an indication of what the return values represent, as shown below:
-/// * @param $param1 $param1 is the first parameter, and a description of the parameter goes here.
-/// * @param $param2 The second parameter, and so on for as many parameters as the function takes
-/// * @return Describe what the function returns here
-/// */
-/// function functionName($param1, $param2) {
-///
-/// }
 
 
