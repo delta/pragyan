@@ -57,5 +57,5 @@ clear:both;
 	margin: 0;
 	padding: 0;
 }
-.contentinnertube > div#centerContent {overflow:hidden;}
+.contentinnertube > div#centerContent,div#footerContent {overflow:hidden;}
 .contentinnertube div#content { }

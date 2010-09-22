@@ -53,10 +53,10 @@
 			<div id="leftContent">
 				<div id="quicklinks">
 				<table border="1" cellspacing="0" cellpadding="7.5">
-				<tr><td><a href="./+login"><img id="userLog" src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/login.jpg" alt="Login" /></a></td></tr>
-				<tr><td><a href="<?php echo $urlRequestRoot; ?>/home/contacts"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/contactus.jpg" alt="" /></a></td></tr>
-				<tr><td><a href="http://www.facebook.com/pragyan.nitt"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/facebook.jpg" alt="" /></a></td></tr>
-				<tr><td><a href="http://www.twitter.com/pragyan"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/twitter.jpg" alt="" /></a></td></tr>
+				<tr><td><a href="./+login"><img id="userLog" src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/login.jpg" alt="Login" title="Login" /></a></td></tr>
+				<tr><td><a href="<?php echo $urlRequestRoot; ?>/home/contacts"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/contactus.jpg" alt="Contacts" title="Contacts" /></a></td></tr>
+				<tr><td><a href="http://www.facebook.com/pragyan.nitt"><img src="<?php echo $TEMPLATEBROWSERPATH;?>/images/icons/facebook.jpg" alt="Pragyan @ Facebook" title="Pragyan @ Facebook" /></a></td></tr>
+				
 				</table>
 				</div>
 			</div>
@@ -89,7 +89,7 @@
 						</div>
 
 						<div class="dash seconds_dash">
-							<span class="dash_title">seconds</span>
+						<span class="dash_title">seconds</span>
 							<div class="digit">0</div>
 							<div class="digit">0</div>
 						</div>
@@ -115,7 +115,7 @@
 					});
 				</script>
 <!-- facebook like button -->
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpragyan.nitt&amp;layout=standard&amp;show_faces=false&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; margin: 10px;overflow:hidden; width:200px; height:35px;" allowTransparency="true"></iframe>		
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpragyan.nitt&amp;layout=standard&amp;show_faces=false&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; margin: 10px;overflow:hidden; width:200px; height:55px;" allowTransparency="true"></iframe>		
 <!--		<div id="right2" class="cont">
 					<h3>Links</h3>
 					Facebook<br />
@@ -129,9 +129,12 @@
 					<?php echo $CONTENT; ?>
 				</div>
 			</div>
+			<div id="footerContent" class="cont"> <?php echo $FOOTER; ?> </div>
 		</div>
 		<div class="clearer"></div>
+		
 	</div>
+	
     </div>
 </div>
 
