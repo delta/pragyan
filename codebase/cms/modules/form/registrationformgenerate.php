@@ -117,12 +117,25 @@ SCRIPT;
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdata` FROM `form_elementdata` WHERE ' .
 									 "`page_modulecomponentid` = $moduleCompId AND `user_id` = $userId";
 			$dataResult = mysql_query($dataQuery);
+			
 			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . mysql_error()); 	return false; }
 			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			
 				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdata'];
 			}
 		}
-
+		else {
+			$dataQuery = 'SELECT `form_elementid`, `form_elementdefaultvalue` FROM `form_elementdesc` WHERE ' .
+									 "`page_modulecomponentid` = $moduleCompId";
+			$dataResult = mysql_query($dataQuery);
+			
+			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . mysql_error()); 	return false; }
+			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			
+				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdefaultvalue'];
+			}
+		}
+	
 		$elementQuery = 'SELECT `form_elementid`, `form_elementtype` FROM `form_elementdesc` WHERE ' .
 										"`page_modulecomponentid` = $moduleCompId ORDER BY `form_elementrank`";
 		$elementResult = mysql_query($elementQuery);
@@ -134,6 +147,7 @@ SCRIPT;
 			if($elementRow[1] == 'file') {
 				$containsFileUploadFields = true;
 			}
+			
 			$formElements[] =
 						getFormElementInputField
 						(
@@ -220,7 +234,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 
 			$options = split('\|', $elementTypeOptions);
 			$optionsHtml = '';
-
+	
 			for($i = 0; $i < count($options); $i++) {
 				if($options[$i] == $value) {
 					$optionsHtml .= '<option value="'.$i.'" selected="selected" >' . $options[$i] . "</option>\n";
