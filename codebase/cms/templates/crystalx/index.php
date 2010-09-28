@@ -14,6 +14,7 @@
     <link rel="stylesheet" media="print" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/print.css" />
     <link rel="stylesheet" media="aural" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/aural.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/css/other.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
     

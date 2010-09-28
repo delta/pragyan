@@ -179,6 +179,9 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `pe
 ('article', 'create', 'Create', 8, 'Create an aritcle'),
 ('article', 'view', 'View', 0, 'View the article'),
 ('article', 'edit', 'Edit', 0, 'Edit the article'),
+('book', 'create', 'Create',  5, 'Create a book'),
+('book', 'edit', 'Edit',  0, 'Edit the book page and properties'),
+('book', 'view', 'View',  0, 'View the book'),
 ('form', 'create', 'Create Form', 19, 'Create a new Form'),
 ('form', 'view', 'Register', 0, 'Register to a form'),
 ('form', 'viewregistrants', 'View Registrants', 0, 'View Registrants'),
@@ -228,10 +231,10 @@ INSERT IGNORE INTO `pragyanV3_usergroup` (`user_id`, `group_id`) VALUES
 
 --
 -- Dumping data for table `pragyanV3_userpageperm`
--- Non-admin users by default have permissions to View Article and convert page into PDF.
+-- Non-admin users by default have permissions to View Article, book, gallery, news, sitemap and convert page into PDF.
 
 INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) SELECT 
-'group', 0, 0, `perm_id`, 'Y' FROM `pragyanV3_permissionlist` WHERE `perm_action` IN ('view','pdf') AND `page_module` IN ('page','article','gallery','news','sitemap');
+'group', 0, 0, `perm_id`, 'Y' FROM `pragyanV3_permissionlist` WHERE `perm_action` IN ('view','pdf') AND `page_module` IN ('page','article','book','gallery','news','sitemap');
 INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) SELECT 
 'group', 0, 2, `perm_id`, 'Y' FROM `pragyanV3_permissionlist` WHERE 1;
 

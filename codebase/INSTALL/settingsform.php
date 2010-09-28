@@ -374,7 +374,7 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtAdminEmail">Administrator Email:</label></td>
-			<td><input type="text" name="txtAdminEmail" id="txtAdminEmail" value="admin@localhost" autocomplete="off" onblur="validate_email(this,0)" /></td>
+			<td><input type="text" name="txtAdminEmail" id="txtAdminEmail" value="admin@localhost.com" autocomplete="off" onblur="validate_email(this,0)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtAdminFullname">Administrator Full Name:</label></td>
