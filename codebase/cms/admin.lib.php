@@ -152,39 +152,6 @@ $globalform.=<<<globalform
 globalform;
 	return $globalform;
 }
-function templateManagementForm()
-{
-	$templates = getAvailableTemplates();
-	$templatesList = "<select id='templates'>";
-	
-	foreach($templates as $template)
-		$templatesList .= "<option value='" . $template . "'>" . $template . "</option>";
-	$templatesList .= "</select>";
-	global $ICONS;
-	require_once("upload.lib.php");
-	$form=<<<FORM
-	<script type="text/javascript">
-	function delconfirm(obj) {
-		if(confirm("Are you sure want to delete '" + document.getElementById('templates').value + "' template?"))
-		{
-			document.getElementById("file").value="";
-			obj.form.action += "uninstall&deltemplate=" + document.getElementById('templates').value;
-			return true;
-		}
-		return false;
-		
-	}
-	</script>
-	<form name='template' method='POST' action='./+admin&subaction=template&subsubaction=' enctype="multipart/form-data">
-	<fieldset>
-	<legend>{$ICONS['Templates Management']['small']}Template Management</legend>
-	Add new Template (select a ZIP file containing template): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
-	<br/><br/>Delete Existing Template: {$templatesList}<input type='submit' name='btn_uninstall' value='Uninstall' onclick='return delconfirm(this);'>
-	</fieldset>
-	</form>
-FORM;
-	return $form;
-}
 
 function extension($file) {
 	$start = strrpos($file,".");

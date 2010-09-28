@@ -60,6 +60,20 @@ CREATE TABLE IF NOT EXISTS `article_comments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `book_desc`
+--
+
+CREATE TABLE IF NOT EXISTS `book_desc` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `page_title` varchar(128) NOT NULL,
+  `initial` int(11) NOT NULL,
+  `list` varchar(256) NOT NULL,
+  PRIMARY KEY (`page_modulecomponentid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `form_desc`
 --
 
@@ -458,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_createdtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time when the page was created',
   `page_lastaccesstime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Time when the page was last accessed',
   `page_title` varchar(128) NOT NULL DEFAULT 'New Page' COMMENT 'Title of the page',
-  `page_module` enum('article','billing','external','faculty','form','forum','link','gallery','hospi','menu','news','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search') NOT NULL DEFAULT 'article' COMMENT 'Module type of the page',
+  `page_module` enum('article','billing','book','external','faculty','form','forum','link','gallery','hospi','menu','news','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search') NOT NULL DEFAULT 'article' COMMENT 'Module type of the page',
   `page_modulecomponentid` int(11) NOT NULL COMMENT 'Component id used in the module',
   `page_template` varchar(50) NOT NULL,
   `page_menurank` int(11) NOT NULL COMMENT 'Rank for menu ordering',
@@ -481,7 +495,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
 
 CREATE TABLE IF NOT EXISTS `pragyanV3_permissionlist` (
   `perm_id` int(11) AUTO_INCREMENT NOT NULL,
-  `page_module` enum('page','article','billing','faculty','form','forum','gallery','hospi','news','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search','newsletter','pdf') NOT NULL,
+  `page_module` enum('page','article','billing','book','faculty','form','forum','gallery','hospi','news','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search','newsletter','pdf') NOT NULL,
   `perm_action` varchar(100) NOT NULL,
   `perm_text` varchar(200) NOT NULL,
   `perm_rank` int(11) NOT NULL COMMENT 'The order of being shown in actionbar',

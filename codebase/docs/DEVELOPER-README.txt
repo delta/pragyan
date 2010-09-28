@@ -406,10 +406,6 @@ ______________________________________________________________________
 	 * So make sure you are connected to internet before 
 	 * modifying and testing.
 	 * @bug Sometimes, the location shown is not precise/correct.
-	 * @author Abhishek Shrivastava <i.abhi27[at]gmail.com>
-	 * @copyright (c) 2010 Pragyan Team
-	 * @license http://www.gnu.org/licenses/ GNU Public License
-	 * For more details, see README
 	 */
 	 
 	EXAMPLE 3:

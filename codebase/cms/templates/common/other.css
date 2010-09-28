@@ -33,6 +33,35 @@ div.galleryimagebox {
 border : 1px solid #B7CAF6; float : left; 
 }
 
-
+/**
+For Book Module
+*/
+.tabEnvelope {
+	margin-top: 10px;
+	padding: 0;
+	border: 0;
+	text-decoration : none;
+}
+.tabContent {
+	display: none;
+	padding: 13px;
+}
+.tabElement {
+	border: 1px solid black;
+	padding: 3px;
+	margin: 2px;
+	color: black;
+	
+}
+.tabElement a {
+	text-decoration : none;
+}
+.tabElement:hover {
+	border: 3px solid black;
+	padding: 1px;
+}
+.active {
+	display: block;
+}
 
 div.pragyangallery{margin:10px;}
