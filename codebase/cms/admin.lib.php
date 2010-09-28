@@ -1,5 +1,6 @@
 <?php
 /**
+ *Task sumitted by Gaurav
  * @package pragyan
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
@@ -52,25 +53,52 @@ them, ability to activate users, ability to create users - to refine
 
 function globalSettingsForm()
 {
+	global $ICONS;
+	$globalform=<<<globalform
+	<style>
+	#tabBar {
+		display: none;
+	}
+	</style>
+	<script type="text/javascript">
+		total = 4;
+		function showOption(num) {
+			for(i=1;i<=total;i++)
+			document.getElementById('globaloption'+i).style.display="none";
+			document.getElementById('globaloption'+num).style.display="block";
+		}
+		window.onload=function() {
+			for(i=1;i<=total;i++)
+			document.getElementById('globaloption'+i).style.display="none";
+			showOption(1);
+			document.getElementById('tabBar').style.display="block";
+		}
+	</script>
+	<fieldset>
+	<legend>{$ICONS['Global Settings']['small']}Global Settings</legend>
+	<div id="tabBar">
+	<table style="width:100%">
+	<tr>
+	<td id="subaction" style="width:35%"><a onclick="showOption(1);"><Button>Website Information</Button></td>
+	<td style="width:35%"><a onclick="showOption(2);"><Button>Template and Navigation</Button></td>
+	<td style="width:35%"><a onclick="showOption(3);"><Button>Email and Registrations</Button></td>
+	<td style="width:35%"><a onclick="showOption(4);"><Button>Security and Maintainence</Button></td>
+	</tr>
+	</table>
+	</div>
+globalform;
+	return $globalform."<form method='POST' action='./+admin&subaction=global'><div id=\"globaloption1\">".websiteInfoSettingsForm()."</div><div id=\"globaloption2\">".templateSettingsForm()."</div><div id=\"globaloption3\">".registrationsSettingsForm()."</div><div id=\"globaloption4\">".securitySettingsForm()."</div><input type='hidden' name='update_global_settings' /><input type='submit' value='Update' /><input type='button' value='Cancel' onclick=\"window.open('./+view','_top')\" /></form></fieldset>";
+	}
+	
+function websiteInfoSettingsForm()
+{
 	global $pageFullPath;
 	global $CMSTEMPLATE;
 	global $urlRequestRoot,$templateFolder,$cmsFolder;
 	$globals=getGlobalSettings();
 	foreach($globals as $var=>$val) 
 		$$var=$val;
-	$allow_pagespecific_header=$allow_pagespecific_header==0?"":"checked";
-	$allow_pagespecific_template=$allow_pagespecific_template==0?"":"checked";
-	$activate_useronreg=$default_user_activate==0?"":"checked";
-	$default_mailverify=$default_mail_verify==0?"":"checked";
-	$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
-	$allow_login=$allow_login==0?"":"checked";
-	$templates = getAvailableTemplates();
-	
-	global $ICONS;
 	$globalform=<<<globalform
-	<form name='admin_page_form' method='POST' action='./+admin&subaction=global'>
-	<fieldset>
-	<legend>{$ICONS['Global Settings']['small']}Global Settings</legend>
 	<table style="width:100%">
 	<tr>
 	<td style="width:35%">Website Name :</td>
@@ -88,9 +116,27 @@ function globalSettingsForm()
 	<td>Site Footer :</td>
 	<td><textarea style="width:98%" rows=10 cols=10 name='cms_footer' />$cms_footer</textarea></td>
 	</tr>
+	</table>
+globalform;
+	return $globalform;
+}
+function templateSettingsForm()
+{
+global $pageFullPath;
+	global $CMSTEMPLATE;
+	global $urlRequestRoot,$templateFolder,$cmsFolder;
+	$globals=getGlobalSettings();
+	foreach($globals as $var=>$val) 
+		$$var=$val;
+$templates = getAvailableTemplates();
+$allow_pagespecific_header=$allow_pagespecific_header==0?"":"checked";
+$allow_pagespecific_template=$allow_pagespecific_template==0?"":"checked";
+
+$globalform=<<<globalform
+	<table style="width:100%">
 	<tr>
 	<td>Default template :</td>
-	<td><select name='default_template' >
+	<td><select name='default_template'>
 globalform;
 
 	
@@ -107,33 +153,48 @@ $globalform.=<<<globalform
 	</td>
 	</tr>
 	<tr>
-	<td>Website Email :</td>
-	<td><input type="text" name='cms_email' value='$cms_email'></td>
-	</tr>
-	<tr>
-	<td>Upload Limit (bytes) :</td>
-	<td><input type="text" name='upload_limit' value='$upload_limit'></td>
-	</tr>
-	<tr>
-	<td>Site Reindex Frequency (days) :</td>
-	<td><input type="text" name='reindex_frequency' value='$reindex_frequency'></td>
+	<td>Allow Page-specific Template ?</td>
+	<td><input name='allow_page_template' type='checkbox' $allow_pagespecific_template></td>
 	</tr>
 	<tr>
 	<td>Allow Page-specific Headers ?</td>
 	<td><input name='allow_page_header' type='checkbox' $allow_pagespecific_header></td>
 	</tr>
+	
 	<tr>
-	<td>Allow Page-specific Template ?</td>
-	<td><input name='allow_page_template' type='checkbox' $allow_pagespecific_template></td>
+	<td>Show Breadcrumbs Submenu ?</td>
+	<td><input name='breadcrumb_submenu' type='checkbox' $breadcrumb_submenu></td>
 	</tr>
+	</table>
+globalform;
+return $globalform;
+}
+
+function registrationsSettingsForm()
+{
+global $pageFullPath;
+	global $CMSTEMPLATE;
+	global $urlRequestRoot,$templateFolder,$cmsFolder;
+	$globals=getGlobalSettings();
+	foreach($globals as $var=>$val) 
+		$$var=$val;
+$activate_useronreg=$default_user_activate==0?"":"checked";
+$default_mailverify=$default_mail_verify==0?"":"checked";
+$breadcrumb_submenu=$breadcrumb_submenu==0?"":"checked";
+$allow_login=$allow_login==0?"":"checked";
+
+
+$globalform=<<<globalform
+	<table style="width:100%">
 	<tr>
 	<td>Send Mail on Registration ?</td>
 	<td><input name='send_mail_on_reg' type='checkbox' $default_mailverify></td>
 	</tr>
 	<tr>
-	<td>Show Breadcrumbs Submenu ?</td>
-	<td><input name='breadcrumb_submenu' type='checkbox' $breadcrumb_submenu></td>
+	<td>Website Email :</td>
+	<td><input type="text" name='cms_email' value='$cms_email'></td>
 	</tr>
+	
 	<tr>
 	<td>Activate User On Registration ?</td>
 	<td><input name='activate_useronreg' type='checkbox' $activate_useronreg></td>
@@ -142,16 +203,36 @@ $globalform.=<<<globalform
 	<td>Allow Users to Login/Register ?</td>
 	<td><input name='allow_login' type='checkbox' $allow_login></td>
 	</tr>
+	</table>
+globalform;
+return $globalform;
+}
+
+
+function securitySettingsForm()
+{
+global $pageFullPath;
+	global $CMSTEMPLATE;
+	global $urlRequestRoot,$templateFolder,$cmsFolder;
+	$globals=getGlobalSettings();
+	foreach($globals as $var=>$val) 
+		$$var=$val;
+$globalform=<<<globalform
+	<table style="width:100%">
 	<tr>
-	<td><input type='hidden' name='update_global_settings' /><input type='submit' value='Update' />
-	<input type='button' value='Cancel' onclick="window.open('./+view','_top')" /></td>
+	<td>Upload Limit (bytes) :</td>
+	<td><input type="text" name='upload_limit' value='$upload_limit'></td>
+	</tr>
+	<tr>
+	<td>Site Reindex Frequency (days) :</td>
+	<td><input type="text" name='reindex_frequency' value='$reindex_frequency'></td>
 	</tr>
 	</table>
-	</fieldset>
-	</form>
 globalform;
-	return $globalform;
+return $globalform;
 }
+
+
 
 function extension($file) {
 	$start = strrpos($file,".");
