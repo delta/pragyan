@@ -7,10 +7,14 @@
  */
 
 global $sourceFolder;
+global $scriptPath;
 $sourceFolder = 'cms';
 $installFolder = '.';
 $cmsFolder = "../$sourceFolder";
 $templateFolder = "$cmsFolder/templates/crystalx";
+$scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
+$scriptPath = substr($scriptPathWithFolder , 0, strrpos($scriptPathWithFolder , '/'));
+
 
 require_once($cmsFolder."/common.lib.php");
 define('CMS_SETUP', true);
@@ -49,8 +53,7 @@ else if ($installPageNumber == 3) {
 		$installPageContent .= "</td></tr>\n";
 	}
 
-	$scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
-	$scriptPath = substr($scriptPathWithFolder , 0, strrpos($scriptPathWithFolder , '/'));
+	
 
 	$installPageContent = "<br /><table width=\"100%\" border=\"0\">\n $installPageContent </table>\n $installationErrors";
 	if ($installationErrors == '') {
@@ -334,102 +337,116 @@ function importDatabase() {
 }
 
 /**
+ * Checks whether the file or folder at the given path is writable or not.
+ *
+ * @param $path the full path of the file on the local server
+ *
+ * @return an integer code, which will be the combination of the following :
+ * @retval 1 Requested path is a file
+ * @retval 2 Requested path is a folder
+ * @retval 4 Requested path exists and writable
+ * @retval 8 Requested path exists but NOT writable
+ * @retval 16 Requested path doesn't exist
+ *
+ * @retval 5 File, exists and writable
+ * @retval 9 File, exists but NOT writable
+ * @retval 6 Folder, exists and writable
+ * @retval 10 Folder, exists but NOT writable
+ * @retval 16 Path doesn't exist
+ */
+function checkLocationAccess($path)
+{
+	$code=0;
+	if(is_file($path))
+	{
+		$code+=1;
+		$code+=is_writable($path)?4:8;
+	}
+	else if(is_dir($path))
+	{
+		$code+=2;
+		$testFolder=@fopen($path."/testfolder",'w');
+		$code+=($testFolder)?4:8;
+		if($testFolder)
+		{
+			fclose($testFolder);
+			unlink($path."/testfolder");
+		}
+	}
+	else $code+=16;
+	return $code;
+}
+
+/**
  * Checks prerequisites.
  * @return string A string with a report of the problems, if any.
  */
 function CheckPrerequisites() {
 	global $sourceFolder;
-	$cmsfolder = "./../$sourceFolder";
-	if(is_dir($cmsfolder."/uploads"))
+	global $scriptPath;
+	
+	$cmsfolder = "$scriptPath/$sourceFolder";
+	
+	$checklist=array( 
+			"$scriptPath/.htaccess" => "file",
+			"$cmsfolder" => "folder", 
+			"$cmsfolder/uploads" => "folder",
+			"$cmsfolder/templates" => "folder",
+			"$cmsfolder/widgets" => "folder",
+			"$cmsfolder/languages" => "folder",
+			"$cmsfolder/modules" => "folder",
+			"$cmsfolder/config.inc.php" => "file",	
+			"$cmsfolder/modules/search/settings/database.php" => "file",
+			);
+	
+	$checklist2=array();
+	
+	foreach($checklist as $path=>$type)
 	{
-		$testFolder=@fopen($cmsfolder."/uploads/testperms", 'w');
-		if(!$testFolder)
+		switch(checkLocationAccess($path))
 		{
-			$prereq="<li>Please check the permissions of the <b>$sourceFolder/uploads/</b> folder. It should be writable by your webserver user<br>";
-			$prereq.="On a <i>linux</i> server, after going inside the $sourceFolder folder run the following commands as root<br>";
-			$prereq.="<pre>chown -R &lt;httpd-process-user&gt; uploads</pre>";
-			$prereq.="<b>OR</b><br /><pre>chmod -R 777 uploads</pre></li>";
-			$prereq.="<br>NOTE: &lt;httpd-process-user&gt; is the default user for your webserver process. In most cases, it is 'www-data' or 'apache'.";
+			case 9 : $prereq.="<li><p>Pragyan CMS doesn't have write permissions over the file <b>$path</b>.</p></li>"; break;
+			case 10 : $prereq.="<li><p>Pragyan CMS doesn't have write permissions over the folder <b>$path</b>.</p></li>"; break;
+			case 16 : 
+			
+				$trycreate=($type=="file")?(touch($path)&&chmod($path,0755)):mkdir($path);
+				if($trycreate)
+					$checklist2[$path]=$type;
+				else
+					$prereq.="<li><p>The following $type is missing : <b>$path</b> and Pragyan CMS was not able to create it. Please create the $type manually and make sure Pragyan CMS has write permissions over it.</p></li>"; 
+				break;
 		}
-		else {
-			fclose($testFolder);
-			unlink("$cmsfolder/uploads/testperms");
-			$prereq = '';
+	}
+	foreach($checklist2 as $path=>$type)
+	{
+		switch(checkLocationAccess($path))
+		{
+			case 9 : $prereq.="<li><p>Pragyan CMS doesn't have write permissions over the file <b>$path</b>.</p></li>"; break;
+			case 10 : $prereq.="<li><p>Pragyan CMS doesn't have write permissions over the folder <b>$path</b>.</p></li>"; break;
+			case 16 : 
+			
+				$trycreate=($type=="file")?touch($path):mkdir($path);
+				if($trycreate)
+					$checklist2[$path]=$type;
+				else
+					$prereq.="<li><p>The following $type is missing : <b>$path</b> and Pragyan CMS was not able to create it. Please create the $type manually and make sure Pragyan CMS has write permissions over it.</p></li>"; 
+				break;
 		}
 	}
-	else
-	{
-			$prereq="<li>Kindly create the <b>$sourceFolder/uploads</b> folder. It should be writable by your webserver user<br>";
-		 	$prereq.="On a <i>linux</i> server,after going inside the $sourceFolder run the following commands as root<br>";
-		 	$prereq.="<pre>mkdir uploads</pre>";
-		 	$prereq.="<pre>chown -R <httpd process user> uploads;</pre>";
-		 	$prereq.="<b>OR</b><br /><pre>chmod -R 777 uploads</pre></li>";
-	}
 	
 	
-	$testFolder=@fopen($cmsfolder."/templates/testperms", 'w');
-	if(!$testFolder)
-	{
-		$prereq.="<li>Please check the permissions of the <b>$sourceFolder/templates/</b> folder. It should be writable by your webserver user<br>";
-		$prereq.="On a <i>linux</i> server, after going inside the $sourceFolder folder run the following commands as root<br>";
-		$prereq.="<pre>chown -R &lt;httpd-process-user&gt; templates</pre>";
-		$prereq.="<b>OR</b><br /><pre>chmod -R 777 templates</pre></li>";
-		$prereq.="<br>NOTE: &lt;httpd-process-user&gt; is the default user for your webserver process. In most cases, it is 'www-data' or 'apache'.";
-	}
-	else {
-		fclose($testFolder);
-		unlink("$cmsfolder/templates/testperms");
-		
-	}
-	
-	$testFolder=@fopen($cmsfolder."/languages/testperms", 'w');
-	if(!$testFolder)
-	{
-		$prereq.="<li>Please check the permissions of the <b>$sourceFolder/languages/</b> folder. It should be writable by your webserver user<br>";
-		$prereq.="On a <i>linux</i> server, after going inside the $sourceFolder folder run the following commands as root<br>";
-		$prereq.="<pre>chown -R &lt;httpd-process-user&gt; languages</pre>";
-		$prereq.="<b>OR</b><br /><pre>chmod -R 777 languages</pre></li>";
-		$prereq.="<br>NOTE: &lt;httpd-process-user&gt; is the default user for your webserver process. In most cases, it is 'www-data' or 'apache'.";
-	}
-	else {
-		fclose($testFolder);
-		unlink("$cmsfolder/languages/testperms");
-		
-	}
-	
-	
-	
-
-	if (!is_writable('../.htaccess')) {
-		$prereq .= <<<HTACCESS
-		<li>
-			<p>Please make sure that the file named .htaccess in the Pragyan CMS root directory has write permissions during the install process.</p>
-			<p>You can change permissions back to the way it was, after the installation completes.</p>
-		</li>
-HTACCESS;
-	}
-
-	if (!is_writable("../$sourceFolder/config.inc.php")) {
-		$prereq .= <<<CONFIGFILE
-		<li>
-			<p>Please make sure that the file named config.inc.php in the Pragyan CMS root directory has write permissions during the install process.</p>
-			<p>You can change permissions back to the way it was, after the installation completes.</p>
-		</li>
-CONFIGFILE;
-	}
-	
-	if (!is_writable("../$sourceFolder/modules/search/settings/database.php")) {
-		$prereq .= <<<SEARCHCONFIGFILE
-		<li>
-			<p>Please make sure that the file named database.php in the cms/modules/search/settings/ directory has write permissions during the install process.</p>
-			<p>You can change permissions back to the way it was, after the installation completes.</p>
-		</li>
-SEARCHCONFIGFILE;
-	}
-
 	if ($prereq != '') {
 		$prereq = "<p>The following prerequisite(s) need to be resolved before Pragyan CMS can continue installation.</p>\n<ul>\n$prereq\n</ul>";
 		$prereq .= '<p>Please make the necessary changes, and <a href="javascript: location.reload(true)">click here</a> to refresh this page.</p>';
+		$prereq .= <<<MSG
+<hr/>
+	<p>Pragyan CMS should have full write-access to its root installation directory. In your case it is : <b>$scriptPath</b>.<br/>
+	Please make sure the installation directory is writable by your webserver user. On a <i>linux</i> server, run the following commands as root:
+	<pre>chown -R &lt;httpd-process-user&gt; $scriptPath</pre>
+where &lt;httpd-process-user&gt; is the default user for your webserver process. In most cases, it is either 'www-data' or 'apache'.
+	<br/><br/>OR if you don't know your webserver process user and you're also not so concerned about security, execute the following command as root :
+	<br /><pre>chmod -R 777 $scriptPath</pre></p>
+MSG;
 	}
 
 	clearstatcache();
@@ -453,7 +470,11 @@ function saveHtaccess() {
 			<p><a href="javascript: location.reload(true)">Click here</a> to refresh this page.</p>
 HTACCESSERROR;
 
+	$htaccessdist = "../htaccess-dist";
 	$htaccessFile = "../.htaccess";
+	
+	copy($htaccessdist,$htaccessFile);
+	
 	$htaccessHandle = fopen($htaccessFile, 'r');
 	if (!$htaccessHandle)
 		return $errorMessage;
