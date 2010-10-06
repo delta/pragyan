@@ -1,0 +1,143 @@
+/* TOP MENU  - --- HEADER MENU */
+#quicklinks{
+	border: 0;
+	padding: 3px 5px;
+	margin: 0;
+	background: url(../images/quicklinks.jpg) repeat-x;
+	color: white;
+	font-family: sans-serif;
+	font-size: normal;
+	height: 25px;
+}
+#quicklinks div{
+	float: right;
+}
+#quicklinks a{
+	font-size: small;
+	padding: 0px 7px;
+	color: white;
+	text-decoration: none;
+	border: solid 1px transparent;
+}
+#quicklinks span {
+	width: 25px;
+	height: 25px;
+}
+#quicklinks div#linksid{
+	position: absolute;
+	top: 0;
+}
+#quicklinks a span {
+	position: absolute;
+	top: 1px;
+}
+#quicklinks a #link1{ background: #FFF url(../images/icons/fb.jpg); left: 10px;}
+#quicklinks a:hover #link1{ background: url(../images/icons/fbh.jpg); }
+
+#quicklinks a #link2{ background: #FFF url(../images/icons/su.jpg); left: 40px;}
+#quicklinks a:hover #link2{ background: url(../images/icons/suh.jpg); }
+
+#quicklinks a #link3{ background: #FFF url(../images/icons/mail.jpg); left: 70px;}
+#quicklinks a:hover #link3{ background: url(../images/icons/mailh.jpg); }
+
+#quicklinks a #link4{ background: #FFF url(../images/icons/twt.jpg); left: 100px;}
+#quicklinks a:hover #link4{ background: url(../images/icons/twth.jpg); }
+
+#quicklinks a #link5{ background: #FFF url(../images/icons/rss.jpg); left: 130px;}
+#quicklinks a:hover #link5{ background: url(../images/icons/rssh.jpg); }
+
+#quicklinks div#cms-actionbarPage a:hover {
+	background-color : white;
+	border: solid 1px #345;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	
+	color : black;
+}
+
+/*
+* LEFT MENU  COMPLETE MENU 
+*/
+.menucontainer * {
+	z-index: 1000;
+}
+.menucontainer {
+	z-index: 10;
+	margin: 50px 0;
+	padding: 0;
+}
+.menucontainer a{
+	color: white;
+	text-decoration: none;
+}
+.menucontainer ul.topnav {
+	margin: 0;
+	padding: 0;
+}
+.menucontainer ul.topnav > li {
+	list-style: none;
+	position: relative;
+	left: -5px;
+	margin: 0px;
+	padding: 0px;
+	/*border: solid 1px white;
+	border-left: 0;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;*/
+}
+.menucontainer ul.topnav > li > a{
+	padding: 0;
+	margin: 0;
+}
+.menucontainer ul.topnav > li > a > div {
+	position: relative;
+	left: -5px;
+	margin: 5px 0;
+	padding: 10px;
+	padding-left: 20px;
+	border:solid #FFF 1px;
+	border-left: 0;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	background: url(../images/rt.png) repeat;
+}
+.menucontainer ul.topnav > li > a:hover div{
+	border-color: #abcdef;
+	background: url(../images/menu.png) repeat;
+}
+.menucontainer ul.subnav {
+	display: none;
+}
+
+.menucontainer ul.depth2 {
+	margin: 0;
+	position: absolute;
+	left: 180px;
+	top: 0px;	
+	background: #000;
+	list-style: none;
+	border:solid #FFF 1px;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	display: none;
+	padding: 20px;
+}
+.menucontainer ul.depth2 > li {
+	float: left;
+}
+.menucontainer ul.depth2 a > div{
+	padding: 20px;
+	border: solid 1px transparent;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+}
+.menucontainer ul.depth2 a:hover > div {
+	border-color: #abcdef;
+	
+}
+	
