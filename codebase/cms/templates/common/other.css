@@ -1,31 +1,4 @@
-/**
-*For action bar
-*/
 
-div#cms-actionbarModule, div#cms-actionbarPage{
-	background-color: transparent;
-	font-size: x-small;
-	display: inline;
-	float: right;
-	position: relative;
-	}
-.cms-actionbarPageItem, .cms-actionbarModuleItem{
-	border : none;
-	}
-.cms-actionbarPageItem:hover , .cms-actionbarModuleItem:hover {
-	background-color: #E5E5EE;
-	    border-radius: 15px 15px 15px 15px;
-        -moz-border-radius: 15px 15px 15px 15px;
-        -webkit-border-radius: 15px 15px 15px 15px;
-
-	}
-.cms-actionbarPageItem *:hover , .cms-actionbarModuleItem *:hover {
-	background-color: #E5E5EE;
-    border-radius: 15px 15px 15px 15px;
-        -moz-border-radius: 15px 15px 15px 15px;
-        -webkit-border-radius: 15px 15px 15px 15px;
-
-}
 /**
 For Gallery
 */

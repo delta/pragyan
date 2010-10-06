@@ -21,6 +21,10 @@ function findMenuIndex($menuArray, $pageId) {
 	return -1;
 }
 
+///The third parameter indicates whether menu is obtained from / or the current page.
+///true --> generate from / till depth
+///false --> generate from current page till depth relatively.
+
 function getMenu($userId, $pageIdArray, $complete = false) {
 
 	
@@ -45,8 +49,9 @@ function getMenu($userId, $pageIdArray, $complete = false) {
 MENUHTML;
 		$childMenu = getChildren($pageId, $userId);
 
+		///@note Not sure why $pageId = 0 ? Is this even correct ? $pageId is 0 when $complete=true, but then its only for drop-down style menu and not for classic style. But this code is within the classic section.
 		if ($pageId == 0) {
-			$menuHtml .= '<a href="./"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
+			$menuHtml .= '<a href="../"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
 			$menuHtml .= htmlMenuRenderer($childMenu);
 		}
 		else if (count($childMenu) == 0) {
@@ -96,10 +101,10 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   else $classname="subnav";
   
   $pageRow = getChildren($pageId,$userId);
-  $var = "<ul class='$classname'>";
+  $var = "<ul class='{$classname} depth{$curdepth}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
   $newdepth=$curdepth+1;
-  $var .= "<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\">".$pageRow[$i][2]."</a>";
+  $var .= "\n<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\"><div class='cms-menuitem'>".$pageRow[$i][2]."</div></a>";
   $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
   $var .= "</li>";
 }

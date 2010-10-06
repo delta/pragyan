@@ -1,12 +1,41 @@
+
+/**
+*For action bar
+*/
+
+div#cms-actionbarModule, div#cms-actionbarPage{
+	background-color: transparent;
+	font-size: x-small;
+	display: inline;
+	float: right;
+	position: relative;
+	}
+.cms-actionbarPageItem, .cms-actionbarModuleItem{
+	border : none;
+	}
+.cms-actionbarPageItem:hover , .cms-actionbarModuleItem:hover {
+	background-color: #E5E5EE;
+	    border-radius: 15px 15px 15px 15px;
+        -moz-border-radius: 15px 15px 15px 15px;
+        -webkit-border-radius: 15px 15px 15px 15px;
+
+	}
+.cms-actionbarPageItem *:hover , .cms-actionbarModuleItem *:hover {
+	background-color: #E5E5EE;
+    border-radius: 15px 15px 15px 15px;
+        -moz-border-radius: 15px 15px 15px 15px;
+        -webkit-border-radius: 15px 15px 15px 15px;
+
+}
+
 div#cms-breadcrumb { width : 100%; height : 20px;  }
 div#cms-breadcrumbsubmenu { width : 100%; height : 20px; }
 div#cms-breadcrumb li { float : left; margin-left : 20px; } 
 div#cms-breadcrumbsubmenu li { float : left; margin-left : 20px; } 
-div#cms-actionbarModule, div#cms-actionbarPage { display: inline; float: right; }
 
-.cms-actionbarPageItem, .cms-actionbarModuleItem{ padding: 0px 5px 0px 5px; border-left: 1px dotted #cccccc; }
-.cms-actionbarPageItem:hover , .cms-actionbarModuleItem:hover{ background-color: #FFF; }
-.cms-actionbarPageItem *:hover , .cms-actionbarModuleItem *:hover{ background-color: #FFF; }
+
+.cms-actionbarPageItem, .cms-actionbarModuleItem{ padding: 0px 5px 0px 5px;  }
+
 
 
 div.cms-menu { margin: 0pt -10px 15px }

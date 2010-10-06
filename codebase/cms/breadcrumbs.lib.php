@@ -51,7 +51,7 @@ function breadcrumbs($pageIdArray) {
 		$str .= '<li class="cms-breadcrumbItem';
 		if ($i == $selectedId)
 			$str .= ' selected';
-		$str .= '" rel="' . $parentPath . '"><span><a href="' . $hrefString . '">' . $sqlOutputArray[$pageIdArray[$i]][1] . '</a></span>';
+		$str .= '" rel="' . $parentPath . '"><span><a href="' . $hrefString . '"><div>' . $sqlOutputArray[$pageIdArray[$i]][1] . '</div></a></span>';
 		if($showSubmenu)
 			$str .= generateSubmenu($pageIdArray[$i],$hrefString);
 		$str .= '</li>';

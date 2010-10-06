@@ -1,0 +1,80 @@
+body {
+	background: #000000 url(../images/rep.jpg) repeat-x 1059px 20px;
+	padding:0;
+	margin: 0;
+	min-width: 960px;
+	color: black;
+	font-family: sans-serif;
+}
+body img 
+{
+	border : none;
+}
+
+.innercontainer {
+	position: relative;
+	top: -6px;
+	background: url(../images/p13.jpg) no-repeat 0px -5px;
+}
+#header {
+	margin: 0 ;
+	border: 0;
+	padding: 0;
+}
+#header img{
+	border: 0;
+}
+#header #invisibleContainer {
+	float: left;
+	width: 550px;
+	height: 140px;
+	margin: 0;
+	padding: 0;
+}
+#header > #invisibleContainer #invisible {
+	height: 140px;
+	width: 550px;
+	margin: 0;
+	padding: 0;
+	text-indent: -1000em;
+}
+#header #headerContent {
+	float: right;
+	width: 400px;
+	height: 50px;
+	border: solid 1px white;
+}
+
+/*
+* Layout- Content, Menu, Right menu alignment 
+*/
+
+#leftContent {
+	float:left;
+	width: 180px;
+}
+#rightContent {
+	float: right;
+	width: 250px;
+	position: relative;
+	top: -140px;
+	background: url(../images/rt.png);
+	margin-left: 20px;
+	color: white;
+	padding: 10px;
+	font-size: small;
+	height: 100%;
+}
+#centerContent {
+	margin: 0px 10px;
+	overflow: hidden;
+}
+
+/**
+ * Common styling
+ */
+.clearer{
+	clear: both;
+	padding: 0;
+	margin: 0;
+}

@@ -15,11 +15,11 @@
  * @return Integer denoting the page id of the page.
  */
  
- function parseUrlReal($url, &$pageids) {
+ function parseUrlReal($url, &$pageids) { 
 	$url = rtrim($url, '/');
-	$urlPieces = explode('/', $url);
-	$printer = print_r($pageids,true);
-	$printer2 = print_r($urlPieces,true);
+	$urlPieces = explode('/', $url); 
+	//$printer = print_r($pageids,true);
+	//$printer2 = print_r($urlPieces,true);
 	$pagesTable = MYSQL_DATABASE_PREFIX."pages";
 
 	/**
@@ -40,7 +40,7 @@
 			$whereString.=" and node".$i.".page_parentid = IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id) and node".$i.".page_name='".$urlPieces[$i]."'";
 	  }
 	}
-  $pageid_query = $selectString.$fromString.$whereString;
+  	$pageid_query = $selectString.$fromString.$whereString;
 	if($pageid_result = mysql_query($pageid_query)) {
 		if(!($pageids = mysql_fetch_row($pageid_result))) {
 			displayerror("The requested page does not exist.");
