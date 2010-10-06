@@ -100,18 +100,9 @@ RESET;
 	return "";
 }
 
-function login() {
-	if(isset($_GET['subaction'])) {
-		if($_GET['subaction']=="resetPasswd") {
-			return resetPasswd();
-		}
-		if($_GET['subaction']=="register") {
-			require_once("registration.lib.php");
-			return register();
-		}
-	}
-	if (!isset ($_POST['user_email'])) {
-		$login_str =<<<LOGIN
+function loginForm()
+{
+	$login_str =<<<LOGIN
 					<script language="javascript" type="text/javascript">
 					<!--
 					function checkLoginForm(inputhandler) {
@@ -142,7 +133,20 @@ function login() {
 						</fieldset>
 					</form>
 LOGIN;
-		return $login_str;
+	return $login_str;
+}
+function login() {
+	if(isset($_GET['subaction'])) {
+		if($_GET['subaction']=="resetPasswd") {
+			return resetPasswd();
+		}
+		if($_GET['subaction']=="register") {
+			require_once("registration.lib.php");
+			return register();
+		}
+	}
+	if (!isset ($_POST['user_email'])) {
+		return loginForm();
 	} else {
 			
 			/*if it is, 
