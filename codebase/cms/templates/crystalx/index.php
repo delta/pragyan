@@ -30,7 +30,6 @@
 
 <!-- Main -->
 <div id="main" class="box">
-
     <!-- Header -->
     <div id="header">
         <!-- Logotyp -->

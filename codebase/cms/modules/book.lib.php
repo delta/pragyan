@@ -20,13 +20,16 @@ class book implements module {
 		$this->pageId = getPageIdFromModuleComponentId("book",$gotmoduleComponentId);
 		$this->bookProps = mysql_fetch_assoc(mysql_query("SELECT * FROM `book_desc` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		$this->bookProps['list'] = explode(",",$this->bookProps['list']);
+		$this->hideInMenu();
 		if ($this->action == "edit")
 			return $this->actionEdit();
 		return $this->actionView();
 	}
 	
 	public function actionView() {
-		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` != ' . $this->pageId . ' ORDER BY `page_menurank`';
+		global $INFOSTRING, $WARNINGSTRING, $ERRORSTRING;
+
+		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_modulecomponentid`, `page_name` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` != ' . $this->pageId . ' ORDER BY `page_menurank`';
 		$result = mysql_query($childrenQuery);
 		$ret = $this->tabStyle() . $this->tabScript();
 		$ret .=<<<RET
@@ -38,57 +41,78 @@ RET;
 			$navigate = escape($_GET['navigate']);
 		$tabList = "";
 		$contentList = "";
+		$backup_info = $INFOSTRING;
+		$backup_warning = $WARNINGSTRING;
+		$backup_error = $ERRORSTRING;
 		while($row = mysql_fetch_assoc($result)) {
 			if(!in_array($row['page_id'],$this->bookProps['list']))
 				continue;
 			if(getPermissions($this->userId, $row['page_id'], "view")) {
+				$INFOSTRING = "";
+				$WARNINGSTRING = "";
+				$ERRORSTRING = "";
 				$moduleType = $row['page_module'];
 				$active = "";
 				if($navigate == $row['page_id']||getPageModule($row['page_id'])=='book'&&$this->isPresent($row['page_id'],$navigate))
 					$active = ' active';
 				$tabList .= "<span class='tabElement'><a id='Content{$this->pageId}_{$row['page_id']}' href='./+view&navigate={$row['page_id']}'>{$row['page_title']}</a></span>";
-				$contentList .= "<div class='tabContent$active' id='tabContent{$this->pageId}_{$row['page_id']}'>" . getContent($row['page_id'], "view", $this->userId, true) . "</div>";
+				$content = getContent($row['page_id'], "view", $this->userId, true);
+				$content = preg_replace('/<a(.*)href=[\'"].\/(.*)[\'"]>(.*)<\/a>/i', '<a$1href="./' . $row['page_name'] . '/$2/">$3</a>', $content);
+				$contentList .= "<div class='tabContent$active' id='tabContent{$this->pageId}_{$row['page_id']}'>" . $INFOSTRING . $WARNINGSTRING . $ERRORSTRING . $content . "</div>";
 			}
 		}
 		if( $tabList=="" ) displaywarning("No child pages are selected to display in this book.<br/> To change book settings click <a href='./+edit'>here</a> and to create child pages for this book, click <a href='./+settings#childpageform'>here</a>.");
 		$ret .= $tabList . $contentList . "</div>";
+		$INFOSTRING = $backup_info;
+		$WARNINGSTRING = $backup_warning;
+		$ERRORSTRING = $backup_error;
 		return $ret;
 	}
 	
 	public function actionEdit() {
 		if(isset($_POST['page_title'])) {
 			$tList = "";
+			$hList = "";
 			$found = false;
 			foreach($_POST as $key=>$val)
 				if(substr($key,0,7) == "chkPage") {
 					$tList .= substr($key,7) . ",";
 					if(substr($key,7) == $_POST['optInitial'])
 						$found = true;
+				} elseif(substr($key,0,8) == "hidePage") {
+					$hList .= substr($key,8) . ",";
 				}
 			$tList = rtrim($tList,",");
+			$hList = rtrim($hList,",");
 			if($found) {
-				$query = "UPDATE `book_desc` SET `page_title` = '" . escape($_POST['page_title']) . "', `initial` = '" . escape($_POST['optInitial']) . "', `list` = '{$tList}' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
+				$query = "UPDATE `book_desc` SET `page_title` = '" . escape($_POST['page_title']) . "', `initial` = '" . escape($_POST['optInitial']) . "', `list` = '{$tList}', `menu_hide` = '{$hList}' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
 				mysql_query($query) or die(mysql_error() . ": book.lib L:5");
 				displayinfo("Book Properties saved properly");
 				$this->bookProps['page_title'] = escape($_POST['page_title']);
 				$this->bookProps['initial'] = escape($_POST['optInitial']);
 				$this->bookProps['list'] = explode(",",$tList);
+				$this->bookProps['menu_hide'] = $hList;
+				$this->hideInMenu();
 			} else
 				displayerror("You've choosen a hidden sub-page as default which is not possible, so the settings are not saved.");
 		}
 		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_name`, `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` != ' . $this->pageId . ' ORDER BY `page_menurank`';
 		$result = mysql_query($childrenQuery);
 		$table = "";
+		$hide_list = explode(",",$this->bookProps['menu_hide']);
 		if(mysql_num_rows($result)) {
-			$table = "<table><thead><td>Initial</td><td>Show</td><td>Page</td></thead>";
+			$table = "<table><thead><td>Initial</td><td>Show in Tab</td><td>Hide in Menu</td><td>Page</td></thead>";
 			while($row = mysql_fetch_assoc($result)) {
 				$radio = "";
 				if($row['page_id'] == $this->bookProps['initial'])
 					$radio = "checked";
 				$checkbox = "";
+				$hide_checkbox = "";
 				if(in_array($row['page_id'],$this->bookProps['list']))
 					$checkbox = "checked=checked ";
-				$table .= "<tr><td><input type='radio' name='optInitial' value='{$row['page_id']}' {$radio}></td><td><input type=checkbox name='chkPage{$row['page_id']}' {$checkbox}></td>";
+				if(in_array($row['page_id'],$hide_list))
+					$hide_checkbox = "checked=checked ";
+				$table .= "<tr><td><input type='radio' name='optInitial' value='{$row['page_id']}' {$radio}></td><td><input type=checkbox name='chkPage{$row['page_id']}' {$checkbox}></td><td><input type=checkbox name='hidePage{$row['page_id']}' {$hide_checkbox}></td>";
 				if(getPermissions($this->userId, $row['page_id'], "edit"))
 					$table .= "<td><a href='{$row['page_name']}/+edit'>{$row['page_title']}</a></td></tr>";
 				else
@@ -171,9 +195,10 @@ $(document).ready(function() {
 		for(i=0;i<activeClasses.length;i++) {
 			var thisid = activeClasses.get(i).id; 
 			if(page == thisid.substr(0,page.length)) {
-				$('#' + thisid + ' .active').hide();
+				$('#' + thisid + ' .active').removeClass('active');
+				$('#' + thisid).removeClass('active');
 				$('#' + thisid).fadeOut(delay, function() {
-					$('#' + thisid).removeClass('active');
+			
 					$(selector).fadeIn(delay).addClass('active');
 					activate(selector.substr(selector.indexOf('_')+1));
 				});
@@ -207,6 +232,14 @@ RET;
 				return $this->isPresent($element,$pageId);
 		}
 		return false;
+	}
+	private function hideInMenu() {
+		$cond = "";
+		if($this->bookProps['menu_hide'] != "") {
+			mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 0 WHERE `page_parentid` = '{$this->pageId}' AND `page_id` IN ({$this->bookProps['menu_hide']})");
+			$cond = " AND `page_id` NOT IN ({$this->bookProps['menu_hide']})";
+		}
+		mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 1 WHERE `page_parentid` = '{$this->pageId}'{$cond}");
 	}
 }
 
