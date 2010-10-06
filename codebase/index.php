@@ -24,33 +24,73 @@
  * For more details, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
  */
 
-$cmsFolder="cms";///Folder containing all library files
-$moduleFolder = "modules"; ///Folder containing all the modules
-$templateFolder = "templates"; ///Folder containing all the modules
-$uploadFolder = "uploads"; ///Folder containing the upload files, temporary files and session files
-$debugSet = "off";///Will get overridden by the config value
+///Folder containing all library files
+$cmsFolder="cms";
+
+///Folder containing all the modules
+$moduleFolder = "modules"; 
+
+///Folder containing all the modules
+$templateFolder = "templates"; 
+
+///Folder containing the upload files, temporary files and session files
+$uploadFolder = "uploads"; 
+
+///Initial value of debug enabler, will get overridden by the config value
+$debugSet = "off";
+
+///Complete location of the source folder
 $sourceFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'))."/".$cmsFolder;
-$PAGELASTUPDATED=""; ///Can be used to update the last updated time
-$ERRORSTRING; ///Defined here. Will get appended by displayerror() in common.lib.php
-$INFOSTRING; ///Defined here. Will get appended by displayinfo() in common.lib.php
-$WARNINGSTRING; ///Defined here. Will get appended by displaywarning() in common.lib.php
-$STARTSCRIPTS; ///Will contain a string containing all that has to be executed on window load
-$urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); ///Root of the request - that path to cms base
-$TEMPLATEBROWSERPATH; ///Full path to template folder as seen from the browser (defined in template.lib.php)
-$TEMPLATECODEPATH; ///Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
-$SITEDESCRIPTION; ///Site description to be used in the HTML <meta> tag
-$SITEKEYWORDS; ///Site keywords to be used in the HTML <meta> tag
-$DEBUGINFO = ""; ///Debugging information
-$cookieSupported = false; ///is cookie supported by the client's browser ?
-$ICONS; ///Stores all the icons locations along with <img> tag, indexed by the icon name
-$ICONS_SRC; ///Stores all the icons locations without the <img> tag, indexed by the icon name
+
+///Can be used to update the last updated time
+$PAGELASTUPDATED="";
+
+///Defined here. Will get appended by displayerror() in common.lib.php
+$ERRORSTRING; 
+
+///Defined here. Will get appended by displayinfo() in common.lib.php
+$INFOSTRING; 
+
+///Defined here. Will get appended by displaywarning() in common.lib.php
+$WARNINGSTRING; 
+
+///Will contain a string containing all that has to be executed on window load
+$STARTSCRIPTS;
+
+///Root of the request - that path to cms base
+$urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); 
+
+///Full path to template folder as seen from the browser (defined in template.lib.php)
+$TEMPLATEBROWSERPATH; 
+
+///Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
+$TEMPLATECODEPATH;
+
+///Site description to be used in the HTML <meta> tag 
+$SITEDESCRIPTION; 
+
+///Site keywords to be used in the HTML <meta> tag
+$SITEKEYWORDS; 
+
+///Debugging information
+$DEBUGINFO = ""; 
+
+///is cookie supported by the client's browser ?
+$cookieSupported = false; 
+
+///Stores all the icons locations along with <img> tag, indexed by the icon name
+$ICONS; 
+
+///Stores all the icons locations without the <img> tag, indexed by the icon name
+$ICONS_SRC; 
+
+///For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
-/// For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 
-@include_once($sourceFolder."/config.inc.php"); // If config.inc.php doesn't exists, assume CMS hasn't been installed.
-require_once($sourceFolder."/common.lib.php");
-require_once($sourceFolder."/icons.lib.php");
+///If config.inc.php doesn't exists, assume CMS hasn't been installed.
+@include_once($sourceFolder."/config.inc.php"); 
 
+///If config.inc.php doesn't exists, ADMIN_USERID won't be defined, so assume CMS is not installed.
 if(!defined("ADMIN_USERID") )
 {
 	echo "Welcome to Pragyan CMS v3.0. <a href='./INSTALL/'>Click Here</a> to goto installation page.<br/><br/>
@@ -58,42 +98,66 @@ if(!defined("ADMIN_USERID") )
 	exit();
 }
 
+///Contains functions which are common to many tasks and very frequently used.
+require_once($sourceFolder."/common.lib.php");
 
 
-$dbase; ///< Defined here to set its access as global to the project
-connect(); ///< To connect to server
+require_once($sourceFolder."/icons.lib.php");
 
+///Defined here to set its access as global to the project
+$dbase; 
+
+///To connect to server
+connect(); 
+
+///Authentication process begins here
 require_once($sourceFolder."/authenticate.lib.php");
 $cookieSupported = checkCookieSupport();
 if($cookieSupported==true)	session_start();
 $userId=firstTimeGetUserId();
 if(isset($_GET['page']))
-	$pageFullPath = strtolower($_GET['page']);///<The page requested by the user
+	$pageFullPath = strtolower($_GET['page']);
 else $pageFullPath = "home";
 
+///Retrieve the action, default is "view"
 if(isset($_GET['action']))
 	$action = strtolower(escape($_GET['action']));
 else	$action = "view";
 
-if ($action == 'keepalive') //just to check if server is alive, an alternative of Ping
+///Just to check if server is alive, an alternative of Ping
+if ($action == 'keepalive') 
 	die("OK: " . rand());
 
-checkInstallation($pageFullPath,$action);
-
+///Get all the global settings from the database and convert into variables
 $globals=getGlobalSettings();
 foreach($globals as $var=>$val) 
 	$$var=$val;
 
+///Some of the previously defined global settings variables are converted into constants
+
+///Title of the Website
 define("CMS_TITLE", $cms_title);
+
+///Default template name
 define("DEF_TEMPLATE",$default_template);
+
+///Upload size limit for the CMS. All the modules use this constant as the upload limit.
 define("UPLOAD_SIZE_LIMIT", $upload_limit);
+
+///Whether to send a mail when a new user registers
 define("SEND_MAIL_ON_REGISTRATION",($default_mail_verify==0)?false:true);
+
+///Email address to be used by CMS when sending mails to users
 define("CMS_EMAIL",$cms_email);
+
+///Whether to activate the user on registration
 define("ACTIVATE_USER_ON_REG",$default_user_activate);
+
 $SITEDESCRIPTION=$cms_desc;
 $SITEKEYWORDS=$cms_keywords;
 $FOOTER=$cms_footer;
 
+///Include all the required libraries
 
 require_once($sourceFolder."/parseurl.lib.php");
 require_once($sourceFolder."/template.lib.php");
@@ -104,10 +168,12 @@ require_once($sourceFolder."/content.lib.php");
 require_once($sourceFolder."/inheritedinfo.lib.php");
 require_once($sourceFolder."/actionbar.lib.php");
 require_once($sourceFolder."/registration.lib.php");
+require_once($sourceFolder."/widget.lib.php");
 
-
+///Parse the URL and retrieve the PageID of the request page if its valid
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
 
+///Means that the requested URL is not valid.
 if ($pageId === false) { 
 	define("TEMPLATE", getPageTemplate(0));
 	$pageId = parseUrlReal("home", $pageIdArray);
@@ -118,8 +184,11 @@ if ($pageId === false) {
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
 	exit();
 }
+
+///If it reaches here, means the page requested is valid. Log the information for future use.
 logInfo (getUserEmail($userId),$userId, $pageId, $pageFullPath, getPageModule($pageId), $action, $_SERVER['REMOTE_ADDR']);
 
+///The URL may contain some harmful GET variables, so filter and block such URLs.
 if(URLSecurityCheck($_GET))
 {
 	define("TEMPLATE", getPageTemplate(0));
@@ -132,6 +201,7 @@ if(URLSecurityCheck($_GET))
 	exit();
 }
 
+///The URL points to a file. Download permissions for the file are handled inside the download() function in download.lib.php
 if(isset($_GET['fileget'])) {
 	require_once($sourceFolder."/download.lib.php");
 	$action="";
@@ -141,35 +211,54 @@ if(isset($_GET['fileget'])) {
 	exit();
 }
 
+///Check whether the user has the permission to use that action on the requested page.
 $permission = getPermissions($userId, $pageId, $action);
 
+///Gets the page-specific template for that requested page
 define("TEMPLATE", getPageTemplate($pageId));
 
+///Gets the page title of the requested page
 if (getTitle($pageId, $action, $TITLE))
 	$TITLE = CMS_TITLE . " - $TITLE";
 else
 	$TITLE = CMS_TITLE;
 
-
+///Gets the content according to the user's permissions
 $CONTENT = getContent($pageId, $action, $userId, $permission);
 
+///Gets the inherited code (if any) from the parent page
 $INHERITEDINFO = inheritedinfo($pageIdArray);
 
-
+///Gets the breadcrumb
 $BREADCRUMB = breadcrumbs($pageIdArray,"&nbsp;»&nbsp;");
 
+///Gets the menubar consisting of the child pages from the current location upto a certain depth
 $MENUBAR = getMenu($userId, $pageIdArray); 
-$COMPLETEMENU = getMenu($userId, $pageIdArray, true);
-// The third parameter indicates whether menu is obtained from / or the current page.
-// true --> generate from / till depth
-// false --> generate from current page till depth relatively.
+
+///Gets the menu bar from root, upto a certain depth.
+///Used if the user wants to have some links in the menubar always.
 $COMPLETEMENU = getMenu($userId, $pageIdArray, true);
 
+///Gets the list of allowed actions for the current page
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
+
+///Gets the list of allowed actions for the current module on the page
 $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 
+///Check the status of URL rewriting, to be taken from database
+$rewriteEngineEnabled=true;
 
+///If its disabled, then all the links in the generated page are converted into non-pretty URLs using regex
+if(!$rewriteEngineEnabled) {
+	$MENUBAR = convertUri($MENUBAR);
+	$CONTENT = convertUri($CONTENT);
+	$INHERITEDINFO = convertUri($INHERITEDINFO);
+	$BREADCRUMB = convertUri($BREADCRUMB);
+	$ACTIONBARPAGE = convertUri($ACTIONBARPAGE);
+	$ACTIONBARMODULE = convertUri($ACTIONBARMODULE);
+}
 
+///Some extra debugging information if debugSet is enabled
 if($debugSet == "on") {
 	$DEBUGINFO .= "Page Full text path : ".$pageFullPath."<br /><br />\n";
 	$DEBUGINFO .= "UID : ".getUserId()."<br /><br />\n";
@@ -187,11 +276,11 @@ if($debugSet == "on") {
 	if($DEBUGINFO!="")	displayinfo($DEBUGINFO);
 }
 
-	setcookie("cookie_support", "enabled", 0, "/"); ///<used to check in subsequent requests if cookies are supported or not
+///Used to check in subsequent requests if cookies are supported or not
+setcookie("cookie_support", "enabled", 0, "/"); 
 	
-		
-
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
+///Apply the template on the generated content and display the page
+templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
 
 disconnect();
 exit();
@@ -201,7 +290,7 @@ exit();
 authenticate.lib.php -> Find out who requested it
 	output: one int -> uid
 
-uil.lib.php -> Find out the page id and action requested
+parseurl.lib.php -> Find out the page id and action requested
 	input:	url
  	output : pageid, action, actionparameters (variables passed as parameters for the action)
 

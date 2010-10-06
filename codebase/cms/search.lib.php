@@ -65,7 +65,7 @@ function getSearchBox(){
 			</td>
 		</tr>
 	</table>
-	Powered by <a href="http://www.sphider.eu/"><img src="$urlRequestRoot/$cmsFolder/templates/common/images/sphider-logo.png" border="0" style="vertical-align: middle" alt="Sphider"></a><br/><br/>
+	Powered by <a href="http://www.sphider.eu/" target="_blank"><img src="$urlRequestRoot/$cmsFolder/templates/common/images/sphider-logo.png" border="0" style="vertical-align: middle" alt="Sphider"></a><br/><br/>
 	</form>
 	</center>
 SEARCH;

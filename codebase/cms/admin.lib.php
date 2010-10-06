@@ -365,7 +365,6 @@ ADMINPAGE;
 	global $sourceFolder;	
 	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) return $quicklinks;
 	require_once("users.lib.php");
-	require_once("widget.lib.php");
 	$op="";$ophead=""; $str="";
 	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
 		if (isset($_GET['subaction']) && $_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();

@@ -423,20 +423,6 @@ function strleft($s1, $s2) {
     return substr($s1, 0, strpos($s1, $s2));
 }
 
-function checkInstallation($pageFullPath,$action) {
-	$installSuccess =<<<SUCCESS
-	<div style="border:1px solid green;background-color:lime;color:green;font-size:2em;">
-		Pragyan CMS Installation Successfull!!
-	</div>
-SUCCESS;
-	if($pageFullPath == "/install/")
-		if($action == "install") {
-			echo $installSuccess;
-			disconnect();
-			exit();
-		} 
-}
-
 function updateUserPassword($user_email,$user_passwd) {
 	$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_password`= '".md5($user_passwd)."' WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_email` = '" . $user_email . "'";
 							mysql_query($query) or die(mysql_error() . " in function updateUserPassword");
@@ -448,6 +434,9 @@ function getUserInfo($user_email) {
 	return mysql_fetch_assoc($result);
 }
 
+/*
+@todo should be moved to email.lib.php ,or is it really used ?
+*/
 class messenger {
 		var $vars;
 		
