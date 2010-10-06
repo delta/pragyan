@@ -21,6 +21,71 @@ function connect() {
 function disconnect() {
 	mysql_close();
 }
+function prettyurl($str) {
+	global $urlRequestRoot;
+	$page = (isset($_GET['page']))?$_GET['page']:"/home/";
+	$file="";
+	//echo $str." -";
+	if(strripos($str,"./")!=strripos($str,"../")) {
+		$file= substr($str,strripos($str,"/")+1);
+		$str = substr($str,0,strripos($str,"/")+1);
+	}
+	if(substr($str,0,3)=="../"){
+		$page = substr($page,0,strripos($page,"/")-1);
+		$page = substr($page,0,strripos($page,"/")+1);
+	}
+	if(strpos($str,"../")) {
+		$pos = strpos($str,"../");
+		$page = substr($page,0,strripos($page,"/")-1);
+		$page = substr($page,0,strripos($page,"/")+1);
+		$str = substr($str,0,$pos) . substr($str,$pos+3);
+		//echo $page." -<br>";
+	}
+	$str = ereg_replace("^./",$urlRequestRoot."/?page=".$page,$str);
+	$str = ereg_replace("^../",$urlRequestRoot."/?page=".$page,$str);
+	$str = ereg_replace("\+","&action=",$str);
+	$str = ereg_replace("^".$urlRequestRoot."/home/","./?page=/home/",$str);
+	if($file!="")
+		$str .= "&fileget=".$file;
+	return $str;
+}
+
+function convertUrif($x,$attr) {
+	$y="";
+	$z = $x;
+	$len=strlen($attr);
+	if($len!=0)
+	while(1) {
+		$z=$x;
+		$count=0;
+		if(strpos($x,$attr))
+			$y .= substr($x,$count,strpos($x,$attr)+$len+2);
+		else
+			$y .= substr($x,$count);
+		$count=strpos($x,$attr)+$len+2;
+		if($count==$len+2) break;
+		$x = substr($x,$count);
+		//echo "<br>" . substr($x,0,strpos($x,"\"")) . " => " . prettyurl(substr($x,0,strpos($x,"\"")));
+		$count1=(strpos($x,"\"")==-1||!strpos($x,"\""))?10000:strpos($x,"\"");
+		$count2=(strpos($x,"'")==-1||!strpos($x,"'"))?10000:strpos($x,"'");
+		$count=($count1<$count2)?$count1:$count2;
+//		echo substr($x,0,$count) ." => ". prettyurl(substr($x,0,$count)). "<br>";
+		$y .= prettyurl(substr($x,0,$count));
+		$x = substr($x,$count);
+	}
+	return $y;
+}
+function convertUri($x) {
+	$y="";
+	$z = $x;
+	$hsref=array("href","action","src");
+	foreach($hsref as $href) {
+	$len=strlen($href);
+	if($len!=0)
+	$z=convertUrif($z,$href);
+	}
+	return $z;
+}
 
 /** Security Functions Begin, by Abhishek (For Usage, read Security Guidelines)**/
 
