@@ -485,7 +485,7 @@ function grantPermissions($userid, $pageid) {
 	}
 	//serving refresh permissions request
 	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getpermvars' && isset($_GET['pageid'])) {
-		global $cmsFolder,$urlRequestRoot;
+		global $cmsFolder,$urlRequestRoot, $templateFolder;
 		$pageid = escape($_GET['pageid']);
 		if(mysql_fetch_array(mysql_query("SELECT `page_name` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageid}'"))) {
 		$pagepath = array();
@@ -594,38 +594,27 @@ RET;
 	$groups = customGetGroups($maxPriorityGroup);
 	$users = customGetAllUsers();
 	global $templateFolder;
-	$ret = <<<RET
+	$smarttableconfig = array (
+			
+			'permtable' => array(
+				
+				'sPaginationType' => 'two_button',
+				'bAutoWidth' => 'false',
+				'aoColumns' => '{ "sWidth": "100px" }'
+			),
+			'permtable2' => array(
+				'sPaginationType' => 'two_button',
+				'bAutoWidth' => 'false',
+				'aoColumns' => '{ "sWidth": "100px" }'
+			)
+	);
+	$ret = smarttable::render(array('permtable','permtable2'),$smarttableconfig);
+	$ret .= <<<RET
 <style type="text/css" title="currentStyle">
-	@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-	@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-	@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
 	div#permtable_filter input { width: 90px; }
 	div#permtable2_filter input { width: 90px; }
 </style>
-<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts/permissionsTable.js"></script>
-<script type="text/javascript" charset="utf-8">
-function initSmartTable()
-{
-$(document).ready(function() {
-	oTable = $('#permtable').dataTable({
-		"bJQueryUI": true,
-		"sPaginationType": "two_button",
-		"bAutoWidth": false,
-		"aoColumns": [ { "sWidth": "100px" } ]
-	});
-} );
-$(document).ready(function() {
-	oTable = $('#permtable2').dataTable({
-		"bJQueryUI": true,
-		"sPaginationType": "two_button",
-		"bAutoWidth": false,
-		"aoColumns": [ { "sWidth": "100px" } ]
-	});
-} );
-}
-</script>
 <script type="text/javascript">
 var pageid = {$pageid};
 var permissions = {{$perms}};

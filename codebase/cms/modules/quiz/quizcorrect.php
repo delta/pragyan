@@ -125,21 +125,9 @@ function getQuizUserListHtml($quizId) {
 	}
 	$secCols.="</tr>";
 	$toggleColumns.=$secCols;
-	global $urlRequestRoot, $cmsFolder;
-	$userListHtml = <<<HEAD
-	<style type="text/css" title="currentStyle">
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-	</style>
-	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" charset="utf-8">
-		$(document).ready(function() {
-				oTable = $('#userstable').dataTable({
-					"bJQueryUI": true,
-					"sPaginationType": "full_numbers",
-					"aoColumns": [ 
+	global $urlRequestRoot, $cmsFolder, $STARTSCRIPTS;
+	
+	$tableJqueryStuff=<<<STUFF
 							null,
 							{ "bVisible": false },
 							null,
@@ -148,9 +136,16 @@ function getQuizUserListHtml($quizId) {
 							{ "bVisible": false },
 							$tableJqueryStuff
 							null
-						]
-				});
-			} );
+STUFF;
+	
+	$smarttable = smarttable::render(array('userstable'),array('userstable'=>array('aoColumns'=>"$tableJqueryStuff")));
+	
+	$STARTSCRIPTS.="initSmartTable();";
+	
+	
+	$userListHtml = <<<HEAD
+	$smarttable
+	<script type="text/javascript" charset="utf-8">
 			function fnShowHide( iCol )
 			{
 				var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;

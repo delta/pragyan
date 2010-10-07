@@ -9,6 +9,9 @@
  * For more details, see README
  */
  
+global $cmsFolder,$moduleFolder;
+include_once("$cmsFolder/smarttable.class.php");
+
 
 /** To connect to the database*/
 function connect() {
