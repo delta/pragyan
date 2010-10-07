@@ -81,6 +81,8 @@ MENUHTML;
 	
 		$rootUri =  substr($_SERVER['REQUEST_URI'],0,strpos($_SERVER['REQUEST_URI'],'/home/')+5);
 	
+	
+		
 		$pageId = ($pageId!=0)?getParentPage($pageId):$pageId;
 		
 		$pageRow = getPageInfo($pageId);

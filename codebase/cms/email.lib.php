@@ -55,25 +55,11 @@ function displayEmail($template = "") {
 	global $ICONS;
 	$groups = getAllGroups();
 	$users = getAllUsers();
-	$ret = <<<RET
-	<style type="text/css" title="currentStyle">
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-	</style>
-	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" charset="utf-8">
-	function initSmartTable()
-	{
-		$(document).ready(function() {
-			oTable = $('#rcpttable').dataTable({
-				"bJQueryUI": true,
-				"sPaginationType": "full_numbers"
-			});
-		} );
-	}
-	</script>
+	
+	
+	$ret = smarttable::render(array('rcpttable'),null);
+	
+	$ret .= <<<RET
 	<script type='text/javascript'>
 	var grouplist = { $groups };
 	var userlist = { $users };

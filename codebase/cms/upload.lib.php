@@ -295,7 +295,11 @@ UPLOADEDFILESSTRING;
 	}
 	global $urlRequestRoot;
 	global $cmsFolder;
+	global $STARTSCRIPTS;
 	if(count($uploadedFiles)>0) {
+	
+		$smarttablestuff = smarttable::render(array('filestable'),null);
+		$STARTSCRIPTS .= "initSmartTable();";
 		$uploadedFilesString =<<<UPLOADEDFILESSTRING
 	<form action="$deleteFormAction" method="POST" name="deleteFile">
 		<script language="javascript">
@@ -315,21 +319,7 @@ UPLOADEDFILESSTRING;
 			}
 			
 	    </script>
-	    	<style type="text/css" title="currentStyle">
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-		</style>
-		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
-				oTable = $('#filestable').dataTable({
-					"bJQueryUI": true,
-					"sPaginationType": "full_numbers"
-				});
-			} );
-		</script>
+		$smarttablestuff
 		<table border="1" width="100%">
 				<tr>
 					

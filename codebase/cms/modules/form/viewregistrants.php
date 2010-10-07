@@ -296,26 +296,14 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	}
 	$tableBody.="</tbody>";
 	
+	$tableJqueryStuff = "/* S. No. */ null, $tableJqueryStuff";
 	
+	$smarttable = smarttable::render(array('registrantstable'),array('registrantstable'=>array('aoColumns'=>"$tableJqueryStuff")));
+	global $STARTSCRIPTS;
+	$STARTSCRIPTS.="initSmartTable();";
 	$javascriptBody = <<<JAVASCRIPTBODY
-		<style type="text/css" title="currentStyle">
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-		</style>
-		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-		<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
-				oTable = $('#registrantstable').dataTable({
-					"bJQueryUI": true,
-					"sPaginationType": "full_numbers",
-					"aoColumns": [ 
-							/* S. No. */ null,
-							$tableJqueryStuff
-						]
-				});
-			} );
+		$smarttable;
+		<script>
 			function fnShowHide( iCol )
 			{
 				var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
