@@ -140,25 +140,11 @@ class sqlquery implements module {
 			}
 			$helptext .="</tbody></table>";
 		}
-		global $urlRequestRoot,$cmsFolder;
-			$smarttable =<<<SMART
-			<style type="text/css" title="currentStyle">
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-			</style>
-			<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-			<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-			<script type="text/javascript" charset="utf-8">
-				$(document).ready(function() {
-					oTable = $('#sqlhelptable').dataTable({
-						"bJQueryUI": true,
-						"sPaginationType": "full_numbers"
-					});
-				} );
-			</script>
-SMART;
-	global $ICONS;
+		global $urlRequestRoot,$cmsFolder,$STARTSCRIPTS;
+		$smarttable = smarttable::render(array('sqlhelptable'),null);
+		$STARTSCRIPTS .= "initSmartTable();";
+
+		global $ICONS;
 		if($helptext!="") $helptext="<fieldset><legend>{$ICONS['Database Information']['small']}Database Information</legend>$smarttable $helptext</fieldset>";
 		return $helptext.$editPageContent;
 	}

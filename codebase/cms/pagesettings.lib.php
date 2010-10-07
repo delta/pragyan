@@ -690,12 +690,14 @@ function pagesettings($pageId, $userId) {
 
 				$pageInfoRow = getPageInfo($pageId);
 				if($updateErrors == '') {
-					disconnect();
-					header("Location: ../{$pageInfoRow['page_name']}+settings&displayinfo=".rawurlencode('Page settings updated successfully!'));
+					//disconnect();
+					//header("Location: ../{$pageInfoRow['page_name']}+settings&displayinfo=".rawurlencode('Page settings updated successfully!'));
+					displayinfo("Page settings updated successfully!");
 				}
 				else {
-					disconnect();
-					header("Location: ../{$pageInfoRow['page_name']}+settings&displayerror=".rawurlencode($updateErrors));
+					//disconnect();
+					//header("Location: ../{$pageInfoRow['page_name']}+settings&displayerror=".rawurlencode($updateErrors));
+					displayerror("Could not update page settings : ".$updateErrors);
 				}
 			}
 			if(isset($_POST['moveUp'])||isset($_POST['moveDn'])) {

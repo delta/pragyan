@@ -41,7 +41,7 @@
 			$.data($(this)[0], 'omitWeeks', config.omitWeeks);
 		}
 
-		$('#' + $(this).attr('id') + ' .digit').html('<div class="top"></div><div class="bottom"></div>');
+		$('#' + $(this).attr('id') + ' .digit').html('<div class="countdowntop"></div><div class="countdownbottom"></div>');
 		$(this).doCountDown($(this).attr('id'), diffSecs, 500);
 
 		return this;
@@ -143,16 +143,16 @@
 		{
 			duration = 800;
 		}
-		if ($(digit + ' div.top').html() != n + '')
+		if ($(digit + ' div.countdowntop').html() != n + '')
 		{
 
-			$(digit + ' div.top').css({'display': 'none'});
-			$(digit + ' div.top').html((n ? n : '0')).slideDown(duration);
+			$(digit + ' div.countdowntop').css({'display': 'none'});
+			$(digit + ' div.countdowntop').html((n ? n : '0')).slideDown(duration);
 
-			$(digit + ' div.bottom').animate({'height': ''}, duration, function() {
-				$(digit + ' div.bottom').html($(digit + ' div.top').html());
-				$(digit + ' div.bottom').css({'display': 'block', 'height': ''});
-				$(digit + ' div.top').hide().slideUp(10);
+			$(digit + ' div.countdownbottom').animate({'height': ''}, duration, function() {
+				$(digit + ' div.countdownbottom').html($(digit + ' div.countdowntop').html());
+				$(digit + ' div.countdownbottom').css({'display': 'block', 'height': ''});
+				$(digit + ' div.countdowntop').hide().slideUp(10);
 
 			
 			});

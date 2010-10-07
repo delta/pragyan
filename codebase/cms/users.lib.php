@@ -556,22 +556,12 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		$userlist.="<input type='hidden' name='editusertype' value='$type' />";
 		$columns+=3;
 	}
+	$userlist .= smarttable::render(array('userstable'),null);
+	global $STARTSCRIPTS;
+	$STARTSCRIPTS.="initSmartTable();";
+	
 	$userlist.=<<<USERLIST
-	<style type="text/css" title="currentStyle">
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_page.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/css/demo_table_jui.css";
-			@import "$urlRequestRoot/$cmsFolder/modules/datatables/themes/smoothness/jquery-ui-1.7.2.custom.css";
-	</style>
-	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/modules/datatables/js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" charset="utf-8">
-		$(document).ready(function() {
-			oTable = $('#userstable').dataTable({
-				"bJQueryUI": true,
-				"sPaginationType": "full_numbers"
-			});
-		} );
-	</script>
+	
 	<script language="javascript">
 	function checkDelete(butt,userDel,userId)
 	{

@@ -46,31 +46,31 @@ $sourceFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_
 $PAGELASTUPDATED="";
 
 ///Defined here. Will get appended by displayerror() in common.lib.php
-$ERRORSTRING; 
+$ERRORSTRING = ""; 
 
 ///Defined here. Will get appended by displayinfo() in common.lib.php
-$INFOSTRING; 
+$INFOSTRING = ""; 
 
 ///Defined here. Will get appended by displaywarning() in common.lib.php
-$WARNINGSTRING; 
+$WARNINGSTRING = ""; 
 
 ///Will contain a string containing all that has to be executed on window load
-$STARTSCRIPTS;
+$STARTSCRIPTS = "";
 
 ///Root of the request - that path to cms base
 $urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); 
 
 ///Full path to template folder as seen from the browser (defined in template.lib.php)
-$TEMPLATEBROWSERPATH; 
+$TEMPLATEBROWSERPATH = ""; 
 
 ///Full path to template folder as seen by httpd while parsing (defined in template.lib.php)
-$TEMPLATECODEPATH;
+$TEMPLATECODEPATH = "";
 
 ///Site description to be used in the HTML <meta> tag 
-$SITEDESCRIPTION; 
+$SITEDESCRIPTION = ""; 
 
 ///Site keywords to be used in the HTML <meta> tag
-$SITEKEYWORDS; 
+$SITEKEYWORDS = ""; 
 
 ///Debugging information
 $DEBUGINFO = ""; 
@@ -79,10 +79,10 @@ $DEBUGINFO = "";
 $cookieSupported = false; 
 
 ///Stores all the icons locations along with <img> tag, indexed by the icon name
-$ICONS; 
+$ICONS = ""; 
 
 ///Stores all the icons locations without the <img> tag, indexed by the icon name
-$ICONS_SRC; 
+$ICONS_SRC = ""; 
 
 ///For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
@@ -256,6 +256,9 @@ if(!$rewriteEngineEnabled) {
 	$BREADCRUMB = convertUri($BREADCRUMB);
 	$ACTIONBARPAGE = convertUri($ACTIONBARPAGE);
 	$ACTIONBARMODULE = convertUri($ACTIONBARMODULE);
+	$INFOSTRING = convertUri($INFOSTRING);
+	$ERRORSTRING = convertUri($ERRORSTRING);
+	$WARNINGSTRING = convertUri($WARNINGSTRING);
 }
 
 ///Some extra debugging information if debugSet is enabled
