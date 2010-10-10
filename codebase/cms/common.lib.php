@@ -480,11 +480,19 @@ function verifyHttps($url){
 		return false;
 }
 
-function selfURL() {
+function selfURI() {
     $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
     $protocol = strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
     $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
 	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+}
+
+function hostURL() {
+    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+    $protocol = strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
+    $location = substr($_SERVER['SCRIPT_NAME'],0,strpos($_SERVER['SCRIPT_NAME'],"/index.php"));
+    $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$location;
 }
 
 function strleft($s1, $s2) {
