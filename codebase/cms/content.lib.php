@@ -62,14 +62,12 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 			parseUrlReal(escape($_GET['parentpath']), $pidarr);
 			$pid = $pidarr[count($pidarr) - 1];
 			$children = getChildren($pid, $userId);
-			if ($pid == 0)
-				$children[] = array(5, 'links/accommodation', 'Accommodation');
 			$response = array();
 			$response['path'] = escape($_GET['parentpath']);
 			$response['items'] = array();
 			foreach ($children as $child)
 				$response['items'][] = array($urlRequestRoot . '/home' . escape($_GET['parentpath']) . $child[1], $child[2]);
-			echo json_encode($response);
+			//echo json_encode($response);
 			exit();
 		}
 	}

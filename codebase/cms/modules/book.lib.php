@@ -57,7 +57,9 @@ RET;
 					$active = ' active';
 				$tabList .= "<span class='tabElement'><a id='Content{$this->pageId}_{$row['page_id']}' href='./+view&navigate={$row['page_id']}'>{$row['page_title']}</a></span>";
 				$content = getContent($row['page_id'], "view", $this->userId, true);
-				$content = preg_replace('/<a(.*)href=[\'"].\/(.*)[\'"]>(.*)<\/a>/i', '<a$1href="./' . $row['page_name'] . '/$2/">$3</a>', $content);
+				$content = preg_replace('/<a(.*)href=[\'"](.\/)?(.*)[\'"](.*)>(.*)<\/a>/i', '<a$1href="./' . $row['page_name'] . '/$3"$4>$5</a>', $content);
+				$content = preg_replace('/<form(.*)action=[\'"](.\/)?(.*)[\'"](.*)>/i', '<form$1action="./' . $row['page_name'] . '/$3"$4>', $content);
+				$content = preg_replace('/<img(.*)src=[\'"](.\/)?(.*)[\'"](.*)>/i', '<img$1src="./' . $row['page_name'] . '/$3"$4>', $content);
 				$contentList .= "<div class='tabContent$active' id='tabContent{$this->pageId}_{$row['page_id']}'>" . $INFOSTRING . $WARNINGSTRING . $ERRORSTRING . $content . "</div>";
 			}
 		}
