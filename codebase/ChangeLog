@@ -1,3 +1,63 @@
+Revision 132  by  abhishekdelta  on  2010-10-08 01:17:1
+Description : Created the SmartTable API and replace datatables with it in all the files to avoid conflict with various jQuery includes
+--------------------------------------------------------------------------------
+Revision 131  by  abhishekdelta  on  2010-10-07 04:16:4
+Description : Fixed infostrings and hideinmenu bugs of book module #82
+--------------------------------------------------------------------------------
+Revision 130  by  abhishekdelta  on  2010-10-07 03:16:5
+Description : Added template Trinity
+--------------------------------------------------------------------------------
+Revision 129  by  abhishekdelta  on  2010-10-06 03:31:4
+Description : Fixed installation bugs, enhanced access checks and .htaccess permission problem
+--------------------------------------------------------------------------------
+Revision 128  by  abhishekdelta  on  2010-09-29 03:14:5
+Description : Added categorization of global settings by gaurav
+--------------------------------------------------------------------------------
+Revision 127  by  abhishekdelta  on  2010-09-29 02:23:1
+Description : Added book module by chakra
+--------------------------------------------------------------------------------
+Revision 126  by  abhishekdelta  on  2010-09-27 05:01:3
+Description : Fixed bug with default values of form fields
+--------------------------------------------------------------------------------
+Revision 125  by  abhishekdelta  on  2010-09-23 03:10:1
+Description : Pragyan 2011 template : Added footer and fixed css
+--------------------------------------------------------------------------------
+Revision 124  by  abhishekdelta  on  2010-09-20 14:44:1
+Description : Fixed bugs in registration related to the user-added date and required fields
+--------------------------------------------------------------------------------
+Revision 123  by  abhishekdelta  on  2010-09-20 13:42:4
+Description : Added documentation guidelines in Developer's Guide
+--------------------------------------------------------------------------------
+Revision 122  by  abhishekdelta  on  2010-09-17 01:50:4
+Description : Adding svn:ignore properties and removing config.inc.php, database.php and .htaccess from subversion
+--------------------------------------------------------------------------------
+Revision 121  by  abhishekdelta  on  2010-09-16 20:57:0
+Description : Pragyan 2011 template fixes
+--------------------------------------------------------------------------------
+Revision 120  by  abhishekdelta  on  2010-09-16 19:34:0
+Description : Removed echo from spider.php and enhanced common adminui.css
+--------------------------------------------------------------------------------
+Revision 119  by  abhishekdelta  on  2010-09-16 17:46:2
+Description : Shifted row extra-info before extra-options in edit form page
+--------------------------------------------------------------------------------
+Revision 118  by  abhishekdelta  on  2010-09-16 05:06:3
+Description : Adding styling and images to the jquery timer
+--------------------------------------------------------------------------------
+Revision 117  by  abhishekdelta  on  2010-09-16 05:00:1
+Description : Added jquery countdown timer in the template Pragyan 2011
+--------------------------------------------------------------------------------
+Revision 116  by  abhishekdelta  on  2010-09-16 04:08:2
+Description : Added Pragyan 2011 template
+--------------------------------------------------------------------------------
+Revision 115  by  abhishekdelta  on  2010-09-16 03:43:0
+Description : Added option for  when menu depth=-1
+--------------------------------------------------------------------------------
+Revision 114  by  abhishekdelta  on  2010-09-16 03:20:5
+Description : Testing commit from Pragyan server
+--------------------------------------------------------------------------------
+Revision 113  by  abhishekdelta  on  2010-09-15 02:45:3
+Description : Added some user-friendly features and fixed bugs with multidepth
+--------------------------------------------------------------------------------
 Revision 112  by  abhishekdelta  on  2010-09-13 04:21:5
 Description : Added propogation to child pages for menu-related settings
 --------------------------------------------------------------------------------
