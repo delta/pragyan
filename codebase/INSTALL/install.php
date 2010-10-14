@@ -8,8 +8,10 @@
 
 global $sourceFolder;
 global $scriptPath;
+global $URL_REWRITE;
 $sourceFolder = 'cms';
 $installFolder = '.';
+$URL_REWRITE = 'false';
 $cmsFolder = "../$sourceFolder";
 $templateFolder = "$cmsFolder/templates/crystalx";
 $scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
@@ -81,6 +83,7 @@ include_once('template.php');
  * @return array A list of steps that were carried out, with a field against each step indicating whether it succeeded or failed.
  */
 function installCMS() {
+	global $URL_REWRITE;
 	$installationSteps = 
 			array(
 					array('saveConfigurationSettings', 'Saving Configuration Settings', false),
@@ -90,9 +93,15 @@ function installCMS() {
 					//array('indexSite', 'Indexing site', false)
 			);
 
+	
 	for ($i = 0; $i < count($installationSteps); ++$i) {
 		$installationProcedure = $installationSteps[$i][0];
 		$stepResult = $installationProcedure();
+		
+		///If URL Rewrite is disabled, then skip the saveHtaccess installation step.
+		if($URL_REWRITE=='false')
+			unset($installationSteps[3]);
+			
 		if ($stepResult != '') {
 			$installationSteps[$i][] = $stepResult;
 			return $installationSteps;
@@ -101,23 +110,13 @@ function installCMS() {
 	}
 	return $installationSteps;
 }
-/*
-function indexSite() {
-	global $cmsFolder;
-	include("$cmsFolder/modules/search/admin/spider.php");
-	$serveruri=$_SERVER['REQUEST_URI'];
-	$uri=substr($serveruri,0,stripos($serveruri,"INSTALL/install.php"));
-	$site = "http://" . $_SERVER['HTTP_HOST'] . $uri . "home/";
-	index_site($site, 0, -1, 'full', "", "+\n&", 0);
-	return '';
-}
-*/
 
 /**
  * Save configuration settings submitted from the form.
  * @return bool Boolean value indicating whether the method was successful.
  */
 function saveConfigurationSettings() {
+	global $URL_REWRITE;
 	$configurationMap = array(
 			'txtMySQLServerHost' => 'MYSQL_SERVER',
 			'txtMySQLUsername' => 'MYSQL_USERNAME',
@@ -148,7 +147,8 @@ function saveConfigurationSettings() {
 			'txtADSServerAddress' => 'AUTH_ADS_SERVER',
 			'txtADSNetworkName' => 'AUTH_ADS_NETWORK',
 			'txtADSUserDomain' => 'AUTH_ADS_DOMAIN',
-			'txtMySQLServerPort' => 'MYSQL_PORT'
+			'txtMySQLServerPort' => 'MYSQL_PORT',
+			'optURLRewrite' => 'URL_REWRITE'
 	);
 	
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
@@ -252,7 +252,7 @@ WHATEVER;
 }
 
 function importDatabase() {
-	global $installFolder;
+	global $installFolder, $URL_REWRITE;
 
 	mysql_connect(MYSQL_SERVER, MYSQL_USERNAME, MYSQL_PASSWORD);
 	mysql_select_db(MYSQL_DATABASE);
@@ -307,6 +307,7 @@ function importDatabase() {
 	setGlobalSettingByAttribute("cms_title",CMS_TITLE);
 	setGlobalSettingByAttribute("cms_email",CMS_EMAIL);
 	setGlobalSettingByAttribute("default_template",CMS_TEMPLATE);
+	setGlobalSettingByAttribute("url_rewrite",$URL_REWRITE);
 	setGlobalSettingByAttribute("default_user_activate",$DEFAULT_USER_ACTIVATE);
 	setGlobalSettingByAttribute("default_mail_verify",$SEND_MAIL_ON_REGISTRATION);
 	setGlobalSettingByAttribute("upload_limit",UPLOAD_LIMIT);
@@ -457,6 +458,7 @@ MSG;
  * Save .htaccess
  */
 function saveHtaccess() {
+
 	$urlRequestRootWithFolder = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
 	$urlRequestRoot = substr($urlRequestRootWithFolder , 0, strrpos($urlRequestRootWithFolder , '/'));
 	$urlRequestRoot = ($urlRequestRoot==""?"/":$urlRequestRoot);

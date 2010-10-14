@@ -409,6 +409,13 @@ $settingsForm = <<<SETTINGSFORM
 			</td>
 		</tr>
 		<tr>
+			<td><label for="optURLRewrite">Enable Pretty URLs (requires .htaccess and rewrite module enabled in webserver):</label></td>
+			<td>
+			<labe><input type="radio" name="optURLRewrite" id="optURLRewriteNo" value="No" checked="checked"/>No</label>
+			<label><input type="radio" name="optURLRewrite" id="optURLRewriteYes" value="Yes" />Yes</label>
+			</td>
+		</tr>
+		<tr>
 			<td>Activate user on registration?</td>
 			<td>
 				<label><input type="radio" name="optDefaultUserActive" id="optDefaultUserActiveYes" value="Yes" checked="checked" />Yes</label>

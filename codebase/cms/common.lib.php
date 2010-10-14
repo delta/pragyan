@@ -495,6 +495,23 @@ function hostURL() {
 	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$location;
 }
 
+/**
+ * Replaces the action in the url to a new action
+ *
+ * @param $url Initial URL
+ * @param $old Old Action
+ * @param $new New Action
+ *
+ * @return the URL with the new action
+ * @todo check for rewrite enabled and handle +action as well as &action=action kind of URLs
+ * @warning Whats the guarantee it won't convert some word in the URL which matches the Old Action ?
+ */
+function replaceAction($url,$old,$new) {
+   $offset = strpos($url,"action=$old");
+   $url = substr_replace($url,$new,$offset+7,strlen($old));
+   return $url;
+}
+
 function strleft($s1, $s2) {
     return substr($s1, 0, strpos($s1, $s2));
 }

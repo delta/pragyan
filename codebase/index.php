@@ -18,7 +18,7 @@
  * This CMS allows very fine user & group permissions and generating pages like articles, forms, quizzes, forums, gallery, etc.
  * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps, Latex, etc.
  * 
- * @section credits License, Credits and other details
+ * @section Credits License, Credits and other details
  * Please see README.
  * 
  * For more details, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
@@ -245,12 +245,14 @@ $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 ///Gets the list of allowed actions for the current module on the page
 $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 
-///Check the status of URL rewriting, to be taken from database
-$rewriteEngineEnabled=true;
+///Check the status of URL rewriting taken from database
+$rewriteEngineEnabled=$url_rewrite;
 
 ///If its disabled, then all the links in the generated page are converted into non-pretty URLs using regex
-if(!$rewriteEngineEnabled) {
+if($rewriteEngineEnabled=='false') {
+	$TITLE = convertUri($TITLE);
 	$MENUBAR = convertUri($MENUBAR);
+	$COMPLETEMENU = convertUri($COMPLETEMENU);
 	$CONTENT = convertUri($CONTENT);
 	$INHERITEDINFO = convertUri($INHERITEDINFO);
 	$BREADCRUMB = convertUri($BREADCRUMB);
