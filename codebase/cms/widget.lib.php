@@ -7,6 +7,7 @@
  * @license http://www.gnu.org/licenses/ GNU Public License
  * @warning The database structure of widgetsinfo is such that config_id is one of the primary keys. But what if there is a widget with NO configuration at all ? Hence, every widget must have atleast one configuration. So how about inserting a default configuration like Enable/Disable ?
  * For more details, see README
+ * @todo Add support for File Upload/Download via the widget's configurations
  */
  
  /** 
@@ -273,9 +274,9 @@ function getGlobalConfigFormAsArray($widgetglobalconfigs,$containsFileUploadFiel
 		}
 			
 		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`=-1 AND `widget_id`={$widgetglobalconfigs[0]['id']}  AND `config_name` IN ('".join($confnames,"','")."')";
-		
+	
 		$res=mysql_query($query);
-		
+	
 		/// For those configurations which are set, overwrite the $formValues array
 		while($row=mysql_fetch_assoc($res))
 		{
@@ -427,7 +428,7 @@ function renderBoolTypeField($elementName,$value,$options,&$htmlOutput)
 	
 	$options = array("Yes","No");
 
-	$value = ($value==1)?"Yes":"No";
+	$value = ($value=='1'||$value=='Yes')?"Yes":"No";
 	$optionsHtml = '';
 
 	for($i = 0; $i < count($options); $i++) {
@@ -586,17 +587,7 @@ function renderDateTypeField($elementName,$value,$options,&$htmlOutput)
 	$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
 	return true;
 }
-/**
- * Reloads the widgets from the widget directoty and update proper entries in database.
- *
- * @param
- *
- * @return
- */
-function reloadWidgets()
-{
-	// Load the widgets from widget/ directory and update proper entries in database. Should be there in admin/site-maintenaince
-}
+
 /**
  * Gets the widget information and global configuration settings about a particular widget
  *
@@ -644,45 +635,135 @@ function getAllWidgetsInfo()
 	}
 	return $ret;
 }
+/**
+ * Handles the submission of the widget global configuration forms and updates the database.
+ *
+ * @param $widgetid ID of the widget.
+ * 
+ * @note It uses $_POST variables implicitly to retrieve submitted form values.
+ */
 function updateGlobalConf($widgetid)
 {
-	
-	$query="SELECT `config_name` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid";
+	$query="SELECT `config_name`,`config_type`,`config_default`,`config_options` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid";
 	$res=mysql_query($query);
 	while($row=mysql_fetch_array($res))
 	{
-		if(isset($_POST['globalconfform_'.$row['config_name']]))
-		{
-			$configname=escape($row['config_name']);
-			$configval=escape($_POST['globalconfform_'.$row['config_name']]);
-			
-			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$configval' WHERE `config_name`='$configname' AND `widget_id`=$widgetid AND `widget_instanceid`=-1";
-			mysql_query($query);
-			echo $query."<br/>";
-			if(mysql_affected_rows()==0)
-			{
-				$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ($widgetid,-1,'$configname','$configval')";
-				mysql_query($query);
-				echo $query."<br/>";
-			}
-		}
+	
+		$conftype=$row['config_type'];
+		$confname=$row['config_name'];
+		$confdef=$row['config_default'];
+		$confoptions=$row['config_options'];
+		$postvar="globalconfform_".$confname;
+		$confcur=false;
 		
+		$query="SELECT `config_value` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=-1";
+	
+		$result=mysql_query($query);
+		
+		while($row=mysql_fetch_assoc($result))
+			$confcur=$row['config_value'];
+		
+		if($conftype=='checkbox')
+			$confval=escape(interpretSubmitValue($conftype,$postvar,$confoptions));
+		else	
+			$confval=escape(interpretSubmitValue($conftype,$postvar));
+		
+		///If there was no submit value, then check for the current value, if even that's missing then use the default value	
+		$confval=($confval===false)?(($confcur===false)?$confdef:$confcur):$confval;
+		if(mysql_num_rows($result)==0)
+		{
+			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ($widgetid,-1,'$confname','$confval')";
+			mysql_query($query);
+		}	
+		else if($confval!=$confcur)
+		{
+			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$confval' WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=-1";
+			mysql_query($query);
+		}
+	
 	}
-	displayinfo("Global configurations updated successfully!");
+	displayinfo("Configurations updated successfully!");
+	
+}
+
+/**
+ * Interprets the submit values of individual field types in the configuration form
+ *
+ * @param $conftype The type of the input field
+ * @param $postvar The POST variable name
+ * @param $options The extra options like for checkbox
+ *
+ * @return The value in string format if successful, else returns boolean false.
+ */
+function interpretSubmitValue($conftype,$postvar,$options=NULL)
+{
+	if($conftype=='textarea')
+	{
+		return $_POST[$postvar];
+	}
+	else if($conftype=='select')
+	{
+		return isset($_POST[$postvar])?$_POST[$postvar]:false;
+	}
+	else if($conftype=='radio')
+	{
+		return isset($_POST[$postvar])?$_POST[$postvar]:false;
+	}
+	else if($conftype=='bool')
+	{
+		return isset($_POST[$postvar])?$_POST[$postvar]:false;
+	}
+	else if($conftype=='checkbox')
+	{
+		$optionvals = explode("|",$options);
+		$i=-1;
+		$values = array();
+		foreach($optionvals as $value) {
+			$i++;
+			if(!isset($_POST[$postvar."_".$i]))
+				continue;
+			$values[] = $value;
+		}
+		$valuesString = join($values,"|");
+		return $valuesString;
+	}
+	else if($conftype=='text')
+	{
+		return $_POST[$postvar];
+	}
+	else if($conftype=='integer')
+	{
+		return (isset($_POST[$postvar])&&is_numeric($_POST[$postvar]))?$_POST[$postvar]:false;
+	}
+	else if($conftype=='hidden')
+	{
+		return $_POST[$postvar];
+	}
+	else if($conftype=='datetime')
+	{
+		return isset($_POST[$postvar])?$_POST[$postvar]:false;
+	}
+	else if($conftype=='date')
+	{
+		return isset($_POST[$postvar])?$_POST[$postvar]:false;	
+	}	
+	return false;
+	
+}
+/**
+ * Reloads the widgets from the widget directoty and update proper entries in database.
+ *
+ * @param
+ *
+ * @return
+ */
+function reloadWidgets()
+{
+	// Load the widgets from widget/ directory and update proper entries in database. Should be there in admin/site-maintenaince
 }
 function getWidgetInstances($widgetid)
 {
 	return array();
 }
-function readWidgetDescription($widgetid)
-{
-	return "hi";
-}
-
-function renderInputField($config)
-{
-	return "<input type='{$config['type']}' name='{$config['name']}' value='{$config['value']}'";
-}
-
  
 ?>

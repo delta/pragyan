@@ -184,9 +184,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			else {
 				
 				/* Index the page by sphider */
-				$serveruri=$_SERVER['REQUEST_URI'];
-				$uri=substr($serveruri,0,stripos($serveruri,"+edit"));
-				$page = "http://" . $_SERVER['HTTP_HOST'] . $uri;
+				$page = replaceAction(selfURI(),"edit","view");
 				global $cmsFolder;
 				require_once("$cmsFolder/modules/search/admin/spider.php");
 				index_url($page, 0, 0, '', 0, 0, 1);
