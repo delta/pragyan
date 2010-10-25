@@ -1,5 +1,5 @@
 
-window.onload = function() {
+$(function() {
 	$("ul.topnav li").hover(function(){
 		$(this).animate({left: "+=2"}, 100);
 		$(this).find("ul.depth2").fadeIn();//css({display: 'block'});
@@ -14,4 +14,4 @@ window.onload = function() {
 		$("#statusbar").html(location.href);
 	}
 	);
-}
+});
