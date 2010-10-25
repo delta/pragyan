@@ -19,7 +19,8 @@
 function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	if($action=="login") {
 		if($userId==0) {
-			require_once("login.lib.php");
+		///Commented the requirement of login.lib.php because it is already included in /index.php
+			//require_once("login.lib.php");
 			$newUserId = login();
 			if(is_numeric($newUserId))
 				return getContent($pageId, "view", $newUserId, getPermissions($newUserId,$pageId,"view"), 0);

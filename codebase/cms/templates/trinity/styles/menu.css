@@ -14,46 +14,110 @@
 }
 #quicklinks a{
 	font-size: small;
-	padding: 0px 7px;
+	padding: 4px 7px;
 	color: white;
 	text-decoration: none;
 	border: solid 1px transparent;
-}
-#quicklinks span {
-	width: 25px;
-	height: 25px;
-}
-#quicklinks div#linksid{
-	position: absolute;
-	top: 0;
-}
-#quicklinks a span {
-	position: absolute;
-	top: 1px;
-}
-#quicklinks a #link1{ background: #FFF url(../images/icons/fb.jpg); left: 10px;}
-#quicklinks a:hover #link1{ background: url(../images/icons/fbh.jpg); }
-
-#quicklinks a #link2{ background: #FFF url(../images/icons/su.jpg); left: 40px;}
-#quicklinks a:hover #link2{ background: url(../images/icons/suh.jpg); }
-
-#quicklinks a #link3{ background: #FFF url(../images/icons/mail.jpg); left: 70px;}
-#quicklinks a:hover #link3{ background: url(../images/icons/mailh.jpg); }
-
-#quicklinks a #link4{ background: #FFF url(../images/icons/twt.jpg); left: 100px;}
-#quicklinks a:hover #link4{ background: url(../images/icons/twth.jpg); }
-
-#quicklinks a #link5{ background: #FFF url(../images/icons/rss.jpg); left: 130px;}
-#quicklinks a:hover #link5{ background: url(../images/icons/rssh.jpg); }
-
-#quicklinks div#cms-actionbarPage a:hover {
-	background-color : white;
-	border: solid 1px #345;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	
+}
+#quicklinks span.qlinks {
+	padding: 5px 10px;
+	height: 25px;
+}
+#quicklinks div#linksid{
+	position: absolute;
+	top: 1px;
+}
+#quicklinks a span {
+	position: relative;
+	top: 2px;
+}
+#quicklinks a #link1{ background: url(../images/icons/fb.png);}
+#quicklinks a:hover #link1{ background: url(../images/icons/fbh.png); }
+
+#quicklinks a #link2{ background: url(../images/icons/su.png);}
+#quicklinks a:hover #link2{ background: url(../images/icons/suh.png); }
+
+#quicklinks a #link3{ background: url(../images/icons/mail.png);}
+#quicklinks a:hover #link3{ background: url(../images/icons/mailh.png); }
+
+#quicklinks a #link4{ background: url(../images/icons/twt.png); }
+#quicklinks a:hover #link4{ background: url(../images/icons/twth.png); }
+
+#quicklinks a #link5{ background: url(../images/icons/rss.png); }
+#quicklinks a:hover #link5{ background: url(../images/icons/rssh.png); }
+
+/**
+	* Any Changes here will not be automatically reflected in script.js
+	* They should be manually applied
+	**/
+#quicklinks div#cms-actionbarPage a:hover {
+	background-color : white;
+	border: solid 1px #345;
 	color : black;
+}
+
+/*
+ * Hard Coded Login Form
+ */
+#hc_loginform {
+	position: absolute;
+	background: black;
+	color: white;
+	z-index: 1000;
+	right: 5px;
+	top: 0px;
+	margin-top: 25px;
+	padding: 5px;
+	border: solid 1px white;
+	display:none;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+#hc_loginform table,#hc_loginform tr, #hc_loginform td{
+	border:0;
+}
+#hc_loginform input[type="text"],#hc_loginform input[type="password"]{
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: solid 1px #555;
+	padding: 3px;
+	position: relative;
+	top: -3px;
+	color: white;
+	background: #333;
+}
+
+
+/**
+ * Hard Coded Profile Tab Form
+ */
+.cms-actionlogout {
+display:none;
+}
+#hc_profile{
+	position: absolute;
+	background: black;
+	color: white;
+	z-index: 1000;
+	right: 60px;
+	top: 0px;
+	margin-top: 25px;
+	padding: 10px;
+	border: solid 1px white;
+	display:none;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	line-height: 25px;
+}
+#hc_profile a:hover{
+	color: yellow;
 }
 
 /*
@@ -140,4 +204,3 @@
 	border-color: #abcdef;
 	
 }
-	
