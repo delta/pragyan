@@ -33,9 +33,9 @@
 	padding: 0;
 }
 #centerContent div#windowmenu a{
-	color: #004C6B;
+	color: #FFF;
 	margin: 0;
-	padding: 2px 5px;
+	padding: 1px 7px;
 	text-decoration: none;
 	border: solid 1px transparent;
 	-webkit-border-radius: 3px;
@@ -44,8 +44,8 @@
 }
 #centerContent div#windowmenu a:hover {
 	border-color: white;
-	background: #004C6B;
-	color: white;
+	background: white;
+	color: black;
 }
 #centerContent div#breadcrumb{
 	padding: 0 3px;
@@ -93,8 +93,21 @@ div#breadcrumb ul > li.selected a >div {
 	color: black;
 }
 
-div#breadcrumb #homeimg * {
-	padding: 0;
+div#breadcrumb .cms-homeicon {
+	padding: 7px 13px;
+	border: solid 1px #918E8C;
+	background: url(../images/home.jpg) no-repeat;
+}
+div#breadcrumb .cms-homeselected {
+	background: url(../images/homeh.jpg) no-repeat;
+	padding: 7px 13px;
+	border: solid 1px #918E8C;
+}
+div#breadcrumb .cms-homeselected:hover {
+	background:url(../images/homeh.jpg) no-repeat;
+}
+div#breadcrumb .cms-homeicon:hover{
+	background: url(../images/homeh.jpg) no-repeat;
 }
 #centerContent div#content {
 	clear: left;

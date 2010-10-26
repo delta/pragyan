@@ -114,9 +114,9 @@ function loginForm()
 					}
 					-->
 					</script>
-					<form method="POST" class="registrationform" name="user_loginform" onsubmit="return checkLoginForm(this);" action="./+login">
-						<fieldset>
-						<legend>Login</legend>
+					<form method="POST" class="registrationform" name="user_loginform" onsubmit="return checkLoginForm(this);" action="./+login" autocomplete="off">
+						<!--<fieldset>
+						<legend>Login</legend>-->
 							<table>
 								<tr>
 									<td><label for="user_email"  class="labelrequired">Email</label></td>
@@ -130,7 +130,7 @@ function loginForm()
 									<td><a href="./+login&subaction=resetPasswd">Lost Password?</a> <a href="./+login&subaction=register">Sign Up</a></td>
 								</tr>
 							</table>
-						</fieldset>
+						<!--</fieldset>-->
 					</form>
 LOGIN;
 	return $login_str;

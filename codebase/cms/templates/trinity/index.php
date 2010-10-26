@@ -35,13 +35,53 @@
 <div class="outercontainer">
 	<div id="quicklinks">
 		<div id="linksid">
-			<a href=""><span id="link1">&nbsp;</span></a>
-			<a href=""><span id="link2">&nbsp;</span></a>
-			<a href=""><span id="link3">&nbsp;</span></a>
-			<a href=""><span id="link4">&nbsp;</span></a>
-			<a href=""><span id="link5">&nbsp;</span></a>
+			<a href=""><span id="link1" class="qlinks">&nbsp;</span></a>
+			<!--<a href=""><span id="link2"  class="qlinks">&nbsp;</span></a> ///To be added later. -->
+			<a href=""><span id="link3" class="qlinks">&nbsp;</span></a>
+			<a href=""><span id="link4" class="qlinks">&nbsp;</span></a>
+			<a href=""><span id="link5" class="qlinks">&nbsp;</span></a>
 		</div>
 		<?php echo $ACTIONBARPAGE ?>
+		<div id="hc_loginform">
+			<!--
+			*
+			* @author boopathi
+			* The Following have been removed and $LOGINFORM has been added.
+			* Use this Login Form just in case if found any mismatch when submitting same named forms in +login page.
+			*
+			*
+			 Note : the form has been set to AUTOCOMPLETE OFF mode. This is just to prevent a bug in firefox
+			<form method="POST" name="hc_loginform" action="./+login" autocomplete="off">
+			<table border=0 valign="middle">
+			<tr><td valign="middle"><label for="user_email"  class="labelrequired">Email</label></td>
+			<td><input type="text" name="user_email" id="user_email" class="required" onchange="if(this.length!=0) return checkEmail(this);"/></td>
+			</tr><tr>
+			<td valign="middle"><label for="user_password" class="labelrequired">Password</label></td>
+			<td><input type="password" name="user_password"  id="user_password"  class="required" /></td>
+			</tr>
+			<tr colspan="2">
+			<td></td>
+			<td><input type="submit" value="Login" /></td>
+			</tr>
+			<tr colspan="2"><td></td>
+			<td>
+			<a href="./+login&subaction=resetPasswd">Lost Password?</a> <a href="./+login&subaction=register">Sign Up</a>
+			</td>
+			</tr>
+			</table>
+			</form>
+			-->
+			<?php echo $LOGINFORM; ?>
+		</div>
+		<!--
+		*
+		* Hard Coded links to profile and logout.
+		*
+		-->
+		<div id="hc_profile">
+			<a href="./+profile">Profile</a><br/>
+			<a href="./+logout">Logout</a>
+		</div>
 	</div>
 	<div class="clearer"></div>
 	<div class="innercontainer">
@@ -141,10 +181,13 @@
 						<div id="breadcrumb">
 							<div style="float:left;">
 								<ul>
-								<li id="homeimg"><a href="<?php echo $urlRequestRoot; ?>">
-								<div>
-								<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/home.jpg"/>
-								</div></a>
+								<?php 
+								$classNameHome = "cms-homeicon";
+								global $pageId;
+								if($pageId == 0)
+									$classNameHome = "cms-homeselected";
+								?>
+								<li id="homeimg"><a href="<?php echo $urlRequestRoot; ?>"><div class="<?php echo $classNameHome; ?>">&nbsp;</div></a>
 								</li></ul>
 							</div>
 							<div style="float:left;">

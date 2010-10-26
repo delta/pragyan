@@ -170,6 +170,9 @@ require_once($sourceFolder."/actionbar.lib.php");
 require_once($sourceFolder."/registration.lib.php");
 require_once($sourceFolder."/widget.lib.php");
 
+///NEWLY added to display login form
+require_once($sourceFolder."/login.lib.php");
+
 ///Parse the URL and retrieve the PageID of the request page if its valid
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
 
@@ -181,7 +184,7 @@ if ($pageId === false) {
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was not found on this server.<br />$_SERVER[SERVER_SIGNATURE]".
 		"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU,$LOGINFORM);
 	exit();
 }
 
@@ -197,7 +200,7 @@ if(URLSecurityCheck($_GET))
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
 			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU,$LOGINFORM);
 	exit();
 }
 
@@ -239,6 +242,17 @@ $MENUBAR = getMenu($userId, $pageIdArray);
 ///Used if the user wants to have some links in the menubar always.
 $COMPLETEMENU = getMenu($userId, $pageIdArray, true);
 
+///The Login form to be displayed from login.lib.php
+///Added By Boopathi
+$LOGINFORM = '';
+if($userId == 0)
+	$LOGINFORM = loginForm();
+else
+{
+	$userNameFromId = getUserName($userId);
+	$LOGINFORM = "Welcome {$userNameFromId}.";
+}
+
 ///Gets the list of allowed actions for the current page
 $ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 
@@ -261,6 +275,7 @@ if($rewriteEngineEnabled=='false') {
 	$INFOSTRING = convertUri($INFOSTRING);
 	$ERRORSTRING = convertUri($ERRORSTRING);
 	$WARNINGSTRING = convertUri($WARNINGSTRING);
+	$LOGINFORM = convertUri($LOGINFORM);
 }
 
 ///Some extra debugging information if debugSet is enabled
@@ -285,7 +300,7 @@ if($debugSet == "on") {
 setcookie("cookie_support", "enabled", 0, "/"); 
 	
 ///Apply the template on the generated content and display the page
-templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU);
+templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU,$LOGINFORM);
 
 disconnect();
 exit();

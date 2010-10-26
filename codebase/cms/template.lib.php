@@ -35,6 +35,7 @@ function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$B
 	global $SITEKEYWORDS;
 	global $COMPLETEMENU;
 	global $STARTSCRIPTS;
+	global $LOGINFORM;
 	$TEMPLATEBROWSERPATH = "$urlRequestRoot/$cmsFolder/$templateFolder/".TEMPLATE;
 	$TEMPLATECODEPATH = "$sourceFolder/$templateFolder/".TEMPLATE;
 	include ($TEMPLATECODEPATH."/index.php");
