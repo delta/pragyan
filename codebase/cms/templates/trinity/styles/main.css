@@ -78,3 +78,10 @@ body img
 	padding: 0;
 	margin: 0;
 }
+/**
+ *For the Welcome Text
+ */
+.cms-welcometext{
+	font-size: small;
+	
+}

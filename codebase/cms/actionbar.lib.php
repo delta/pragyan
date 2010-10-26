@@ -28,14 +28,17 @@ function getActionbarPage($userId, $pageId) {
 		}
 	}
 	else {
-		$actionbarPage["profile"]="Profile";
-		$actionbarPage["logout"]="Logout";
+			$actionbarPage["logout"]="Logout";
+	///profile has been changed to display the username.
+		$actionbarPage["profile"]=getUserName($userId);
 	}
 	$actionbarPage["search"]="Search";
 	$actionbar="<div id=\"cms-actionbarPage\">";
 	
 	foreach($actionbarPage as $action=>$actionname) {
-		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
+		if($action == "profile")
+			$actionbar.= "<span class=\"cms-welcometext\">Welcome </span>";
+		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}
 	$actionbar.="</div>";
 	return $actionbar;
