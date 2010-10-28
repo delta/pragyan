@@ -72,14 +72,12 @@ TREEDATA;
 
 			$htmlOut .= "<li><a href=\"$pagePath\">" . getPageTitle($pageId) . "</a>\n";
 
-			$childrenQuery = 'SELECT `page_id`, `page_displayinmenu` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = ' . $pageId;
+			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = ' . $pageId . ' AND `page_displayinsitemap` = 1';
 			$childrenResult = mysql_query($childrenQuery);
 
 			$childrenHtml = '';
 			while($childrenRow = mysql_fetch_row($childrenResult)) {
-				if($childrenRow[1] == 1) {
 					$childrenHtml .= $this->getNodeHtml($childrenRow[0], $userId, $module, $action, $pagePath);
-				}
 			}
 			if($childrenHtml != '') {
 				$htmlOut .= "<ul>$childrenHtml</ul>\n";
