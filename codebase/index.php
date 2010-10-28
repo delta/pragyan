@@ -18,7 +18,7 @@
  * This CMS allows very fine user & group permissions and generating pages like articles, forms, quizzes, forums, gallery, etc.
  * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps, Latex, etc.
  * 
- * @section Credits License, Credits and other details
+ * @section License, Credits and other details
  * Please see README.
  * 
  * For more details, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
@@ -169,9 +169,9 @@ require_once($sourceFolder."/inheritedinfo.lib.php");
 require_once($sourceFolder."/actionbar.lib.php");
 require_once($sourceFolder."/registration.lib.php");
 require_once($sourceFolder."/widget.lib.php");
-
-///NEWLY added to display login form
 require_once($sourceFolder."/login.lib.php");
+
+
 
 ///Parse the URL and retrieve the PageID of the request page if its valid
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);
@@ -243,7 +243,6 @@ $MENUBAR = getMenu($userId, $pageIdArray);
 $COMPLETEMENU = getMenu($userId, $pageIdArray, true);
 
 ///The Login form to be displayed from login.lib.php
-///Added By Boopathi
 $LOGINFORM = '';
 if($userId == 0)
 	$LOGINFORM = loginForm();
