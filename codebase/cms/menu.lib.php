@@ -104,10 +104,17 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   $pageRow = getChildren($pageId,$userId);
   $var = "<ul class='{$classname} depth{$curdepth}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
-  $newdepth=$curdepth+1;
-  $var .= "\n<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\"><div class='cms-menuitem'>".$pageRow[$i][2]."</div></a>";
-  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
-  $var .= "</li>";
+  	$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$pageRow[$i][0]}'";
+	$result = mysql_query($query);
+	$result = mysql_fetch_assoc($result);
+	$opennewtab="";
+	if($result['page_openinnewtab']=='1') 
+		$opennewtab = ' target="_blank" ';
+		
+	  $newdepth=$curdepth+1;
+	  $var .= "\n<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$pageRow[$i][2]."</div></a>";
+	  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
+	  $var .= "</li>";
 }
   $var .= "</ul>";
   if(count($pageRow)==0) return "";
@@ -115,9 +122,17 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   }
 }
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
-	$menuHtml = '';
+	$menuHtml = ''; 
 	for ($i = 0; $i < count($menuArray); ++$i) {
+			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
+			$result = mysql_query($query);
+			$result = mysql_fetch_assoc($result);
+			if($result['page_openinnewtab']=='1') {
+				$menuHtml .= "<a href=\"./{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
+			}
+			else {
 		$menuHtml .= "<a href=\"./{$linkPrefix}{$menuArray[$i][1]}/\"";
+			}
 		if ($i == $currentIndex) 
 			$menuHtml .= ' class="currentpage"';
 		$menuHtml .= "><div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";

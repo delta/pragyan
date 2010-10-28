@@ -176,17 +176,21 @@ INHERITEDINFO;
 
 					if(obj.selectedIndex==2) {
 						document.getElementById("childlinktree").style.display="";
-						document.getElementById("childlinkentry").style.display="";				
+						document.getElementById("childlinkentry").style.display="";
+						document.getElementById("childlinkentry1").style.display="";
 					}
 					else {
 						document.getElementById("childlinktree").style.display="none";
-						document.getElementById("childlinkentry").style.display="none";					
+						document.getElementById("childlinkentry").style.display="none";	
+						document.getElementById("childlinkentry1").style.display="none";
 					}
 					if(obj.selectedIndex==3) {
-						document.getElementById("externallinktr").style.display="";					
+						document.getElementById("externallinktr").style.display="";
+						document.getElementById("externallinktr1").style.display="";
 					}
 					else {
 						document.getElementById("externallinktr").style.display="none";
+						document.getElementById("externallinktr1").style.display="none";
 					}
 
 					if(obj.selectedIndex==2 || obj.selectedIndex==3)
@@ -214,7 +218,9 @@ INHERITEDINFO;
 				        <tr><td>Page type:</td><td><select name="childpagetype" id="childpagetype" onchange="childShowTree(this);">$creatableTypesText</select></td></tr>
 				        <tr><td>Page name:</td><td><input type="text" name="childpagename" id="childpagename" /></td></tr>
 				        <tr id="childlinkentry" style="display:none"><td>Page link:</td><td><input type="text" name="childpagelink" id="childpagelink" /></td></tr>
+						<tr id="childlinkentry1" style="display:none"><td>Open the child page in:</td><td><select name="linkselect" id="linktype"><Option>Same Tab</option><option>New Tab</option></select></td></tr>
 				        <tr id="externallinktr" style="display:none"><td>External link:</td><td><input type="text" name="externallink" id="externallink" /></td></tr>
+						<tr id="externallinktr1" style="display:none"><td>Open the child page in:</td><td><select name="linkselectex" id="linktypeex"><Option>Same Tab</option><option>New Tab</option></select></td></tr>
 					</table>
 				</td>
 				<td id="childlinktree" style="display:none">Click to select link path :
@@ -840,11 +846,22 @@ function pagesettings($pageId, $userId) {
 					$pageIdArray = array();
 					$parentId = parseUrlReal(escape($_POST['childpagelink']), $pageIdArray);
 					if(getPermissions($userId, $parentId, "settings")) {
-					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid')";
+					if($_POST['linkselect']=="Same Tab"){
+					$parentId = parseUrlReal(escape($_POST['childpagelink']), $pageIdArray);
+					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_openinnewtab`) " .
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid', '0')";
 					mysql_query($linkquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
+					}
+					if ($_POST['linkselect']=="New Tab"){
+					$parentId = parseUrlReal(escape($_POST['childpagelink']), $pageIdArray);
+					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_openinnewtab`) " .
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid', '1')";
+					mysql_query($linkquery);
+						if (mysql_affected_rows() != 1)
+							displayerror( 'Unable to create a new page');
+					}
 					}
 					else
 						displayerror("Not enough permission to create a link for that location.");
@@ -854,18 +871,37 @@ function pagesettings($pageId, $userId) {
 					$extqueryresult = mysql_query($extquery);
 					$extqueryrow = mysql_fetch_array($extqueryresult);
 					$extpageid = $extqueryrow[0]+1;
-
 					$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."external` (`page_modulecomponentid`,`page_extlink`) " .
 							"VALUES('$extpageid','".escape($_POST['externallink'])."')";
 					if(!($result = mysql_query($query))) {
-						displayerror("Unable to create a new page.");
+						displayerror("Unable to create an external link.");
 						return false;
 					}
-					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid')";
+					
+					if($_POST['linkselectex']=="New Tab") 
+					{
+						$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`,`page_openinnewtab`) " .
+							"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid','1')";
+						
+						mysql_query($linkquery);
+						if (mysql_affected_rows() != 1)
+						{
+							displayerror( 'Unable to create a new page');
+							return false;
+						}
+					}
+					else {
+						
+					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`,`page_openinnewtab`) " .
+						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid','0')";
 					mysql_query($linkquery);
 					if (mysql_affected_rows() != 1)
+						{
 						displayerror( 'Unable to create a new page');
+						return false;
+						}
+					}
+					displayinfo("External link has been created!");
 				}
 				else {
 					$moduleType = escape($_POST['childpagetype']);
