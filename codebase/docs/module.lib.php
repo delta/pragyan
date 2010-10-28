@@ -7,7 +7,8 @@
  */
 
 /*
- * For a module to get integrated to Pragyan CMS properly table structures of two tables need to be modified (for now, planning to change to a better way),
+ * For a module to get integrated to Pragyan CMS properly table structures of two tables need to be modified 
+ * (for now, planning to change to a better way),
  * _pages:
  * 	page_module column is of enumerated datatype, add your module name to the list
  * _permisssionlist:
@@ -15,6 +16,10 @@
  * 
  * then insert a row to _permissionlist table with a unique permission id and perm_action as create and page_module as module name
  * insert a row for each action with a unique permission id with respective action name and page_module as module name
+ * 
+ * NOTE:  If your module requires some styling, then put it in templates/common/other.css and DO NOT hardcode it in this file.
+ * NOTE:  Also for styling purposes you must create classes/IDs of the HTML elements defined in here with module name in it so it doesn't conflict 
+ * with other output Pragyan CMS will create.
  */
 
 class /*Module Name here*/ implements module {
