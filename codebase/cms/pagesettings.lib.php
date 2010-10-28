@@ -35,7 +35,7 @@ function getCreatablePageTypes($userid, $pageid) {
  */
 function getSettingsForm($pageId, $userId) {
 	$pageId=escape($pageId);
-	$page_query = "SELECT `page_name`, `page_title`, `page_displaymenu`, `page_displayinmenu`, `page_displaysiblingmenu` , `page_module`, `page_displaypageheading`,`page_template`,`page_modulecomponentid`, `page_menutype`, `page_menudepth` " .
+	$page_query = "SELECT `page_name`, `page_title`, `page_displaymenu`, `page_displayinmenu`, `page_displaysiblingmenu` , `page_module`, `page_displaypageheading`,`page_template`,`page_modulecomponentid`, `page_menutype`, `page_menudepth` , `page_displayinsitemap`" .
 	"FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id`=" . $pageId;
 	$page_result = mysql_query($page_query);
 	$page_values = mysql_fetch_assoc($page_result);
@@ -52,9 +52,11 @@ function getSettingsForm($pageId, $userId) {
 	global $ICONS;
 	$modifiers = '';
 	$showInMenuBox = '';
+	$showInSiteMap = '';
 	if ($pageId == 0) {
 		$modifiers = 'disabled="disabled" ';
 		$showInMenuBox = '<tr><td ><label for="showinmenu">Show page in menu bar</td></label><td><input type="checkbox" name="showinmenu" id="showinmenu" ' . ($page_values['page_displayinmenu'] == 1 ? 'checked="checked" ' : '') . '/></td></tr>';
+		$showInSiteMap = '<tr><td ><label for="showinsitemap">Show page in site map</td></label><td><input type="checkbox" name="showinsitemap" id="showinsitemap" ' . ($page_values['page_displayinsitemap'] == 1 ? 'checked="checked" ' : '') . '/></td></tr>';
 	}
 
 	$showmenubar = ($page_values['page_displaymenu'] == 1 ? 'checked="checked" ' : '');
@@ -72,10 +74,11 @@ function getSettingsForm($pageId, $userId) {
 		$childList = "There are no child pages associated with this page.";
 	}
 	else
-		$childList = "<table border=\"1\" width=\"100%\"><tr><th>Child Pages</th><th>Display in menu bar</th><th>Move page up</th><th>Move page down</th><th>Delete</th></tr>";
+		$childList = "<table border=\"1\" width=\"100%\"><tr><th>Child Pages</th><th>Display in menu bar</th><th>Display in Sitemap</th><th>Move page up</th><th>Move page down</th><th>Delete</th></tr>";
 	while ($page_result_row = mysql_fetch_assoc($page_result)) {
 		$childList .= '<tr><td><a href="./'.$page_result_row['page_name'].'+settings">' . $page_result_row['page_title'] . '</a></td>' .
 				'<td><input type="checkbox" name="menubarshowchildren[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayinmenu'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
+				'<td><input type="checkbox" name="sitemapshowchildren[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayinsitemap'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td align="center"><input type="submit" name="moveUp" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Up" /></td>' .
 				'<td align="center"><input type="submit" name="moveDn" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Down" /></td>' .
 				'<td align="center"><input type="submit" name="deletePage" onclick="return checkDelete(this,\''.$page_result_row['page_name'].'\')"  value="Delete" /></td></tr>';
@@ -402,6 +405,7 @@ MOVECOPY;
 				$showInMenuBox
 			<tr><td><label for="showheading">Show page heading</label></td><td><input type="checkbox" id="showheading" name="showheading" $showheading /></td></tr>
 	  				
+	  			$showInSiteMap	
 	  			
 		</table>
 		<fieldset><legend>Menu Settings</legend>
@@ -500,7 +504,7 @@ FORMDISPLAY;
  * @param $showMenuBar Boolean indicating whether the page shows its menubar
  * @return String containing a description of any errors encountered, a null string indicating success
  */
-function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList, $page_template, $template_propogate, $menu_type, $menu_depth, $menu_propogate) {
+function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList,$visiblesChildList, $page_template, $template_propogate, $menu_type, $menu_depth, $menu_propogate,$showInSiteMap) {
 
 	$updateQuery = '';
 	$updates = array ();
@@ -524,6 +528,9 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		$updates[] = '`page_displaymenu` = ' . ($showMenuBar == true ? 1 : 0);
 	}
 
+	if (is_bool($showInSiteMap)) {
+		$updates[] = '`page_displayinsitemap` = ' . ($showInSiteMap == true ? 1 : 0);
+	}
 
 	if (is_bool($showHeading)) {
 		$updates[] = '`page_displaypageheading` = ' . ($showHeading == true ? 1 : 0);
@@ -587,6 +594,18 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		"`page_name` NOT IN ($visibleChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
 	} else {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 0 WHERE ' .
+		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
+	}
+	mysql_query($updateQuery);
+	if (is_array($visiblesChildList) && count($visiblesChildList) > 0) {
+		$visiblesChildList = "'" . join($visiblesChildList, "', '") . "'";
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 1 WHERE ' .
+		"`page_name` IN ($visiblesChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		mysql_query($updateQuery);
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 0 WHERE ' .
+		"`page_name` NOT IN ($visiblesChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+	} else {
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 0 WHERE ' .
 		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
 	}
 
@@ -666,9 +685,15 @@ function pagesettings($pageId, $userId) {
 			if(isset($_POST['btnSubmit'])) {
 				$visibleChildList = array();
 
+				$visiblesChildList = array();
 				if(isset($_POST['menubarshowchildren']) && is_array($_POST['menubarshowchildren'])) {
 					for($i = 0; $i < count($_POST['menubarshowchildren']); $i++) {
 						$visibleChildList[] = escape($_POST['menubarshowchildren'][$i]);
+					}
+				}
+				if(isset($_POST['sitemapshowchildren']) && is_array($_POST['sitemapshowchildren'])) {
+					for($i = 0; $i < count($_POST['sitemapshowchildren']); $i++) {
+						$visiblesChildList[] = escape($_POST['sitemapshowchildren'][$i]);
 					}
 				}
 
@@ -685,7 +710,7 @@ function pagesettings($pageId, $userId) {
 				$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
 				$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 				mysql_query("UPDATE `article_content` SET `allowComments` = $var WHERE `page_modulecomponentid` = '{$modulecomponentid}'");
-				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL,$menu_propogate);
+				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList,$visiblesChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL,$menu_propogate,isset($_POST['showinsitemap']));
 
 				
 
