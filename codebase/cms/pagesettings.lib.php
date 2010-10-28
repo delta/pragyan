@@ -154,7 +154,8 @@ INHERITEDINFO;
 	else {
 		$generatedTree = generateDirectoryTree($userId, "page", "settings", 0)->toHtml('childPageTreeContainer', 'childPageTree', 'childpagelink');
 		$creatableTypesText = '<option value=""> </option><option value="menu">Menu</option><option value="link">Link</option><option value="external">External Link</option>';
-		foreach (getCreatablePageTypes($userId, $pageId) as $creatableType) {
+		$createblePageTypes = getCreatablePageTypes($userId, $pageId);
+		foreach ( $createblePageTypes as $creatableType) {
 			$creatableTypesText .= "<option value=\"$creatableType\">".ucfirst($creatableType)."</option>";
 		}
 		
