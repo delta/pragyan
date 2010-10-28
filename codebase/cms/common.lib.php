@@ -47,7 +47,8 @@ function prettyurl($str) {
 	$str = ereg_replace("^./",$urlRequestRoot."/?page=".$page,$str);
 	$str = ereg_replace("^../",$urlRequestRoot."/?page=".$page,$str);
 	$str = ereg_replace("\+","&action=",$str);
-	$str = ereg_replace("^".$urlRequestRoot."/home/","./?page=/home/",$str);
+	$str = ereg_replace("^".hostURL()."/home",hostURL()."/?page=/home",$str);
+	$str = ereg_replace("^".$urlRequestRoot."/home","./?page=/home",$str);
 	if($file!="")
 		$str .= "&fileget=".$file;
 	return $str;
