@@ -189,6 +189,13 @@ ______________________________________________________________________
 	In case its impossible to avoid it, try to find an alternative
 	for Windows and/or Linux-bases OS also and implement it.
 	
+	===== RULE 3 =====
+	
+	Never include JQUERY javascript libraries from within the cms.
+	Always include it in the template file if you can, or leave it
+	on the assumption that jQuery is already included in the 
+	template. If you include it from here, and it also already
+	included in the template file, then both will conflict.
 	______________________________________________________________
 	
 	::::::::::::::::::::::: DOCUMENTATION ::::::::::::::::::::::::
