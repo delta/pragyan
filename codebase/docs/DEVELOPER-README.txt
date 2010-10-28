@@ -137,6 +137,10 @@ ______________________________________________________________________
 	screen. This is to prevent XSS attack. e.g. echo $_GET['hi'];
 	should be echo safe_html($_GET['hi']);
 
+	Warning: safe_html() will remove ALL the HTML tags if any in
+	the input code. If you deliberately inserted some HTML tags
+	then insert it after you filter the code through safe_html().
+	
 	===== EXAMPLES ===== 
 
 	Vulnerable Code : 

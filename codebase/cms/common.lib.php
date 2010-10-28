@@ -314,6 +314,21 @@ function getEffectivePageModule($pageId) {
 	return $pagemodule_row['page_module'];
 }
 
+/**
+ * Gets the next module component id of a given module, which can be used for creating new instances of the same module.
+ * @param $modulename Name of the module
+ * @return Integer representing the new module component id
+ */
+function getNextModuleComponentId($modulename) {
+		$moduleComponentIdQuery = "SELECT MAX(page_modulecomponentid) FROM `".MYSQL_DATABASE_PREFIX."_pages` WHERE `page_module`='$modulename'";
+		$moduleComponentIdResult = mysql_query($moduleComponentIdQuery);
+		if(!$moduleComponentIdResult)
+			return 0;
+		$moduleComponentIdRow = mysql_fetch_row($moduleComponentIdResult);
+		if(!is_null($moduleComponentIdRow[0]))
+			return $moduleComponentIdRow[0] + 1;
+		return 1;
+}
 
 
 /**

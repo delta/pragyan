@@ -77,7 +77,7 @@ class pagelist implements module {
 		
 		if(isset($_POST['hell']))
 		{ 		
-				$pageId=$_POST['hell'];
+				$pageId=escape($_POST['hell']);
 			 	unset($_POST['hell']);
 			  	$htmlOut.=$this->generatePagelist($pageId, $userId, $permId, $action = '',$depth);
 			
@@ -87,7 +87,7 @@ class pagelist implements module {
 			$pageInfo = getPageInfo($pageId);
 			if(isset($_POST['hell2']))
 			{ 
-				$pagePath=$_POST['hell2'];
+				$pagePath=escape($_POST['hell2']);
 				unset($_POST['hell2']);
 
 			}
@@ -168,7 +168,7 @@ class pagelist implements module {
 	public function createModule(&$moduleComponentId) {
 		
 		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `list_prop` ";
-		$result = mysql_query($query) or die(mysql_error() . "list.lib L:1");
+		$result = mysql_query($query) or die(mysql_error() . "list.lib.php L:1");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 		$defaultdepth=3;

@@ -504,6 +504,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_menurank` int(11) NOT NULL COMMENT 'Rank for menu ordering',
   `page_inheritedinfoid` int(11) NOT NULL DEFAULT '-1' COMMENT 'Inherited info table mapping',
   `page_displayinmenu` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'To display in menu bar or not',
+  `page_displayinsitemap` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'To display in sitemap or not',
   `page_displaymenu` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Tells if menu should be displayed at all',
   `page_displaysiblingmenu` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Tells if sibling menu is displayed',
   `page_displaypageheading` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determines whether page heading is displayed on the page',
@@ -511,7 +512,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_menudepth` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `unique parent` (`page_parentid`,`page_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
