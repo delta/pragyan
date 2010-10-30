@@ -116,6 +116,29 @@ INSERT IGNORE INTO `article_content` (`page_modulecomponentid`, `article_content
 
 
 --
+-- Dumping data for table `pragyanV3_modules`
+--
+
+INSERT INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
+('article', 'article_comments;article_content;article_contentbak'),
+('book', 'book_desc'),
+('contest', ''),
+('form', 'form_desc;form_elementdata;form_elementdesc;form_regdata'),
+('forum', 'forum_like;forum_module;forum_posts;forum_threads;forum_visits'),
+('gallery', 'gallery_name;gallery_pics'),
+('hospi', 'hospi_accomodation_status;hospi_hostel'),
+('news', 'news_data;news_desc'),
+('newsletter', 'newsletter;newsletter_bc'),
+('pagelist', 'list_images;list_prop'),
+('poll', 'poll_answers;poll_questions'),
+('pr', ''),
+('qaos', 'qaos_designations;qaos_scoring;qaos_teams;qaos_tree;qaos_units;qaos_users;qaos_version'),
+('scrolltext', ''),
+('sitemap', ''),
+('quiz', 'quiz_answersubmissions;quiz_descriptions;quiz_objectiveoptions;quiz_questions;quiz_sections;quiz_userattempts;quiz_weightmarks'),
+('sqlquery', 'sqlquery_desc');
+
+--
 -- Dumping data for table `pragyanV3_external`
 --
 

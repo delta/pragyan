@@ -416,6 +416,19 @@ CREATE TABLE IF NOT EXISTS `poll_questions` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pragyanV3_modules`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_modules` (
+  `module_name` varchar(128) NOT NULL,
+  `module_tables` varchar(500) NOT NULL,
+  `allow_uploads` tinyint(1),
+  PRIMARY KEY (`module_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pragyanV3_global`
 --
 
@@ -498,7 +511,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_createdtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time when the page was created',
   `page_lastaccesstime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'Time when the page was last accessed',
   `page_title` varchar(128) NOT NULL DEFAULT 'New Page' COMMENT 'Title of the page',
-  `page_module` enum('article','billing','book','external','faculty','form','forum','link','gallery','hospi','menu','news','pagelist','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search') NOT NULL DEFAULT 'article' COMMENT 'Module type of the page',
+  `page_module` varchar(128) NOT NULL COMMENT 'Module type of the page',
   `page_modulecomponentid` int(11) NOT NULL COMMENT 'Component id used in the module',
   `page_template` varchar(50) NOT NULL,
   `page_menurank` int(11) NOT NULL COMMENT 'Rank for menu ordering',
@@ -512,7 +525,8 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_menudepth` int(11) NOT NULL DEFAULT '1',
   `page_openinnewtab` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether to open the page in a new tab when clicked',
   PRIMARY KEY (`page_id`),
-  UNIQUE KEY `unique parent` (`page_parentid`,`page_name`)
+  UNIQUE KEY `unique parent` (`page_parentid`,`page_name`),
+  FOREIGN KEY (`page_module`) REFERENCES `pragyanV3_modules`(`module_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
@@ -523,13 +537,14 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
 
 CREATE TABLE IF NOT EXISTS `pragyanV3_permissionlist` (
   `perm_id` int(11) AUTO_INCREMENT NOT NULL,
-  `page_module` enum('page','article','billing','book','faculty','form','forum','gallery','hospi','news','pagelist','poll','pr','qaos','quiz','scrolltext','sitemap','sqlquery','search','newsletter','pdf') NOT NULL,
+  `page_module` varchar(128) NOT NULL,
   `perm_action` varchar(100) NOT NULL,
   `perm_text` varchar(200) NOT NULL,
   `perm_rank` int(11) NOT NULL COMMENT 'The order of being shown in actionbar',
   `perm_description` varchar(200) NOT NULL,
   PRIMARY KEY (`perm_id`),
-  UNIQUE KEY `permission type` (`page_module`,`perm_action`)
+  UNIQUE KEY `permission type` (`page_module`,`perm_action`),
+  FOREIGN KEY (`page_module`) REFERENCES `pragyanV3_modules`(`module_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='List of the available permissions';
 
 -- --------------------------------------------------------
@@ -546,19 +561,33 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_templates` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pragyanV3_tempuploads`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_tempuploads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `filePath` varchar(500) NOT NULL,
+  `info` varchar(1000) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pragyanV3_uploads`
 --
 
 CREATE TABLE IF NOT EXISTS `pragyanV3_uploads` (
   `page_modulecomponentid` int(11) NOT NULL,
-  `page_module` enum('article','quiz','form','gallery','profile') NOT NULL,
+  `page_module` varchar(128) NOT NULL,
   `upload_fileid` int(11) NOT NULL,
   `upload_filename` varchar(200) NOT NULL,
   `upload_filetype` varchar(300) NOT NULL,
   `upload_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` varchar(100) NOT NULL COMMENT 'The user who uploaded the file',
   PRIMARY KEY (`upload_fileid`),
-  UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`page_module`,`upload_filename`)
+  UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`page_module`,`upload_filename`),
+  FOREIGN KEY (`page_module`) REFERENCES `pragyanV3_modules`(`module_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

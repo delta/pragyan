@@ -154,6 +154,38 @@ function reloadTemplates()
 	return $res."</table>";
 }
 
+function reloadModules()
+{
+	global $sourceFolder;
+	global $moduleFolder;
+	$modules=scandir($sourceFolder.'/'.$moduleFolder);
+	$res="<table>";
+	$modarr=array();
+	foreach($modules as $module)
+	{
+		$module=escape($module);
+		$ext=substr($module,-8);
+		$module=substr($module,0,-8);
+		if($ext==".lib.php")
+		{
+			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."modules` (`module_name`) VALUES ('$module')";
+			mysql_query($query);
+			if(mysql_affected_rows())
+				$res.="<tr><td>$module</td><td><b>Found new module! Installed.</b></td></tr>";
+			else $res.="<tr><td>$module</td><td>OK</td></tr>";
+			$modarr[]=$module;
+		}
+		
+	}
+	$modlist=join("','",$modarr);	
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` NOT IN ('$modlist')";
+	mysql_query($query);
+	if($delc=mysql_affected_rows()>0)
+		$res.="<tr><td colspan=2>$delc module(s) removed from database</td></tr>";
+	return $res."</table>";
+}
+
+
 /** To retrieve Global Settings from Database */
 
 function getGlobalSettings()
@@ -603,6 +635,21 @@ class messenger {
 function getAvailableTemplates()
 {
 	$query="SELECT template_name FROM `".MYSQL_DATABASE_PREFIX."templates`";
+	$result=mysql_query($query);
+	$templates=array();
+	$i=0;
+	while($row=mysql_fetch_row($result))
+	{
+		$templates[$i]=$row[0];
+		$i++;
+	}
+	
+	return $templates;
+}
+
+function getAvailableModules()
+{
+	$query="SELECT `module_name` FROM `".MYSQL_DATABASE_PREFIX."modules`";
 	$result=mysql_query($query);
 	$templates=array();
 	$i=0;
