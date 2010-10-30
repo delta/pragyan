@@ -323,11 +323,12 @@ function admin($pageid, $userid) {
 	<td><a href="./+admin&subaction=global"><div>{$ICONS['Global Settings']['large']}<br/>Global Settings</div></a></td>
 	<td><a href="./+admin&subaction=expert"><div>{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</div></a></td>
 	<td><a href="./+admin&subaction=template"><div>{$ICONS['Templates Management']['large']}<br/>Templates Management</div></a></td>
-	<td><a href="./+admin&subaction=email"><div>{$ICONS['Email Registrants']['large']}<br/>Email Registrants</div></a></td>
+	<td><a href="./+admin&subaction=module"><div>{$ICONS['Modules Management']['large']}<br/>Module Management</div></a></td>
 	</tr>
 	<tr>
 	<td><a href="./+admin&subaction=useradmin"><div>{$ICONS['User Management']['large']}<br/>User Management</div></a></td>
 	<td><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
+	<td><a href="./+admin&subaction=email"><div>{$ICONS['Email Registrants']['large']}<br/>Email Registrants</div></a></td>
 	<td><a href="./+admin&subaction=editgroups"><div>{$ICONS['User Groups']['large']}<br/>Group Management</div></a></td>
 	
 	</tr>
@@ -362,6 +363,12 @@ ADMINPAGE;
 		}
 		else return $quicklinks.templateManagementForm();
 	}
+	if(isset($_GET['subaction']) && $_GET['subaction']=='module') {
+		require_once("module.lib.php");
+		$op = handleModuleManagement();
+		if($op != "") return $quicklinks.$op;
+		return $quicklinks.moduleManagementForm();
+	}
 	global $sourceFolder;	
 	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) return $quicklinks;
 	require_once("users.lib.php");
@@ -382,7 +389,7 @@ ADMINPAGE;
 			$ophead="{$ICONS['Group Management']['small']}Group Management";
 		}
 		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'reloadtemplates'){ $op .= reloadTemplates(); $ophead="{$ICONS['Templates Management']['small']}Reloading Templates"; }
-		
+		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'reloadmodules'){ $op .= reloadModules(); $ophead="{$ICONS['Modules Management']['small']}Reloading Modules"; }
 		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="{$ICONS['Access Permissions']['small']}Checking Permissions Consistency"; }
 		elseif (isset($_GET['subaction']) && $_GET['subaction'] == 'checkAdminUser'){ $op .= admin_checkAdminUser(); $ophead="Checking Administrator User"; }
 		elseif (isset($_GET['subaction']) && $_GET['subaction'] == 'checkAdminPerms'){ $op .= admin_checkAdminPerms(); $ophead="Checking Administrator Permissions"; }
@@ -417,6 +424,7 @@ ADMINPAGE;
 		$str .= '<a href="./+admin&subaction=checkAdminPerms">Check Admin Perms</a><br />';
 		$str .= '<a href="./+admin&subaction=changePermRank">Change Perm Ranks</a><br />';
 		$str .= '<a href="./+admin&subaction=reloadtemplates">Reload Templates</a><br />';
+		$str .= '<a href="./+admin&subaction=reloadmodules">Reload Modules</a><br />';
 		$str .= '<a href="./+admin&indexsite=2">Reindex Site for Searching</a></br/></fieldset>';
 		
 		

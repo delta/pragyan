@@ -22,6 +22,7 @@ Pragyan CMS v3.0 - Developer's Guide
 	+ Calculating Permissions
 	+ Granting Permissions
 (7) Module
+	+ Creating Module Installation Package
 (8) Templates
 	+ Creating Templates
 	+ Installing Templates
@@ -700,6 +701,44 @@ ______________________________________________________________________
 
 Refer module.lib.php file.
 
+	______________________________________________________________
+	
+	:::::::::::: CREATING MODULE INSTALLATION PACKAGE ::::::::::::
+	______________________________________________________________
+	
+	GUIDELINES FOR MAKING PRAGYAN CMS MODULE INSTALLATION PACKAGE
+		- Make three files moduleQueries.sql, moduleNotice.txt,
+		  moduleTables.txt in the same folder as that of the 
+		  module file(.lib.php file)
+		- moduleQueries.sql should contain only valid sql commands
+			* Note that everything in the file will be executed
+			  while installing the module, so if want to add something
+			  else make sure that you do so with "--" to comment it out
+			* The sql queries are expected to
+				- create the tables necessary for the module
+				- insert module permissions in into permissionlist table
+					* skiping value for `perm_id` column
+					* Since permissionlist table name can vary,
+					  keep it as 'pragyanV3_permissionlist' in your
+					  query, cms will take care of prefix
+				- and NOTHING ELSE
+		- moduleNotice.txt can be any notice to the admin who is installing
+		  your module to his PRAGYAN CMS
+		- moduleTables.txt should contain module table names separated by
+		  ';' and should contain nothing else
+		- if you want to include any file with your module, then it has to
+		  be within a folder with the same name as that of the module and has
+		  to be kept with the module file.
+
+	Example Folder Structure which has to be zipped:
+	module
+		- module.lib.php
+		- moduleNotice.txt
+		- moduleQueries.sql
+		- moduleTables.txt
+		- module
+			* file_1
+			* file_2
 ______________________________________________________________________
 
 (8)++++++++ TEMPLATES ++++++++++++++++++++++++++++++++++++++++++++++++

@@ -29,6 +29,7 @@ $ICON_ARRAY=array(
 'Global Settings'=>"categories/preferences-desktop.png",
 'User Management'=>"apps/system-users.png",
 'Templates Management'=>"categories/applications-graphics.png",
+'Modules Management'=>"categories/applications-accessories.png",
 'Site Maintenance'=>"categories/preferences-system.png",
 'Page Settings'=>"actions/document-properties.png",
 'Page Information'=>"mimetypes/x-office-document.png",
