@@ -72,7 +72,7 @@ function breadcrumbs($pageIdArray) {
 	return $str;
 }
 function generateSubmenu($pageId, $parentPath) {
-	$ret = '<div id="cms-breadcrumbsubmenu"><ul>';
+	$ret = '<div class="cms-breadcrumbsubmenu"><ul>';
 	global $userId;
 	$children = getChildren($pageId,$userId);
 	foreach($children as $child)
