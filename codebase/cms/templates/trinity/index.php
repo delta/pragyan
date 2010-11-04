@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/content.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/error.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/countdown.css" />
@@ -33,60 +33,10 @@
 
 <body>
 <div class="outercontainer">
-	<div id="quicklinks">
-		<div id="linksid">
-			<a href=""><span id="link1" class="qlinks">&nbsp;</span></a>
-			<!--<a href=""><span id="link2"  class="qlinks">&nbsp;</span></a> ///To be added later. -->
-			<a href=""><span id="link3" class="qlinks">&nbsp;</span></a>
-			<a href=""><span id="link4" class="qlinks">&nbsp;</span></a>
-			<a href=""><span id="link5" class="qlinks">&nbsp;</span></a>
-		</div>
-		<?php echo $ACTIONBARPAGE ?>
-		<div id="hc_loginform">
-			<!--
-			*
-			* @author boopathi
-			* The Following have been removed and $LOGINFORM has been added.
-			* Use this Login Form just in case if found any mismatch when submitting same named forms in +login page.
-			*
-			*
-			 Note : the form has been set to AUTOCOMPLETE OFF mode. This is just to prevent a bug in firefox
-			<form method="POST" name="hc_loginform" action="./+login" autocomplete="off">
-			<table border=0 valign="middle">
-			<tr><td valign="middle"><label for="user_email"  class="labelrequired">Email</label></td>
-			<td><input type="text" name="user_email" id="user_email" class="required" onchange="if(this.length!=0) return checkEmail(this);"/></td>
-			</tr><tr>
-			<td valign="middle"><label for="user_password" class="labelrequired">Password</label></td>
-			<td><input type="password" name="user_password"  id="user_password"  class="required" /></td>
-			</tr>
-			<tr colspan="2">
-			<td></td>
-			<td><input type="submit" value="Login" /></td>
-			</tr>
-			<tr colspan="2"><td></td>
-			<td>
-			<a href="./+login&subaction=resetPasswd">Lost Password?</a> <a href="./+login&subaction=register">Sign Up</a>
-			</td>
-			</tr>
-			</table>
-			</form>
-			-->
-			<?php echo $LOGINFORM; ?>
-		</div>
-		<!--
-		*
-		* Hard Coded links to profile and logout.
-		*
-		-->
-		<div id="hc_profile">
-			<a href="./+profile">Profile</a><br/>
-			<a href="./+logout">Logout</a>
-		</div>
-	</div>
 	<div class="clearer"></div>
 	<div class="innercontainer">
 		<div id="header">
-			<div id="invisibleContainer">
+			<!--<div id="invisibleContainer">
 				<a href="<?php echo $urlRequestRoot?>/home">
 					<div id="invisible">Pragyan 2011</div>
 				</a>
@@ -209,7 +159,32 @@
 			</div>
 			<div class="clearer"></div>
 		</div>
-    	</div>
+	</div>
+</div>
+	<div class="footercontainer">
+		<?php echo $FOOTER;?>	
+	</div>
+	<div id="quicklinks">
+	<div id="linksid">
+		<a href=""><span id="link1" class="qlinks">&nbsp;</span></a>
+		<!--<a href=""><span id="link2"  class="qlinks">&nbsp;</span></a> ///To be added later. -->
+		<a href=""><span id="link3" class="qlinks">&nbsp;</span></a>
+		<a href=""><span id="link4" class="qlinks">&nbsp;</span></a>
+		<a href=""><span id="link5" class="qlinks">&nbsp;</span></a>
+	</div>
+	<?php echo $ACTIONBARPAGE ?>
+	<div id="hc_loginform">
+		<?php echo $LOGINFORM; ?>
+	</div>
+	<!--
+	*
+	* Hard Coded links to profile and logout.
+	*
+	-->
+	<div id="hc_profile">
+		<a href="./+profile"><div>Profile</div></a><br/>
+		<a href="./+logout"><div>Logout</div></a>
+	</div>
 </div>
 </body>
 </html>
