@@ -198,6 +198,7 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `pe
 ('page', 'admin', 'Admin', 0, ''),
 ('page', 'grant', 'Permissions', 0, 'Grant Permissions'),
 ('page', 'settings', 'Page Settings', 0, 'Page Settings'),
+('page', 'widgets', 'Widgets', 0, 'Add or configure widgets'),
 ('page', 'pdf', 'PDF', 0, 'Convert into PDF'),
 ('article', 'create', 'Create', 8, 'Create an aritcle'),
 ('article', 'view', 'View', 0, 'View the article'),
@@ -277,6 +278,14 @@ INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_
 --
 -- Dumping data for table `pragyanV3_users`
 --
+
+--
+-- Dumping data for table `pragyanV3_widgetsinfo`
+--
+
+INSERT IGNORE INTO `pragyanV3_widgetsinfo` (`widget_id`, `widget_name`, `widget_classname`, `widget_description`, `widget_version`, `widget_author`, `widget_foldername`) VALUES
+(1, 'Server Date and Time', 'serverDateTime', 'Display the current date and time in the website', '0.01', 'Abhishek Shrivastava', 'server_date_time');
+
 
 --
 -- Dumping data for table `qaos_designations`

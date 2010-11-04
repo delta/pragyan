@@ -642,6 +642,87 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_users` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pragyanV3_widgets`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (
+  `widget_id` int(11) NOT NULL,
+  `widget_instanceid` int(11) NOT NULL,
+  `page_id` int(11) NOT NULL,
+  `widget_location` int(11) NOT NULL,
+  `widget_order` int(11) NOT NULL,
+  PRIMARY KEY (`widget_id`,`widget_instanceid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsconfig`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfig` (
+  `widget_id` int(11) NOT NULL,
+  `widget_instanceid` int(11) NOT NULL,
+  `config_name` varchar(128) NOT NULL,
+  `config_value` longtext NOT NULL,
+  PRIMARY KEY (`widget_id`,`widget_instanceid`,`config_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsdata`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsdata` (
+  `widget_id` int(11) NOT NULL,
+  `widget_instanceid` int(11) NOT NULL,
+  `widget_datakey` varchar(500) NOT NULL,
+  `widget_datavalue` longtext NOT NULL,
+  PRIMARY KEY (`widget_id`,`widget_instanceid`,`widget_datakey`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsconfiginfo`
+--
+
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfiginfo` (
+  `widget_id` int(11) NOT NULL,
+  `config_name` varchar(128) NOT NULL,
+
+  `config_type` enum('text','textarea','bool','integer','date','select','hidden','datetime','file','radio','checkbox') NOT NULL,
+  `config_options` text NOT NULL,
+  `config_displaytext` text NOT NULL,
+  `config_default` longtext NOT NULL,
+  `is_global` int(1) NOT NULL,
+  PRIMARY KEY (`widget_id`,`config_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_widgetsinfo`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyan`.`pragyanV3_widgetsinfo` (
+`widget_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`widget_name` VARCHAR( 100 ) NOT NULL ,
+`widget_classname` VARCHAR ( 100 ) NOT NULL,
+`widget_description` MEDIUMTEXT NOT NULL ,
+`widget_version` VARCHAR( 27 ) NOT NULL ,
+`widget_author` TEXT NULL ,
+`widget_foldername` VARCHAR( 27 ) NOT NULL ,
+UNIQUE (
+`widget_foldername`
+)
+) ENGINE = MYISAM ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `qaos_designations`
 --
 

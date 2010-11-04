@@ -100,6 +100,10 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		require_once("pagesettings.lib.php");
 		return pagesettings($pageId,$userId);
 	}
+	if($action=="widgets")
+	{
+		return handleWidgetPageSettings($pageId);
+	}
 	if($recursed==0) {
 		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id=".escape($pageId);
 		$pagetypeupdate_result = mysql_query($pagetypeupdate_query);

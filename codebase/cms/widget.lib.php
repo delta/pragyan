@@ -5,7 +5,6 @@
  * @brief Widget Framework for Pragyan CMS
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
- * @warning The database structure of widgetsinfo is such that config_id is one of the primary keys. But what if there is a widget with NO configuration at all ? Hence, every widget must have atleast one configuration. So how about inserting a default configuration like Enable/Disable ?
  * For more details, see README
  * @todo Add support for File Upload/Download via the widget's configurations
  */
@@ -13,118 +12,34 @@
  /** 
   * @description
   * Idea :
- 
-
- Put all the widgets inside cms/widgets folder. 
- Every widget should have a folder by its name inside cms/widgets.
- Inside every folder there will be a description file consisting of widget information and usage details.
- Each such folder will have widget.class.php file having a class which should extend WidgetFramework abstract class.
- The class will have abstract functions like :
-
- init_widget() to pass widget-instance-specific configurations to the widgets
- get_widget() to get the widget's output html code
- 
- WidgetFramework will implement the following functions :
- 
-  __construct() to pass universal (static) parameters to the widgets
- create_widget() will create the entry of the widget in the database along with proper setting
- reset_widget() will reset all the widget
-gets configurations to default (OPTIONAL)
- destroy_widget() will remove the widget from the database and its associated files
- check_perms() for permissions handling (if any, LATER )
- 
  A widget is a small customized html code that can be put in any part of the generated page. 
- The template's index.php will have variables $WIDGET1, $WIDGET2 to $WIDGETn where n is user-defined.
+ The template's index.php will have variables $WIDGET1, $WIDGET2 to $WIDGETn where n is user-defined (its 31 for now).
  Each $WIDGETi represents a unique-location and NOT a unique widget i.e. $WIDGETi can have multiple widgets, but in same location.
  
  
+ Put all the widgets inside cms/widgets folder. 
+ Every widget should have a folder by its name inside cms/widgets.
+ Inside every folder there will be a description file consisting of widget information and usage details.
+ Each such folder will have widget.class.php file having a class which should extend widgetFramework abstract class.
+ The class will have abstract functions like :
+
+ initWidget() which will be called prior to widget execution.
+ getHTML() to get the widget's output html code
  
- SQL QUERY ::
- -- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_widgets`
---
-
-CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (
-  `widget_id` int(11) NOT NULL,
-  `widget_instanceid` int(11) NOT NULL,
-  `page_id` int(11) NOT NULL,
-  `widget_location` int(11) NOT NULL,
-  `widget_order` int(11) NOT NULL,
-  PRIMARY KEY (`widget_id`,`widget_instanceid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_widgetsconfig`
---
-
-CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfig` (
-  `widget_id` int(11) NOT NULL,
-  `widget_instanceid` int(11) NOT NULL,
-  `config_name` varchar(128) NOT NULL,
-  `config_value` longtext NOT NULL,
-  PRIMARY KEY (`widget_id`,`widget_instanceid`,`config_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_widgetsdata`
---
-
-CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsdata` (
-  `widget_id` int(11) NOT NULL,
-  `widget_instanceid` int(11) NOT NULL,
-  `widget_datakey` varchar(500) NOT NULL,
-  `widget_datavalue` longtext NOT NULL,
-  PRIMARY KEY (`widget_id`,`widget_instanceid`,`widget_datakey`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_widgetsconfiginfo`
---
-
-
-CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsinfo` (
-  `widget_id` int(11) NOT NULL,
-  `config_name` varchar(128) NOT NULL,
-
-  `config_type` enum('text','textarea','bool','integer','date','select','hidden','datetime','file','radio','checkbox') NOT NULL,
-  `config_options` text NOT NULL,
-  `config_displaytext` text NOT NULL,
-  `config_default` longtext NOT NULL,
-  `is_global` int(1) NOT NULL,
-  PRIMARY KEY (`widget_id`,`config_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pragyanV3_widgetsinfo`
---
-
-CREATE TABLE `pragyan`.`PragyanV3_widgetsinfo` (
-`widget_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`widget_name` VARCHAR( 100 ) NOT NULL ,
-`widget_description` MEDIUMTEXT NOT NULL ,
-`widget_version` VARCHAR( 27 ) NOT NULL ,
-`widget_author` TEXT NULL ,
-`widget_foldername` VARCHAR( 27 ) NOT NULL ,
-UNIQUE (
-`widget_foldername`
-)
-) ENGINE = MYISAM ;
+ Besides these, the class should also create a constructor __construct which will call the parent constructor by passing the configurations to it along with other information. 
+ 
+ widgetFramework will implement the following functions :
+ 
+  __construct() to pass main information like widget id, instance id and default configurations.
+ createWidget() will create the entry of the widget in the database along with proper settings
+ @see widgetFramework.class.php for more detailed information about implemented functions.
+ 
 
 -----------------------------------------------------------------
 Database Structure :
  
  PragyanV3_widgetsinfo table :
- *widget_id	widget_name	widget_description	widget_version	widget_author	widget_foldername
+ *widget_id	widget_name	widget_classname	widget_description	widget_version	widget_author	widget_foldername
  
  PragyanV3_widgetsconfiginfo table :
  *widget_id	 *config_name	config_type	config_options	config_displaytext	config_default	is_global
@@ -138,8 +53,7 @@ Database Structure :
  PragyanV3_widgetsdata
  widget_id	widget_instanceid	widget_datakey		widget_datavalue
 
- @note Global configurations are the configurations which are common to all the instances of a particular widget type. T
- @note The default values of the global configurations are stored in widgetsinfo but they also need to appear in the widgetsconfig table.s
+ @note Global configurations are the configurations which are common to all the instances of a particular widget type.
  
  @description
  Algo ::
@@ -148,16 +62,16 @@ Database Structure :
  
 
  For all widget_id and widget_instanceid from PragyanV3_widgets for page_id order by widget_location, widget_order
- 	widget_globalconfigs = Get all global configurations from PragyanV3_widgetsconfig for widget_id and widget_instanceid=-1
- 	widget_configs = Get all non-global configurations from PragyanV3_widgetsconfig for widget_id and widget_instanceid
  	widget_name = Select widget_name from PragyanV3_widgetsinfo for widget_id
  	Include file cms/widgets/widget_name/widget.class.php
- 	widget_object = Object of class widget_name passing some universal widget_globalconfigs in the contructor
- 	widget_object.init_widget(widget_configs)
- 	widget_output = widget_object.get_widget()
+ 	widget_object = Object of class widget_name passing widget_id , page_id and widget_instanceid as parameters to constructor
+ 	Check if widget is installed properly using validInstall() method and if not, do installWidget() and loadWidget()
+ 	widget_object->initWidget()
+ 	widget_output = widget_object->getHTML()
  	$WIDGET<widget_location> .= widget_output
  
- Note : All the widgets will have the power to add/remove/modify their information in PragyanV3_widgetsdata table
+ @note All the widgets will have the power to add/remove/modify their information in PragyanV3_widgetsdata table
+ @note The widgets will be given some RAM like or heap store in _widgetsdata table to add their own information in key => value format.
  
  For administrators. (+admin&subaction=widgets)
  
@@ -169,18 +83,339 @@ Database Structure :
  6) When clicked on universal configurations in (3), it should open a form-like page from PragyanV3_widgetglobalconfig
  7) Widget Installation and Removal (LATER)
  
- For page-admins (+settings)
+ For page-admins (+widgets)
  
  1) List of available, enabled widgets for that page.
  2) Configure button to configure the enabled widgets
  3) Manipulate the ordering and Location ID of the widgets.
- 
+ @end
 */
+
+
 /**
- * Handles the widget administration interface.
- *
+ * Populates the widget variables $WIDGET1,$WIDGET2 ... $WIDGETn based on the widgets enabled in that page. All the variables are then replaced in
+ * template accordingly.
+ * @param $pageId Page ID of the page for which to populate the widgets
+ */
+function populateWidgetVariables($pageId)
+{
+
+	global $cmsFolder,$widgetFolder;	
+	$enwidgets=getEnabledWidgets($pageId);
+	
+	foreach( $enwidgets as $enwidget )
+	{
+		$classname=$enwidget['classname'];
+		require_once("$widgetFolder/{$enwidget['foldername']}/widget.class.php");
+		$widget = new $classname($enwidget['id'],$enwidget['instanceid'],$pageId);
+		if(!($widget instanceof widgetFramework))
+		{
+			displayerror("The widget {$enwidget['name']} doesn't extends widgetFramework class");
+			return "";
+		}
+		
+		$class_methods = get_class_methods($widget);
+		if(!in_array('initWidget',$class_methods) || !in_array('getHTML',$class_methods))
+		{
+			displayerror("The widget {$enwidget['name']} is not properly defined.");
+			return "";
+		}
+		
+		$widget->initWidget();
+		$widgetvar = "WIDGET".$enwidget['location'];
+		global $$widgetvar;
+		$$widgetvar .= $widget->getHTML();
+	}
+	
+}
+
+
+/**
+ * Handles the widgets configurations for a particular page
+ * @param $pageId Page ID of the current page
+ * @return HTML code of the widget configuration interface for page settings
+ */
+function handleWidgetPageSettings($pageId)
+{
+	global $ICONS,$ICONS_SRC,$urlRequestRoot,$cmsFolder,$moduleFolder;
+	
+	/**
+	 * @todo Add widget builder, template editor to change the $WIDGET locations, location-visualizer etc.
+	 */
+	$quicklinks ="
+	<fieldset>
+        <legend>{$ICONS['Widgets']['small']}Widgets</legend>
+        <table class='iconspanel'>
+        <tr>
+        <td><a href='./+widgets#enabledwidgets'><div>{$ICONS['Widgets']['large']}<br/>Enabled Widgets for this Page</div></a></td>
+        <td><a href='./+widgets&subaction=enable'><div>{$ICONS['Add']['large']}<br/>Add More Widgets</div></a></td>
+        </tr>
+        </table>   
+        </fieldset>
+        ";
+        $html = "";
+        
+      	if(isset($_GET['subaction']) && $_GET['subaction']=='enable')
+      	{
+      		if(isset($_GET['widgetid']))
+      		{
+      			$widgetId=escape($_GET['widgetid']);
+      			createWidgetInstance($pageId,$widgetId);	
+      		}
+      		
+      		$widgetsarr=getAllWidgetsInfo();
+		$allwidgets = "<fieldset><legend>{$ICONS['Add']['small']}Add Widgets</legend>";
+	
+		$allwidgets .= "<table width=100%><tr><th colspan=4>Available Widgets<br/><i>Mouse over for description</i></th></tr>
+		<tr><th>Name</th><th>Version</th><th>Author</th><th>Add</th></tr>";
+		foreach( $widgetsarr as $widget )
+		{
+			$allwidgets.="\n<tr><td><a title='".$widget['description']."'>".$widget['name']."</a></td><td>{$widget['version']}</td><td>{$widget['author']}</td><td><a href='./+widgets&subaction=enable&widgetid={$widget['id']}'><img src='{$ICONS_SRC['Add']['large']}' title='Add an instance of this widget' /></a></td></tr>";
+		}
+		$allwidgets.="</table></fieldset>";
+		
+		$html.=$allwidgets;
+      	}
+      	if(isset($_GET['subaction']) && isset($_GET['widgetid']) && isset($_GET['widgetinstanceid']))
+      	{
+      		$subaction=escape($_GET['subaction']);
+	 	$widgetid=escape($_GET['widgetid']);
+   		$widgetinstanceid=escape($_GET['widgetinstanceid']);
+   		
+      		if($subaction=="config")
+   		{
+   			/// POST variables are processed inside this function
+   			if(isset($_GET['subsubaction']) && $_GET['subsubaction']=="update")
+				updateWidgetConf($widgetid,$widgetinstanceid,FALSE); 
+			
+			
+			$widgetinfo=getWidgetInfo($widgetid);
+			$widgetpageconfigs=getWidgetPageConfigInfo($widgetid);
+		
+			/// @todo Do something about file uploads by widgets
+			$containsFileUploadFields = false;
+			$formElements=getConfigFormAsArray($widgetpageconfigs,$containsFileUploadFields,$widgetinstanceid,FALSE);
+			
+			$jsPath = "$urlRequestRoot/$cmsFolder/templates/common/scripts/formValidator.js";//validation.js
+			$calpath = "$urlRequestRoot/$cmsFolder/$moduleFolder/form/calendar";
+			$jsPathMooTools = "$urlRequestRoot/$cmsFolder/templates/common/scripts/mootools-1.11-allCompressed.js";
+		
+			$html .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/calendar.css" title="Aqua" />' .
+							 '<script type="text/javascript" src="'.$calpath.'/calendar.js"></script>';
+			$html .= '<fieldset><legend>'.$ICONS['Widgets']['small'].'Widget Page Settings</legend><div class="registrationform"><form class="fValidator-form" name="widgetpagesettings" action="./+widgets&subaction=config&subsubaction=update&widgetid='.$widgetid.'&widgetinstanceid='.$widgetinstanceid.'" method="post"';
+		
+			if($containsFileUploadFields)
+				$html .= ' enctype="multipart/form-data"';
+			$html .= '>';
+		
+			$html.="<table class='pragyan_fulltable'><tr><th colspan=2>Widget : {$widgetinfo['name']}</th><tr>";
+			$html.="<tr><td>Description : </td><td> {$widgetinfo['description']}</td></tr>";
+			$html .="<tr>".join($formElements, "</tr>\n<tr>")."</tr>";
+		
+			$html.="</table><input name='update_widget_page_settings' type='submit' value='Update'/>" .
+					"<input type='reset' value='Reset'/>";
+			$html.="</form><br/></fieldset>";
+   		}
+   		else if($subaction=="delete")
+   			deleteWidgetInstance($widgetid,$widgetinstanceid);
+      	}
+      	if(isset($_GET['subaction']) && isset($_GET['subsubaction']) && isset($_GET['widgetid']) && isset($_GET['widgetinstanceid']) )
+      	{
+	 	$subaction=escape($_GET['subaction']);
+	 	$subsubaction=escape($_GET['subsubaction']);
+	 	$widgetid=escape($_GET['widgetid']);
+   		$widgetinstanceid=escape($_GET['widgetinstanceid']);
+   		
+   		if($subaction=="location")
+   		{
+	   		if($subsubaction=="up")
+	   		{
+	   			modifyWidgetInstanceLocation($pageId,$widgetid,$widgetinstanceid,"-1");
+	   		}
+	   		if($subsubaction=="down")
+	   		{
+	   			modifyWidgetInstanceLocation($pageId,$widgetid,$widgetinstanceid,"+1");
+	   		}
+	   	}
+	   	else if($subaction=="order")
+	   	{
+	   		if($subsubaction=="up")
+	   		{
+	   			modifyWidgetInstanceOrder($pageId,$widgetid,$widgetinstanceid,"-1");
+	   		}
+	   		if($subsubaction=="down")
+	   		{
+	   			modifyWidgetInstanceOrder($pageId,$widgetid,$widgetinstanceid,"+1");
+	   		}
+	   	}
+      	}
+        
+	$enabledwidgetsarr=getEnabledWidgets($pageId);
+	
+	$enabled = "<fieldset><legend>{$ICONS['Widgets']['small']}Enabled Widgets</legend><a name='enabledwidgets'></a>";
+	$enabled .= "<table class='pragyan_fulltable'><tbody><tr><th colspan=5>Enabled Widgets <br/><i>in order of their appearance</i></th></tr>
+	<tr><th>Widget</th><th>Location</th><th>Order</th><th>Actions</th></tr>";
+	
+	foreach ( $enabledwidgetsarr as $widget )
+	{
+		$configbtn = "<a href='./+widgets&subaction=config&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Edit']['small']}' title='Configure this instance of this widget' /></a>";
+		
+		$deletebtn = "<a href='./+widgets&subaction=delete&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Delete']['small']}' title='Delete this instance of this widget' /></a>";
+		$locationup = "<a href='./+widgets&subaction=location&subsubaction=up&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Up']['small']}' title='Move to an upper location' /></a>";
+		$locationdown = "<a href='./+widgets&subaction=location&subsubaction=down&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Down']['small']}' title='Move to a lower location' /></a>";
+		
+		$orderup = "<a href='./+widgets&subaction=order&subsubaction=up&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Up']['small']}' title='Move to an upper order' /></a>";
+		$orderdown = "<a href='./+widgets&subaction=order&subsubaction=down&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Down']['small']}' title='Move to a lower order' /></a>";
+		
+		$enabled .= "\n<tr><td><a title='{$widget['description']}' href='./+widgets&subaction=config&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'>{$widget['name']}</a></td><td>{$widget['location']} $locationup $locationdown</td><td>{$widget['order']} $orderup $orderdown</td><td>$configbtn $deletebtn</td></tr>";
+		
+	}
+	$enabled .="</tbody></table></fieldset>";
+	
+	
+	return $html.$enabled.$quicklinks;
+	
+}
+
+/**
+ * Deletes a particular instance of the widget including all its configurations.
+ * @param $widgetId ID of the widget to be deleted
+ * @param $widgetInstanceId Instance ID of the particular widget instance to be deleted
+ * @return Boolean True if deletion was successful, else false.
+ */
+function deleteWidgetInstance($widgetId,$widgetInstanceId)
+{
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	if(mysql_query($query)===FALSE)
+	{
+		displayerror("Could not delete widget. Internal error occurred.");
+		return FALSE;
+	}
+	
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	if(mysql_query($query)===FALSE)
+	{
+		displayerror("Could not delete widget. Internal error occurred.");
+		return FALSE;
+	}
+	
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	if(mysql_query($query)===FALSE)
+	{
+		displayerror("Could not delete widget. Internal error occurred.");
+		return FALSE;
+	}
+	
+	displayinfo("Widget successfully deleted!");
+	return TRUE;
+	
+}
+
+/**
+ * Modify the widget location.
+ * @param $pageId Page Id of the page in which the widget exists
+ * @param $widgetId The Widget ID of the widget to relocate
+ * @param $widgetInstanceId The Widget Instance ID of the widget to relocate
+ * @param $mod The modification to be done in the widget location. Should start with either + or - operator, followed by a number.
+ * @note The widget location cannot be negative.
+ * @return Boolean True if relocation done successfully or else False.
+ */
+function modifyWidgetInstanceLocation($pageId,$widgetId,$widgetInstanceId,$mod)
+{
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_location`=`widget_location`$mod WHERE `page_id`=$pageId AND `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId AND `widget_location`$mod >= 0";
+	$res=mysql_query($query);
+	if(!$res) return false;
+	if(mysql_affected_rows()==0)
+		displayerror("Could not move widget to that location. Location cannot be negative.");
+	else displayinfo("Widget has been successfully relocated.");			
+}
+
+/**
+ * Modify the widget order.
+ * @param $pageId Page Id of the page in which the widget exists
+ * @param $widgetId The Widget ID of the widget to relocate
+ * @param $widgetInstanceId The Widget Instance ID of the widget to relocate
+ * @param $mod The modification to be done in the widget order. Should start with either + or - operator, followed by a number.
+ * @return Boolean True if relocation done successfully or else False.
+ */
+function modifyWidgetInstanceOrder($pageId,$widgetId,$widgetInstanceId,$mod)
+{
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_order`=`widget_order`$mod WHERE `page_id`=$pageId AND `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$res=mysql_query($query);
+	if(!$res) return false;
+	if(mysql_affected_rows()==0)
+		displayerror("Could not move widget. Some internal error occurred.");
+	else displayinfo("Widget has been successfully reordered.");			
+}
+
+/**
+ * Creates an instance of the widget on the given page using default location and order
+ * @note Default location is 1, and it will chose the default order as the 'maximum order value + 1' for the location 1.
+ * @param $pageId Page Id of the page in which to create the widget
+ * @param $widgetId Widget Id of the widget to enable
+ * @return Boolean true if success, else false.
+ */
+function createWidgetInstance($pageId,$widgetId)
+{
+	$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetId";
+	$res=mysql_query($query);
+	if(mysql_num_rows($res)==0)
+	{
+		displayerror("Required widget is not registered with Pragyan CMS properly.");
+		return false;
+	}
+	$row=mysql_fetch_array($res);
+	
+	global $widgetFolder;
+	$classname=$row['classname'];
+	require_once("$widgetFolder/{$row['foldername']}/widget.class.php");
+	
+	///Initializing as global instance.
+	$widget = new $classname($widgetId,-1,$pageId);
+	if(!($widget instanceof widgetFramework))
+	{
+		displayerror("The widget {$row['name']} doesn't extends widgetFramework class");
+		return false;
+	}
+	
+	if(!$widget->validInstall())
+	{
+		if(!$widget->installWidget())
+		{
+			displayerror("{$row['name']} widget is not installed properly.");
+			return false;
+		}
+		$widget->loadWidget();
+	}
+	
+	$widgetLocation;
+	$widgetOrder;
+	$success=$widget->createWidget($pageId,$widgetLocation,$widgetOrder);
+
+	if(!$success)
+		displayinfo("{$row['name']} widget instance successfully created at location $widgetLocation with ordering $widgetOrder. You can now change its configurations and location from <a href='./+widgets#enabledwidgets'>here</a>.");
+	else displayerror("An error occurred while creating an instance of this widget.");
+		
+}
+/**
+ * Returns an array of enabled widgets and related information
+ * @note The order will be sorted by widget_location, then widget_order, to sync with the way it appears in the template.
+ * @param $pageId The page id for which to get the enabled widgets list
+ * @return Array of enabled widgets and their names, description, order and location.
+ */
+function getEnabledWidgets($pageId)
+{
+	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t1.`widget_order` AS 'order', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`=$pageId AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location`, t1.`widget_order` ASC";
+	$result=mysql_query($query);
+	$return=array();
+	while($row=mysql_fetch_array($result))
+		$return[]=$row;
+	return $return;
+}
+
+/**
+ * Handles the global widget administration interface.
  * @param $pageId Id of the current page
- *
  * @return HTML code of the widget admin page
  */
 function handleWidgetAdmin($pageId)
@@ -191,15 +426,49 @@ function handleWidgetAdmin($pageId)
 	if(isset($_GET['widgetid']))
 	{
 		$widgetid=escape($_GET['widgetid']);
+		
+		
+		$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetid";
+		$res=mysql_query($query);
+		if(mysql_num_rows($res)==0)
+		{
+			displayerror("Required widget is not registered with Pragyan CMS properly.");
+			return false;
+		}
+		$row=mysql_fetch_array($res);
+	
+		global $widgetFolder;
+		$classname=$row['classname'];
+		require_once("$widgetFolder/{$row['foldername']}/widget.class.php");
+	
+		///Initializing as global instance.
+		$widget = new $classname($widgetid,-1,$pageId);
+		if(!($widget instanceof widgetFramework))
+		{
+			displayerror("The widget {$row['name']} doesn't extends widgetFramework class");
+			return false;
+		}
+	
+		if(!$widget->validInstall())
+		{
+			if(!$widget->installWidget())
+			{
+				displayerror("{$row['name']} widget is not installed properly.");
+				return false;
+			}
+			$widget->loadWidget();
+		}
+
+		/// POST variables are processed inside this function
 		if(isset($_GET['subsubaction']) && $_GET['subsubaction']=="globalconf")
-			updateGlobalConf($widgetid); // POST variables are processed inside this function
+			updateWidgetConf($widgetid,-1,TRUE); 
 			
 		$widgetinfo=getWidgetInfo($widgetid);
-		$widgetglobalconfigs=getWidgetGlobalInfo($widgetid);
+		$widgetglobalconfigs=getWidgetGlobalConfigInfo($widgetid);
 		
 	
 		$containsFileUploadFields = false;
-		$formElements=getGlobalConfigFormAsArray($widgetglobalconfigs,$containsFileUploadFields);
+		$formElements=getConfigFormAsArray($widgetglobalconfigs,$containsFileUploadFields,-1,TRUE);
 		
 		$jsPath = "$urlRequestRoot/$cmsFolder/templates/common/scripts/formValidator.js";//validation.js
 		$calpath = "$urlRequestRoot/$cmsFolder/$moduleFolder/form/calendar";
@@ -242,7 +511,7 @@ function handleWidgetAdmin($pageId)
 	
 	$html .= "<fieldset><legend>{$ICONS['Widgets']['small']}Available Widgets</legend>";
 	
-	$html .= "<table width=100%><tr><th colspan=3>Available Widgets<br/><i>Click for more information</i></th></tr>
+	$html .= "<table width=100%><tr><th colspan=3>Available Widgets<br/><i>Mouse over for description and Click for configuration</i></th></tr>
 	<tr><th>Name</th><th>Version</th><th>Author</th></tr>";
 	foreach( $widgetsarr as $widget )
 	{
@@ -252,13 +521,15 @@ function handleWidgetAdmin($pageId)
 	return $html;
 }
 /**
- * Retrieves the global configurations in the form of an HTML with all the fields and types appropriately put into place.
- *
- * @param $widgetglobalconfigs Contains the array of configuration settings
- *
+ * Retrieves the configurations in the form of an HTML with all the fields and types appropriately put into place. Can be used for retrieveing both
+ * global and instance-specific configurations.
+ * @param $widgetconfigs Contains the array of configuration settings
+ * @param $containsFileUploadFields Must be set to true if the configuration form has file upload fields
+ * @param $widgetinstanceid Instance ID of the widget for which to get the instance-specific configurations, for global settings must be -1.
+ * @param $isglobal Must be set to true if handling global settings, else false.
  * @return see description.
  */
-function getGlobalConfigFormAsArray($widgetglobalconfigs,$containsFileUploadFields)
+function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetinstanceid,$isglobal)
 {
 		$containsFileUploadFields = false;
 		$formValues = array();
@@ -266,37 +537,39 @@ function getGlobalConfigFormAsArray($widgetglobalconfigs,$containsFileUploadFiel
 		$formElements = array();
 		$confnames = array();
 		
+		if($isglobal) $widgetinstanceid=-1;
+		
 		/// Initially load the default global configurations in the $formValues array
-		foreach($widgetglobalconfigs as $configentry)
+		foreach($widgetconfigs as $configentry)
 		{
 			$confnames[]=$configentry['confname'];
 			$formValues[$configentry['confname']]=$configentry['confdefault'];
 		}
 			
-		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`=-1 AND `widget_id`={$widgetglobalconfigs[0]['id']}  AND `config_name` IN ('".join($confnames,"','")."')";
-	
+		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`=$widgetinstanceid AND `widget_id`={$widgetconfigs[0]['id']}  AND `config_name` IN ('".join($confnames,"','")."')";
+
 		$res=mysql_query($query);
-	
+
 		/// For those configurations which are set, overwrite the $formValues array
 		while($row=mysql_fetch_assoc($res))
 		{
-			$formValues[$row['confname']]=$row['confvalue'];
-			
+			$formValues[$row['confname']]=$row['confvalue'];	
 		}
 		
 		$jsValidationFunctions = array();
 		
-		foreach( $widgetglobalconfigs as $configentry )
+		foreach( $widgetconfigs as $configentry )
 		{
 			$jsOutput = '';
 			if($configentry['conftype'] == 'file') {
 				$containsFileUploadFields = true;
 			}
 		
-			$formElements[] =	getGlobalFormInputField
+			$formElements[] =	getFormInputField
 						(
 							$configentry,
-							isset($formValues[$configentry['confname']]) ? $formValues[$configentry['confname']] : ''
+							isset($formValues[$configentry['confname']]) ? $formValues[$configentry['confname']] : '',
+							$isglobal
 						);
 			if($jsOutput != '') {
 				$jsValidationFunctions[] = $jsOutput;
@@ -308,12 +581,12 @@ function getGlobalConfigFormAsArray($widgetglobalconfigs,$containsFileUploadFiel
 
 /**
  * Retrieves the HTML code of a particular form element type.
- *
  * @param $configentry Contains the informations about a particular configuration
  * @param $value Current value of that configuration (not default)
+ * @param $isglobal Must be set to true if handling global settings, else false.
  * @return The HTML field of that configuration along with the javascript Validation function (if any).
  */
-function getGlobalFormInputField($configentry, $value="") {
+function getFormInputField($configentry, $value="", $isglobal) {
 
 
 
@@ -328,7 +601,10 @@ function getGlobalFormInputField($configentry, $value="") {
 	
 	$value = htmlentities($value);
 	
-	$elementName = 'globalconfform_' .  $configentry['confname'];
+	if($isglobal) $formname='globalconfform';
+	else $formname='pageconfform';
+	
+	$elementName = "{$formname}_" .  $configentry['confname'];
 
 	$htmlOutput .='</td><td>';
 	
@@ -342,7 +618,6 @@ function getGlobalFormInputField($configentry, $value="") {
 }
 /**
  * Renders the Text-Area type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -358,7 +633,6 @@ function renderTextareaTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Select type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -385,7 +659,6 @@ function renderSelectTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Radio type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -415,7 +688,6 @@ function renderRadioTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Bool type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -447,7 +719,6 @@ function renderBoolTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Checkbox type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -475,7 +746,6 @@ function renderCheckboxTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the File type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -501,7 +771,6 @@ function renderFileTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Text type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -517,7 +786,6 @@ function renderTextTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Integer type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -533,7 +801,6 @@ function renderIntegerTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Hidden type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -549,7 +816,6 @@ function renderHiddenTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Datetime type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -569,7 +835,6 @@ function renderDatetimeTypeField($elementName,$value,$options,&$htmlOutput)
 }
 /**
  * Renders the Date type element
- *
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
@@ -587,15 +852,29 @@ function renderDateTypeField($elementName,$value,$options,&$htmlOutput)
 	$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
 	return true;
 }
+/**
+ * Gets the widget information and instance-specific configuration settings about a particular widget
+ * @param $widgetid Id of the widget type
+ * @return Configuration settings, only instance-specific and not global.
+ */
+function getWidgetPageConfigInfo($widgetid)
+{
+	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=0 ";
+	$res=mysql_query($query);
+	$ret=array();
+	while($arr=mysql_fetch_assoc($res))
+	{
+		$ret[]=$arr;
+	}
+	return $ret;
+}
 
 /**
  * Gets the widget information and global configuration settings about a particular widget
- *
  * @param $widgetid Id of the widget type
- *
  * @return Configuration settings, only global.
  */
-function getWidgetGlobalInfo($widgetid)
+function getWidgetGlobalConfigInfo($widgetid)
 {
 	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=1 ";
 	$res=mysql_query($query);
@@ -608,9 +887,7 @@ function getWidgetGlobalInfo($widgetid)
 }
 /**
  * Gets the widget information and global configuration settings about a particular widget
- *
  * @param $widgetid Id of the widget type
- *
  * @return widget information like name, description, version, authorname and widget folder name.
  */
 function getWidgetInfo($widgetid)
@@ -621,7 +898,6 @@ function getWidgetInfo($widgetid)
 }
 /**
  * Retrieves the widget id and name of all the widgets
- *
  * @return An associative 2D array containing the widget id, name, description, version and authorname.
  */
 function getAllWidgetsInfo()
@@ -636,16 +912,20 @@ function getAllWidgetsInfo()
 	return $ret;
 }
 /**
- * Handles the submission of the widget global configuration forms and updates the database.
- *
+ * Handles the submission of the widget configuration forms (both global and instance-specific) and updates the database.
  * @param $widgetid ID of the widget.
- * 
+ * @param $widgetinstanceid Widget Instance ID of the widget for instance-specific configurations, default is -1 for global configurations.
+ * @param $isglobal Default is set to true if handling global configurations, for instance-specific configurations must be set to false explicitly.
  * @note It uses $_POST variables implicitly to retrieve submitted form values.
  */
-function updateGlobalConf($widgetid)
+function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 {
-	$query="SELECT `config_name`,`config_type`,`config_default`,`config_options` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid";
+	$query="SELECT `config_name`,`config_type`,`config_default`,`config_options` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=".(int)$isglobal;
+	
 	$res=mysql_query($query);
+	
+	if($isglobal) $widgetinstanceid=-1;
+	
 	while($row=mysql_fetch_array($res))
 	{
 	
@@ -653,10 +933,13 @@ function updateGlobalConf($widgetid)
 		$confname=$row['config_name'];
 		$confdef=$row['config_default'];
 		$confoptions=$row['config_options'];
-		$postvar="globalconfform_".$confname;
+		if($isglobal)
+			$postvar="globalconfform_".$confname;
+		else $postvar="pageconfform_".$confname;
+		
 		$confcur=false;
 		
-		$query="SELECT `config_value` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=-1";
+		$query="SELECT `config_value` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=$widgetinstanceid";
 	
 		$result=mysql_query($query);
 		
@@ -672,12 +955,12 @@ function updateGlobalConf($widgetid)
 		$confval=($confval===false)?(($confcur===false)?$confdef:$confcur):$confval;
 		if(mysql_num_rows($result)==0)
 		{
-			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ($widgetid,-1,'$confname','$confval')";
+			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ($widgetid,$widgetinstanceid,'$confname','$confval')";
 			mysql_query($query);
 		}	
 		else if($confval!=$confcur)
 		{
-			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$confval' WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=-1";
+			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$confval' WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=$widgetinstanceid";
 			mysql_query($query);
 		}
 	
@@ -688,11 +971,9 @@ function updateGlobalConf($widgetid)
 
 /**
  * Interprets the submit values of individual field types in the configuration form
- *
  * @param $conftype The type of the input field
  * @param $postvar The POST variable name
  * @param $options The extra options like for checkbox
- *
  * @return The value in string format if successful, else returns boolean false.
  */
 function interpretSubmitValue($conftype,$postvar,$options=NULL)
@@ -752,9 +1033,7 @@ function interpretSubmitValue($conftype,$postvar,$options=NULL)
 }
 /**
  * Reloads the widgets from the widget directoty and update proper entries in database.
- *
  * @param
- *
  * @return
  */
 function reloadWidgets()
