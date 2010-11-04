@@ -8,6 +8,11 @@
 	font-family: sans-serif;
 	font-size: normal;
 	height: 25px;
+	position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 #quicklinks div{
 	float: right;
@@ -50,6 +55,10 @@
 #quicklinks a #link5{ background: url(../images/icons/rss.png); }
 #quicklinks a:hover #link5{ background: url(../images/icons/rssh.png); }
 
+
+#quicklinks a #link1, #quicklinks a #link2, #quicklinks a #link3, #quicklinks a #link4, #quicklinks a #link5 {
+	background-repeat: no-repeat;
+}
 /**
 	* Any Changes here will not be automatically reflected in script.js
 	* They should be manually applied
@@ -65,21 +74,38 @@
  */
 #hc_loginform {
 	position: absolute;
-	background: black;
-	color: white;
+	background: #EFEFEF;
+	color: black;
 	z-index: 1000;
-	right: 5px;
+	right: 0px;
 	top: 0px;
-	margin-top: 25px;
+	margin-top: 26px;
 	padding: 5px;
 	border: solid 1px white;
 	display:none;
+	width: 300px;
+	font-size: 13px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
+#hc_loginform fieldset {
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+#hc_loginform fieldset legend{
+	display: none;
+}
 #hc_loginform table,#hc_loginform tr, #hc_loginform td{
 	border:0;
+}
+#hc_loginform a{
+	color: black;
+	text-decoration: underline;
+	border: solid 1px white;
+	padding: 3px;
+	background: #DFF;
 }
 #hc_loginform input[type="text"],#hc_loginform input[type="password"]{
 	border-radius: 3px;
@@ -89,8 +115,8 @@
 	padding: 3px;
 	position: relative;
 	top: -3px;
-	color: white;
-	background: #333;
+	color: black;
+	background: #EEE;
 }
 
 
@@ -102,29 +128,48 @@ display:none;
 }
 #hc_profile{
 	position: absolute;
-	background: black;
-	color: white;
+	background: #FEFEE0;
+	color: black;
+	width: 200px;
 	z-index: 1000;
-	right: 60px;
+	right: 2px;
 	top: 0px;
-	margin-top: 25px;
-	padding: 10px;
-	border: solid 1px white;
+	text-align: center;
+	margin-top: 26px;
+	padding: 10px 4px;
+	border: solid 1px #AAA;
 	display:none;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	line-height: 25px;
+}
+#hc_profile a{
+	text-decoration: none;
+	color: black;
+}
+#hc_profile a > div {
+	width: 100%;
+	background: #FFE;
+	margin: 1px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	line-height: 25px;
+	border: solid 1px transparent;
 }
 #hc_profile a:hover{
-	color: yellow;
+	color: black;
 }
 
+#hc_profile a:hover > div{
+	background: #FC9;
+	border: solid 1px orange;
+}
 /*
 * LEFT MENU  COMPLETE MENU 
 */
 .menucontainer * {
-	z-index: 1000;
+	z-index: 999;
 }
 .menucontainer {
 	z-index: 10;
@@ -163,44 +208,55 @@ display:none;
 	padding-left: 20px;
 	border:solid #FFF 1px;
 	border-left: 0;
-	border-radius: 7px;
-	-moz-border-radius: 7px;
-	-webkit-border-radius: 7px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 	background: url(../images/rt.png) repeat;
 }
 .menucontainer ul.topnav > li > a:hover div{
 	border-color: #abcdef;
 	background: url(../images/menu.png) repeat;
 }
-.menucontainer ul.subnav {
-	display: none;
+.menucontainer ul.subnav li {
+	position: relative;
+	float: left;
+	left: 0px;
+	padding: 5px;
+	top: -1px;
 }
-
-.menucontainer ul.depth2 {
+.menucontainer ul.subnav {
 	margin: 0;
 	position: absolute;
-	left: 180px;
-	top: 0px;	
-	background: #000;
 	list-style: none;
-	border:solid #FFF 1px;
+	display: none;
+	left: 122px;
+	top: 0;
+	background: #0F0F0F;
+	padding: 1px;
+	border: solid 1px white;
 	border-radius: 7px;
 	-moz-border-radius: 7px;
 	-webkit-border-radius: 7px;
-	display: none;
-	padding: 20px;
+}
+.menucontainer ul.depth2 {
+	left: 180px;
 }
 .menucontainer ul.depth2 > li {
-	float: left;
+	
 }
-.menucontainer ul.depth2 a > div{
-	padding: 20px;
+.menucontainer ul.subnav a {
+	color: white;
+	font-family: Arial;
+}
+.menucontainer ul.subnav a > div{
+  width: 100px;
+  padding: 5px;
 	border: solid 1px transparent;
 	border-radius: 7px;
 	-moz-border-radius: 7px;
 	-webkit-border-radius: 7px;
 }
-.menucontainer ul.depth2 a:hover > div {
+.menucontainer ul.subnav a:hover > div {
 	border-color: #abcdef;
 	
 }
