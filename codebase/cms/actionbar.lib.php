@@ -36,8 +36,12 @@ function getActionbarPage($userId, $pageId) {
 	$actionbar="<div id=\"cms-actionbarPage\">";
 	
 	foreach($actionbarPage as $action=>$actionname) {
-		if($action == "profile")
-			$actionbar.= "<span class=\"cms-welcometext\">Welcome </span>";
+	global $templateFolder;
+	global $cmsFolder;
+	$hostURLL = hostURL();
+	if($action == "profile")
+		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\"><img src=\"{$hostURLL}/{$cmsFolder}/{$templateFolder}/common/images/usericon.png\" style=\"position:relative;top:3px;\"\/> $actionname</a></span>\n";
+	else
 		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}
 	$actionbar.="</div>";

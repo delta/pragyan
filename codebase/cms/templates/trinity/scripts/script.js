@@ -3,13 +3,15 @@ $(function() {
 	/*
 	 * Hover Function for Menu
 	 */
-	$("ul.topnav li").hover(function(){
-		$(this).animate({left: "+=2"}, 100);
-		$(this).find("ul.depth2").fadeIn();//css({display: 'block'});
-		},function() {
+	 $("ul.topnav > li").hover(function(){
+	 	$(this).animate({left: "+=2"}, 100);
+		}, function() {
 		$(this).animate({left: "-=2"}, 250);
-		$(this).find("ul.depth2").css({display: 'none'});
-		
+	});
+	$("ul.topnav li").hover(function(){
+		$(this).children("ul.subnav").fadeIn();//css({display: 'block'});
+		},function() {
+		$(this).children("ul.subnav").css({display: 'none'});
 	});
 	///Write in StatusBar - "To"
 	$("a").hover(function(){
