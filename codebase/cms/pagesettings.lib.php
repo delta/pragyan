@@ -276,6 +276,7 @@ CREATE;
 	}
 /* PAGE CREATE TEXT ENDS*/
 
+/* PAGE MOVE COPY TEXT BEGINS */
 	$generatedTree = generateDirectoryTree($userId, "page", "settings", 0)->toHtml('fileCopyTreeContainer', 'fileCopyTree', "parentpagepath");
 	$movecopyPageSettingsText =<<<MOVECOPY
 		<script type="text/javascript" language="javascript">
@@ -325,6 +326,7 @@ CREATE;
       </form>
 
 MOVECOPY;
+/* PAGE MOVE COPY TEXT ENDS */
 
 	global $pageFullPath;
 	global $STARTSCRIPTS;

@@ -330,7 +330,9 @@ function admin($pageid, $userid) {
 	<td><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
 	<td><a href="./+admin&subaction=email"><div>{$ICONS['Email Registrants']['large']}<br/>Email Registrants</div></a></td>
 	<td><a href="./+admin&subaction=editgroups"><div>{$ICONS['User Groups']['large']}<br/>Group Management</div></a></td>
-	
+	</tr>
+	<tr>
+	<td colspan=4><a href="./+admin&subaction=widgets"><div>{$ICONS['Widgets']['large']}<br/>Widgets Management</div></a></td>
 	</tr>
 
 	</table>
@@ -339,16 +341,16 @@ ADMINPAGE;
 	if(isset($_GET['subaction'])) {
 		require_once("email.lib.php");
 		if($_GET['subaction'] == "email")
-			return $quicklinks . displayEmail();
+			return  displayEmail().$quicklinks;
 		else if($_GET['subaction'] == "openemail")
-			return $quicklinks . displayEmail(escape($_GET['name']));
+			return displayEmail(escape($_GET['name'])).$quicklinks;
 		else if($_GET['subaction'] == "emailsend") {
 			sendEmail();
-			return  $quicklinks . displayEmail(escape($_POST['emailtemplates']));
+			return  displayEmail(escape($_POST['emailtemplates'])).$quicklinks;
 		}
 		else if($_GET['subaction'] == "emailsave") {
 			saveEmail();
-			return  $quicklinks . displayEmail(escape($_POST['emailtemplates']));
+			return  displayEmail(escape($_POST['emailtemplates'])).$quicklinks ;
 		}
 	}
         if(isset($_GET['subaction']) && $_GET['subaction']=='template')
@@ -359,15 +361,15 @@ ADMINPAGE;
 			require_once("template.lib.php"); 
 			$op=handleTemplateMgmt();
 			if($op!="") return $op;
-			else return $quicklinks.templateManagementForm();
+			else return templateManagementForm().$quicklinks;
 		}
-		else return $quicklinks.templateManagementForm();
+		else return templateManagementForm().$quicklinks;
 	}
 	if(isset($_GET['subaction']) && $_GET['subaction']=='module') {
 		require_once("module.lib.php");
 		$op = handleModuleManagement();
-		if($op != "") return $quicklinks.$op;
-		return $quicklinks.moduleManagementForm();
+		if($op != "") return $op.$quicklinks;
+		return moduleManagementForm().$quicklinks;
 	}
 	global $sourceFolder;	
 	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) return $quicklinks;
@@ -430,7 +432,7 @@ ADMINPAGE;
 		
 	}
 	
-	return $quicklinks.$str.$op;
+	return $str.$op.$quicklinks;
 
 }
 
