@@ -9,6 +9,14 @@
  // To get : Select All, Clear All, Toggle All for permissions. Groups properties, users and form assocs. 
  
 $ICON_ARRAY=array(
+'Up'=>"actions/go-up.png",
+'Down'=>"actions/go-down.png",
+'Next'=>"actions/go-next.png",
+'Previous'=>"actions/go-previous.png",
+'Top'=>"actions/go-top.png",
+'Bottom'=>"actions/go-bottom.png",
+'First'=>"actions/go-first.png",
+'Last'=>"actions/go-last.png",
 'Refresh'=>"actions/view-refresh.png",
 'Edit'=>"apps/accessories-text-editor.png",
 'Delete'=>"actions/edit-delete.png",
