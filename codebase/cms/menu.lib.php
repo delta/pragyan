@@ -28,10 +28,19 @@ function findMenuIndex($menuArray, $pageId) {
 function getMenu($userId, $pageIdArray, $complete = false) {
 
 	
-	if(!$complete)
+	///This hostURL is replaces all ".(dot)s" with the current address, making the link absolute.	
+	///@functions hostURL() common.lib.php - http://pragyan.org/11
+	///@functions selfURI() common.lib.php - http://pragyan.org/11/home/how_to_use/mypage/mypage2
+	$hostURL = ".";
+	if(!$complete) {
 		$pageId = $pageIdArray[count($pageIdArray) - 1];
-	else
+		$hostURL = selfURI();
+	}
+	else {
 		$pageId = 0;
+		$hostURL = hostURL() . "/home";
+
+	}
 	$pageRow = getPageInfo($pageId);
 	$depth = $pageRow['page_menudepth'];
 	if ($depth == 0) $depth=1;
@@ -51,14 +60,14 @@ MENUHTML;
 
 		///@note Not sure why $pageId = 0 ? Is this even correct ? $pageId is 0 when $complete=true, but then its only for drop-down style menu and not for classic style. But this code is within the classic section.
 		if ($pageId == 0) {
-			$menuHtml .= '<a href="../"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
+			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
 			$menuHtml .= htmlMenuRenderer($childMenu);
 		}
 		else if (count($childMenu) == 0) {
 			if ($pageRow['page_displaysiblingmenu']) {
 				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
 				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-				$menuHtml .= '<a href="../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
+				$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
 				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
 			}
 		}
@@ -66,11 +75,11 @@ MENUHTML;
 			if ($pageRow['page_displaysiblingmenu']) {
 				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
 				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-				$menuHtml .= '<a href="../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
+				$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
 				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
 			}
 
-			$menuHtml .= '<a href="./"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
+			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
 			$menuHtml .= htmlMenuRenderer($childMenu);
 		}
 
@@ -112,7 +121,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
 		$opennewtab = ' target="_blank" ';
 		
 	  $newdepth=$curdepth+1;
-	  $var .= "\n<li><a href=\"".$rootUri.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$pageRow[$i][2]."</div></a>";
+	  $var .= "\n<li><a href=\"".$rootUri.'/home'.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$pageRow[$i][2]."</div></a>";
 	  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
 	  $var .= "</li>";
 }
@@ -128,10 +137,10 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 			$result = mysql_query($query);
 			$result = mysql_fetch_assoc($result);
 			if($result['page_openinnewtab']=='1') {
-				$menuHtml .= "<a href=\"./{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
+				$menuHtml .= "<a href=\"".hostURL()."/home/{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
 			}
 			else {
-		$menuHtml .= "<a href=\"./{$linkPrefix}{$menuArray[$i][1]}/\"";
+		$menuHtml .= "<a href=\"".hostURL()."/home/{$linkPrefix}{$menuArray[$i][1]}/\"";
 			}
 		if ($i == $currentIndex) 
 			$menuHtml .= ' class="currentpage"';

@@ -29,17 +29,19 @@ body img
 }
 #header #invisibleContainer {
 	float: left;
-	width: 550px;
+	width: 100%;
 	height: 140px;
 	margin: 0;
 	padding: 0;
 }
 #header > #invisibleContainer #invisible {
 	height: 140px;
-	width: 550px;
+
 	margin: 0;
 	padding: 0;
 	text-indent: -1000em;
+	background-image : url('../images/p13.jpg');
+	background-repeat : none;
 }
 #header #headerContent {
 	float: right;
