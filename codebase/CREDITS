@@ -3,13 +3,14 @@ Pragyan CMS - Credits
   
 http://pragyan.sourceforge.net/
 
-Copyright (C) 2007-2009		Abhilash R <abhithekid[at]users.sourceforge.net>	
-				Ankit Srivastav <ansh2201[at]users.sourceforge.net>
-				Anshu Prateek <anshprat[at]users.sourceforge.net>
-				Sahil Ahuja <sahilahuja[at]users.sourceforge.net>				
-Copyright (C) 2010-2011 	Abhishek Shrivastava <i.abhi27[at]gmail.com>
-				Chakradar Raju <chakradarraju[at]gmail.com>
-				Balanivash <balanivash[at]gmail.com>
+Copyright (C) 2010-2011         Abhishek Shrivastava <i.abhi27[at]gmail.com>
+                                Chakradar Raju <chakradarraju[at]gmail.com>
+                                Balanivash <balanivash[at]gmail.com>
+
+Copyright (C) 2007-2009		Abhilash R <abhilashthegenius[at]gmail.com>	
+				Ankit Srivastav <ansh2201[at]gmail.com>
+				Anshu Prateek <ansh.prat[at]gmail.com>
+				Sahil Ahuja <sahilahuja[at]gmail.com>				
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 2,
@@ -32,17 +33,17 @@ Version 3.0+
 
 - Abhishek Shrivastava <i.abhi27[at]gmail.com>
     * Actively restarted SourceForge Pragyan project in May 2010
-    * Current project maintainer
+    * Current project leader
+    * Widget Framework
     * Page-specific templates
     * User management
     * Global settings
     * Security (esp. SQL Injection and XSS)
     * Google Maps & Tex plugin
-    * Profile images
+    * Profile Images
     * SQL query helper
     * Bugs in article,forms,quiz,login,pdf
     * Support for icons
-    * Widget framework
     
 - Chakradar Raju <chakradarraju[at]gmail.com>
     * Template installation module
@@ -53,18 +54,21 @@ Version 3.0+
     * Article comments
     * AJAX interface for permissions
     * Book module
+    * Module Management
     
 - Balanivash <balanivash[at]gmail.com>
-   * Renovation of forum module
-   * Enable/disable login
-   * User profile form
-   * Target option in links module
+    * Renovation of forum module
+    * Enable/disable login
+    * User profile form
+    * Target option in links module
+    * Icons Management
+    * Trinity Template
 
 Version 2.0-2.6
 ---------------
 
 - Sahil Ahuja <sahilahuja[at]users.sourceforge.net>
-    * Creator and architecture of the Pragyan CMS project
+    * Creator and architect of the Pragyan CMS project
     * Authentication
     * Article module
     * Forms module
@@ -103,20 +107,23 @@ Version 2.0-2.6
 And also to the following people who have contributed minor changes,
 enhancements and bugfixes :
 M. Surya Sankar, Sapna Shukla, Shruti J, Ashwathi Krishnan, K.R Arvind,
-T.V. Karthik, Shivanandan, P. Mohnish.
+T.V. Karthik, Shivanandan, Siddhant, Gaurav Kumar, Aparna, Diksha, P. Mohnish
 
 Templates: 
  Crystalx : Vit Dlouhy <vit.dlouhy[at]nuvio.cz>
  Blacksilver : Abhishek Shrivastava <i.abhi27[at]gmail.com>
+ Trinity : Balanivash <balanivash[at]gmail.com> and Boopathi <boopathi[at]live.com>
 
 Version 1
 ---------
 
     This project is inspired by Parijat Mukherjee's Pragyan CMS v1. It was his
     idea to create a CMS to be used for the NIT Trichy's and Pragyan's website
-    (Pragyan is the annual international techno-management festival of NIT Trichy).
-    Hence, the name "Pragyan CMS". <http://www.nitt.edu>,<http://www.pragyan.org>
-    Pragyan CMS v2 was created to make up for the shortcomings of Pragyan CMS v1.
+    (Pragyan is the annual international techno-management festival of 
+    NIT Trichy). Hence, the name "Pragyan CMS". 
+    <http://www.nitt.edu>
+    <http://www.pragyan.org>
+    Pragyan CMS v2 was created to make up for the shortcomings of Pragyan CMS v1
     
     Thanks go to [in chronological order]
     - Sahil Ahuja <sahilahuja[at]gmail.com> who created the form and quiz
@@ -124,7 +131,8 @@ Version 1
     - Abhishek Verma <vermaabhishekp[at]gmail.com> who created the form and quiz
       module in Praygan CMS v1.
     - Vishal Patel <vkp_patel[at]yahoo.co.in> made the gallery module.
-    The following people have contributed minor changes, enhancements or bugfixes :
+    The following people have contributed minor changes, enhancements or 
+    bugfixes :
     Ankit Srivastava, Aishwarya T, Srikanth M
 
 And thanks to everyone else who sent emails with suggestions, bug-reports
