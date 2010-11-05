@@ -87,10 +87,8 @@ $ICONS = "";
 ///Stores all the icons locations without the <img> tag, indexed by the icon name
 $ICONS_SRC = ""; 
 
-///Variables for widgets. As of now, only 32 locations accepted.
-$WIDGET0; $WIDGET1; $WIDGET2; $WIDGET3; $WIDGET4; $WIDGET5; $WIDGET6; $WIDGET7; $WIDGET8; $WIDGET9; $WIDGET10; $WIDGET11; $WIDGET12;
-$WIDGET13; $WIDGET14; $WIDGET15; $WIDGET16; $WIDGET17; $WIDGET18; $WIDGET19; $WIDGET20; $WIDGET21; $WIDGET22; $WIDGET23; $WIDGET24;
-$WIDGET25; $WIDGET26; $WIDGET27; $WIDGET28; $WIDGET29; $WIDGET30; $WIDGET31;
+///Variables for storing widgets.
+$WIDGETS = array();
 
 ///For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";

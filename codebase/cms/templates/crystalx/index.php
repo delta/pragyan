@@ -34,7 +34,7 @@
     <div id="header">
         <!-- Logotyp -->
         <h1 id="logo"><?php echo  $TITLE; ?></h1>
-      <?php echo $WIDGET0; ?>
+      <?php echo $WIDGETS[0]; ?>
     </div> <!-- /header -->
 
     <!-- Page (2 columns) -->
@@ -47,7 +47,7 @@
 
 				<?php echo $ACTIONBARPAGE;?>
 				<?php echo $ACTIONBARMODULE;?>
-				  <?php echo $WIDGET1; ?>
+				  <?php echo $WIDGETS[1]; ?>
             </div>
             <hr class="noscreen" />
             
@@ -61,9 +61,9 @@
               <?php echo $INFOSTRING;?>
 	          <?php echo $WARNINGSTRING;?>
 	          <?php echo $ERRORSTRING;?>
-	            <?php echo $WIDGET2; ?>
+	            <?php echo $WIDGETS[2]; ?>
 	          <?php echo  $CONTENT; ?>
-  <?php echo $WIDGET3; ?>
+  <?php echo $WIDGETS[3]; ?>
             </div> <!-- /article -->
         </div> <!-- /content -->
 
@@ -72,7 +72,7 @@
             <div id="col-in">
                 <!-- Category -->
 				<?php echo $MENUBAR;?>
-  <?php echo $WIDGET4; ?>
+  <?php echo $WIDGETS[4]; ?>
 				<hr class="noscreen" />
 				<h3><span>Links</span></h3>
 				<ul id="links">
@@ -90,7 +90,7 @@
     <div id="footer">
         <div id="top" class="noprint"><p><span class="noscreen">Back to top</span> <a href="#header" title="Back to top ^">^<span></span></a></p></div>
         <hr class="noscreen" />
-        <p id="copyright"><?php echo $FOOTER; ?>  <?php echo $WIDGET5; ?></p>
+        <p id="copyright"><?php echo $FOOTER; ?>  <?php echo $WIDGETS[5]; ?></p>
     </div> <!-- /footer -->
 
 </div> <!-- /main -->
