@@ -14,8 +14,8 @@
   * @description
   * Idea :
  A widget is a small customized html code that can be put in any part of the generated page. 
- The template's index.php will have variables $WIDGET1, $WIDGET2 to $WIDGETn where n is user-defined (its 31 for now).
- Each $WIDGETi represents a unique-location and NOT a unique widget i.e. $WIDGETi can have multiple widgets, but in same location.
+ The template's index.php will have variables $WIDGETS[1], $WIDGETS[2] to $WIDGETS[n] where n is user-defined (its 31 for now).
+ Each $WIDGETS[i] represents a unique-location and NOT a unique widget i.e. $WIDGETi can have multiple widgets, but in same location.
  
  
  Put all the widgets inside cms/widgets folder. 
@@ -69,7 +69,7 @@ Database Structure :
  	Check if widget is installed properly using validInstall() method and if not, do installWidget() and loadWidget()
  	widget_object->initWidget()
  	widget_output = widget_object->getHTML()
- 	$WIDGET<widget_location> .= widget_output
+ 	$WIDGETS[<widget_location>] .= widget_output
  
  @note All the widgets will have the power to add/remove/modify their information in PragyanV3_widgetsdata table
  @note The widgets will be given some RAM like or heap store in _widgetsdata table to add their own information in key => value format.
@@ -94,14 +94,14 @@ Database Structure :
 
 
 /**
- * Populates the widget variables $WIDGET1,$WIDGET2 ... $WIDGETn based on the widgets enabled in that page. All the variables are then replaced in
+ * Populates the widget variables $WIDGETS[1],... $WIDGETS[n] based on the widgets enabled in that page. All the variables are then replaced in
  * template accordingly.
  * @param $pageId Page ID of the page for which to populate the widgets
  */
 function populateWidgetVariables($pageId)
 {
 
-	global $cmsFolder,$widgetFolder;	
+	global $cmsFolder,$widgetFolder,$WIDGETS;	
 	$enwidgets=getEnabledWidgets($pageId);
 	
 	foreach( $enwidgets as $enwidget )
@@ -123,11 +123,8 @@ function populateWidgetVariables($pageId)
 		}
 		
 		$widget->initWidget();
-		$widgetvar = "WIDGET".$enwidget['location'];
-		global $$widgetvar;
-		$$widgetvar .= $widget->getHTML();
+		$WIDGETS[(int)$enwidget['location']] .= $widget->getHTML();
 	}
-	
 }
 
 
