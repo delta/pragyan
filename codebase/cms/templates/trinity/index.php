@@ -36,7 +36,8 @@
 	<div class="clearer"></div>
 	<div class="innercontainer">
 		<div id="header">
-			<!--<div id="invisibleContainer">
+			
+			<div id="invisibleContainer">
 				<a href="<?php echo $urlRequestRoot?>/home">
 					<div id="invisible">Pragyan 2011</div>
 				</a>
@@ -44,8 +45,8 @@
 			<!--
 			<div id="headerContent">
 				<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/icons/login.jpg" />
-			</div>
-			-->
+			</div> -->
+			
 			
 		</div>
 		<div class="clearer"></div>
