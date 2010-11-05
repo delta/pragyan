@@ -707,7 +707,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfiginfo` (
 -- Table structure for table `pragyanV3_widgetsinfo`
 --
 
-CREATE TABLE IF NOT EXISTS `pragyan`.`pragyanV3_widgetsinfo` (
+CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsinfo` (
 `widget_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `widget_name` VARCHAR( 100 ) NOT NULL ,
 `widget_classname` VARCHAR ( 100 ) NOT NULL,
@@ -715,10 +715,8 @@ CREATE TABLE IF NOT EXISTS `pragyan`.`pragyanV3_widgetsinfo` (
 `widget_version` VARCHAR( 27 ) NOT NULL ,
 `widget_author` TEXT NULL ,
 `widget_foldername` VARCHAR( 27 ) NOT NULL ,
-UNIQUE (
-`widget_foldername`
-)
-) ENGINE = MYISAM ;
+UNIQUE ( `widget_foldername` )
+) ENGINE=MYISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
