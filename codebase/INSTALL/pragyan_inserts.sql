@@ -119,7 +119,7 @@ INSERT IGNORE INTO `article_content` (`page_modulecomponentid`, `article_content
 -- Dumping data for table `pragyanV3_modules`
 --
 
-INSERT INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
+INSERT IGNORE INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
 ('article', 'article_comments;article_content;article_contentbak'),
 ('book', 'book_desc'),
 ('contest', ''),
@@ -218,7 +218,11 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `pe
 ('forum', 'forumsettings', 'Forum Settings',0,'Change forum settings'),
 ('gallery', 'create', 'Create Gallery', 18, 'Create a new Gallery'),
 ('gallery', 'view', 'View Gallery', 0, 'View the Gallery'),
-('gallery', 'edit', 'Edit', 0, 'Edit the gallery'),
+('gallery', 'edit', 'Edit', 0, 'Edit the Gallery'),
+('hospi', 'create', 'Create', 1, 'Create the hospi module'),
+('hospi', 'view', 'View', 1, 'View the hospi module'),
+('hospi', 'accomodate', 'Accomodate', 1, 'Accomodate into hostel'),
+('hospi', 'addroom', 'Add Room', 1, 'Add Room to a hostel'),
 ('news', 'create', 'Create News', 20, 'Create a new News'),
 ('news', 'view', 'View', 0, 'VIew'),
 ('news', 'rssview', 'RSS View', 0, 'Retrieve News as RSS'),
