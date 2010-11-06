@@ -593,7 +593,7 @@ function getFormInputField($configentry, $value="", $isglobal) {
 	$elementType = $configentry['conftype'];
 	$elementTypeOptions = $configentry['confoptions'];
 	
-	$options = split('\|', $elementTypeOptions);
+	$options = explode('|', $elementTypeOptions);
 	/// To make sure that any special HTML character is converted into equivalent HTML code
 	$options=array_map("htmlentities",$options);
 	
@@ -634,7 +634,7 @@ function renderTextareaTypeField($elementName,$value,$options,&$htmlOutput)
  * @param $elementName	The name of the field
  * @param $value The current value
  * @param $elementTypeOptions The extra options related to this field type
- * @param $htmlOutput Will contain the INSERT INTO `pragyan`.`pragyanV3_widgetsinfo` (`widget_id`, `widget_name`, `widget_description`, `widget_version`, `widget_author`, `widget_foldername`) VALUES ('1', 'Server Date and Time', 'Displays the date and time on the server-side', '0.01', 'Abhishek Shrivastava', 'server_date_time');actual HTML Output
+ * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
 function renderSelectTypeField($elementName,$value,$options,&$htmlOutput)

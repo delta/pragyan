@@ -26,7 +26,10 @@ Pragyan CMS v3.0 - Developer's Guide
 (8) Templates
 	+ Creating Templates
 	+ Installing Templates
-
+(9) Widgets
+	+ Working
+	+ Developing
+	
 
 ______________________________________________________________________
 
@@ -802,3 +805,166 @@ images directories inside the cms/templates/template-name folder.
 	Template Installation feature inside "Admin" action and upload
 	your ZIP file and follow the instructions.
 	
+
+______________________________________________________________________
+
+(8)++++++++ WIDGETS ++++++++++++++++++++++++++++++++++++++++++++++++++
+______________________________________________________________________
+
+	Widgets are module-like applications that can be coded for
+	Pragyan CMS and displayed in the page along with the template.
+	For example, think of Wordpress widgets on the left hand side
+	that includes a calender, HTML box, images, maps, archive,
+	popular posts, etc. Basically widgets are able to communicate
+	with the core of Pragyan CMS but they are different than
+	modules as in they don't occupy a full page and they don't
+	have specific permissions and actions. But widgets are good
+	for providing small-sized useful tools in the UI to improve
+	the user's experience. Normally they do it by hardcoding in
+	the template, but no more !
+	______________________________________________________________
+
+        ::::::::::::::::::::::: Working ::::::::::::::::::::::::::::::
+        ______________________________________________________________
+
+	Pragyan CMS provides a platform to develop widget in such a 
+	way that it can be understood and called by Pragyan CMS. Here
+	is a list of things Widgets are supposed to do :
+	* They must have a class by the name of the widget in a single
+	file called widget.class.php placed inside the widget folder.
+	* The class must extend the abstract class widgetFramework.
+	* The class must implement the abstract function in the super
+	class widgetFramework, which are __construct, initWidget and 
+	getHTML.
+	
+	Now, we'll see how Praygan CMS understands and renders them.
+	Assuming the user has enabled some widgets and rearranged them
+	to appear in some particular locations in the current page.
+	Here's brief algorithm about how that page is processed :
+
+	1) Get the list of all widgets enabled for that page along
+	with their location ID and order number.
+
+	Note : Every location in the template must have a unique
+	location ID that must be decided by the template creator.
+
+	Multiple widgets can be placed in the same location in which
+	case the order number will be used to arrange them.
+
+	2) For every widget in the list, get the widget folder name
+	and widget class name for that widget and look for path 
+	/cms/widgets/<widget-folder-name>/widget.class.php and include
+	that file. 
+
+	3) After the file is successfully included try to create an
+	instance of the class <widget-class-name> which must be
+	defined in the included widget.class.php file.
+
+	4) After the instance is created, check whether the instance
+	extends the widgetFramework class and has its methods.
+
+	5) While creating the instance the constructor was activated
+	with the parameters which include the pageId, widgetId and 
+	widgetInstanceId.
+
+	6) The constructor stores all the variables and then calls the
+	constructor of the pre-defined super class widgetFramework
+	with another added parameter which is the $configs array which
+	contains the list of all the configurations associated with
+	that widget in proper format along with type and defaults.
+
+	7) The constructor of the widgetFramework will store all the
+	variables and the configuration and calls the loadWidget
+	method which loads the current values for the widget settings
+	and saved data from last session for the particular widgetId
+	and widgetInstanceId.
+
+	8) If no settings could be retrieved it could only mean that
+	either the widget has no configurations at all, or it has not
+	been set i.e. widget is processed the first time. In this case
+	the configurations are saved in the database with default
+	values and again the loadWidget method is called.
+
+	9) Once the loadWidget function is called, the $settings and 
+	$data arrays gets populated with the settings and data from 
+	the previous session and the widget can use it to configure
+	itself.
+
+	10) The above was happening in the constructor call itself.
+	Now, the Pragyan CMS calls the initWidget method which must
+	be user-defined in the widget class. There is no such 
+	restriction as to what needs to put in that function but its
+	just a flexibility given to the developers to write some
+	initialization code (if they want to).
+
+	11) Finally, the getHTML method is called by Pragyan CMS and
+	the getHTML method should have the actual widget code to 
+	generate the HTML output that will be displayed on the page.
+	In this method, all the configuration current values from
+	$settings must be used to configure the output and also the
+	saved data from $data could be used.
+
+	12) The output generated from getHTML is stored in the 
+	$WIDGETS array at the index which is equal to the widget's 
+	location ID. For multiple widgets in the same location, the
+	output is appended. 
+
+	13) So the entire point was to properly populate the specific
+	indexes of $WIDGETS array for the current page. Its done and
+	now comes the template factor. The template should explicitly
+	echo the contents of the $WIDGETS array at specific positions
+	corresponding to the unique location ID of that position.
+
+	e.g. <?php echo $WIDGETS[4]; ?> will echo the content of all
+	widgets placed at location ID 4, ordered by their order number
+	in this exact location.
+
+	So this is how the widgets are rendered. Also go through the
+	file widget.lib.php for more description about the algorithm.
+	
+	______________________________________________________________
+
+        ::::::::::::::::::::::: DEVELOPING :::::::::::::::::::::::::::
+        ______________________________________________________________
+
+		
+	For developing the widget, aside from the rules mentioned in
+	the previous section certain other rules should be followed.
+
+	Recalling, all the widget files should be placed inside a
+	folder which must be placed inside the cms/widgets folder.
+	Inside the widget folder, atleast a single file called 
+	widget.class.php should be there which must have define a
+	class extending the widgetFramework class and implementing the
+	abstract functions getHTML and initWidget along with the
+	constructor.
+
+	The constructor must call the parent class constructor by
+	passing all the existing parameters along with an extra 
+	configurations array. 
+
+	For the exact prototype of the array and function details
+	with documentations, view the widget.class.php file of the
+	sample widget Server Date and Time, inside the folder with the
+	name server_date_time.
+
+	Once this folder with the required files having the required
+	function definitions are ready, simple put the folder inside
+	the cms/widgets folder and then add an entry into the
+	_widgetsinfo table. As of now, you'll have to add an entry in
+	there manually as there is no interface for it. A Widget
+	Installation feature similar to Template Installation will 
+	come soon.
+
+	Thats it, your widget should now appear in the +widgets
+	action on any page. You can configure the global-configuration
+	of widgets from +admin&subaction=widgets action, the link is
+	there in Admin page in Widget Management.
+
+	For more details about the algorithm, view the widget.lib.php
+	file which has the algo described.
+
+	
+
+
+
