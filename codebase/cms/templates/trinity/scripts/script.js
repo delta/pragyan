@@ -1,25 +1,51 @@
-
+/**
+ * @author Boopathi
+ * @description Adding an extra behaviour to the native Javascript function
+ * @usage function(){}.debounce()
+ **/
+Function.prototype.debounce = function(threshold, execAsap) {
+	var func = this, timeout;
+	return function debounced(){
+		var obj= this, args = arguments;
+		function delayed() {
+			if(!execAsap)
+				func.apply(obj,args);
+			timeout = null;
+		}
+		if(timeout)
+			clearTimeout(timeout);
+		else if(execAsap)
+			func.apply(obj,args);
+		timeout = setTimeout(delayed, threshold || 100);
+	}
+}
 $(function() {
 	/*
 	 * Hover Function for Menu
 	 */
-	 $("ul.topnav > li").hover(function(){
-	 	$(this).animate({left: "+=2"}, 100);
-		}, function() {
-		$(this).animate({left: "-=2"}, 250);
-	});
-	$("ul.topnav li").hover(function(){
-		$(this).children("ul.subnav").fadeIn();//css({display: 'block'});
-		},function() {
+	$("ul.topnav li").hover(function(e){
+	 	$(this).children("ul.subnav").fadeIn();
+	}.debounce(400), function() {
 		$(this).children("ul.subnav").css({display: 'none'});
 	});
+	$("ul.topnav li").bind({
+		mouseenter: function(){
+			$(this).animate({left: "+=2"}, 100);
+		},
+		mouseleave: function(){
+			$(this).animate({left: "-=2"}, 250);
+		}
+	});
+	
 	///Write in StatusBar - "To"
-	$("a").hover(function(){
-		$("#statusbar").html($(this).attr("href"));
-	},function(){
-		$("#statusbar").html(location.href);
-	}
-	);
+	$("a").bind({
+		mouseenter: function(){
+			$("#statusbar").html($(this).attr("href"));
+		},
+		mouseleave: function(){
+			$("#statusbar").html(location.href);
+		}
+	});
 	
 	///Login Form
 	$("a.cms-actionlogin").hover(function() {
@@ -29,7 +55,7 @@ $(function() {
 			color : "black"
 		});///<Any Changes in menu.css will now automatically reflect here. Should be done manually
 		
-		///User-friednly and safety - password clear
+		///User-friendly and safety - password clear
 		$("#hc_loginform").fadeIn(100).find("#user_email").focus().end().find("#user_password").attr("value","");
 		
 		///Display form when mouse over the table.
@@ -53,7 +79,7 @@ $(function() {
 	/**
 	 * Disable navigation to login form page
 	 */
-	$("a.cms-actionlogin").click(function(e){ e.preventDefault(); return false; });
+	$("a.cms-actionlogin").bind({click: function(e){ e.preventDefault(); return false; }});
 	
 	/**
 	 * Profile Menu
@@ -82,7 +108,10 @@ $(function() {
 		});
 	});
 	
-	
+	/**
+	* Enable ticker
+	*/
+	$('#js-news').ticker({titleText: "Updates : "});
 });
 
 ///Login form Validation
@@ -103,7 +132,7 @@ function checkLoginForm(inputhandler) {
 }
 
 ///Change Home Icon on mouseover
-function 	changeHomeImage()
+function changeHomeImage()
 {
 	$(this).find("img").attr("src",templateBrowserPath+"/images/home.png");
 }
