@@ -18,10 +18,12 @@
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/countdown.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
-    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.utils.min.js"></script>
+    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
+    
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery.lwtCountdown-1.0.js" ></script>
  
     <script language="javascript" type="text/javascript">
@@ -42,10 +44,6 @@
 					<div id="invisible">Pragyan 2011</div>
 				</a>
 			</div>
-			<!--
-			<div id="headerContent">
-				<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/icons/login.jpg" />
-			</div> -->
 			
 			
 		</div>
@@ -121,6 +119,14 @@
 					</div>
 				</div>
 				<div id="centerContent" class="cont">
+					<div id="ticker-wrapper" class="no-js">
+						<ul id="js-news" class="js-hidden">
+							<li class="news-item"><a href="#">Presenting the new FOSS events for pragyan</a></li>
+							<li class="news-item"><a href="#">This time treasure hunt goes online</a></li>
+							<li class="news-item"><a href="#">A site by Delta Force </a></li>
+							<li class="news-item"><a href="#">A Scriptle Inc. Template</a></li>
+						</ul>
+					</div>
 					<div class="contentContainer">
 						<div id="titlebar">
 							<?php echo $TITLE; ?>
