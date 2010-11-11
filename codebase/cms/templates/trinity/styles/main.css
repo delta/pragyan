@@ -1,6 +1,6 @@
 body {
 	/*background: #000000 url(../images/rep.jpg) repeat-x 1059px 20px;*/
-	background: #000000 url(../images/background.png) no-repeat fixed;
+	background: #000000 url(../images/background.png) no-repeat fixed; 
 	padding:0;
 	margin: 0;
 	min-width: 960px;
@@ -17,7 +17,7 @@ body img
 .innercontainer {
 	position: relative;
 	top: -6px;
-	/*background: url(../images/background.png) no-repeat 0px -5px;*/
+	/*background: url(../images/dark.png) no-repeat 0px -5px;*/
 }
 #header {
 	margin: 0 ;
@@ -40,8 +40,6 @@ body img
 	margin: 0;
 	padding: 0;
 	text-indent: -1000em;
-	background-image : url('../images/p13.jpg');
-	background-repeat : none;
 }
 #header #headerContent {
 	float: right;
@@ -62,16 +60,16 @@ body img
 	float: right;
 	width: 250px;
 	position: relative;
-	/*top: -140px;*/
+	top: -140px;
 	background: url(../images/rt.png);
-	margin-left: 20px;
 	color: white;
 	padding: 10px;
 	font-size: small;
-	height: 100%;
+	border-left: solid 1px white;
 }
 #centerContent {
-	margin: 0px 10px;
+	margin: 0px 10px;	
+	padding-left: 20px;
 	overflow: hidden;
 }
 
@@ -96,7 +94,7 @@ body img
 	background: url(../images/quicklinks.jpg) repeat-x;
 	color: white;
 	font-family: sans-serif;
-	font-size: normal;
+	font-size: small;
 	height: 25px;
 	text-align: left;
 	position: fixed;
