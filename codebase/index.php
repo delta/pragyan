@@ -111,8 +111,8 @@ require_once($sourceFolder."/common.lib.php");
 require_once($sourceFolder."/icons.lib.php");
 
 ///Library required for OpenID authentication
-//set_include_path('cms/openid/');
-//require_once('cms/openid/class.dopeopenid.php');
+set_include_path('cms/openid/');
+require_once('cms/openid/class.dopeopenid.php');
 
 ///Defined here to set its access as global to the project
 $dbase; 
