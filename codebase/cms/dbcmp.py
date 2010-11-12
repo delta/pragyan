@@ -1,17 +1,20 @@
 #! /usr/bin/env python
 import MySQLdb
-tablenotfound1= "Tables Found in Delta But Not in Pragyan:\nTable\t\t\t\tDeltaindex\n";
-missingfields1= "Fields Missing:\nTable\t\tIn Delta\tIn Pragyan\t\tMissing field\n";
+db1="pragyan11";
+db2="pragyan11testing";
+conn1 = MySQLdb.connect(host="localhost", user="pragyan11", passwd="andromeda", db=db1);
+conn2 = MySQLdb.connect(host="localhost", user="pragyan11", passwd="andromeda", db=db2);
+print "Comparing databases "+db1+" and "+db2;
+tablenotfound1= "Tables Found in "+db1+" But Not in "+db2+":\nTable\t\t\t\tDeltaindex\n";
+missingfields1= "Fields Missing:\nTable\t\tIn "+db1+"\tIn "+db2+"\t\tMissing field\n";
 shuffledfields1= "Fields shuffled:\n";
 fieldvaluechanged1= "Fields whose values have been changed:\n\n";
 fieldproperty=("FIELD","TYPE","COLLATION","ATTRIBUTES","NULL","DEFAULT","EXTRA","ACTION");
-tablenotfound2= "Tables Found in Pragyan But Not in Delta:\nTable\t\t\t\tPragyanindex\n";
-missingfields2= "Fields Missing:\nTable\t\tIn Delta\tIn Pragyan\t\tMissing field\n";
+tablenotfound2= "Tables Found in "+db2+" But Not in "+db1+":\nTable\t\t\t\t"+db2+" index\n";
+missingfields2= "Fields Missing:\nTable\t\tIn "+db1+"\tIn "+db2+"\t\tMissing field\n";
 shuffledfields2= "Fields shuffled:\n";
 fieldvaluechanged2= "Fields whose values have been changed:\n\n";
 
-conn1 = MySQLdb.connect(host="10.0.0.126", user="delta", passwd="PASS", db="pragyan_v2");
-conn2 = MySQLdb.connect(host="localhost", user="reader", passwd="PASS", db="pragyan_v2");
 cursor1 = conn1.cursor();
 cursor2 = conn2.cursor();
 sql = "SHOW TABLES";
@@ -41,9 +44,9 @@ if(len(tablelist1)>=len(tablelist2)):
 	     if(len(result1))>=len(result2):
 	      if result1[j][0]==result2[k][0]:
 	        if j!=k:
-		 shuffledfields1+="In table "+tablelist1[i][0]+ " the field "+result1[j][0]+" is at "+str(j)+"th position in delta but "+str(k)+"th position in pragyan \n";
+		 shuffledfields1+="In table "+tablelist1[i][0]+ " the field "+result1[j][0]+" is at "+str(j)+"th position in "+db1+" but "+str(k)+"th position in "+db2+" \n";
 		for m in range(len(result1[j])):
-	      	   if result1[j][m]!=result2[k][m]: fieldvaluechanged1+= "TABLE: "+tablelist1[i][0]+"\nFIELD: "+result1[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN DELTA: "+result1[j][m]+" \nVALUE IN PRAGYAN "+result2[k][m]+"\n\n";
+	      	   if result1[j][m]!=result2[k][m]: fieldvaluechanged1+= "TABLE: "+tablelist1[i][0]+"\nFIELD: "+result1[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN "+db1+": "+result1[j][m]+" \nVALUE IN "+db2+": "+result2[k][m]+"\n\n";
 		break;
 	      if result1[j][0]!=result2[k][0]:
 		if k==min(len(result1),len(result2))-1:
@@ -52,9 +55,9 @@ if(len(tablelist1)>=len(tablelist2)):
 	     if(len(result1))<len(result2):
 	      if result2[j][0]==result1[k][0]:
 	        if j!=k:
-		 shuffledfields1+="In table "+tablelist1[i][0]+ " the field "+result1[k][0]+"is at "+str(k)+"th position in delta but "+str(j)+"th position in pragyan\n";
+		 shuffledfields1+="In table "+tablelist1[i][0]+ " the field "+result1[k][0]+"is at "+str(k)+"th position in "+db1+" but "+str(j)+"th position in "+db2+"\n";
 		for m in range(len(result2[j])):
-	      	   if result2[j][m]!=result1[k][m]: fieldvaluechanged1+= "TABLE: "+tablelist1[i][0]+"\nFIELD: "+result2[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN DELTA: "+result1[k][m]+" \nVALUE IN PRAGYAN "+result2[j][m]+"\n\n";
+	      	   if result2[j][m]!=result1[k][m]: fieldvaluechanged1+= "TABLE: "+tablelist1[i][0]+"\nFIELD: "+result2[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN "+db1+": "+result1[k][m]+" \nVALUE IN "+db2+": "+result2[j][m]+"\n\n";
 		break;
 	      if result2[j][0]!=result1[k][0]:
 		if k==min(len(result1),len(result2))-1:
@@ -86,9 +89,9 @@ if(len(tablelist1)<len(tablelist2)):
 	     if(len(result1))>=len(result2):
 	      if result1[j][0]==result2[k][0]:
 	        if j!=k:
-		 shuffledfields2+="In table "+tablelist2[i][0]+ " the field "+result1[j][0]+" is at "+str(j)+"th position in delta but "+str(k)+"th position in pragyan \n";
+		 shuffledfields2+="In table "+tablelist2[i][0]+ " the field "+result1[j][0]+" is at "+str(j)+"th position in "+db1+" but "+str(k)+"th position in "+db2+" \n";
 		for m in range(len(result1[j])):
-	      	   if result1[j][m]!=result2[k][m]: fieldvaluechanged2+= "TABLE: "+tablelist2[i][0]+"\nFIELD: "+result1[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN DELTA: "+result1[j][m]+" \nVALUE IN PRAGYAN "+result2[k][m]+"\n\n";
+	      	   if result1[j][m]!=result2[k][m]: fieldvaluechanged2+= "TABLE: "+tablelist2[i][0]+"\nFIELD: "+result1[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN "+db1+": "+result1[j][m]+" \nVALUE IN "+db2+": "+result2[k][m]+"\n\n";
 		break;
 	      if result1[j][0]!=result2[k][0]:
 		if k==min(len(result1),len(result2))-1:
@@ -97,9 +100,9 @@ if(len(tablelist1)<len(tablelist2)):
 	     if(len(result1))<len(result2):
 	      if result2[j][0]==result1[k][0]:
 	        if j!=k:
-		 shuffledfields1+="In table "+tablelist2[i][0]+ " the field "+result1[k][0]+"is at "+str(k)+"th position in delta but "+str(j)+"th position in pragyan\n";
+		 shuffledfields1+="In table "+tablelist2[i][0]+ " the field "+result1[k][0]+"is at "+str(k)+"th position in "+db1+" but "+str(j)+"th position in "+db2+"\n";
 		for m in range(len(result2[j])):
-	      	   if result2[j][m]!=result1[k][m]: fieldvaluechanged1+= "TABLE: "+tablelist2[i][0]+"\nFIELD: "+result2[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN DELTA: "+result1[k][m]+" \nVALUE IN PRAGYAN "+result2[j][m]+"\n\n";
+	      	   if result2[j][m]!=result1[k][m]: fieldvaluechanged1+= "TABLE: "+tablelist2[i][0]+"\nFIELD: "+result2[j][0]+"\nFIELD PROPERTY: "+fieldproperty[m]+"\nVALUE IN "+db1+": "+result1[k][m]+" \nVALUE IN "+db2+": "+result2[j][m]+"\n\n";
 		break;
 	      if result2[j][0]!=result1[k][0]:
 		if k==min(len(result1),len(result2))-1:
