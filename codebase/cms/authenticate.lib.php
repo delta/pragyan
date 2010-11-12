@@ -118,36 +118,40 @@ function resetAuth() {
 /******** auth FUNCTIONS TO BE USED IN login.lib.php ***********/
 
 function checkLogin($login_method,$user_name,$user_email,$user_passwd) {
-	$login_status=false;
-	global $authmethods;
-	switch($login_method)	//get his login method, and chk credentials
-		{
-			case 'ads':
-				if($authmethods[$login_method]['status'])
-					$login_status = my_ads_auth($user_name, $user_passwd);
-				break;
-			case 'imap':
-				if($authmethods[$login_method]['status'])
-				{
-					$pos=strpos($user_email,'@');
-					$user_name1=substr($user_email,0,$pos);
-//					displayinfo($user_name1,$user_passwd);
-					$login_status = my_imap_auth($user_name1, $user_passwd);
+  $login_status=false;
+  global $authmethods;
+  switch($login_method)	//get his login method, and chk credentials
+    {
+    case 'ads':
+      if($authmethods[$login_method]['status'])
+	$login_status = my_ads_auth($user_name, $user_passwd);
+      break;
+    case 'imap':
+      if($authmethods[$login_method]['status'])
+	{
+	  $pos=strpos($user_email,'@');
+	  $user_name1=substr($user_email,0,$pos);
+	  //					displayinfo($user_name1,$user_passwd);
+	  $login_status = my_imap_auth($user_name1, $user_passwd);
 
-				}
-				break;
-			case 'ldap':
-				if($authmethods[$login_method]['status'])
-					$login_status = my_ldap_auth($user_name, $user_passwd);
-				break;
-			default:
-				$temp = getUserInfo($user_email);
-				if(md5($user_passwd)==$temp['user_password']) {
-					$login_status = true;
-				}
-		}
+	}
+      break;
+    case 'ldap':
+      if($authmethods[$login_method]['status'])
+	$login_status = my_ldap_auth($user_name, $user_passwd);
+      break;
+      ///this prevents any OpenID dummy users (those which have login_method=openid) to  use conventional login method
+    case 'openid':
+      $login_status=False;
+      break;
+    default:
+      $temp = getUserInfo($user_email);
+      if(md5($user_passwd)==$temp['user_password']) {
+	$login_status = true;
+      }
+    }
 
-	return $login_status;
+  return $login_status;
 
 }
 
