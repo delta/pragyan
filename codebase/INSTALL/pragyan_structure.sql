@@ -635,9 +635,20 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_users` (
   `user_regdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_lastlogin` datetime NOT NULL,
   `user_activated` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Used for email verification',
-  `user_loginmethod` enum('db','ldap','imap','ads') NOT NULL DEFAULT 'db' COMMENT 'Login Method',
+  `user_loginmethod` enum('openid','db','ldap','imap','ads') NOT NULL DEFAULT 'db' COMMENT 'Login Method',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pragyanV3_openid_users`
+--
+CREATE  TABLE IF NOT EXISTS `pragyanV3_openid_users` (
+  `openid_id` INT NOT NULL AUTO_INCREMENT,
+  `openid_url` VARCHAR(2063) NOT NULL ,
+  `user_id` INT NOT NULL ,
+  PRIMARY KEY (`openid_id`)
+)ENGINE = MyISAM ;
 
 -- --------------------------------------------------------
 
