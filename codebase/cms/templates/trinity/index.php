@@ -31,6 +31,19 @@
 		var templateBrowserPath = "<?php echo $TEMPLATEBROWSERPATH ?>";
 		var urlRequestRoot = "<?php echo $urlRequestRoot?>";
 	</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19500581-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 
 <body>
@@ -113,6 +126,9 @@
 					
 					</div> 
 					<div id="right2" class="cont">
+<!-- facebook like button starts -->
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpragyan.nitt&amp;layout=standard&amp;show_faces=false&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; margin: 10px;overflow:hidden; width:200px; height:55px;" allowTransparency="true"></iframe>    
+<!-- facebook like button ends -->
 						<h3>Links</h3>
 						Facebook<br />
 						Twitter
