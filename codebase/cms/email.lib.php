@@ -28,14 +28,14 @@ function getAllGroups() {
 }
 
 function displayEmail($template = "") {
-	global $cmsFolder,$urlRequestRoot;
+	global $sourceFolder,$urlRequestRoot;
 	$newSelected = "";
 	if($template == "" || $template == "new") {
 		$newSelected = " selected";
 		$content = "";
 	}
 	$emailTemplates = "<select id='emailtemplates' name='emailtemplates'><option value='new'{$newSelected}>Create New Template</option>";
-	$dir = "$cmsFolder/languages/" . LANGUAGE . "/email/templates/";
+	$dir = "$sourceFolder/languages/" . LANGUAGE . "/email/templates/";
 	$handle = opendir($dir);
 	$subject="";
 	$content="";
@@ -202,8 +202,8 @@ function sendEmail() {
 function saveEmail() {
 	$name = escape($_GET['name']);
 	$content = $_POST['templateContent'];
-	global $cmsFolder;
-	$dir = "$cmsFolder/languages/" . LANGUAGE . "/email/templates/";
+	global $sourceFolder;
+	$dir = "$sourceFolder/languages/" . LANGUAGE . "/email/templates/";
 	if(!file_exists($dir))
 		mkdir($dir);
 	if(!file_exists($dir . $name . ".txt")) {

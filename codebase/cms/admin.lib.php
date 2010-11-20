@@ -289,8 +289,8 @@ function admin($pageid, $userid) {
 	}
 	global $urlRequestRoot,$templateFolder,$cmsFolder,$ICONS;
     if(isset($_GET['indexsite'])) {
-		global $cmsFolder;
-		include("$cmsFolder/modules/search/admin/spider.php");
+		global $sourceFolder;
+		require("$sourceFolder/modules/search/admin/spider.php");
 		if($_GET['indexsite'] == 1) {
 			$serveruri=$_SERVER['SCRIPT_NAME'];
 			$uri=substr($serveruri,0,stripos($serveruri,"index.php"));

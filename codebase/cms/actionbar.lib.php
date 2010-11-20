@@ -11,6 +11,7 @@
  * Login(+login), Profile(+profile), and Logout(+logout)
  */
 function getActionbarPage($userId, $pageId) {
+
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE page_module = 'page'";
 	$action_result = mysql_query($action_query);
 	$allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
