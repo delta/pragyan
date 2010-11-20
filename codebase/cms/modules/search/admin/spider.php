@@ -9,15 +9,15 @@
 ********************************************/
 
 	set_time_limit (0);
-	global $cmsFolder;
-	$include_dir = "$cmsFolder/modules/search/include";
+	global $sourceFolder;
+	$include_dir = "$sourceFolder/modules/search/include";
 	require_once ("$include_dir/commonfuncs.php");
 	$all = 0; 
 	extract (getHttpVars());
-	$settings_dir =  "$cmsFolder/modules/search/settings";
+	$settings_dir =  "$sourceFolder/modules/search/settings";
 	require_once ("$settings_dir/conf.php");
 	
-	$admin_dir = "$cmsFolder/modules/search/admin";
+	$admin_dir = "$sourceFolder/modules/search/admin";
 	include "$admin_dir/messages.php";
 	include "$admin_dir/spiderfuncs.php";
 	error_reporting (E_ALL ^ E_NOTICE ^ E_WARNING);

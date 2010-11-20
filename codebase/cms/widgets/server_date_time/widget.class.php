@@ -10,7 +10,7 @@
  * For more details, see README
  */
 global $cmsFolder;
-require_once("$cmsFolder/widgetFramework.class.php");
+require_once("./$cmsFolder/widgetFramework.class.php");
 
 class serverDateTime extends widgetFramework
 {
