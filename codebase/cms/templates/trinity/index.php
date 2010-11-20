@@ -115,7 +115,6 @@
 							<li class="news-item"><a href="#">Presenting the new FOSS events for pragyan</a></li>
 							<li class="news-item"><a href="#">This time treasure hunt goes online</a></li>
 							<li class="news-item"><a href="#">A site by Delta Force </a></li>
-							<li class="news-item"><a href="#">A Scriptle Inc. Template</a></li>
 						</ul>
 					</div>
 					<div class="contentContainer">
@@ -164,11 +163,18 @@
 	</div>
 	<div id="quicklinks">
 	<div id="linksid">
-		<a href="http://www.facebook.com/pragyan.nitt" target="_blank"><span id="link1" class="qlinks">&nbsp;</span></a>
-		<!--<a href=""><span id="link2"  class="qlinks">&nbsp;</span></a> ///To be added later. -->
-		<a href=""><span id="link3" class="qlinks">&nbsp;</span></a>
-		<a href="http://twitter.com/pragyan_nitt" target="_blank"><span id="link4" class="qlinks">&nbsp;</span></a>
-		<a href=""><span id="link5" class="qlinks">&nbsp;</span></a>
+
+		<a href="http://www.facebook.com/pragyan.nitt" target="_blank" title="Facebook"><span id="link1" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.stumbleupon.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Stumbleupon"><span id="link2"  class="qlinks">&nbsp;</span></a> 
+		<a href="http://www.pragyan.org/mail" target="_blank" title="Mail"><span id="link3" class="qlinks">&nbsp;</span></a>
+		<a href="http://twitter.com/pragyan_nitt" target="_blank" title="Twitter"><span id="link4" class="qlinks" >&nbsp;</span></a>
+		<a href="http://www.pragyan.org/11/home/news/+rss" target="_blank" title="RSS"><span id="link5" class="qlinks">&nbsp;</span></a>
+		<a href="http://digg.com/submit?phase=2&url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Digg"><span id="link6" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.furl.net/storeIt.jsp?u=http://www.pragyan.org&t=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Furl"><span id="link7" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.google.com/bookmarks/mark?op=edit&bkmk=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Google"><span id="link8" class="qlinks">&nbsp;</span></a>
+		<a href="http://del.icio.us/post?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Delicious"><span id="link9" class="qlinks">&nbsp;</span></a>
+		<a href="http://reddit.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Reddit"><span id="link10" class="qlinks">&nbsp;</span></a>
+
 	</div>
 	<?php echo $ACTIONBARPAGE ?>
 	<div id="hc_loginform">
