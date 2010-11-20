@@ -17,14 +17,25 @@
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/error.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/countdown.css" />
+
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
     
-    <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery.lwtCountdown-1.0.js" ></script>
+  
+  
+    	<link media="screen" rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/stylesheet/jquery.epiclock.css"/>
+        <link media="screen" rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro/epiclock.retro.css"/>
+        <link media="screen" rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro-countdown/epiclock.retro-countdown.css"/>
+        
+        
+        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/javascript/jquery.dateformat.js"></script>
+        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/javascript/jquery.epiclock.js"></script>
+        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro/epiclock.retro.js"></script>
+        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro-countdown/epiclock.retro-countdown.js"></script>
+        
  
     <script language="javascript" type="text/javascript">
 		//defined here for use in javascript
@@ -74,61 +85,25 @@
 					<div id="right1" class="cont">
 						<!-- Countdown dashboard start -->
 						<div id="countdown_dashboard">
-							<div class="dash weeks_dash">
-								<span class="dash_title">weeks</span>
-								<div class="digit">0</div>
-								<div class="digit">0</div>
-							</div>
-
-							<div class="dash days_dash">
-								<span class="dash_title">days</span>
-								<div class="digit">0</div>
-								<div class="digit">0</div>
-							</div>
-
-							<div class="dash hours_dash">
-								<span class="dash_title">hours</span>
-								<div class="digit">0</div>
-								<div class="digit">0</div>
-							</div>
-						
-							<div class="dash minutes_dash">
-								<span class="dash_title">minutes</span>
-								<div class="digit">0</div>
-								<div class="digit">0</div>
-							</div>
-
-							<div class="dash seconds_dash">
-							<span class="dash_title">seconds</span>
-								<div class="digit">0</div>
-								<div class="digit">0</div>
-							</div>
-							<br/><br/><br/>
+							 <div id="countdown-retro"></div>
+							
 							<h3 id='countdown'>&nbsp;&nbsp;&nbsp;... before<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pragyan 2011</h3>
 						</div>
 						 <script language="javascript" type="text/javascript">
-							jQuery(document).ready(function() {
-								$('#countdown_dashboard').countDown({
-									targetDate: {
-										'day': 		18,
-										'month': 	2,
-										'year': 	2011,
-										'hour': 	5,
-										'min': 		0,
-										'sec': 		0
-									}
-								});
+							    $(function ()
+            {             
+                $('#clock').epiclock();        
+                $('#countdown-retro').epiclock({mode: $.epiclock.modes.countdown, time: new Date('February 18 2011, 00:00:00 GMT'), format: 'V:x:i:s', renderer: 'retro-countdown'});          
+            });
 				
 			
-							});
+							
 						</script>
 					<!-- Countdown dashboard end -->
 					
 					</div> 
 					<div id="right2" class="cont">
-<!-- facebook like button starts -->
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpragyan.nitt&amp;layout=standard&amp;show_faces=false&amp;width=200&amp;action=like&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; margin: 10px;overflow:hidden; width:200px; height:55px;" allowTransparency="true"></iframe>    
-<!-- facebook like button ends -->
+
 						<h3>Links</h3>
 						Facebook<br />
 						Twitter
@@ -189,10 +164,10 @@
 	</div>
 	<div id="quicklinks">
 	<div id="linksid">
-		<a href=""><span id="link1" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.facebook.com/pragyan.nitt" target="_blank"><span id="link1" class="qlinks">&nbsp;</span></a>
 		<!--<a href=""><span id="link2"  class="qlinks">&nbsp;</span></a> ///To be added later. -->
 		<a href=""><span id="link3" class="qlinks">&nbsp;</span></a>
-		<a href=""><span id="link4" class="qlinks">&nbsp;</span></a>
+		<a href="http://twitter.com/pragyan_nitt" target="_blank"><span id="link4" class="qlinks">&nbsp;</span></a>
 		<a href=""><span id="link5" class="qlinks">&nbsp;</span></a>
 	</div>
 	<?php echo $ACTIONBARPAGE ?>

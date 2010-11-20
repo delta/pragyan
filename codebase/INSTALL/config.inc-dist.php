@@ -57,7 +57,7 @@ switch(\$error_level) {
 	case 5 : \$error_text = E_ALL; \$debugSet='on'; break;
 }
 ini_set('error_reporting', \$error_text);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 
 //The language folder to be imported
 define("LANGUAGE","en");

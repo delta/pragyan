@@ -392,7 +392,7 @@ function loginForm()
 
         <!-- Simple OpenID Selector -->
         <link rel="stylesheet" href="$openidFolder/css/openid.css" />
-        <script type="text/javascript" src="$openidFolder/js/jquery-1.2.6.min.js"></script>
+ 
         <script type="text/javascript" src="$openidFolder/js/openid-jquery.js.php?imgpath=$openidFolder/images/"></script>
         <script type="text/javascript">
         $(document).ready(function() {

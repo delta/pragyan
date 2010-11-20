@@ -148,8 +148,8 @@ div#content h2, div#content h1 {
 div#content p > strong {
 	background: #EEE;
 	border: solid 1px #DDD;
-	padding: 1px 7px;
-	
+	padding: 0px 7px;
+	line-height : 20px;
 }
 
 #centerContent div#statusbar {

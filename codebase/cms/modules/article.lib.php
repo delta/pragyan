@@ -66,8 +66,8 @@ RET;
 	}
 	
 	function commentBox() {
-		global $cmsFolder;
-		require_once("$cmsFolder/common.lib.php");
+		global $sourceFolder;
+		require_once("$sourceFolder/common.lib.php");
 		$user = getUserName($this->userId);
 		$ret = <<<RET
 <fieldset><legend>New Comment</legend>
@@ -185,8 +185,8 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 				
 				/* Index the page by sphider */
 				$page = replaceAction(selfURI(),"edit","view");
-				global $cmsFolder;
-				require_once("$cmsFolder/modules/search/admin/spider.php");
+				global $sourceFolder,$moduleFolder;
+				require_once("$sourceFolder/$moduleFolder/search/admin/spider.php");
 				index_url($page, 0, 0, '', 0, 0, 1);
 			}
 			return $this->actionView();
