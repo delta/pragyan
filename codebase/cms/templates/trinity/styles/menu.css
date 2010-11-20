@@ -55,6 +55,20 @@
 #quicklinks a #link5{ background: url(../images/icons/rss.png); }
 #quicklinks a:hover #link5{ background: url(../images/icons/rssh.png); }
 
+#quicklinks a #link6{ background: url(../images/icons/digg.png); }
+#quicklinks a:hover #link6{ background: url(../images/icons/diggh.png); }
+
+#quicklinks a #link7{ background: url(../images/icons/furl.png); }
+#quicklinks a:hover #link7{ background: url(../images/icons/furlh.png); }
+
+#quicklinks a #link8{ background: url(../images/icons/goo.png); }
+#quicklinks a:hover #link8{ background: url(../images/icons/gooh.png); }
+
+#quicklinks a #link9{ background: url(../images/icons/del.png); }
+#quicklinks a:hover #link9{ background: url(../images/icons/delh.png); }
+
+#quicklinks a #link10{ background: url(../images/icons/reditt.png); }
+#quicklinks a:hover #link10{ background: url(../images/icons/reditth.png); }
 
 #quicklinks a #link1, #quicklinks a #link2, #quicklinks a #link3, #quicklinks a #link4, #quicklinks a #link5 {
 	background-repeat: no-repeat;
@@ -248,4 +262,28 @@ display:none;
 	display: none;
 	top: 0;
 	left: 100%;
+}
+#cms-tabItem{
+	padding: 7px;
+	margin: 5px 3px;
+	background: url(../images/tab.png);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	float:left;
+
+}
+#tabList{
+	height: 50px;
+	padding-top: 3px;
+	padding-left: 3px;
+	position:relative;
+}
+#tabList a{
+	text-decoration:none !important;
+	color:#FFF !important;
+}
+.tabElement{
+	border:none !important;
+	
 }
