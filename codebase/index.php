@@ -111,7 +111,7 @@ require_once($sourceFolder."/common.lib.php");
 require_once($sourceFolder."/icons.lib.php");
 
 ///Library required for OpenID authentication
-set_include_path('cms/openid/');
+set_include_path(get_include_path() . PATH_SEPARATOR . 'cms/openid/');
 require_once('cms/openid/class.dopeopenid.php');
 
 ///Defined here to set its access as global to the project
@@ -180,6 +180,7 @@ require_once($sourceFolder."/actionbar.lib.php");
 require_once($sourceFolder."/registration.lib.php");
 require_once($sourceFolder."/widget.lib.php");
 require_once($sourceFolder."/login.lib.php");
+
 
 
 

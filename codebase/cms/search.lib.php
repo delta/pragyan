@@ -7,11 +7,11 @@
  * For more details, see README
  */
  
-global $cmsFolder;
-require_once("$cmsFolder/modules/search/settings/conf.php");
-require_once("$cmsFolder/modules/search/include/commonfuncs.php");
-require_once("$cmsFolder/modules/search/include/categoryfuncs.php");
-require_once("$cmsFolder/modules/search/include/searchfuncs.php");
+global $cmsFolder,$sourceFolder;
+require_once("$sourceFolder/modules/search/settings/conf.php");
+require_once("$sourceFolder/modules/search/include/commonfuncs.php");
+require_once("$sourceFolder/modules/search/include/categoryfuncs.php");
+require_once("$sourceFolder/modules/search/include/searchfuncs.php");
 
 function saveToLog ($query, $elapsed, $results) {
 	global $sph_mysql_table_prefix;

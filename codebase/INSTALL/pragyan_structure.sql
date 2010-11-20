@@ -349,8 +349,10 @@ CREATE TABLE IF NOT EXISTS `news_data` (
 
 CREATE TABLE IF NOT EXISTS `news_desc` (
   `page_modulecomponentid` int(11) NOT NULL,
-  `news_title` varchar(150) NOT NULL,
-  `news_description` varchar(1000) NOT NULL
+  `news_title` varchar(150) DEFAULT NULL,
+  `news_description` varchar(1000) DEFAULT NULL,
+  `news_link` varchar(250) DEFAULT NULL,
+  `news_copyright` varchar(1000) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

@@ -39,7 +39,7 @@ RET;
 		$navigate = $this->bookProps['initial'];
 		if(isset($_GET['navigate'])&&$this->isPresent($this->pageId,$_GET['navigate']))
 			$navigate = escape($_GET['navigate']);
-		$tabList = "";
+		$tabList = "<div id='tabList'>";
 		$contentList = "";
 		$backup_info = $INFOSTRING;
 		$backup_warning = $WARNINGSTRING;
@@ -55,7 +55,7 @@ RET;
 				$active = "";
 				if($navigate == $row['page_id']||getPageModule($row['page_id'])=='book'&&$this->isPresent($row['page_id'],$navigate))
 					$active = ' active';
-				$tabList .= "<span class='tabElement'><a id='Content{$this->pageId}_{$row['page_id']}' href='./+view&navigate={$row['page_id']}'>{$row['page_title']}</a></span>";
+				$tabList .= "<span class='tabElement'><a id='Content{$this->pageId}_{$row['page_id']}' href='./+view&navigate={$row['page_id']}'><div id='cms-tabItem'>{$row['page_title']}</div></a></span>";
 				$content = getContent($row['page_id'], "view", $this->userId, true);
 				$content = preg_replace('/<a(.*)href=[\'"](.\/)?(.*)[\'"](.*)>(.*)<\/a>/i', '<a$1href="./' . $row['page_name'] . '/$3"$4>$5</a>', $content);
 				$content = preg_replace('/<form(.*)action=[\'"](.\/)?(.*)[\'"](.*)>/i', '<form$1action="./' . $row['page_name'] . '/$3"$4>', $content);
@@ -64,6 +64,7 @@ RET;
 			}
 		}
 		if( $tabList=="" ) displaywarning("No child pages are selected to display in this book.<br/> To change book settings click <a href='./+edit'>here</a> and to create child pages for this book, click <a href='./+settings#childpageform'>here</a>.");
+		$tabList .= "</div>";
 		$ret .= $tabList . $contentList . "</div>";
 		$INFOSTRING = $backup_info;
 		$WARNINGSTRING = $backup_warning;
@@ -140,8 +141,8 @@ RET;
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 		
-		$query = "INSERT INTO `book_desc` (`page_modulecomponentid` ,`page_title`, `initial`, `list`)VALUES ('$compId', '" . escape($_POST['childpagename']) . "','','')";
-		$result = mysql_query($query) or die(mysql_error()."article.lib L:76");
+		$query = "INSERT INTO `book_desc` (`page_modulecomponentid` ,`page_title`, `initial`, `list`,`menu_hide`)VALUES ('$compId', '" . escape($_POST['childpagename']) . "','0','','0')";
+		$result = mysql_query($query) or die(mysql_error()."book.lib L:76");
 		if (mysql_affected_rows()) {
 			$moduleComponentId = $compId;
 			return true;

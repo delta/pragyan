@@ -104,3 +104,56 @@ body img
 	text-decoration: underline;
 	color: white;
 }
+
+
+/**
+ * Introbox
+ */
+ 
+.introbox
+{
+ border:groove black 2px; width: 305px; padding : 10px;float: left;
+ margin-left : 10px; margin-top : 10px; background-color : #F5F5F5;
+}
+.introbox img
+{
+ border: 0 none;
+ vertical-align : bottom !important;
+}
+.introbox h3
+{
+        background-color : #778899 !important;
+        color : #FFFFFF !important;
+        padding-left : 10px !important;
+        font-weight : bold !important;
+        text-decoration : none !important;
+}
+.introbox h4,h5
+{
+	color : #000 ;
+	text-decoration : none;
+	font-size : 13px;
+	font-weight : normal;
+	margin-top : 10px;
+	
+}
+.introbox h4
+{
+	font-weight : bold !important;
+}
+.introbox a
+{
+ color : #FFFFFF;
+}
+.introbox a:active
+{
+ color : #FFFFFF;
+}
+.inrobox a:visited
+{
+ color : #FFFFFF;
+}
+.introbox a:hover
+{
+ color : #1C51A8;
+}
