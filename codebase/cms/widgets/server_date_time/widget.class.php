@@ -9,8 +9,8 @@
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
-global $cmsFolder;
-require_once("./$cmsFolder/widgetFramework.class.php");
+global $sourceFolder;
+require_once("$sourceFolder/widgetFramework.class.php");
 
 class serverDateTime extends widgetFramework
 {

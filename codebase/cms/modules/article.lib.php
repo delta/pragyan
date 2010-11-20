@@ -11,6 +11,7 @@ class article implements module, fileuploadable {
 	private $action;
 
 	public function getHtml($gotuid, $gotmoduleComponentId, $gotaction) {
+	
 		$this->userId = $gotuid;
 		$this->moduleComponentId = $gotmoduleComponentId;
 		$this->action = $gotaction;
