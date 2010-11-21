@@ -10,7 +10,6 @@
  */
  
 global $sourceFolder,$moduleFolder;
-include_once("$sourceFolder/smarttable.class.php");
 
 
 /** To connect to the database*/

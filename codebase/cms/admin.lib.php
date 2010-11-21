@@ -376,11 +376,35 @@ ADMINPAGE;
 	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) return $quicklinks;
 	require_once("users.lib.php");
 	$op="";$ophead=""; $str="";
-	if (((isset($_GET['subaction']) || isset($_GET['subsubaction']))) || (isset ($_GET['id'])) || (isset ($_GET['movePermId']))||(isset ($_GET['module']))) {
-		if (isset($_GET['subaction']) && $_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) updateGlobalSettings();
+	
+	
+	
+	
+	if (isset($_GET['subaction'])||isset($_GET['subsubaction'])||isset ($_GET['id'])||isset ($_GET['movePermId'])||isset ($_GET['module'])) {
+	
+		if (isset($_GET['subaction']) && $_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) 
+			updateGlobalSettings();
 		
-		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'useradmin'){ $op .= handleUserMgmt(); $ophead="{$ICONS['User Management']['small']}User Management"; }
-		else if (isset($_GET['subaction']) &&  $_GET['subaction'] == 'widgets') { $op .= handleWidgetAdmin($pageid); $ophead="{$ICONS['Widgets']['small']}Widgets Management"; }
+		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'useradmin')
+		{ 
+			$op .= handleUserMgmt();
+			$ophead="{$ICONS['User Management']['small']}User Management";
+		}
+		else if (isset($_GET['subaction']) &&  $_GET['subaction'] == 'widgets') 
+		{ 
+			$op .= handleWidgetAdmin($pageid); 
+			$ophead="{$ICONS['Widgets']['small']}Widgets Management"; 
+		}
+		else if(isset($_GET['subaction']) && $_GET['subaction'] == 'icon')
+		{
+			require_once("iconmanagement.lib.php");
+			$res = handleIconManagement();
+			if(isset($_GET['iconURL']))
+				return $res;
+			
+			$op .= $res;
+			$ophead = "{$ICONS['Icons']['small']}Icons Management";
+		}
 		else if (isset($_GET['subaction']) &&  $_GET['subaction'] == 'editgroups') {
 			require_once("permission.lib.php");
 			$pagepath = array();
@@ -391,18 +415,54 @@ ADMINPAGE;
 			$op .= groupManagementForm($userid, $modifiableGroups, $pagepath);
 			$ophead="{$ICONS['Group Management']['small']}Group Management";
 		}
-		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'reloadtemplates'){ $op .= reloadTemplates(); $ophead="{$ICONS['Templates Management']['small']}Reloading Templates"; }
-		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'reloadmodules'){ $op .= reloadModules(); $ophead="{$ICONS['Modules Management']['small']}Reloading Modules"; }
-		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'checkPerm'){ $op .= admin_checkFunctionPerms(); $ophead="{$ICONS['Access Permissions']['small']}Checking Permissions Consistency"; }
-		elseif (isset($_GET['subaction']) && $_GET['subaction'] == 'checkAdminUser'){ $op .= admin_checkAdminUser(); $ophead="Checking Administrator User"; }
-		elseif (isset($_GET['subaction']) && $_GET['subaction'] == 'checkAdminPerms'){ $op .= admin_checkAdminPerms(); $ophead="Checking Administrator Permissions"; }
-		elseif (isset($_GET['subaction']) && ($_GET['subaction'] == 'changePermRank')){ $op .= admin_changePermRank(); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; }
+		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'reloadtemplates')
+		{ 
+			$op .= reloadTemplates(); 
+			$ophead="{$ICONS['Templates Management']['small']}Reloading Templates"; 
+		}
+		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'reloadmodules')
+		{ 
+			$op .= reloadModules(); 
+			$ophead="{$ICONS['Modules Management']['small']}Reloading Modules"; 
+		}
+		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'checkPerm')
+		{ 
+			$op .= admin_checkFunctionPerms(); 
+			$ophead="{$ICONS['Access Permissions']['small']}Checking Permissions Consistency"; 
+		}
+		elseif (isset($_GET['subaction']) && $_GET['subaction'] == 'checkAdminUser')
+		{ 
+			$op .= admin_checkAdminUser(); 
+			$ophead="Checking Administrator User"; 
+		}
+		elseif (isset($_GET['subaction']) && $_GET['subaction'] == 'checkAdminPerms')
+		{
+		 $op .= admin_checkAdminPerms(); 
+		 $ophead="Checking Administrator Permissions"; 
+		}
+		elseif (isset($_GET['subaction']) && ($_GET['subaction'] == 'changePermRank'))
+		{ 
+			$op .= admin_changePermRank(); 
+			$ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; 
+		}
 		elseif ((isset($_GET['subaction']) && ($_GET['subaction'] == 'editprofileform')) ||
 			(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'editprofileform'))
-			{ $op .= admin_editProfileForm(); $ophead="{$ICONS['User Profile']['small']}Edit User Profile Form"; }
-		elseif (isset ($_GET['id'])) $op .= admin_userAdmin();
-		elseif (isset ($_GET['movePermId'])){ $op .= admin_changePermRank(); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; }
-		elseif (isset ($_GET['module'])){ $op .= admin_changePermRank(escape($_GET['module'])); $ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank for module '".escape($_GET['module'])."'"; }
+		{ 
+			$op .= admin_editProfileForm(); 
+			$ophead="{$ICONS['User Profile']['small']}Edit User Profile Form"; 
+		}
+		elseif (isset ($_GET['id'])) 
+			$op .= admin_userAdmin();
+		elseif (isset ($_GET['movePermId']))
+		{ 
+			$op .= admin_changePermRank(); 
+			$ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank"; 
+		}
+		elseif (isset ($_GET['module']))
+		{ 
+			$op .= admin_changePermRank(escape($_GET['module'])); 
+			$ophead="{$ICONS['Access Permissions']['small']}Changing Permissions Rank for module '".escape($_GET['module'])."'"; 
+		}
 	}
 	if($op!="")
 	{
@@ -432,16 +492,7 @@ ADMINPAGE;
 		
 		
 	}
-	/**
-	 * ICON management
-	 */
-	else if(isset($_GET['subaction']) && $_GET['subaction'] == 'icon')
-	{
-		require_once("iconmanagement.lib.php");
-		$op .= "<h3>Icon Management</h3>";
-		$op .= handleIconManagement();
-		$ophead = "Icons Management";
-	}
+	
 	return $str.$op.$quicklinks;
 
 }

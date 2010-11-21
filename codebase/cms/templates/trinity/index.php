@@ -87,7 +87,7 @@
 						<div id="countdown_dashboard">
 							 <div id="countdown-retro"></div>
 							
-							<h3 id='countdown'>&nbsp;&nbsp;&nbsp;... before<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pragyan 2011</h3>
+							<h4>... before Pragyan 2011</h4>
 						</div>
 						 <script language="javascript" type="text/javascript">
 							    $(function ()
@@ -101,11 +101,24 @@
 					
 					</div> 
 					<div id="right2" class="cont">
-
-						<h3>Links</h3>
-						Facebook<br />
-						Twitter
+				
+					<object width="250" height="200"><param name="movie" value="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3"></param>
+					<param name="allowFullScreen" value="true"></param>
+					<param name="allowScriptAccess" value="always"></param>
+					<embed src="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3&showinfo=0" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="250" height="200"></embed>
+					</object>
+					From the archives : The making of the Pragyan Wheel
 					</div>
+					
+					<div id="right3" class="cont">
+					
+						<h3>Links</h3>
+						<div class="link"><a href="http://www.pragyan.org/blog">Pragyan Blog</a></div>
+						<div class="link"><a href="http://www.youtube.com/user/nittpragyan">Pragyan's Youtube Channel</a></div>
+						<div class="link"><a href="http://www.pragyan.org/10">Pragyan 2010</a></div>
+						<div class="link"><a href="http://www.pragyan.org/09">Pragyan 2009</a></div>
+					</div>
+					
 				</div>
 				<div id="centerContent" class="cont">
 					<div id="ticker-wrapper" class="no-js">
@@ -188,4 +201,4 @@
 	</div>
 </div>
 </body>
-</html>
+</html><div>

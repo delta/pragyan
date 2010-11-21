@@ -30,11 +30,12 @@ function dragOutHandler(event) {
 	$(event.target).css({background:"none", color: "none"});
 }
 function dropHandler(event) {
-	$(event.target).load(rootUri+"/"+cmsFolder+"/iconmanagement/addicon.php?iconURL="+currentURL+"&targetId="+event.target.id.substr(1));
-	$(".selection").children("p").html("Hit Refresh Once you've made all the changes.").css("background","yellow");
+	$(event.target).load(rootUri+"/index.php?action=admin&subaction=icon&iconURL="+escape(currentURL)+"&targetId="+event.target.id.substr(1));
+	$(".selection").children("p").html("Hit Refresh Once you've made all the changes.").css("font-weight","bold");
 	event.preventDefault();
 	return false;
 }
 function dragStartHandler(event,target) {
 	currentURL = $(target).children("img").attr("src");
+	
 }

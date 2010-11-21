@@ -121,7 +121,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
 	  $imageTag = '';
 	  if($image) {
 	  	if($pageRow[$i][3] != NULL)
-	  		$imageTag = "<img src=\"{$pageRow[$i][3]}\" alt=\"{$pageRow[$i][1]}\" />";
+	  		$imageTag = "<img width=32 height=32 src=\"{$pageRow[$i][3]}\" alt=\"{$pageRow[$i][1]}\" />";
 	  	/*
 	  	 *@usage: display a default folder icon if the table value is NULL
 	  	 *@code:
