@@ -86,8 +86,10 @@ function installCMS() {
 	global $URL_REWRITE;
 	$installationSteps = 
 			array(
+
 					array('saveConfigurationSettings', 'Saving Configuration Settings', false),
 					array('checkDatabaseAccess', 'Checking Database Access', false),
+					array('checkOpenidCurl','Checking if cURL needed and installed',false),
 					array('importDatabase', 'Importing Database', false),
 					array('saveHtaccess', 'Checking .htaccess Settings', false)
 					//array('indexSite', 'Indexing site', false)
@@ -100,8 +102,7 @@ function installCMS() {
 		
 		///If URL Rewrite is disabled, then skip the saveHtaccess installation step.
 		if($URL_REWRITE=='false')
-			unset($installationSteps[3]);
-			
+			unset($installationSteps[4]);
 		if ($stepResult != '') {
 			$installationSteps[$i][] = $stepResult;
 			return $installationSteps;
@@ -110,6 +111,28 @@ function installCMS() {
 	}
 	return $installationSteps;
 }
+/** 
+ * Checks if Curl is enabled. This is needed for OpenID
+ * @return string Empty value if successful. If fails, returns with the error message string
+ */
+function checkOpenidCurl(){
+  if(OPENID_ENABLED=='true')//this function works only if uesr wanted to select OPENID
+    {
+      
+      if (iscurlinstalled()) //check if curl is enabled
+	return '';
+      else
+	{
+	  global $curl_message;
+	  return "<p><b>Error:</b>$curl_message</p>";
+	}
+    }
+  else
+    {
+      return '';
+    }
+}
+	  
 
 /**
  * Save configuration settings submitted from the form.
@@ -133,6 +156,7 @@ function saveConfigurationSettings() {
 			'txtCMSTitle' => 'CMS_TITLE',
 			'selTemplate' => 'CMS_TEMPLATE',
 			'txtUploadLimit' => 'UPLOAD_LIMIT',
+			'optEnableOpenID' => 'OPENID_ENABLED',
 			'txtCookieTimeout' => 'cookie_timeout',
 			'selErrorReporting' => 'error_level',
 			'optEnableIMAP' => 'AUTH_IMAP_STATUS',
@@ -149,6 +173,7 @@ function saveConfigurationSettings() {
 			'txtADSUserDomain' => 'AUTH_ADS_DOMAIN',
 			'txtMySQLServerPort' => 'MYSQL_PORT',
 			'optURLRewrite' => 'URL_REWRITE'
+			
 	);
 	
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
@@ -184,7 +209,7 @@ function saveConfigurationSettings() {
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
 
 		define ($configVariableName, ${$configVariableName});
-		if (++$c == 15)
+		if (++$c == 16) //this avoids DEFINEing all the config whichh are not to be written in database
 			break;
 	}
 	
@@ -316,7 +341,9 @@ function importDatabase() {
 	setGlobalSettingByAttribute("reindex_frequency","2");
 	setGlobalSettingByAttribute("allow_login","1");
 	setGlobalSettingByAttribute("cms_footer","&copy; 2010 - powered by <a href=\"http://sourceforge.net/projects/pragyan\" title=\"Praygan CMS\">Pragyan CMS v3.0</a>");
+	setGlobalSettingByAttribute("openid_enabled",OPENID_ENABLED);
 	
+
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (
 	1,'".ADMIN_USERNAME."','".ADMIN_EMAIL."','".ADMIN_FULLNAME."','".md5(ADMIN_PASSWORD)."',NOW(),'',1,'db')";
 	mysql_query($query);

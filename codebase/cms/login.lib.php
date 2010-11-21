@@ -388,7 +388,7 @@ function loginForm()
   global $urlRequestRoot;
   global $cmsFolder;
   $openidFolder=$urlRequestRoot.'/'.$cmsFolder.'/openid';
-	$login_str =<<<LOGIN
+	$openid_login_str =<<<OPENIDLOGIN
 
         <!-- Simple OpenID Selector -->
         <link rel="stylesheet" href="$openidFolder/css/openid.css" />
@@ -441,7 +441,8 @@ function loginForm()
 </form>
 <!-- /Simple OpenID Selector -->
 </fieldset>
-
+OPENIDLOGIN;
+	$login_str=<<<LOGIN
 					<script language="javascript" type="text/javascript">
 					<!--
 					function checkLoginForm(inputhandler) {
@@ -472,7 +473,11 @@ function loginForm()
 						</fieldset>
 					</form>
 LOGIN;
-	return $login_str;
+	global $openid_enabled;
+	if($openid_enabled=='true')
+	  return $openid_login_str.$login_str;
+	else
+	  return $login_str;
 }
 
 /** Undocumented Function.
@@ -488,129 +493,127 @@ function login() {
       require_once("registration.lib.php");
       return register();
     }
-  
-    if($_GET['subaction']=="openid_login")
-      {
-	if(isset($_POST['process']))
+    global $openid_enabled;
+    if($openid_enabled=='true'){
+      if($_GET['subaction']=="openid_login")
+	{
+	  if(isset($_POST['process']))
+	    {
+	      $openid_url = trim($_POST['openid_identifier']);
+	      openid_endpoint($openid_url);
+	    }
+	}
+      if($_GET['subaction']=="openid_verify"){
+	if($_GET['openid_mode'] != "cancel")
 	  {
-	    $openid_url = trim($_POST['openid_identifier']);
-	    openid_endpoint($openid_url);
+	  
+	    $openid_url = $_GET['openid_identity'];             // Get the user's OpenID Identity as returned to us from the OpenID Provider
+	    $openid = new Dope_OpenID($openid_url);	          //Create a new Dope_OpenID object.
+	    $validate_result = $openid->validateWithServer();   //validate to see if everything was recieved properly
+	    if ($validate_result === TRUE) {
+	      $userinfo = $openid->filterUserInfo($_GET);
+	      return openid_login($userinfo);
+	    }
+	    else if ($openid->isError() === TRUE){// Else if you're here, there was some sort of error during processing.
+	      $the_error = $openid->getError();
+	      $error = "Error Code: {$the_error['code']}<br />";
+	      $error .= "Error Description: {$the_error['description']}<br />";
+	    }
+	    else{//Else validation with the server failed for some reason.
+	      $error = "Error: Could not validate the OpenID at {$_SESSION['openid_url']}";
+	    }
+	  }
+	else //cancelled
+	  {
+	    displayerror("User cancelled the OpenID authorization");
 	  }
       }
-    if($_GET['subaction']=="openid_verify"){
-      if($_GET['openid_mode'] != "cancel")
+      if($_GET['subaction']=="openid_pass")
 	{
-	  
-	  $openid_url = $_GET['openid_identity'];             // Get the user's OpenID Identity as returned to us from the OpenID Provider
-	  $openid = new Dope_OpenID($openid_url);	          //Create a new Dope_OpenID object.
-	  $validate_result = $openid->validateWithServer();   //validate to see if everything was recieved properly
-	  if ($validate_result === TRUE) {
-	    $userinfo = $openid->filterUserInfo($_GET);
-	    return openid_login($userinfo);
-	  }
-	  else if ($openid->isError() === TRUE){// Else if you're here, there was some sort of error during processing.
-	    $the_error = $openid->getError();
-	    $error = "Error Code: {$the_error['code']}<br />";
-	    $error .= "Error Description: {$the_error['description']}<br />";
-	  }
-	  else{//Else validation with the server failed for some reason.
-	    $error = "Error: Could not validate the OpenID at {$_SESSION['openid_url']}";
-	  }
+	  if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
+	    {
+	      displayerror("You are trying to link an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
+	      return;
+	    }
+	  else
+	    {
+	      $openid_url=$_SESSION['openid_url'];
+	      $openid_email=$_SESSION['openid_email'];
+	      unset($_SESSION['openid_url']);
+	      unset($_SESSION['openid_email']);
+	      if(!isset($_POST['user_password']))
+		{
+		  displayerror("Empty Passwords not allowed");
+		  return;
+		}
+	      $user_passwd=$_POST['user_password'];
+	      $info=getUserInfo($openid_email);
+	      if(!$info)
+		{
+		  displayerror("No user with Email $openid_email");
+		}
+	      else
+		{
+		  $check=checkLogin($info['user_loginmethod'],$info['user_name'],$openid_email,$user_passwd);
+		  if($check)
+		    {
+		      //Password was correct. Link the account
+		      $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$info['user_id'].")";
+		      $result=mysql_query($query) or die(mysql_error()." in login() subaction=openid_pass while trying to Link OpenID account");
+		      if($result)
+			{
+			  displayinfo("Account successfully Linked. Log In one more time to continue.");
+			}
+		    }
+		  else
+		    {
+		      displayerror("The password you specified was incorrect");
+		    }
+				  
+		}
+	    }
 	}
-      else //cancelled
+      if($_GET['subaction']=="quick_openid_reg")
 	{
-	  displayerror("User cancelled the OpenID authorization");
+	  if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
+	    {
+	      displayerror("You are trying to register an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
+	      return;
+	    }
+	  else
+	    {
+	      $openid_url=$_SESSION['openid_url'];
+	      $openid_email=$_SESSION['openid_email'];
+	      unset($_SESSION['openid_url']);
+	      unset($_SESSION['openid_email']);
+	      if(!isset($_POST['user_name']) || $_POST['user_name']=="")
+		{
+		  displayerror("You didn't specified your Full name. Please <a href=\"./+login\">Login</a> again.");
+		  return ;
+		}
+	      $openid_fname=escape($_POST['user_name']);
+	      //Now let's start making the dummy user
+	      $query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " ."(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`,`user_loginmethod`) ".
+		"VALUES ('".$openid_email."', '".$openid_email."','".$openid_fname."','0',1,'openid');";	    
+	      $result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to insert information of new account");
+	      if($result)
+		{
+		  $id=mysql_insert_id();
+		  $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$id.")";
+		  $result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to Link OpenID account");
+		  if($result)
+		    {
+		      displayinfo("Account successfully Registered. Log In one more time to continue.");
+		    }
+
+		}
+	    
+	      return "Done Registration for OpenID";
+	      
+	    }
 	}
     }
-    if($_GET['subaction']=="openid_pass")
-      {
-	if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
-	  {
-	    displayerror("You are trying to link an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
-	    return;
-	  }
-	else
-	  {
-	    $openid_url=$_SESSION['openid_url'];
-	    $openid_email=$_SESSION['openid_email'];
-	    unset($_SESSION['openid_url']);
-	    unset($_SESSION['openid_email']);
-	    if(!isset($_POST['user_password']))
-	      {
-		displayerror("Empty Passwords not allowed");
-		return;
-	      }
-	    $user_passwd=$_POST['user_password'];
-	    $info=getUserInfo($openid_email);
-	    if(!$info)
-	      {
-		displayerror("No user with Email $openid_email");
-	      }
-	    else
-	      {
-		$check=checkLogin($info['user_loginmethod'],$info['user_name'],$openid_email,$user_passwd);
-		if($check)
-		  {
-		    //Password was correct. Link the account
-		    $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$info['user_id'].")";
-		    $result=mysql_query($query) or die(mysql_error()." in login() subaction=openid_pass while trying to Link OpenID account");
-		    if($result)
-		      {
-			displayinfo("Account successfully Linked. Log In one more time to continue.");
-		      }
-		  }
-		else
-		  {
-		    displayerror("The password you specified was incorrect");
-		  }
-				  
-	      }
-	  }
-      }
-    if($_GET['subaction']=="quick_openid_reg")
-      {
-	if(!isset($_SESSION['openid_url']) || !isset($_SESSION['openid_email']))
-	  {
-	    displayerror("You are trying to register an OpenID account without validating your log-in. Please <a href=\"./+login\">Login</a> with your OpenID account first.");
-	    return;
-	  }
-	else
-	  {
-	    $openid_url=$_SESSION['openid_url'];
-	    $openid_email=$_SESSION['openid_email'];
-	    unset($_SESSION['openid_url']);
-	    unset($_SESSION['openid_email']);
-	    if(!isset($_POST['user_name']) || $_POST['user_name']=="")
-	      {
-		displayerror("You didn't specified your Full name. Please <a href=\"./+login\">Login</a> again.");
-		return ;
-	      }
-	    $openid_fname=escape($_POST['user_name']);
-	    //Now let's start making the dummy user
-	    $query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " ."(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`,`user_loginmethod`) ".
-	      "VALUES ('".$openid_email."', '".$openid_email."','".$openid_fname."','0',1,'openid');";	    
-	    $result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to insert information of new account");
-	    if($result)
-	      {
-		$id=mysql_insert_id();
-		$query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$id.")";
-		$result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to Link OpenID account");
-		if($result)
-		  {
-		    displayinfo("Account successfully Registered. Log In one more time to continue.");
-		  }
-
-	      }
-	    
-	    return "Done Registration for OpenID";
-	    
-	    
-	    
-	  }
-      }
   }
-
-
 
   if (!isset ($_POST['user_email'])) {
     return loginForm();
