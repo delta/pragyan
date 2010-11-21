@@ -131,7 +131,9 @@
 	color: black;
 	background: #EEE;
 }
-
+#hc_loginform #openid_choice > *{
+	display: none;
+}
 
 /**
  * Hard Coded Profile Tab Form

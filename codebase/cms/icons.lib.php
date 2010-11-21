@@ -28,6 +28,7 @@ $ICON_ARRAY=array(
 'Home'=>"actions/go-home.png",
 'News'=>'apps/internet-news-reader.png',
 'Correct'=>'categories/applications-office.png',
+'Icons'=>'places/start-here.png',
 'Widgets'=>'apps/accessories-calculator.png',
 'Edit Page'=>"actions/edit-select-all.png",
 'New User'=>"actions/contact-new.png",
