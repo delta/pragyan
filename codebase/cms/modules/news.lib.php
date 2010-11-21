@@ -24,9 +24,9 @@
 		<channel>
     <title> {$query['news_title']} </title>
     <description> {$query['news_description']} </description>
-    <link>http://www.pragyan.org/09/home/</link>
+    <link> {$query['news_link']} </link>
      <language>en-gb</language>
-    <copyright>Pragyan 2009 Computer and Technical Support Team, 2008-2009</copyright>
+    <copyright> {$query['news_copyright']} </copyright>
 TTT;
 
 		$query1=mysql_query("SELECT * FROM `news_data` WHERE `page_modulecomponentid` = $this->moduleComponentId ORDER BY `news_rank`");
@@ -189,13 +189,27 @@ NEWS;
 			$result = mysql_query($query);
 			displayinfo("News feed has been successfully updated.");
 		}
+		if(isset($_POST['btnNewsPropSave'])) {
+			$query = "UPDATE `news_desc` SET `news_title` = '".escape($_POST['news_title'])."', `news_description`='".escape($_POST['news_desc'])."', `news_link`='".escape($_POST['news_link'])."', `news_copyright`='".escape($_POST['news_copyright'])."' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
+			if(mysql_query($query))
+				displayinfo("News Page Properties has been successfully updated.");
+			else
+				displayerror("There has been some error in updating Properties.");
+		}
 
 		$query="SELECT * FROM `news_data` WHERE `page_modulecomponentid`='$this->moduleComponentId' ORDER BY `news_rank`,`news_id`";
 		$result=mysql_query($query);
-
+		$descResult = mysql_fetch_assoc(mysql_query("SELECT * FROM `news_desc` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		$rowCount = mysql_num_rows($result);
 		global $ICONS;
-		$news = "<fieldset><legend>{$ICONS['News Edit']['small']} Edit News<legend><form name=\"newsedit\" action=\"./+edit\" method=\"POST\">";
+		$news = "<form method=POST action='./+edit'>";
+		$news .= "<table width=100%><tr><td>Title:</td><td><input name='news_title' type='text' value='{$descResult['news_title']}'></td></tr>";
+		$news .= "<tr><td>Description:</td><td><textarea name='news_desc'>{$descResult['news_description']}</textarea></td></tr>";
+		$news .= "<tr><td>Link:</td><td><input name='news_link' type='text' value='{$descResult['news_link']}'></td></tr>";
+		$news .= "<tr><td>Copyright:</td><td><textarea name='news_copyright'>{$descResult['news_copyright']}</textarea></td></tr>";
+		$news .= "<tr><td></td><td><input type='submit' value='Save' name='btnNewsPropSave'></td></tr></table>";
+		$news .= "</form>";
+		$news .= "<fieldset><legend>{$ICONS['News Edit']['small']} Edit News<legend><form name=\"newsedit\" action=\"./+edit\" method=\"POST\">";
 		$news.=<<<CHECKDEL
 		<script language="javascript">
 
@@ -213,6 +227,7 @@ CHECKDEL;
 		$editImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/apps/accessories-text-editor.png\" alt=\"Edit\" />";
 		$deleteImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Delete\" />";
 
+		
 		$news .= "<table frame=\"vsides\" border=\"1\" width=\"100%\">";
 		$news .="<tr><th>Sl. No.</th><th>Edit</th><th>Delete</th><th>News ID</th><th>Title</th><th>Feed</th><th>Rank</th><th>Date</th><th>Link</th></tr>";
 		$i = 1;
@@ -237,10 +252,8 @@ END;
 		$result = mysql_query($query) or die(mysql_error() . "news.lib L:73");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
-
-		$query = "INSERT INTO `news_data` (`page_modulecomponentid` ,`news_title`,`news_feed`)VALUES ('$compId', 'New news!', '')";
-		$result = mysql_query($query); // or die(mysql_error()."article.lib L:76");
-		if (mysql_affected_rows()) {
+		$globalSettings = getGlobalSettings();
+		if (mysql_query("INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_copyright`)VALUES ('$compId', '{$globalSettings['cms_footer']}')")) {
 			$moduleComponentId = $compId;
 			return true;
 		} else
@@ -248,8 +261,7 @@ END;
 
 	}
 	public function deleteModule($moduleComponentId){
-		mysql_query("DELETE FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
-		if(mysql_affected_rows())
+		if(mysql_query("DELETE FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'") AND mysql_query("DELETE FROM `news_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"))
 			return true;
 		return false;
 	}
@@ -264,7 +276,9 @@ END;
 		$result = mysql_query("SELECT * FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
 		while($row = mysql_fetch_array($result))
 			mysql_query("INSERT INTO `news_data` (`page_modulecomponentid` ,`news_title`,`news_feed`,`news_rank`,`news_date`,`news_link`)VALUES ('$compId', '{$row['news_title']}', '{$row['news_feed']}', '{$row['news_rank']}', '{$row['news_date']}', '{$row['news_link']}')");
-		
+		$result = mysql_query("SELECT * FROM `news_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
+		while($row = mysql_fetch_array($result))
+			mysql_query("INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_title`,`news_description`)VALUES ('$compId', '{$row['news_title']}', '{$row['news_description']}')");
 		return $compId;
 	}
 
@@ -275,10 +289,10 @@ END;
 		$newsView = "";
 		if($newsId=='')
 		{
-			$query="SELECT `page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module`='news' AND `page_modulecomponentid`=$moduleCompId";
+			$query="SELECT * FROM `news_desc` WHERE `page_modulecomponentid`=$moduleCompId";
 			$result=mysql_query($query) or die(mysql_error()."news.lib L247");
-			$temp=mysql_fetch_row($result);
-			$newsView.="<h1>$temp[0]</h1><br>";
+			$temp=mysql_fetch_assoc($result);
+			$newsView.="<h1><a href='{$temp['news_link']}'>{$temp['news_title']}</a></h1><br>";
 			$cond="";
 
 
@@ -294,6 +308,7 @@ END;
 				<p>$newsResult[news_feed]</p>
 NEWS;
 		}
+		$newsView .= "<br>" .$temp['news_copyright'];
 		return $newsView;
 	}
  }
