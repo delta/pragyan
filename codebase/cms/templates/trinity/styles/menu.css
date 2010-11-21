@@ -97,7 +97,7 @@
 	padding: 5px;
 	border: solid 1px white;
 	display:none;
-	width: 300px;
+	width: 500px;
 	font-size: 13px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -210,7 +210,8 @@ display:none;
 	width: 100%;
 	background: url(../images/rt.png);
 	height: 30px;
-	padding-top: 10px;
+	padding-top: 5px;
+	padding-bottom : 5px;
 	position: relative;
 	left: -2px;
 }
@@ -264,6 +265,9 @@ display:none;
 	display: none;
 	top: 0;
 	left: 100%;
+}
+.cms-menuitem img {
+	vertical-align : middle;
 }
 #cms-tabItem{
 	padding: 7px;

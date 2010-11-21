@@ -9,6 +9,37 @@
  
 
 function handleIconManagement() {
+
+	/**
+	 * If user is setting an icon to a page, then generate an ajax response
+	 */
+	if(isset($_GET['iconURL']))
+	{
+		$rootUri = hostURL();	
+		global $cmsFolder,$templateFolder;
+		if(isset($_GET["iconURL"]) && isset($_GET['targetId'])) {
+			$iconURL = escape($_GET["iconURL"]);
+			$target = escape($_GET["targetId"]);
+	
+			mysql_query("UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_image`='$iconURL' WHERE `page_id`='$target'");
+			$pageDetails = getPageInfo($target);
+			echo "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/weather-clear.png\" /> ";
+			echo $pageDetails["page_name"];
+	
+		}
+		else if(isset($_GET['iconAction'])) {
+			$action = $_GET['iconAction'];
+	
+		}
+		else
+		{
+			die("Restricted access");
+		}
+		exit(0);
+	}
+
+
+
 	$iconForm = "";
 	$iconForm .= <<<ICONFORM
 		<style type="text/css">
@@ -19,15 +50,14 @@ function handleIconManagement() {
 			text-decoration: none!important;
 		}	
 		</style>
-		<fieldset>
-		<legend>Icon Management</legend>
+		
 ICONFORM;
 	//Get data from Database
 	global $cmsFolder;
 	global $templateFolder;
 	global $userId;
 	$myhostURL = hostURL();
-	$iconForm .= "<script type=\"text/javascript\" src=\"$myhostURL/$cmsFolder/iconmanagement/icon.event.handler.js\"></script>";
+	$iconForm .= "<script type=\"text/javascript\" src=\"$myhostURL/$cmsFolder/$templateFolder/common/scripts/icon.event.handler.js\"></script>";
 	$iconForm .= <<<STYLES
 		<style type="text/css">
 		.myIconForm {
@@ -65,7 +95,7 @@ SELECTION;
 
 	$iconForm .= "</tr></table>";
 
-	$iconForm .= "</fieldset>";
+
 
 	return $iconForm;
 }
@@ -85,9 +115,9 @@ function getTreeView($pageId,$depth,$rootUri,$userId,$curdepth) {
 	  ondragenter="dragEnterHandler(event)" ondragover="dragOverHandler(event)" ondragleave="dragOutHandler(event)" ondrop="dropHandler(event)" id="p{$pageRow[$i][0]}">  
 DROPZONE;
 	  if($pageRow[$i][3] != NULL)
-	  	$var .= "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/weather-clear.png\" /> ";
+	  	$var .= "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/weather-clear.png\" />\n ";
 	  else
-	  	$var .= "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/dialog-error.png\" width=12 height=12/> ";
+	  	$var .= "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/dialog-error.png\" width=12 height=12/>\n ";
 	  $var .= "{$pageRow[$i][1]}</a>";
 	  $var .= getTreeView($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
 	  $var .= "</li>";
@@ -104,6 +134,9 @@ function getIconList() {
 	global $cmsFolder;
 	global $templateFolder;
 	$dir = "$cmsFolder/$templateFolder/common/icons/32x32/";
+	
+	//$dir = "$cmsFolder/$templateFolder/trinity/images/events/";
+	
 	$handle = scandir($dir);
 	$iconList .= <<<SCRIPTS
 	<script type="text/javascript">
@@ -120,17 +153,23 @@ SCRIPTS;
 	</style>
 STYLES;
 	$iconList .= "<div class='myIconList' style='height:300px;overflow:scroll;max-width:100%;'>";
+	$id=0;
 	foreach($handle as $item) {
 		if($item != '.' && $item != '..' && $item[0]!="." ) {
 			if(is_dir($dir.$item)) {
 				$h = scandir($dir.$item);
 				foreach($h as $i)
 					if($i != "." && $i != ".." && $i[0] != ".")
-						$iconList .= "<div class=\"dragme\" id=\"d$i\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\"><img src='{$rootUri}/{$dir}{$item}/{$i}' width=32 height=32/></div>";
+					{
+						$iconList .= "<div class=\"dragme\" id=\"d$id\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\"><img title='$i' alt='$i' src='{$rootUri}/{$dir}{$item}/{$i}' width=32 height=32/></div>\n";
+						$id++;
+					}
 			}
 			else {
-			$iconList .= $item;
-			$iconList .= "<img src='{$rootUri}/{$dir}{$item}' />";
+			//$iconList .= $item;
+			$iconList .= "<div class=\"dragme\" id=\"d$id\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\">";
+			$iconList .= "<img title='$item' alt='$item' src='{$rootUri}/{$dir}{$item}'/></div>\n";
+			$id++;
 			}
 		}
 	}

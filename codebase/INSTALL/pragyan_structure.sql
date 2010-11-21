@@ -516,6 +516,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_module` varchar(128) NOT NULL COMMENT 'Module type of the page',
   `page_modulecomponentid` int(11) NOT NULL COMMENT 'Component id used in the module',
   `page_template` varchar(50) NOT NULL,
+  `page_image` varchar(300) DEFAULT NULL,
   `page_menurank` int(11) NOT NULL COMMENT 'Rank for menu ordering',
   `page_inheritedinfoid` int(11) NOT NULL DEFAULT '-1' COMMENT 'Inherited info table mapping',
   `page_displayinmenu` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'To display in menu bar or not',
@@ -528,8 +529,8 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_openinnewtab` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether to open the page in a new tab when clicked',
   PRIMARY KEY (`page_id`),
   UNIQUE KEY `unique parent` (`page_parentid`,`page_name`),
-  FOREIGN KEY (`page_module`) REFERENCES `pragyanV3_modules`(`module_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+  KEY `page_module` (`page_module`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5;
 
 -- --------------------------------------------------------
 
