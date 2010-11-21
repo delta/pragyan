@@ -57,7 +57,7 @@
 </script>
 </head>
 
-<body>
+<body onload="<?php echo $STARTSCRIPTS; ?>" >
 <div class="outercontainer">
 	<div class="clearer"></div>
 	<div class="innercontainer">
@@ -87,7 +87,7 @@
 						<div id="countdown_dashboard">
 							 <div id="countdown-retro"></div>
 							
-							<h4>... before Pragyan 2011</h4>
+							<h4>ETA Pragyan 2011</h4>
 						</div>
 						 <script language="javascript" type="text/javascript">
 							    $(function ()

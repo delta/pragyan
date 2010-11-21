@@ -247,7 +247,7 @@ display:none;
 	color: #AAA;
 }
 .menucontainer ul.subnav > li:hover > a > div{
-	background: rgba(256,256,256,0.1);
+	background: #123;
 	color: #FFF;
 }
 .menucontainer li:hover > ul.subnav[class="depth2"]{

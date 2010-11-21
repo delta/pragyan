@@ -11,6 +11,7 @@
  
 global $sourceFolder,$moduleFolder;
 
+require_once("smarttable.class.php");
 
 /** To connect to the database*/
 function connect() {
