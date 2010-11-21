@@ -447,6 +447,19 @@ function getModuleComponentIdFromPageId($pageId, $moduleName) {
 	$moduleIdRow = mysql_fetch_row($moduleIdResult);
 	return $moduleIdRow[0];
 }
+/**
+ *@author boopathi
+ *@description returns the depth of the page - 0 if the page is a child of /home
+ *@param pageId
+ *@return pageDepth
+ **/
+function getPageDepth($pageId) {
+	$depth = 1;
+	if(getParentPage($pageId) == 0)
+		return 0;
+	else
+		return $depth + getPageDepth(getParentPage($pageId));
+}
 
 function logInfo ($userEmail, $userId, $pageId, $pagePath, $permModule, $permAction, $accessIpAddress) {
 	if(isRequiredMaintenance()) {

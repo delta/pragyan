@@ -332,7 +332,8 @@ function admin($pageid, $userid) {
 	<td><a href="./+admin&subaction=editgroups"><div>{$ICONS['User Groups']['large']}<br/>Group Management</div></a></td>
 	</tr>
 	<tr>
-	<td colspan=4><a href="./+admin&subaction=widgets"><div>{$ICONS['Widgets']['large']}<br/>Widgets Management</div></a></td>
+	<td colspan=2><a href="./+admin&subaction=icon"><div>{$ICONS['Icons']['large']}<br/>Icons Management</div></a></td>
+	<td colspan=2><a href="./+admin&subaction=widgets"><div>{$ICONS['Widgets']['large']}<br/>Widgets Management</div></a></td>
 	</tr>
 
 	</table>
@@ -431,7 +432,16 @@ ADMINPAGE;
 		
 		
 	}
-	
+	/**
+	 * ICON management
+	 */
+	else if(isset($_GET['subaction']) && $_GET['subaction'] == 'icon')
+	{
+		require_once("iconmanagement.lib.php");
+		$op .= "<h3>Icon Management</h3>";
+		$op .= handleIconManagement();
+		$ophead = "Icons Management";
+	}
 	return $str.$op.$quicklinks;
 
 }
