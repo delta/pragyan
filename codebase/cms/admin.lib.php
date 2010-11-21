@@ -1,6 +1,5 @@
 <?php
 /**
- *Task sumitted by Gaurav
  * @package pragyan
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
@@ -217,7 +216,9 @@ global $pageFullPath;
 	$globals=getGlobalSettings();
 	foreach($globals as $var=>$val) 
 		$$var=$val;
-$globalform=<<<globalform
+	$openidno_ischecked=($openid_enabled=='false')?'checked':'';
+	$openidyes_ischecked=($openid_enabled=='false')?'':'checked';
+	$globalform=<<<globalform
 	<table style="width:100%">
 	<tr>
 	<td>Upload Limit (bytes) :</td>
@@ -227,6 +228,14 @@ $globalform=<<<globalform
 	<td>Site Reindex Frequency (days) :</td>
 	<td><input type="text" name='reindex_frequency' value='$reindex_frequency'></td>
 	</tr>
+        <tr>
+			<td><label for="optEnableOpenID">Enable OpenID?</label></td>
+			<td>
+			<labe><input type="radio" name="openid_enabled" id="optEnableOpenIDNo" value="false" $openidno_ischecked />No</label>
+			<label><input type="radio" name="openid_enabled" id="optEnableOpenIDYes" value="true" $openidyes_ischecked />Yes</label>
+			</td>
+	</tr>
+        
 	</table>
 globalform;
 return $globalform;
@@ -496,9 +505,9 @@ ADMINPAGE;
 	return $str.$op.$quicklinks;
 
 }
-
 function updateGlobalSettings()
 {
+       
 	$global=array();
 	$global['allow_pagespecific_header']=isset($_POST['allow_page_header'])?1:0;
 	$global['allow_pagespecific_template']=isset($_POST['allow_page_template'])?1:0;
@@ -515,7 +524,20 @@ function updateGlobalSettings()
 	$global['cms_desc']=escape($_POST['cms_desc']);
 	$global['cms_keywords']=escape($_POST['cms_keywords']);
 	$global['cms_footer']=escape($_POST['cms_footer']);
-
+	
+	if(isset($_POST['openid_enabled']) && escape($_POST['openid_enabled']=='true')) //if user submitted true
+	  { 
+	    if (iscurlinstalled()) //check if curl is enabled
+	      $global['openid_enabled']='true'; // enable openid
+	    else
+	      {
+		global $curl_message;
+		displaywarning($curl_message); //dispaly warnning that curl is not enabled
+		$global['openid_enabled']='false'; //disable openid
+	      }
+	  }
+	else  //if user submitted false
+	  $global['openid_enabled']='false'; //disable openid
 	setGlobalSettings($global);
 
 	displayinfo("Global Settings successfully updated! Changes will come into effect on next page reload.");

@@ -601,7 +601,7 @@ class messenger {
 				
 		function mailer($to,$mailtype,$key,$from) {
 				
-				if(!isset($from)) $from=CMS_EMAIL;
+				if(!isset($from)) $from="from: ".CMS_TITLE." <".CMS_EMAIL.">";
 				
 				//init mail template file path
 				$mail_filepath= MAILPATH."/".LANGUAGE."/email/$mailtype.txt"; 
@@ -638,9 +638,9 @@ class messenger {
 				{
 					displayinfo("Vars :".arraytostring($this->vars));
 					displayinfo("Mail sent to $to from $from with subject $subject and body $body");
-					return true;
+					
 				}
-				else return mail($to, $subject, $body, $from);
+				return mail($to, $subject, $body, $from);
 			}
 				
 	}
@@ -728,3 +728,15 @@ function getFileActualPath($moduleType,$moduleComponentId,$fileName)
 	$file = $sourceFolder . "/" . $uploadFolder . "/" . $moduleType . "/" . $filename;
 	return $file;
 }
+/**
+ *  Checks for presence of the cURL extension for OpenID.
+*/
+function iscurlinstalled() {
+  if  (in_array  ('curl', get_loaded_extensions())) {
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+$curl_message="cURL extention is not enabled/installed on your system. OpenID requires this extention to be loaded. Please enable cURL extention. (This can be done by uncommenting the line \"extension=curl.so\" in your php.ini file). OpenID can't be enabled until you enable cURL.";

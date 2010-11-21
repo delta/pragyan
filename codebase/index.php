@@ -107,7 +107,6 @@ if(!defined("ADMIN_USERID") )
 ///Contains functions which are common to many tasks and very frequently used.
 require_once($sourceFolder."/common.lib.php");
 
-
 require_once($sourceFolder."/icons.lib.php");
 
 ///Library required for OpenID authentication
@@ -142,6 +141,12 @@ if ($action == 'keepalive')
 $globals=getGlobalSettings();
 foreach($globals as $var=>$val) 
 	$$var=$val;
+
+if($openid_enabled=='true'){
+  ///Library required for OpenID authentication                                                                                                                                                     
+  set_include_path('cms/openid/');
+  require_once 'cms/openid/class.dopeopenid.php';
+}
 
 ///Some of the previously defined global settings variables are converted into constants
 
