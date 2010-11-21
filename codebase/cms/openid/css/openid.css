@@ -1,5 +1,5 @@
 #openid_form {
-	width: 470px;	
+		
 }
 	#openid_form legend {
 		font-weight: bold;
@@ -20,8 +20,8 @@
 		float: left;
 	}
 	.openid_large_btn {
-		width: 100px;
-		height: 60px;
+		width: 60px;
+		height: 30px;
 		border: 1px solid #DDD;
 		margin: 3px;
 		float: left;

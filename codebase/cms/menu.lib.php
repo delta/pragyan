@@ -25,10 +25,10 @@ function findMenuIndex($menuArray, $pageId) {
 ///true --> generate from / till depth
 ///false --> generate from current page till depth relatively.
 
-function getMenu($userId, $pageIdArray, $complete = false) {
+function getMenu($userId, $pageIdArray, $complete = false, $image = false) {
 
 	
-	///This hostURL is replaces all ".(dot)s" with the current address, making the link absolute.	
+	///This hostURL is to replace all ".(dot)s" with the current address, making the link absolute.	
 	///@functions hostURL() common.lib.php - http://pragyan.org/11
 	///@functions selfURI() common.lib.php - http://pragyan.org/11/home/how_to_use/mypage/mypage2
 	$hostURL = ".";
@@ -59,9 +59,10 @@ MENUHTML;
 		$childMenu = getChildren($pageId, $userId);
 
 		///@note Not sure why $pageId = 0 ? Is this even correct ? $pageId is 0 when $complete=true, but then its only for drop-down style menu and not for classic style. But this code is within the classic section.
+		///@reply This is because $COMPLETEMENU is called in the index.php. So the pageid is set to 0. Just check the lines of code above. I ll change this soon and delete this note. @author: BOOPATHI
 		if ($pageId == 0) {
 			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($childMenu);
+			$menuHtml .= htmlMenuRenderer($childMenu,-1,' ',true);
 		}
 		else if (count($childMenu) == 0) {
 			if ($pageRow['page_displaysiblingmenu']) {
@@ -87,25 +88,21 @@ MENUHTML;
 	}
 	else
 	{
-	
+
 		$rootUri = hostURL();
-		
-	
 		
 		$pageId = ($pageId!=0)?getParentPage($pageId):$pageId;
 		
 		$pageRow = getPageInfo($pageId);
-		
-	
-		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId,1);
-		
-		
+			
+		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId,1,$image);
+				
 	}
 	return $menuHtml;
 
 }
 
-function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
+function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
   if($depth>0 || $depth==-1) {
   if($curdepth==1 || $pageId==0) $classname="topnav";
   else $classname="subnav";
@@ -114,23 +111,36 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   $var = "<ul class='{$classname} depth{$curdepth}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
   	$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$pageRow[$i][0]}'";
-	$result = mysql_query($query);
-	$result = mysql_fetch_assoc($result);
-	$opennewtab="";
-	if($result['page_openinnewtab']=='1') 
-		$opennewtab = ' target="_blank" ';
+		$result = mysql_query($query);
+		$result = mysql_fetch_assoc($result);
+		$opennewtab="";
+		if($result['page_openinnewtab']=='1') 
+			$opennewtab = ' target="_blank" ';
 		
 	  $newdepth=$curdepth+1;
-	  $var .= "\n<li><a href=\"".$rootUri.'/home'.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$pageRow[$i][2]."</div></a>";
-	  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth);
+	  $imageTag = '';
+	  if($image) {
+	  	if($pageRow[$i][3] != NULL)
+	  		$imageTag = "<img src=\"{$pageRow[$i][3]}\" alt=\"{$pageRow[$i][1]}\" />";
+	  	/*
+	  	 *@usage: display a default folder icon if the table value is NULL
+	  	 *@code:
+	  	  else {
+	  		global $cmsFolder;
+	  		global $templateFolder;
+	  		$imageTag = "<img src=\"{$hostt}/$cmsFolder/$templateFolder/common/images/folder.png\" alt=\"{$pageRow[$i][1]}\" width=\"16\" height=\"16\"/>";
+	  	}*/
+	  }
+	  $var .= "\n<li><a href=\"".$rootUri.'/home'.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$imageTag." ".$pageRow[$i][2]."</div></a>";
+	  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth,true);
 	  $var .= "</li>";
-}
+	}
   $var .= "</ul>";
   if(count($pageRow)==0) return "";
   return $var;
   }
 }
-function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
+function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $image=false) {
 	$menuHtml = ''; 
 	for ($i = 0; $i < count($menuArray); ++$i) {
 			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
@@ -144,7 +154,10 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 			}
 		if ($i == $currentIndex) 
 			$menuHtml .= ' class="currentpage"';
-		$menuHtml .= "><div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";
+		$menuHtml .= '>';
+		if ($image)
+			$menuHtml = "<img src=\"{$menuArray[$i][4]}\" />";
+		$menuHtml .= "<div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";
 	}
 	
 
@@ -184,12 +197,12 @@ function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
  */
 function getChildren($pageId, $userId) {
 	$pageId=escape($pageId);
-	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 	$childrenResult = mysql_query($childrenQuery);
 	$children = array();
 	while ($childrenRow = mysql_fetch_assoc($childrenResult))
 		if ($childrenRow['page_displayinmenu'] == true && getPermissions($userId, $childrenRow['page_id'], 'view', $childrenRow['page_module']) == true)
-			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_title']);
+			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_title'], $childrenRow['page_image']);
 	return $children;
 }
 

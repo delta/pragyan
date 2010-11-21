@@ -276,6 +276,7 @@ CREATE;
 	}
 /* PAGE CREATE TEXT ENDS*/
 
+
 /* PAGE MOVE COPY TEXT BEGINS */
 	$generatedTree = generateDirectoryTree($userId, "page", "settings", 0)->toHtml('fileCopyTreeContainer', 'fileCopyTree', "parentpagepath");
 	$movecopyPageSettingsText =<<<MOVECOPY

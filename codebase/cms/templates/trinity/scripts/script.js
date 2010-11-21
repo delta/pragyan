@@ -109,6 +109,17 @@ $(function() {
 	});
 	
 	/**
+	* Trigger normal and Open id menu
+	*/
+	$('#pragyanLogin').bind("click",function(e){
+		$("#openid_form *").fadeIn(100,function(){
+			$("hc_loginform fieldset").fadeOut();
+		});
+		e.preventDefault();
+		return false;
+	});
+	
+	/**
 	* Enable ticker
 	*/
 	$('#js-news').ticker({titleText: "Updates : "});

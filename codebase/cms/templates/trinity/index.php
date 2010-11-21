@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 
-    <title><?php echo  $TITLE; ?></title>
+    <title><?php echo $TITLE; ?></title>
     <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
     <meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
 	<?php global $urlRequestRoot;	global $PAGELASTUPDATED;
@@ -95,8 +95,6 @@
                 $('#clock').epiclock();        
                 $('#countdown-retro').epiclock({mode: $.epiclock.modes.countdown, time: new Date('February 18 2011, 00:00:00 GMT'), format: 'V:x:i:s', renderer: 'retro-countdown'});          
             });
-				
-			
 							
 						</script>
 					<!-- Countdown dashboard end -->
@@ -178,12 +176,11 @@
 	</div>
 	<?php echo $ACTIONBARPAGE ?>
 	<div id="hc_loginform">
-		<?php echo $LOGINFORM; ?>
+			<?php echo $LOGINFORM; ?>
+		<a href="+login" id="pragyanLogin">Pragyan Login</a><a href="+login" id="openidLogin">Open-id Login</a>
 	</div>
 	<!--
-	*
 	* Hard Coded links to profile and logout.
-	*
 	-->
 	<div id="hc_profile">
 		<a href="./+profile"><div>Profile</div></a><br/>
