@@ -57,7 +57,7 @@
 </script>
 </head>
 
-<body>
+<body onload="<?php echo $STARTSCRIPTS; ?>" >
 <div class="outercontainer">
 	<div class="clearer"></div>
 	<div class="innercontainer">
@@ -87,7 +87,7 @@
 						<div id="countdown_dashboard">
 							 <div id="countdown-retro"></div>
 							
-							<h4>... before Pragyan 2011</h4>
+							<h4>ETA Pragyan 2011</h4>
 						</div>
 						 <script language="javascript" type="text/javascript">
 							    $(function ()
@@ -105,7 +105,8 @@
 					<object width="250" height="200"><param name="movie" value="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3"></param>
 					<param name="allowFullScreen" value="true"></param>
 					<param name="allowScriptAccess" value="always"></param>
-					<embed src="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3&showinfo=0" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="250" height="200"></embed>
+					<param name="wmode" value="transparent"> 
+					<embed src="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3&showinfo=0" wmode="transparent" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="250" height="200"></embed>
 					</object>
 					From the archives : The making of the Pragyan Wheel
 					</div>

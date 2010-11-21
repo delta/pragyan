@@ -11,8 +11,8 @@
 div.cms-error, div.cms-warning, div.cms-notice, div.cms-info {vertical-align: middle; margin: 11px; border-width: 1px; border-style: solid; z-index: 1; padding: 8px 8px 8px 58px; background-position: left 50%; background-repeat: no-repeat; min-height: 30px;-moz-opacity:.75; filter:alpha(opacity=75);color:#000}
 div.cms-error { background-image: url('../images/cms_error.png'); background-color: #DAA; border-color:#FBB; color:black;}
 .cms-error, .cms-warning, .cms-notice, .cms-info a:link, .cms-info a:visited, .cms-info a{color:#023455;}
-div.cms-warning { background-image: url('icons/32x32/status/dialog-warning.png'); background-color: #cccccc; border-color: #ffdc79 }
-div.cms-notice { background-image: url('icons/32x32/status/dialog-information.png'); background-color: #dde4ef; border-color: #6894da }
+div.cms-warning { background-image: url('../../common/icons/32x32/status/dialog-warning.png'); background-color: #cccccc; border-color: #ffdc79 }
+div.cms-notice { background-image: url('../../common/icons/32x32/status/dialog-information.png'); background-color: #dde4ef; border-color: #6894da }
 div.cms-info { background-image: url('../images/cms_info.png'); background-color: #CCF; border-color: #AAF; color: black;}
 div.cms-info a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
 div.cms-info a:hover {background: #44F; color: #FFF!important; }
@@ -26,8 +26,8 @@ span.ddtree_selected { background-color: #E8E8E8; }
 span.ddtree_accessible { background-color: #E8FFE8; }
 span.ddtree_inaccessible { background-color: #FFE8E8; }
 .treeview ul{ margin-left: -10px; padding: 0px; }
-.treeview li{ padding-top: 2px; padding-bottom: 2px; background: url(images/ddtree_list.gif) no-repeat left center; list-style-type: none; padding-left: 22px; }
-.treeview li.submenu{ background: url('images/ddtree_closed.gif') no-repeat left 4px; }
+.treeview li{ padding-top: 2px; padding-bottom: 2px; background: url('../../common/images/ddtree_list.gif') no-repeat left center; list-style-type: none; padding-left: 22px; }
+.treeview li.submenu{ background: url('../../common/images/ddtree_closed.gif') no-repeat left 4px; }
 .treeview li.submenu ul{ display: none; }
 .treeview .submenu ul li{ cursor: default; }
 
