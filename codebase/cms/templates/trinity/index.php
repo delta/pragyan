@@ -105,7 +105,8 @@
 					<object width="250" height="200"><param name="movie" value="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3"></param>
 					<param name="allowFullScreen" value="true"></param>
 					<param name="allowScriptAccess" value="always"></param>
-					<embed src="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3&showinfo=0" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="250" height="200"></embed>
+					<param name="wmode" value="transparent"> 
+					<embed src="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3&showinfo=0" wmode="transparent" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="250" height="200"></embed>
 					</object>
 					From the archives : The making of the Pragyan Wheel
 					</div>
