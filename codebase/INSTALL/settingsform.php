@@ -18,7 +18,8 @@ $settingsForm = <<<SETTINGSFORM
 	function toggleLdap(b) {
 		document.getElementById('txtLDAPServerAddress').disabled =
 		document.getElementById('txtLDAPSearchGroup').disabled = 
-		document.getElementById('txtLDAPUserDomain').disabled = b;
+
+		  document.getElementById('txtLDAPUserDomain').disabled = b;
 	}
 
 	function toggleAds(b) {
@@ -315,6 +316,11 @@ $settingsForm = <<<SETTINGSFORM
 	}
 	function checkForm()
 	{
+	  if(!document.getElementById('optEnableOpenIDYes').checked && !document.getElementById('optEnableOpenIDNo').checked)
+	    {
+	      alert("Please select if you want to enable OpenID");
+	      return false;
+	    }
 		if(document.getElementById('txtAdminPassword').value != document.getElementById('txtAdminPassword2').value)
 		{
 			alert("Administrator Passwords do not match");
@@ -325,13 +331,14 @@ $settingsForm = <<<SETTINGSFORM
 			alert("Administrator Password should not be left blank");
 			return false;
 		}
+		
 		return validate_form();
 	}
 
 
 </script>
 
-<form name="SettingsForm" method="POST" action="./install.php">
+<form name="SettingsForm" method="POST" action="">
 
 
 
@@ -521,6 +528,26 @@ $settingsForm = <<<SETTINGSFORM
 			<td><input type="text" id="txtADSUserDomain" name="txtADSUserDomain" value="sangam.nitt.edu" /></td>
 		</tr>
 	</table>
+</fieldset>
+<fieldset name="OpeinIDSettings">
+	<legend>OpenID Settings</legend>
+
+	<table border="0" width="580px">
+	
+		<tr>
+			<td><label for="optEnableOpenID">Enable OpenID?</label></td>
+			<td>
+			<labe><input type="radio" name="optEnableOpenID" id="optEnableOpenIDNo" value="No" />No</label>
+			<label><input type="radio" name="optEnableOpenID" id="optEnableOpenIDYes" value="Yes" />Yes</label>
+			</td>
+		</tr>
+		<tr>
+	  <td><label for="btnCheckOpenID">Check if OpenID is supported (Click this button to check if your server can support OpenID)</label></td>
+			<td>
+				<input type="button" name="btnCheckOpenID" id="btnCheckOpenID" value="Check OpenID Support"/>
+				
+			</td>
+		</tr>	</table>
 </fieldset>
 
 <script type="text/javascript" language="javascript">

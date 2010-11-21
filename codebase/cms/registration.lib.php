@@ -151,7 +151,7 @@ FORM;
 				$key = getVerificationKey($email, $temp['user_password'], $temp['user_regdate']);
 
 				// send mail code starts here - see common.lib.php for more
-				$from = CMS_EMAIL;
+				$from = "from: ".CMS_TITLE." <".CMS_EMAIL.">";
 				$to = "$email";
 				$mailtype = "activation_mail";
 				
@@ -255,7 +255,7 @@ FORM;
 				$key = getVerificationKey($email, $temp['user_password'], $temp['user_regdate']);
 
 				// send mail code starts here - see common.lib.php for more
-				$from = CMS_EMAIL;
+				$from = "from: ".CMS_TITLE." <".CMS_EMAIL.">";
 				$to = "$email";
 				$mailtype = "activation_mail";
 		
