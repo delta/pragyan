@@ -100,7 +100,7 @@ body img
 	font-size: small;
 	height: 25px;
 	text-align: left;
-	position: fixed;
+	position : fixed;
 	bottom: -6px;
 	text-align : center;
 }
@@ -167,6 +167,9 @@ body img
  color : #1C51A8;
 }
 
+#right2 object {
+	z-index: -100;
+}
 #right3 div.link {
 	
 	background-color : transparent;
