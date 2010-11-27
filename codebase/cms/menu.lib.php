@@ -60,9 +60,9 @@ MENUHTML;
 
 		///@note Not sure why $pageId = 0 ? Is this even correct ? $pageId is 0 when $complete=true, but then its only for drop-down style menu and not for classic style. But this code is within the classic section.
 		///@reply This is because $COMPLETEMENU is called in the index.php. So the pageid is set to 0. Just check the lines of code above. I ll change this soon and delete this note. @author: BOOPATHI
-		if ($pageId == 0) {
+		if ($pageId == 0) { 
 			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($childMenu,-1,' ',true);
+			$menuHtml .= htmlMenuRenderer($childMenu,-1,'',true);
 		}
 		else if (count($childMenu) == 0) {
 			if ($pageRow['page_displaysiblingmenu']) {
@@ -85,6 +85,7 @@ MENUHTML;
 		}
 
 		$menuHtml .= '</div></div>';
+		
 	}
 	else
 	{
@@ -146,6 +147,7 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $ima
 			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
 			$result = mysql_query($query);
 			$result = mysql_fetch_assoc($result);
+			
 			if($result['page_openinnewtab']=='1') {
 				$menuHtml .= "<a href=\"".hostURL()."/home/{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
 			}
@@ -156,7 +158,7 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $ima
 			$menuHtml .= ' class="currentpage"';
 		$menuHtml .= '>';
 		if ($image)
-			$menuHtml = "<img src=\"{$menuArray[$i][4]}\" />";
+			$menuHtml .= "<img src=\"{$menuArray[$i][4]}\" />";
 		$menuHtml .= "<div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";
 	}
 	
@@ -198,11 +200,14 @@ function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 function getChildren($pageId, $userId) {
 	$pageId=escape($pageId);
 	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	
 	$childrenResult = mysql_query($childrenQuery);
 	$children = array();
 	while ($childrenRow = mysql_fetch_assoc($childrenResult))
 		if ($childrenRow['page_displayinmenu'] == true && getPermissions($userId, $childrenRow['page_id'], 'view', $childrenRow['page_module']) == true)
 			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_title'], $childrenRow['page_image']);
+			
+		
 	return $children;
 }
 
