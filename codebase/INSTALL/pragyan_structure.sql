@@ -382,38 +382,54 @@ CREATE TABLE IF NOT EXISTS `list_prop` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `poll_answers`
---
+-- 
+-- Table structure for table `poll_content`
+-- 
 
-CREATE TABLE IF NOT EXISTS `poll_answers` (
+CREATE TABLE `poll_content` (
+  `pid` int(11) NOT NULL auto_increment,
   `page_modulecomponentid` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `poll_answer` varchar(200) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `ques` longtext NOT NULL,
+  `o1` longtext NOT NULL,
+  `o2` longtext NOT NULL,
+  `o3` longtext NOT NULL,
+  `o4` longtext NOT NULL,
+  `o5` longtext NOT NULL,
+  `o6` longtext NOT NULL,
+  `multiple_opt` tinyint(1) NOT NULL default '0' COMMENT '1 indicates multiple options',
+  `visibility` tinyint(1) NOT NULL default '1',
+  PRIMARY KEY  (`pid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `poll_questions`
+-- Table structure for table `poll_log`
 --
 
-CREATE TABLE IF NOT EXISTS `poll_questions` (
+CREATE TABLE `poll_log` (
+  `pid` int(11) NOT NULL auto_increment,
   `page_modulecomponentid` int(11) NOT NULL,
-  `poll_question` varchar(500) NOT NULL,
-  `poll_numberofoption` tinyint(4) NOT NULL,
-  `poll_option1` varchar(100) NOT NULL,
-  `poll_option2` varchar(100) NOT NULL,
-  `poll_option3` varchar(100) NOT NULL,
-  `poll_option4` varchar(100) NOT NULL,
-  `poll_option5` varchar(100) NOT NULL,
-  `poll_option6` varchar(100) NOT NULL,
-  `poll_option7` varchar(100) NOT NULL,
-  `poll_option8` varchar(100) NOT NULL,
-  `poll_option9` varchar(100) NOT NULL,
-  `poll_option10` varchar(100) NOT NULL,
-  UNIQUE KEY `componentid` (`page_modulecomponentid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `o1` int(11) NOT NULL default '0',
+  `o2` int(11) NOT NULL default '0',
+  `o3` int(11) NOT NULL default '0',
+  `o4` int(11) NOT NULL default '0',
+  `o5` int(11) NOT NULL default '0',
+  `o6` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`pid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `poll_users`
+-- 
+
+CREATE TABLE `poll_users` (
+  `pid` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `page_modulecomponentid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
