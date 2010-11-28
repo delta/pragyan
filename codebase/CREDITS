@@ -61,8 +61,13 @@ Version 3.0+
     * Enable/disable login
     * User profile form
     * Target option in links module
-    * Icons Management
+
+- Boopathi R <boopathi[at]live.com>
     * Trinity Template
+    * Complete Menu
+    * Icons Management
+
+Also thanks to Aparna Chugh for the Poll Module, Siddhant Sanyam for Open ID integration and Shiva Nandan for enabling Pragyan CMS to work without URL Rewriting.
 
 Version 2.0-2.6
 ---------------
@@ -107,7 +112,7 @@ Version 2.0-2.6
 And also to the following people who have contributed minor changes,
 enhancements and bugfixes :
 M. Surya Sankar, Sapna Shukla, Shruti J, Ashwathi Krishnan, K.R Arvind,
-T.V. Karthik, Shivanandan, Siddhant, Gaurav Kumar, Aparna, Diksha, P. Mohnish
+T.V. Karthik, Gaurav Kumar, Diksha, P. Mohnish
 
 Templates: 
  Crystalx : Vit Dlouhy <vit.dlouhy[at]nuvio.cz>
