@@ -1,380 +1,593 @@
 <?php
-/**
- * @package pragyan
- * @copyright (c) 2008 Pragyan Team
- * @license http://www.gnu.org/licenses/ GNU Public License
- * For more details, see README
- * UNDER CONSTRUCTION
- */
+
 class poll implements module {
 	private $userId;
 	private $moduleComponentId;
 	private $action;
 
-	public function getHtml($gotuid, $gotmoduleComponentId, $gotaction) {
+	public function getHtml($gotuid, $gotmoduleComponentId, $gotaction) 
+	{
 		$this->userId = $gotuid;
 		$this->moduleComponentId = $gotmoduleComponentId;
 		$this->action = $gotaction;
-		if ($this->action == "vote")
-			return $this->actionVote();
-		if ($this->action == "viewresults")
-			return $this->actionViewresults();
-		if ($this->action == "create"){ echo 'hoe';
-			return $this->actionAdmincreatepoll("", 10);}
-		if ($this->action == "edit")
-			return $this->actionAdmineditpoll();
-		if ($this->action == "archive")
-			return $this->actionAdminarchivepoll();
-		if ($this->action == "delete")
-			return $this->actionAdmindeletepoll();
+		if ($this->action == "view")
+		   return $this-> actionView();
+		if ($this->action == "cast")
+		   return $this-> actionCast();
+		if ($this->action == "manage")
+		   return $this-> actionManage();
 		if ($this->action == "viewstats")
-			return $this->actionAdminviewstats();
+		   return $this-> actionViewstats();
 	}
+	
 
-	/*Options to be displayed :
-	 * View Polls					View the polls created under a page.
-	 * Vote							Vote in a poll.
-	 * View Results					View the results of open polls.
-	 * Create						Create a poll(Admin only)
-	 * Edit							Edit an existing poll(Admin only)
-	 * Archive/close				Close polls and archive them if necessary(Admin only)
-	 * Delete						Delete an open poll/an archive(Admin only)
-	 * View statistics				View the voter statistics(Admin only)
-	 */
-
-	/*functions being written*/
-	/*TABLES USED
-	POLLS (ID,QUESTION,PARENT,STATUS,EXP_TIME,EXPIRE,COMMENTS)
-	POLLDATA  (POLLID,QUESTION,OPTIONID,OPTIONTEXT,VOTES,TOTALVOTES,COLOUR)
-	USERDATA(ID,USER,POLLID,OPTION,COMMENT)
-	*/
-	function createtables(){
-		mysql_connect("localhost","delta","DeltainC") or die(mysql_error());
-mysql_select_db("polls") or die(mysql_error());
-mysql_query("CREATE TABLE polls(id INT AUTO_INCREMENT NOT NULL ,PRIMARY KEY(id),question VARCHAR(200),parent VARCHAR(100),status INT,exp_time INT,expire INT,comments INT)") or die(mysql_error());
-		mysql_query("CREATE TABLE polldata(id INT AUTO_INCREMENT NOT NULL ,PRIMARY KEY(id),pollid INT,question VARCHAR(200),optionid INT,optiontext VARCHAR(200),votes INT,totalvotes INT,colour VARCHAR(20))") or die(mysql_error());
-		mysql_query("CREATE TABLE userdata(id INT AUTO_INCREMENT NOT NULL,PRIMARY KEY(id),userid INT,pollid INT,optionid INT,comment VARCHAR(1000))") or die(mysql_error());
-	}
-	function connect() {
-		mysql_connect("localhost","delta","DeltainC") or die (mysql_error());
-		mysql_select_db("poll") or die (mysql_error());
-	}
-
-	function actionviewpolls() {
-		function checkexpiry($pollid, $exp_time) {
-		$timestamp = time();
-		if ($timestamp >= $exp_time) {
-			mysql_query("UPDATE polls SET expire=2 status='archived' WHERE id=$pollid");
-			return 1;
-		}
-	}
-
-		mysql_connect("localhost","delta","DeltainC") or die (mysql_error());
-		mysql_select_db("polls") or die (mysql_error());
-		$list = mysql_query("SELECT * FROM polls ") or die (mysql_error());
-		$content="<ol>";
-		$ctr = 0;
-		$content.='<h2>current polls</h2>';
-		while ($poll = mysql_fetch_array($list)) {
-			$ctr++;
-			if ($poll['status'] != 'off') {
-				checkexpiry($poll['id'], $poll['exp_time']); 								//check for expiry
-				if ($poll['status'] == 'on') { 												//enabled polls
-					$pollurl = $poll['parent'].'vote.php?pollid='.$poll['id'].'&action=vote';
-					$content.='<li><a href ="'.$pollurl.'">'.$poll['question'].'</a></li>';
-				}
-			}
-		}
-		if ($ctr == 0)
-			$content.="No current polls exist here</ol>";
-		mysql_data_seek($list); //or die (mysql_error());
-		$ctr=0;
-		$content.='<h2>archived polls</h2>';
-		$poll = mysql_fetch_array($list,0) ;
-		echo $poll['id'];
-		while ($poll = mysql_fetch_array($list)) {
-				echo $poll['id'];
-				if ($poll['status'] != 'off') {
-					if ($poll['status'] == 'archived') { 									//archived polls
-						$pollurl = $poll['parent'].'vote.php?pollid='.$poll['id'].'&action=vote';
-						$content.='<li><a href ="'.$pollurl.'">'.$poll['question'].'</a></li>';
-					}
-				}
-		}
-		if ($ctr == 0)
-			$content.="No archived polls exist here</ol>";
-		echo $content;
-
-
-	}
-
-
-	function actionvote() {
-		mysql_connect("localhost","delta","DeltainC") or die (mysql_error());
-			mysql_select_db("polls") or die (mysql_error());
-			if ($_GET['action'] == 'vote') {
-					$pollarray = mysql_query("SELECT * FROM polls WHERE id=".$_GET['pollid']) or die (mysql_error());
-					$poll = mysql_fetch_array($pollarray) or die (mysql_error());
-					if ($poll['status'] == 'archived')
-						$content.="The poll has been closed. You can view the results in the results page<br>";
-					else
-					if ($poll['status'] == 'off')
-							$content.="The poll has been disabled. You cannot view it.<br>";
-					else {
-							$content.="<form action=submitvote.php method=POST>";
-							$content.="<h2>" . $poll['question'] . "</br></h2>";
-							$content.="<ol type=a>";
-							$optionarray = mysql_query("SELECT optionid,optiontext FROM polldata WHERE pollid=".$_GET['pollid']) or die (mysql_error());
-							while ($options = mysql_fetch_array($optionarray)) {
-									$oid = $options['optionid'];
-									$value = $options['optiontext'];
-									$content.='<li><input type=radio name="oid'.$oid.'" >' . $value . '</li>';
-								}
-							$content.='</ol><input type= hidden name=user value=' . $userId . '><input type= hidden name=pollid value=' . $_GET['pollid'] . '></br><div align = "center"><input type=submit name="vote" value="VOTE"></div>';
-						}
-				}
-			else 	$content.="There seems to have been some internal error. Try again later. click here to go to the results page.";
-
-
-		echo $content;
-	}
-	function submitvote(){
-	mysql_connect("localhost","delta","DeltainC") or die (mysql_error());
-	mysql_select_db("polls") or die (mysql_error());
-	$user=4;
-	$voted=0;
-	$query = mysql_query("SELECT pollid FROM userdata WHERE userid=".$user);
-	while ($check = mysql_fetch_array($query)) {
-			if ($check['pollid'] == $_POST['pollid']) {
-				$content.="You have already voted in this poll.";
-				$voted = 1;
-				break;
-				}
-			}
-	if ($voted!=1) {
-				mysql_query("UPDATE polldata SET totalvotes=totalvotes+1 WHERE pollid=".$_POST['pollid']);
-				$i=0;
-				$pollid=$_POST['pollid'];
-				if(!isset($_POST['comment']))
-					$comment='No Comments';
-				while ($_POST['oid'.$i]!='on') {
-						$i++;
-						}
-				mysql_query("UPDATE polldata SET votes=votes+1 WHERE pollid=".$_POST['pollid']." AND optionid=".$i);
-				mysql_query("INSERT INTO userdata  (userid,pollid,optionid,comment) VALUES ('$user','$pollid','$i','$comment')") or die (mysql_error());
-				$content.="You have voted successfully";
-			}
-	echo $content;
-	}
-
-
-	function actionAdminuploadpoll() { //to upload the created polls-form action
-		require_once 'create.php';
-mysql_connect("localhost","delta","DeltainC") or die (mysql_error());
-mysql_select_db("polls") or die (mysql_error());
-if (isset ($_POST['submit'])) {
-
-			if ($_POST['optionnumber']==0)
+	public function actionView()
+	{
+						
+			$display="<h2>Poll!</h2><br /><div align='center'>";
+			
+			$query="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
+			$r=mysql_query($query);
+			$n=mysql_num_rows($r);
+			while($row=mysql_fetch_array($r))
 			{
-				$question = trim($_POST['question']);
-			 	$error=false;
-			 	$err = array ();
-				$comments = trim($_POST['comments']);
-				$expire = trim($_POST['expire']);
-				$status = trim($_POST['status']);
-				$parent = substr($_SERVER['PHP_SELF'], 0, -strlen(strrchr($_SERVER['PHP_SELF'],'/'))+1);
-				if (strlen($question) == 0) { //error reporing
-					$error = true;
-					$err[0] = true;
+				$m=$row['multiple_opt'];
+				$p=$row['pid'];	
+				$query2="SELECT * FROM `poll_users` WHERE `pid`='$p' AND `page_modulecomponentid`='$this->moduleComponentId' AND `userID`='$this->userId'";
+				$r2=mysql_query($query2);
+				$n2=mysql_num_rows($r2);
+				if($n2==0)   ///<the user has not yet voted for this poll
+				{       
+					    $display.="<form name='f".$p."' method='post' action='./+cast'><table width='50%'><tr><td align='center'><b><div align='center'>".$row['ques']."</div></b></td></tr>";
+					    $display.="<tr><td>";
+							if($row['o1']!=NULL)
+								if($m==0)
+									$display.="<input type='radio' name='o' value='1' />".$row['o1']."<br />";	
+								else	
+									$display.="<input type='checkbox' name='c1' value='1' />".$row['o1']."<br />";
+				        $display.="</td></tr><tr><td>";
+							if($row['o2']!=NULL)
+								if($m==0)
+									$display.="<input type='radio' name='o' value='2'  />".$row['o2']."<br />";
+								else	
+									$display.="<input type='checkbox' name='c2' value='2'  />".$row['o2']."<br />";	
+						$display.="</td></tr>";
+							if($row['o3']!=NULL)
+								if($m==0)
+									$display.="<tr><td><input type='radio' name='o' value=3  />".$row['o3']."<br /></td></tr>";		
+								else	
+									$display.="<tr><td><input type='checkbox' name='c3' value=1  />".$row['o3']."<br /></td></tr>";
+							if($row['o4']!=NULL)
+								if($m==0)
+									$display.="<tr><td><input type='radio' name='o' value=4  />".$row['o4']."<br /></td></tr>";		
+								else	
+									$display.="<tr><td><input type='checkbox' name='c4' value=4  />".$row['o4']."<br /></td></tr>";
+							if($row['o5']!=NULL)
+								if($m==0)
+									$display.="<tr><td><input type='radio' name='o' value=5  />".$row['o5']."<br /></td></tr>";		
+								else	
+									$display.="<tr><td><input type='checkbox' name='c5' value=5  />".$row['o5']."<br /></td></tr>";
+							if($row['o6']!=NULL)
+								if($m==0)
+									$display.="<tr><td><input type='radio' name='o' value=6  />".$row['o6']."<br /></td></tr>";
+								else	
+									$display.="<tr><td><input type='checkbox' name='c6' value=6  />".$row['o6']."<br /></td></tr>";
+						$display.="<tr><td><div align='center'>";
+						$display.="<input type='submit' value='Cast my vote!' /><input type='hidden' name='id' value='".$p."' /></div></td></tr></table></form>";
 				}
-				if($expire!=NULL)
-						if ($_POST['exp_time']==NULL) {//error reporing
-							$error = true;
-							$err[3] = true;
-							}
-						else{
-							$err[3]=false;
-							$exp_time = $timestamp + trim($_POST['exp_time']) * 86400;}
 				else
-						$expire='no';
-				if (strlen($_POST['ch1'])== 0) {
-					$error = true;
-					$err[1] = true;
+				{
+						$query5="SELECT * FROM `poll_log` WHERE `pid`='".$p."' AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$res5=mysql_query($query5);
+						$row5=mysql_fetch_array($res5);
+						$total=$row5['o1']+$row5['o2']+$row5['o3']+$row5['o4']+$row5['o5']+$row5['o6'];
+						
+						if($row['o1']!=NULL)
+						  $po1=round($row5['o1']/$total*100);
+						if($row['o2']!=NULL)
+						  $po2=round($row5['o2']/$total*100);
+						if($row['o3']!=NULL)
+						  $po3=round($row5['o3']/$total*100);
+						if($row['o4']!=NULL)
+						  $po4=round($row5['o4']/$total*100);
+						if($row['o5']!=NULL)
+						  $po5=round($row5['o5']/$total*100);
+						if($row['o6']!=NULL)
+						  $po6=round($row5['o6']/$total*100);
+						  
+						$display.="<table width='50%'><tr><td align='center' colspan='2'><b><div align='center'>".$row['ques'];
+						$display.="</div></b></td></tr>";						
+						if($row['o1']!=NULL)
+							$display.="<tr><td>".$row['o1']."</td><td width='20%'>".$po1."%</td></tr>";
+						if($row['o2']!=NULL)
+							$display.="<tr><td>".$row['o2']."</td><td>".$po2."%</td></tr>";
+						if($row['o3']!=NULL)
+							$display.="<tr><td>".$row['o3']."</td><td>".$po3."%</td></tr>";
+						if($row['o4']!=NULL)
+							$display.="<tr><td>".$row['o4']."</td><td>".$po4."%</td></tr>";
+						if($row['o5']!=NULL)
+							$display.="<tr><td>".$row['o5']."</td><td>".$po5."%</td></tr>";
+						if($row['o6']!=NULL)
+							$display.="<tr><td>".$row['o6']."</td><td>".$po6."%</td></tr>";
+						$display.="</table>";
+						
 				}
-				if (strlen($_POST['ch2'])== 0) {
-					$error = true;
-					$err[2] = true;
-				}
+			}
+						$display.="</div>";
+						return $display;
+			
+	}
 
-				if ($error==false) {
-					echo 'hi';
-						$timestamp = time();
+	public function actionCast()
+	{
+		
+		$user=$this->userId;
+		$pid=escape($_POST['id']);
 
-					if ($status==NULL)
-						$status = 'off';
-					if ($comments==NULL)
-						$comments = 'off';
-					echo 'hi';
-					mysql_query("INSERT INTO polls (question,parent,status,exp_time,expire,comments) VALUES 	('$question','$parent','$status','$exp_time','$expire','$comments')") or die (mysql_error());
-					$pid = mysql_insert_id();
-					$m=1;
-					while($_POST['ch'.$m]!=NULL){
-					$choice=trim($_POST['ch'.$m]);;
-					mysql_query("INSERT INTO polldata  (pollid,question,optionid,optiontext,votes,totalvotes) VALUES ('$pid','$question','$m','$choice','0','0')") or die (mysql_error());
-					$m++;
+		$query="INSERT INTO `poll_users`(`pid`,`userID`,`page_modulecomponentid`) VALUES('$pid','$user','$this->moduleComponentId')";
+		mysql_query($query);
+		
+		$query2="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId' AND `pid`=".$pid;
+		$r1=mysql_query($query2);
+		$row=mysql_fetch_array($r1);
+		$m=$row['multiple_opt'];
+		
+		if($m==1)
+		{
+			for($i=1;$i<=6;$i++)
+			{
+				$c="c".$i;
+				$o="o".$i;
+				if($_POST["$c"]>0)
+					$v=1;
+				else
+					$v=0;
+				$query1="UPDATE `poll_log` SET `$o`=`$o`+$v WHERE `pid` = $pid AND `page_modulecomponentid`=$this->moduleComponentId";
+				mysql_query($query1);
+			}
+		}
+		if($m==0)
+		{
+			$opt=escape($_POST['o']);
+			$o="o".$opt;
+			$query1="SELECT * FROM `poll_log` WHERE `pid`='".$pid."' AND `page_modulecomponentid`='$this->moduleComponentId'";
+			$res1=mysql_query($query1);
+			$n=mysql_num_rows($res1);
+			$val=mysql_fetch_array($res1);
+			$value=$val["$o"];
+			$value+=1;
+			$query2="UPDATE `poll_log` SET `$o` = $value WHERE `pid` = $pid AND `page_modulecomponentid`=$this->moduleComponentId";
+			mysql_query($query2);
+		}
+		return $this->actionView();
+	}
+	
+	public function actionManage()
+	{
+				$display.="<h2>Manage Polls</h2><br />";
+				
+				if(isset($_POST['save']))
+				{
+					if($_POST['q']==NULL)
+						displayerror('Enter a Valid Question');
+					else if ($_POST['o1']==NULL || $_POST['o2']==NULL)
+						displayerror('Enter Atleast Two Options');
+					else if($_POST['multi']==NULL)
+						displayerror('Choose `Yes` or `No` for Multiple Option ');
+					else
+					{	
+					    $q=htmlspecialchars(escape($_POST['q']));
+						$multi=escape($_POST['multi']);
+						   if($multi=='y')
+						      $multi=1;
+						   else $multi=0;
+						$pid=escape($_POST['pid']);
+						$o1=htmlspecialchars(escape($_POST['o1']));
+						$o2=htmlspecialchars(escape($_POST['o2']));
+						$o3=htmlspecialchars(escape($_POST['o3']));
+						$o4=htmlspecialchars(escape($_POST['o4']));
+						$o5=htmlspecialchars(escape($_POST['o5']));
+						$o6=htmlspecialchars(escape($_POST['o6']));
+						displayinfo('Poll Question Updated Succesfully');
+						$query="UPDATE `poll_content` SET `ques` = '$q',`o1` = '$o1',`o2` = '$o2',`o3` = '$o3',`o4` = '$o4',`o5` = '$o5',`o6` = '$o6',`multiple_opt` = '$multi' WHERE `pid` = $pid AND `page_modulecomponentid`='$this->moduleComponentId'";
+						mysql_query($query);
 					}
-				$content.="Your poll has been created successfully";
-				echo $content;
+				return $this-> actionView();
 				}
+					
+		
+				if(isset($_POST['insert']))
+				{
+					if($_POST['q']==NULL)
+						displayerror('Enter a Valid Question');
+					else if ($_POST['o1']==NULL || $_POST['o2']==NULL)
+						displayerror('Enter Atleast Two Options');
+					else if($_POST['multi']==NULL)
+						displayerror('Choose `Yes` or `No` for Multiple Option ');
+					else
+					{	
+						displayinfo('Poll Question Added Succesfully');
+						$query="INSERT INTO `poll_content` (`page_modulecomponentid`,`ques` ,`o1` ,`o2` ,`o3` ,`o4` ,`o5` ,`o6` ,`visibility`)
+						VALUES ('$this->moduleComponentId','".htmlspecialchars(escape($_POST['q']))."','".htmlspecialchars(escape($_POST['o1']))."','".htmlspecialchars(escape($_POST['o2']))."','".htmlspecialchars(escape($_POST['o3']))."','".htmlspecialchars(escape($_POST['o4']))."','".htmlspecialchars(escape($_POST['o5']))."','".htmlspecialchars(escape($_POST['o6']))."','1')";
+						$result=mysql_query($query);
+						
+						if($_POST['multi']=='y')
+						{
+							$query5="UPDATE `poll_content` SET `multiple_opt`='1' WHERE `ques`='".htmlspecialchars(escape($_POST['q']))."' AND `page_modulecomponentid`='$this->moduleComponentId'";
+							$result5=mysql_query($query5);
+						}
+						
+						$query0="SELECT max(`pid`) from `poll_content` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
+						$result0=mysql_query($query0);
+						$row0=mysql_fetch_array($result0);
+						
+						$query1="INSERT INTO `poll_log` (`pid`,`page_modulecomponentid`) VALUES ('".$row0[0]."','$this->moduleComponentId')";
+						$result1=mysql_query($query1);
+			
+					}
+				}
+				
+				if(isset($_POST['disable']))
+				{
+					
+					$pollid=escape($_POST['ques1']);
+					$query3="SELECT * FROM `poll_content` WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$result3=mysql_query($query3);
+					$nop=mysql_num_rows($result3);
+					if($nop==1)
+					{
+						$query4="UPDATE `poll_content` SET `visibility`='0' WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$result4=mysql_query($query4);
+					}
+					displayinfo("Poll Question Disabled");
+			
+				}
+				
+				if(isset($_POST['edit']))
+				{
+					$pollid=escape($_POST['ques0']);
+					$query="SELECT * FROM `poll_content` WHERE `pid` = $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$row=mysql_fetch_array(mysql_query($query));
+					$ques=$row['ques'];
+					$o1=$row['o1'];
+					$o2=$row['o2'];
+					$o3=$row['o3'];
+					$o4=$row['o4'];
+					$o5=$row['o5'];
+					$o6=$row['o6'];
+					$m=$row['multiple_opt'];
+					
+					$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Edit</h3>&nbsp;&nbsp;Questions added are 'Enabled/Visible' by default <br /><br />";
+					$display.="<div align='center'><form name='f5' method='POST' action='./+manage'>";
+					$display.="Question:<br /><textarea rows='4' cols='20' name='q'>$ques</textarea><br /><br />";
+					$display.="<br />";
+					$display.="Enter the options applicable; leave blank otherwise. <br />";
+					$display.="1.&nbsp;<input type='text' name='o1' value='$o1' /><br />";
+					$display.="2.&nbsp;<input type='text' name='o2' value='$o2' /><br />";
+					$display.="3.&nbsp;<input type='text' name='o3' value='$o3' /><br />";
+					$display.="4.&nbsp;<input type='text' name='o4' value='$o4' /><br />";
+					$display.="5.&nbsp;<input type='text' name='o5' value='$o5' /><br />";
+					$display.="6.&nbsp;<input type='text' name='o6' value='$o6' /><br /><br />";
+					$display.="Can the user choose multiple options?<br />";
+					
+					if($m==1)
+					{
+					   $display.="<input type='radio' name='multi' value='y' checked> Yes &nbsp;&nbsp;&nbsp;&nbsp;";
+					   $display.="<input type='radio' name='multi' value='n'> No <br /><br />";
+					}
+					else
+					{
+					   $display.="<input type='radio' name='multi' value='y'> Yes &nbsp;&nbsp;&nbsp;&nbsp;";
+					   $display.="<input type='radio' name='multi' value='n' checked> No <br /><br />";
+					}
+					$display.="<input type='hidden' name='pid' value='$pollid' />";
+					$display.="<input type='submit' name='save' value=' Save ' /><br /><br />";
+					$display.="</form></div></td></tr></table>";
+				}
+				
+				if(isset($_POST['enable']))
+				{
+					
+					$pollid=escape($_POST['ques2']);
+					$query3="SELECT * FROM `poll_content` WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$result3=mysql_query($query3);
+					$nop=mysql_num_rows($result3);
+					if($nop==1)
+					{
+						$query4="UPDATE `poll_content` SET `visibility`='1' WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$result4=mysql_query($query4);
+					}
+					displayinfo("Poll Question Enabled");
+				}
+
+				if(isset($_POST['delete']))
+				{
+					
+					$pollid=escape($_POST['ques3']);
+					$query4="DELETE FROM `poll_log` WHERE `pid`=$pollid";
+					$result4=mysql_query($query4);
+					$query5="DELETE FROM `poll_content` WHERE `pid`=$pollid";
+					$result5=mysql_query($query5);
+					displayinfo("Poll Question Deleted");
+			
+				}
+
+				
+				///Adding a poll question
+				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Add Poll Question</h3>&nbsp;&nbsp;Questions added are 'Enabled/Visible' by default <br /><br />";
+				$display.="<div align='center'><form name='f1' method='POST' action='./+manage'>";
+				$display.="Question:<br /><textarea rows='4' cols='20' name='q'></textarea><br /><br />";
+				$display.="<br />";
+				$display.="Enter the options applicable; leave blank otherwise. <br />";
+				$display.="1.&nbsp;<input type='text' name='o1' /><br />";
+				$display.="2.&nbsp;<input type='text' name='o2' /><br />";
+				$display.="3.&nbsp;<input type='text' name='o3' /><br />";
+				$display.="4.&nbsp;<input type='text' name='o4' /><br />";
+				$display.="5.&nbsp;<input type='text' name='o5' /><br />";
+				$display.="6.&nbsp;<input type='text' name='o6' /><br /><br />";
+				$display.="Can the user choose multiple options?<br />";
+				$display.="<input type='radio' name='multi' value='y'> Yes &nbsp;&nbsp;&nbsp;&nbsp;";
+				$display.="<input type='radio' name='multi' value='n'> No <br /><br />";
+				$display.="<input type='submit' name='insert' value='Add Poll Question' /><br /><br />";
+				$display.="</form></div></td></tr></table>";
+				
+				///Edit a poll question
+				$q0="SELECT * FROM `poll_content` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
+				$r0=mysql_query($q0);
+				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Edit Poll Question</h3>";
+				$display.="<div align='center'><form name='f4' method='POST' action='./+manage'>";
+				if(mysql_num_rows($r0)==0)
+					$display.="No poll questions exist currently.";
 				else
-					actionAdmincreatepoll($err,10);
-			}
+				{
+					$display.="<select name='ques0'>";
+					$n0=mysql_num_rows($r0);
+					for($i=1;$i<=$n0;$i++)
+					{
+						$row0=mysql_fetch_array($r0);
+						$display.="<option value='".$row0['pid']."'>".$row0['ques'];
+					}
+					$display.="</select><br /><br />";
+					$display.="<input type='submit' name='edit' value=' Edit ' /><br /><br />";
+				}
+				$display.="</form></div></td></tr></table>";
+				
+				///Disable a poll question
+				$q1="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
+				$r1=mysql_query($q1);
+				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Disable Poll Question</h3>";
+				$display.="<div align='center'><form name='f2' method='POST' action='./+manage'>";
+				if(mysql_num_rows($r1)==0)
+					$display.="All Poll Questions are Currently Disabled!";
+				else
+				{
+					$display.="<select name='ques1'>";
+					$n1=mysql_num_rows($r1);
+					for($i=1;$i<=$n1;$i++)
+					{
+						$row1=mysql_fetch_array($r1);
+						$display.="<option value='".$row1['pid']."'>".$row1['ques'];
+					}
+					$display.="</select><br /><br />";
+					$display.="<input type='submit' name='disable' value=' Disable ' /><br /><br />";
+				}
+				$display.="</form></div></td></tr></table>";
+				
+				///Enable a poll question
+				$q2="SELECT * FROM `poll_content` WHERE `visibility`='0' AND `page_modulecomponentid`='$this->moduleComponentId'";
+				$r2=mysql_query($q2);	
+				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Enable Poll Question</h3>";
+				$display.="<div align='center'><form name='f3' method='POST' action='./+manage'>";
+				if(mysql_num_rows($r2)==0)
+					$display.="All Poll Questions are Currently Enabled!<br /><br />";
+				else
+				{
+					$display.="<select name='ques2'>";
+					while($row2=mysql_fetch_array($r2))
+						$display.="<option value='".$row2['pid']."'>".$row2['ques'];
+					$display.="</select><br /><br />";
+					$display.="<input type='submit' name='enable' value=' Enable ' /><br /><br />";
+				}
+				$display.="</form></div></td></tr></table>";
+				
+				///Delete a poll question
+				$q3="SELECT * FROM `poll_content` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
+				$r3=mysql_query($q3);
+				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Delete Poll Question</h3>";
+				$display.="<div align='center'><form name='f3' method='POST' action='./+manage'>";
+				if(mysql_num_rows($r1)==0)
+					$display.="No poll questions exist currently.";
+				else
+				{
+					$display.="<select name='ques3'>";
+					$n3=mysql_num_rows($r3);
+					for($i=1;$i<=$n3;$i++)
+					{
+						$row3=mysql_fetch_array($r3);
+						$display.="<option value='".$row3['pid']."'>".$row3['ques'];
+					}
+					$display.="</select><br /><br />";
+					$display.="<input type='submit' name='delete' value=' Delete ' /><br /><br />";
+				}
+				$display.="</form></div></td></tr></table>";
+				
+				return $display;
+							
+	}
+		
+	public function actionViewstats()
+		{
+		
+			$display="<h2>Statistics</h2><br />";
+			
+			$query="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
+			$r=mysql_query($query);
+			$n=mysql_num_rows($r);
+			
+			$display.="<table width='100%'><tr><td>";
+			$display.="<h3>Currently Enabled Polls</h3>";
+			if($n==0)
+				$display.="There Exist no Enabled Poll Questions Currently.";
 			else
-				actionAdmincreatepoll(NULL,$_POST['optionnumber']);
-	}
-	else
-		actionAdmincreatepoll(NULL,10);
-	}
-
-	function actionAdmincreatepoll($err,$options) {
-		mysql_connect("localhost","delta","DeltainC") or die (mysql_error());
-		mysql_select_db("polls") or die (mysql_error());
-		$content.="<form method=POST action='uploadpoll.php'>";
-		$content.="If you need more than 10 options select here. Specify the number.<br><select name=optionnumber><option value=0>&nbsp;";
-		for ($i = 11; $i < 100; $i++)
-			$content.="<option value=$i>$i";
-			$content.="</select>";
-			if (!isset($err[0])&&!isset($err[1])&&!isset($err[2])) {
-				$content.='Enter the question here<input name="question" MAXLENGTH=100><br>';
-				for ($i = 1; $i <= $options; $i++)
-
-					$content.='OPTION' . $i . ' <input name="ch'.$i.'" MAXLENGTH=50><br>';
-			} else {
-				$content.='<br>ERROR!<br>';
-				if ($err[0] == true)
-					$content.="U forgot to Type a question<input name='question' MAXLENGTH=100><br>";
-				else
-					$content.='Type the question again<input name="question" value='.$question.'><br>';
-				if ($err[1] == true)
-					$content.='First option needs to be entered<input name="ch1" MAXLENGTH=100><br>';
-				else
-					$content.='OPTION1<input name="ch1" MAXLENGTH=50><br>';
-				if ($err[2] == true)
-					$content.='Second option needs to be entered<input name="ch2" MAXLENGTH=100><br>';
-				else
-					$content.='OPTION2 <input name="ch2" MAXLENGTH=50><br>';
-				for ($i = 3; $i <= 10; $i++)
-					$content.='OPTION' . $i . ' <input name="ch'.$i.'" MAXLENGTH=50><br>';
-			}
-
-			$content.="ENABLE COMMENTS<input type=checkbox name=comments ><br>";
-			$content.="SHOULD POLL EXPIRE?<input type=checkbox name=expire ><br>";
-			$content.="POLL ENABLED<input type=checkbox name=status CHECKED><br>";
-			if ($err[3]==true){
-				$content.="ERROR! YOU DIDN'T SPECIFY HOW MANY DAYS SHOULD THE POLL BE OPEN <select name=exp_time>";
-				for ($i = 0; $i < 30; $i++) $content.="<option value=$i>$i";
-					$content.="</select>";}
-			else{
-				$content.="IF APPLICABLE HOW MANY DAYS SHOULD THE POLL BE OPEN <select name=exp_time>";
-				for ($i = 0; $i < 30; $i++) $content.="<option value=$i>$i";
-					$content.="</select>";}
-
-			$content.="<center><input type=submit name=submit value=submit></center>";
-			$content.="</form>";
-			echo $content;
-			unset ($err[0],$err[1],$err[2],$err[3]);
-	}
-
-	function actionAdminarchivepoll($pollid) {
-		require_once ("$this->connect()");
-		$query = "UPDATE polls SET status ='2' WHERE id=$pollid";
-	}
-
-	function checkexpiry($pollid, $exp_time) {
-		require_once $this->connect();
-		$timestamp = time();
-		if ($timestamp >= $exp_time) {
-			mysql_query("UPDATE polls SET expire=2 status=2 WHERE id=$pollid");
-			return 1;
-		}
-	}
-
-	function actionAdmineditpoll() {
-
-		if ($_GET['action'] == savechanges) {
-			$id = $_POST['pollid'];
-
-			$qn = trim($_POST['newname']);
-
-			$sql = "UPDATE `poll` SET `question` = '$qn' WHERE `id` = '$id'";
-			if (!empty ($qn)) {
-				mysql_query($sql);
-			}
-
-			$sql = "SELECT optionid,optiontext FROM polldata WHERE id = $id";
-			$result = mysql_query($sql);
-			while ($disp = mysql_fetch_array($result)) {
-				$no = $disp[optionid];
-				$content.="$no ";
-				$ch = trim($_POST["newch$no"]);
-				$content.="$ch<br>";
-				$sql = "UPDATE `choices` SET `optiontext` = '$ch' WHERE `optionid` = $no";
-				if (!empty ($ch)) {
-					mysql_query($sql);
+			while($row=mysql_fetch_array($r))
+				{
+						$p=$row['pid'];
+						$query2="SELECT * FROM `poll_log` WHERE `pid`='".$p."' AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$res2=mysql_query($query2);
+						$row2=mysql_fetch_array($res2);
+						$total=$row2['o1']+$row2['o2']+$row2['o3']+$row2['o4']+$row2['o5']+$row2['o6'];
+						
+						if($row['o1']!=NULL)
+						  $po1=round($row2['o1']/$total*100);
+						if($row['o2']!=NULL)
+						  $po2=round($row2['o2']/$total*100);
+						if($row['o3']!=NULL)
+						  $po3=round($row2['o3']/$total*100);
+						if($row['o4']!=NULL)
+						  $po4=round($row2['o4']/$total*100);
+						if($row['o5']!=NULL)
+						  $po5=round($row2['o5']/$total*100);
+						if($row['o6']!=NULL)
+						  $po6=round($row2['o6']/$total*100);
+						  
+						$display.="<div align='center'><table width='50%'><tr><td align='center' colspan='2'><b><div align='center'>".$row['ques'];
+						$display.="</div></b></td></tr>";	
+						if($row['o1']!=NULL)
+							$display.="<tr><td>".$row['o1']."</td><td width='20%'>".$po1."%</td></tr>";
+						if($row['o2']!=NULL)
+							$display.="<tr><td>".$row['o2']."</td><td>".$po2."%</td></tr>";
+						if($row['o3']!=NULL)
+							$display.="<tr><td>".$row['o3']."</td><td>".$po3."%</td></tr>";
+						if($row['o4']!=NULL)
+							$display.="<tr><td>".$row['o4']."</td><td>".$po4."%</td></tr>";
+						if($row['o5']!=NULL)
+							$display.="<tr><td>".$row['o5']."</td><td>".$po5."%</td></tr>";
+						if($row['o6']!=NULL)
+							$display.="<tr><td>".$row['o6']."</td><td>".$po6."%</td></tr>";
+						$display.="</table></div>";
+						
 				}
-			}
-
-			$content.="Changes saved!";
-			exit;
+			$display.="</td></tr></table>";
+			
+			$query="SELECT * FROM `poll_content` WHERE `visibility`='0' AND `page_modulecomponentid`='$this->moduleComponentId'";
+			$r=mysql_query($query);
+			$n=mysql_num_rows($r);
+			
+			$display.="<table width='100%'><tr><td>";
+			$display.="<h3>Currently Disabled Polls</h3>";
+			if($n==0)
+				$display.="There Exist no Disabled Poll Questions Currently.";
+			else
+			while($row=mysql_fetch_array($r))
+				{
+						$p=$row['pid'];
+						$query2="SELECT * FROM `poll_log` WHERE `pid`='".$p."' AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$res2=mysql_query($query2);
+						$row2=mysql_fetch_array($res2);
+						$total=$row2['o1']+$row2['o2']+$row2['o3']+$row2['o4']+$row2['o5']+$row2['o6'];
+						
+						if($row['o1']!=NULL)
+						  $po1=round($row2['o1']/$total*100);
+						if($row['o2']!=NULL)
+						  $po2=round($row2['o2']/$total*100);
+						if($row['o3']!=NULL)
+						  $po3=round($row2['o3']/$total*100);
+						if($row['o4']!=NULL)
+						  $po4=round($row2['o4']/$total*100);
+						if($row['o5']!=NULL)
+						  $po5=round($row2['o5']/$total*100);
+						if($row['o6']!=NULL)
+						  $po6=round($row2['o6']/$total*100);
+						  
+						$display.="<div align='center'><table width='50%'><tr><td align='center' colspan='2'><b><div align='center'>".$row['ques'];
+						$display.="</div></b></td></tr>";	
+						if($row['o1']!=NULL)
+							$display.="<tr><td>".$row['o1']."</td><td width='20%'>".$po1."%</td></tr>";
+						if($row['o2']!=NULL)
+							$display.="<tr><td>".$row['o2']."</td><td>".$po2."%</td></tr>";
+						if($row['o3']!=NULL)
+							$display.="<tr><td>".$row['o3']."</td><td>".$po3."%</td></tr>";
+						if($row['o4']!=NULL)
+							$display.="<tr><td>".$row['o4']."</td><td>".$po4."%</td></tr>";
+						if($row['o5']!=NULL)
+							$display.="<tr><td>".$row['o5']."</td><td>".$po5."%</td></tr>";
+						if($row['o6']!=NULL)
+							$display.="<tr><td>".$row['o6']."</td><td>".$po6."%</td></tr>";
+						$display.="</table></div>";
+						
+				}
+			$display.="</td></tr></table>";
+			
+			
+			$display.="</td></tr></table>";
+			return $display;
 		}
-
-		elseif ($_GET['action'] == 'edit') {
-
-			$id = $_GET['id'];
-$content.='<form action="poll2.lib.php.php?action=savechanges" method=post>';
-
-
-			$sql = "SELECT question FROM poll WHERE id = $id";
-			$result = mysql_query($sql);
-			$disp = mysql_fetch_array($result);
-$content.='<table>
-		<tr><td><b>Poll Question :</b></td></tr>
-		<tr><td>';
-
-
-			$content.="${disp['question']}";
-
-$content.='</td><td>
-		<input name = "newname" ></td></tr><br>
-		<tr><td><b>Choices : </b></td></tr>';
-
-
-
-			$sql = "SELECT optionid,optiontext FROM polldata WHERE pollid = $id ORDER BY optionid ASC";
-			$result = mysql_query($sql);
-			while ($disp = mysql_fetch_array($result)) {
-				$no = $disp[optionid];
-
-
-				$content.='<tr><td>'.$disp[optiontext].'</td><td>';
-
-				$content.="<input name = 'newch$no'></td></tr>";
-
-
-
-			}
-
-		$content.="</table>
-		<input type=checkbox name=comments value='ENABLE COMMENTS'><br>
-		<input type=checkbox name=expire value='CHECK IF YOU DO NOT WANT THE POLL TO EXPIRE'><br>
-		<input type=checkbox name=status value='POLL ENABLED' CHECKED><br>
-		<input type=checkbox name=exp_date value='HOW MANY DAYS SHOULD THE POLL BE OPEN (IF APPLICABLE)'><br>
-		<input type='submit' name='submit' value=' Save Changes'>";
-
-		$content.='<input type=hidden   name=pollid   value=' . $_GET['id'] . '></form>';
-			exit;
-		}
-		return $content;
+	
+	public function createModule(&$moduleComponentId) {
+	
+		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `poll_content` ";
+		$result = mysql_query($query) or die(mysql_error());
+		$row = mysql_fetch_assoc($result) or die(mysql_error());
+		$compId = $row['MAX'] + 1;
+		$moduleComponentId = $compId;
 	}
 
+	public function deleteModule($moduleComponentId) {
+
+		$query = "DELETE FROM `poll_content` WHERE `page_modulecomponentid`=$moduleComponentId";
+		$result = mysql_query($query);
+		
+		if ((mysql_affected_rows()) >= 1)
+		{
+			$query = "DELETE FROM `poll_log` WHERE `page_modulecomponentid`=$moduleComponentId";
+			$result = mysql_query($query);
+			$query = "DELETE FROM `poll_users` WHERE `page_modulecomponentid`=$moduleComponentId";
+			$result = mysql_query($query);
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public function copyModule($moduleComponentId) {
+
+		$query = "SELECT * FROM `poll_content` WHERE `page_modulecomponentid`=$moduleComponentId";
+		$result = mysql_query($query);
+		
+		$query2 = "SELECT MAX(page_modulecomponentid) as MAX FROM `poll_content` ";
+		$result2 = mysql_query($query2) or displayerror(mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$compId = $row2['MAX'] + 1;
+
+		while($content = mysql_fetch_assoc($result))
+		{
+		   $ques=mysql_escape_string($content['ques']);
+		   $o1=mysql_escape_string($content['o1']);
+		   $o2=mysql_escape_string($content['o2']);
+		   $o3=mysql_escape_string($content['o3']);
+		   $o4=mysql_escape_string($content['o4']);
+		   $o5=mysql_escape_string($content['o5']);
+		   $o6=mysql_escape_string($content['o6']);
+		   $mo=mysql_escape_string($content['multiple_opt']);
+		   $v=mysql_escape_string($content['visibility']);
+		   
+		   $query = "INSERT INTO `poll_content` (`page_modulecomponentid` ,`ques`,`o1`,`o2`,`o3`,`o4`,`o5`,`o6`,`multiple_opt`,`visibility`)
+		             VALUES ('$compId', '$ques','$o1','$o2','$o3','$o4','$o5','$o6','$mo','$v')";
+		   mysql_query($query) or die(mysql_error());
+		   
+		   if(mysql_affected_rows())
+		   {
+				$query3 = "SELECT MAX(pid) as MAXP FROM `poll_content` ";
+				$result3 = mysql_query($query3) or die(mysql_error());
+				$row3 = mysql_fetch_assoc($result3);
+				$pid = $row3['MAXP'];
+				
+				$query4 = "INSERT INTO `poll_log` (`pid`,`page_modulecomponentid`) VALUES ('$pid','$compId')";
+				$result4 = mysql_query($query4) or die(mysql_error());
+		   }
+		   
+	    }
+		return $compId;
+	}
 }
+?>
