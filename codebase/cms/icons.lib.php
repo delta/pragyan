@@ -44,6 +44,7 @@ $ICON_ARRAY=array(
 'Page Information'=>"mimetypes/x-office-document.png",
 'Create New Page'=>"actions/document-new.png",
 'Copy or Move Page'=>"actions/edit-copy.png",
+'Delete Section'=>"actions/process-stop.png",
 'Page Inherited Info'=>"apps/preferences-desktop-theme.png",
 'Email Registrants'=>"actions/mail-reply-all.png",
 'Forum Settings'=>"emblems/emblem-system.png",
@@ -64,7 +65,8 @@ $ICON_ARRAY=array(
 'SQL Query'=>'apps/utilities-terminal.png',
 'Quiz Edit'=>'categories/applications-games.png',
 'Quiz Correct'=>'categories/applications-office.png',
-'Group Associate Form'=>'actions/format-indent-more.png'
+'Group Associate Form'=>'actions/format-indent-more.png',
+'Help'=>'apps/help-browser.png'
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)
