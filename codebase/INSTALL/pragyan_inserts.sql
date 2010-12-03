@@ -242,7 +242,10 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `pe
 ('sitemap', 'view', 'View', 0, 'View a sitemap'),
 ('sqlquery', 'view', 'View', 1, 'View'),
 ('sqlquery', 'edit', 'Edit', 2, 'Edit'),
-('sqlquery', 'create', 'Create', 0, 'Create');
+('sqlquery', 'create', 'Create', 0, 'Create'),
+('safedit', 'view', 'View', 0, 'View'),
+('safedit', 'edit', 'Edit', 1, 'Edit'),
+('safedit', 'create', 'Create', 2, 'Create');
 --
 -- Dumping data for table `pragyanV3_templates`
 --

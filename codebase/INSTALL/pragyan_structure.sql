@@ -386,7 +386,7 @@ CREATE TABLE IF NOT EXISTS `list_prop` (
 -- Table structure for table `poll_content`
 -- 
 
-CREATE TABLE `poll_content` (
+CREATE TABLE IF NOT EXISTS `poll_content` (
   `pid` int(11) NOT NULL auto_increment,
   `page_modulecomponentid` int(11) NOT NULL,
   `ques` longtext NOT NULL,
@@ -407,7 +407,7 @@ CREATE TABLE `poll_content` (
 -- Table structure for table `poll_log`
 --
 
-CREATE TABLE `poll_log` (
+CREATE TABLE IF NOT EXISTS `poll_log` (
   `pid` int(11) NOT NULL auto_increment,
   `page_modulecomponentid` int(11) NOT NULL,
   `o1` int(11) NOT NULL default '0',
@@ -425,7 +425,7 @@ CREATE TABLE `poll_log` (
 -- Table structure for table `poll_users`
 -- 
 
-CREATE TABLE `poll_users` (
+CREATE TABLE IF NOT EXISTS `poll_users` (
   `pid` int(11) NOT NULL,
   `userID` int(11) NOT NULL,
   `page_modulecomponentid` int(11) NOT NULL
@@ -976,6 +976,22 @@ CREATE TABLE IF NOT EXISTS `quiz_weightmarks` (
   `question_positivemarks` decimal(5,2) NOT NULL COMMENT 'Marks allotted in case a correct answer was submitted',
   `question_negativemarks` decimal(5,2) NOT NULL COMMENT 'Marks deducted in case a wrong answer was submitted',
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`,`question_weight`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `safedit_sections`
+--
+
+CREATE TABLE IF NOT EXISTS `safedit_sections` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `section_id` int(11) NOT NULL,
+  `section_heading` varchar(256) DEFAULT NULL,
+  `section_type` varchar(64) DEFAULT NULL,
+  `section_show` tinyint(4) NOT NULL,
+  `section_priority` int(11) DEFAULT NULL,
+  `section_content` text
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
