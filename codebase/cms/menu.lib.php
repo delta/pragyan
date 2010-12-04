@@ -34,7 +34,7 @@ function getMenu($userId, $pageIdArray, $complete = false, $image = false) {
 	$hostURL = ".";
 	if(!$complete) {
 		$pageId = $pageIdArray[count($pageIdArray) - 1];
-		$hostURL = selfURI();
+		$hostURL=strstr(selfURI(),'+',true);
 	}
 	else {
 		$pageId = 0;
@@ -137,7 +137,8 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
 }
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $image=false) {
 	$menuHtml = '';
-	$hostURL=selfURI();
+	$hostURL=strstr(selfURI(),'+',true);
+	
 	for ($i = 0; $i < count($menuArray); ++$i) {
 			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
 			$result = mysql_query($query);
