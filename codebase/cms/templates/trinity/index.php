@@ -11,13 +11,14 @@
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
 	?>
     <link rel="index" href="./" title="Home" />
-       <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
+<link rel="shortcut icon" href="http://pragyan.org/favicon.ico" type="image/x-icon">
+
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/content.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/error.css" />
-
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
 
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
@@ -125,9 +126,10 @@
 				<div id="centerContent" class="cont">
 					<div id="ticker-wrapper" class="no-js">
 						<ul id="js-news" class="js-hidden">
-							<li class="news-item"><a href="#">Presenting the new FOSS events for pragyan</a></li>
-							<li class="news-item"><a href="#">This time treasure hunt goes online</a></li>
-							<li class="news-item"><a href="#">A site by Delta Force </a></li>
+<li class="news-item"><a href="http://www.pragyan.org/11/home/events/engineering_tomorrow/sorption/">Event format and deadline for Sorption updated !</a></li>							
+<li class="news-item"><a href="#">Pragyan 2011 is coming soon! Stay tuned.</a></li>
+							<li class="news-item"><a href="#">Pragyan 2011 website is up!</a></li>
+							
 						</ul>
 					</div>
 					<div class="contentContainer">
