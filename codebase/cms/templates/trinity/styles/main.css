@@ -34,7 +34,7 @@ body img
 	height: 200px;
 	margin: 0;
 	padding: 0;
-	background: black url(../images/pragyan10-banner.png) no-repeat 30px 0px;
+	background: black url(../images/pragyan10-banner.png) no-repeat 0px 0px;
 }
 #header > #invisibleContainer #invisible {
 	height: 200px;
@@ -121,7 +121,7 @@ body img
  
 .introbox
 {
- border:groove black 2px; width: 305px; padding : 10px;float: left;
+ border:groove black 2px; width: 315px; padding : 10px;float: left;
  margin-left : 10px; margin-top : 10px; background-color : #F5F5F5;
 }
 .introbox img

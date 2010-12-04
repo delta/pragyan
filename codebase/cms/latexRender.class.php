@@ -25,9 +25,10 @@ class latexrender {
     \usepackage{amsfonts}
     \usepackage{amssymb}
     \usepackage{pst-plot}
-    \usepackage{color}
+    \usepackage{color}  
     \pagestyle{empty}
     \begin{document}
+    \pagecolor{white}
     $thunk
     \end{document}
 EOS;

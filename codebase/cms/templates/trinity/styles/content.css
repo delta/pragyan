@@ -113,15 +113,15 @@ div#breadcrumb .cms-homeicon:hover{
 	clear: left;
 	margin: 0px;
 	padding: 2px 10px 5px 10px;
-	background: #fff;
-	border-bottom: solid 1px #333;
-	color: #565656;
+	background-color: transparent;
+	color: #fff;
+	border : solid 1px #fff;
 
 }
 
 div#content {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-size: 14px;
 	font-style: normal;
 	font-variant: normal;
 	font-weight: normal;
@@ -146,8 +146,6 @@ div#content h2, div#content h1 {
 }
 
 div#content p > strong {
-	background: #EEE;
-	border: solid 1px #DDD;
 	padding: 0px 7px;
 	line-height : 20px;
 }
