@@ -109,10 +109,6 @@ require_once($sourceFolder."/common.lib.php");
 
 require_once($sourceFolder."/icons.lib.php");
 
-///Library required for OpenID authentication
-set_include_path(get_include_path() . PATH_SEPARATOR . 'cms/openid/');
-require_once('cms/openid/class.dopeopenid.php');
-
 ///Defined here to set its access as global to the project
 $dbase; 
 
@@ -142,11 +138,14 @@ $globals=getGlobalSettings();
 foreach($globals as $var=>$val) 
 	$$var=$val;
 
+
 if($openid_enabled=='true'){
   ///Library required for OpenID authentication                                                                                                                                                     
   set_include_path('cms/openid/');
   require_once 'cms/openid/class.dopeopenid.php';
 }
+///Check the status of URL rewriting taken from database
+$rewriteEngineEnabled=$url_rewrite;
 
 ///Some of the previously defined global settings variables are converted into constants
 
@@ -276,8 +275,6 @@ $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 ///Initializes the widgets in the page
 populateWidgetVariables($pageId);
 
-///Check the status of URL rewriting taken from database
-$rewriteEngineEnabled=$url_rewrite;
 
 ///If its disabled, then all the links in the generated page are converted into non-pretty URLs using regex
 if($rewriteEngineEnabled=='false') {
