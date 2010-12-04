@@ -136,7 +136,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
   }
 }
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $image=false) {
-	$menuHtml = ''; print_r($menuArray);echo $linkPrefix;echo "\n";
+	$menuHtml = '';
 	$hostURL=selfURI();
 	for ($i = 0; $i < count($menuArray); ++$i) {
 			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
