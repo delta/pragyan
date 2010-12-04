@@ -18,7 +18,7 @@ $language			= 'en';
 $template	= 'standard';
 
 //Administrators email address (logs can be sent there)	
-$admin_email		= 'admin@localhost';
+$admin_email		= 'abhishek@pragyan.org';
 
 // Print spidering results to standard out
 $print_results		= 0;
@@ -61,7 +61,7 @@ $word_upper_bound	= 100;
 $index_numbers		= 1;
 
 // if this value is set to 1, word in domain name and url path are also indexed,// so that for example the index of www.php.net returns a positive answer to query 'php' even 	// if the word is not included in the page itself.
-$index_host		 = 0;
+$index_host		 = 1;
 
 
 // Wether to index keywords in a meta tag 
