@@ -1,3 +1,9 @@
+Revision 164  by  abhishekdelta  on  2010-11-28 07:02:0
+Description : Adding Poll Module
+--------------------------------------------------------------------------------
+Revision 163  by  abhishekdelta  on  2010-11-28 05:02:0
+Description : Fixed minor bug with menu, openid css and updated changelog
+--------------------------------------------------------------------------------
 Revision 162  by  abhishekdelta  on  2010-11-22 03:57:3
 Description : Adding patch for disabling openid and installation check and fixed some bugs in email
 --------------------------------------------------------------------------------
