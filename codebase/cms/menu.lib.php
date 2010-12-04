@@ -64,24 +64,18 @@ MENUHTML;
 			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
 			$menuHtml .= htmlMenuRenderer($childMenu,-1,'',true);
 		}
-		else if (count($childMenu) == 0) {
+		else  {
 			if ($pageRow['page_displaysiblingmenu']) {
 				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
 				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-				$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
+				$menuHtml .= '<a href="'.$hostURL.'../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
 				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
 			}
-		}
-		else {
-			if ($pageRow['page_displaysiblingmenu']) {
-				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
-				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-				$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
-				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
+			if (count($childMenu) > 0)
+			{
+				$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
+				$menuHtml .= htmlMenuRenderer($childMenu);
 			}
-
-			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($childMenu);
 		}
 
 		$menuHtml .= '</div></div>';
@@ -142,17 +136,18 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
   }
 }
 function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $image=false) {
-	$menuHtml = ''; 
+	$menuHtml = ''; print_r($menuArray);echo $linkPrefix;echo "\n";
+	$hostURL=selfURI();
 	for ($i = 0; $i < count($menuArray); ++$i) {
 			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
 			$result = mysql_query($query);
 			$result = mysql_fetch_assoc($result);
 			
 			if($result['page_openinnewtab']=='1') {
-				$menuHtml .= "<a href=\"".hostURL()."/home/{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
+				$menuHtml .= "<a href=\"".$hostURL."{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
 			}
 			else {
-		$menuHtml .= "<a href=\"".hostURL()."/home/{$linkPrefix}{$menuArray[$i][1]}/\"";
+		$menuHtml .= "<a href=\"".$hostURL."{$linkPrefix}{$menuArray[$i][1]}/\"";
 			}
 		if ($i == $currentIndex) 
 			$menuHtml .= ' class="currentpage"';
