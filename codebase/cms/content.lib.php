@@ -41,6 +41,9 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		if($userId!=0) {
 			$newUserId=resetAuth();
 			displayinfo("You have been logged out!");
+			global $openid_enabled;
+			if($openid_enabled=='true')
+				displaywarning("If you logged in via Open ID, make sure you also log out from your Open ID service provider's website. Until then your session in this website will remain active !");
 			return getContent($pageId, "view", $newUserId, getPermissions($newUserId,$pageId,"view"), 0);
 		} else
 			displayinfo("You need to <a href=\"./+login\">login</a> first to logout!");
