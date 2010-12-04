@@ -55,7 +55,7 @@ RET;
 				$active = "";
 				if($navigate == $row['page_id']||getPageModule($row['page_id'])=='book'&&$this->isPresent($row['page_id'],$navigate))
 					$active = ' active';
-				$tabList .= "<span class='tabElement'><a id='Content{$this->pageId}_{$row['page_id']}' href='./+view&navigate={$row['page_id']}'><div id='cms-tabItem'>{$row['page_title']}</div></a></span>";
+				$tabList .= "<div class='tabElement'><a id='Content{$this->pageId}_{$row['page_id']}' href='./+view&navigate={$row['page_id']}'><span class='tabItem' id='cms-tabItem'>{$row['page_title']}</span></a></div>";
 				$content = getContent($row['page_id'], "view", $this->userId, true);
 				$content = preg_replace('/<a(.*)href=[\'"](.\/)?(.*)[\'"](.*)>(.*)<\/a>/i', '<a$1href="./' . $row['page_name'] . '/$3"$4>$5</a>', $content);
 				$content = preg_replace('/<form(.*)action=[\'"](.\/)?(.*)[\'"](.*)>/i', '<form$1action="./' . $row['page_name'] . '/$3"$4>', $content);
