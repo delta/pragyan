@@ -11,21 +11,21 @@
 .tabContent {
 	display: none;
 	padding: 13px;
+	clear: both;
 }
 .tabElement {
 	border: 1px solid black;
 	padding: 3px;
 	margin: 2px;
 	color: black;
+	float : left;
 	
 }
+
 .tabElement a {
 	text-decoration : none;
 }
-.tabElement:hover {
-	border: 3px solid black;
-	padding: 1px;
-}
+
 .active {
 	display: block;
 }
