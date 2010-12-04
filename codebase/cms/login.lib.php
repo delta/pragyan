@@ -231,7 +231,6 @@ if(function_exists('filter_input')) {
  *       This means that this OpenID entry is there in the _openid_users table
  *       and thus the user has previously used this OpenID before.
  *       In such case, the authentication is done and the user logs in.
- * @todo Update user's last login when this happens.
  * 2. When the OpenID provider didn't returned the user's email address:
  *       We currently do not support such OpenID provider, and thus an
  *       error message is recieved by the user.
