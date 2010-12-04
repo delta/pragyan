@@ -145,9 +145,18 @@ if(function_exists('filter_input')) {
      * This Line might require editing:
      * The user's OpenID provider will return them to the URL that you provide here.
      */
-    //    $openid->setReturnURL("http://".$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']."?action=login&subaction=openid_verify");
-$openid->setReturnURL("http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."?action=login&subaction=openid_verify");
-	
+    global $rewriteEngineEnabled;
+
+    ///if rewriteEngine is enabled, then write explicit name index.php (direct filename are saved from being processed by rewrite engine)
+    ///since rewriteEngine is poorly coded. It doesn't allow longer GET queries.
+    ///if rewriteEngine is off, we can remove the index.php part to make the url look non-php
+    if($rewriteEngineEnabled=='true')
+      $returnURL="http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."/index.php?action=login&subaction=openid_verify";
+    else
+      $returnURL="http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."/?action=login&subaction=openid_verify";
+
+    $openid->setReturnURL($returnURL);
+
     /**
      * TrustRoot: The URL to which your user would be asked to trust. This is
      * usually the parent directory of ReturnURL
@@ -418,10 +427,9 @@ function loginForm()
 <!-- Simple OpenID Selector -->
 <form action="./+login&subaction=openid_login" method="post" id="openid_form">
         <input type="hidden" name="process" value="1" />
-
         
-                Sign-in or Create New Account
-                
+			    Sign-in using your exiting account on popular websites
+
                 <div id="openid_choice">
                         <p>Please click your account provider:</p>
                         <div id="openid_btns"></div>
