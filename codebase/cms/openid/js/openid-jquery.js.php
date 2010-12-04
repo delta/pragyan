@@ -82,7 +82,7 @@ var providers_small = {
     }
 };
 var providers = $.extend({}, providers_large, providers_small);
-
+var openid_called = new Array();
 var openid = {
 
 	cookie_expires: 6*30,	// 6 months.
@@ -99,8 +99,10 @@ var openid = {
         var openid_btns = $('#openid_btns');
         
         this.input_id = input_id;
-        
-        $('#openid_choice').show();
+        if(!$('#openid_choice').is(':visible'))
+	  $('#openid_choice').show();
+	else
+	  return '';
         $('#openid_input_area').empty();
         
         // add box for each provider
