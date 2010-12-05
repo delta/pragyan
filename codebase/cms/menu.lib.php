@@ -25,9 +25,9 @@ function findMenuIndex($menuArray, $pageId) {
 ///true --> generate from / till depth
 ///false --> generate from current page till depth relatively.
 
-function getMenu($userId, $pageIdArray, $complete = false, $image = false) {
+function getMenu($userId, $pageIdArray, $complete = false) {
 
-	
+
 	///This hostURL is to replace all ".(dot)s" with the current address, making the link absolute.	
 	///@functions hostURL() common.lib.php - http://pragyan.org/11
 	///@functions selfURI() common.lib.php - http://pragyan.org/11/home/how_to_use/mypage/mypage2
@@ -62,7 +62,7 @@ MENUHTML;
 		///@reply This is because $COMPLETEMENU is called in the index.php. So the pageid is set to 0. Just check the lines of code above. I ll change this soon and delete this note. @author: BOOPATHI
 		if ($pageId == 0) { 
 			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($childMenu,-1,'',true);
+			$menuHtml .= htmlMenuRenderer($childMenu,-1,'');
 		}
 		else  {
 			if ($pageRow['page_displaysiblingmenu']) {
@@ -90,14 +90,14 @@ MENUHTML;
 		
 		$pageRow = getPageInfo($pageId);
 			
-		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId,1,$image);
+		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId,1);
 				
 	}
 	return $menuHtml;
 
 }
 
-function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
+function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   if($depth>0 || $depth==-1) {
   if($curdepth==1 || $pageId==0) $classname="topnav";
   else $classname="subnav";
@@ -114,7 +114,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
 		
 	  $newdepth=$curdepth+1;
 	  $imageTag = '';
-	  if($image) {
+	  if($pageRow[$i][4]) {
 	  	if($pageRow[$i][3] != NULL)
 	  		$imageTag = "<img width=32 height=32 src=\"{$pageRow[$i][3]}\" alt=\"{$pageRow[$i][1]}\" />";
 	  	/*
@@ -135,7 +135,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth,$image=false) {
   return $var;
   }
 }
-function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $image=false) {
+function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 	$menuHtml = '';
 	$hostURL=strstr(selfURI(),'+',true);
 	
@@ -153,8 +153,8 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '', $ima
 		if ($i == $currentIndex) 
 			$menuHtml .= ' class="currentpage"';
 		$menuHtml .= '>';
-		if ($image)
-			$menuHtml .= "<img src=\"{$menuArray[$i][4]}\" />";
+		if (($menuArray[$i][4]) && ($menuArray[$i][3] != ''))
+			$menuHtml .= "<img src=\"{$menuArray[$i][3]}\" />";
 		$menuHtml .= "<div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";
 	}
 	
@@ -195,13 +195,13 @@ function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
  */
 function getChildren($pageId, $userId) {
 	$pageId=escape($pageId);
-	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 	
 	$childrenResult = mysql_query($childrenQuery);
 	$children = array();
 	while ($childrenRow = mysql_fetch_assoc($childrenResult))
 		if ($childrenRow['page_displayinmenu'] == true && getPermissions($userId, $childrenRow['page_id'], 'view', $childrenRow['page_module']) == true)
-			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_title'], $childrenRow['page_image']);
+			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_title'], $childrenRow['page_image'],$childrenRow['page_displayicon']);
 			
 		
 	return $children;
