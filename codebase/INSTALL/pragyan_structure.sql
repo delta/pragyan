@@ -540,6 +540,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
   `page_displaymenu` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Tells if menu should be displayed at all',
   `page_displaysiblingmenu` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Tells if sibling menu is displayed',
   `page_displaypageheading` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Determines whether page heading is displayed on the page',
+  `page_displayicon` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 - To display icon in menu 0 - Not to display icon in menu'
   `page_menutype` enum('classic','multidepth') NOT NULL DEFAULT 'classic' COMMENT 'Type of the menu : Classic (normal) or Drop-down (with some depth)',
   `page_menudepth` int(11) NOT NULL DEFAULT '1',
   `page_openinnewtab` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether to open the page in a new tab when clicked',
