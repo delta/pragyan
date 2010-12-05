@@ -159,7 +159,8 @@ INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
 ('default_user_activate', '1'),
 ('default_mail_verify', '0'),
 ('breadcrumb_submenu', '0'),
-('reindex_frequency', '7');
+('reindex_frequency', '7'),
+('censor_words','');
 
 --
 -- Dumping data for table `pragyanV3_groups`
