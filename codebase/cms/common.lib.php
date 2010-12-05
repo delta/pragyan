@@ -740,3 +740,13 @@ function iscurlinstalled() {
   }
 }
 $curl_message="cURL extention is not enabled/installed on your system. OpenID requires this extention to be loaded. Please enable cURL extention. (This can be done by uncommenting the line \"extension=curl.so\" in your php.ini file). OpenID can't be enabled until you enable cURL.";
+function censor_words($text)
+{
+	$query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'censor_words'";
+	$words = mysql_query($query);
+	$words = mysql_fetch_row($words);
+	$res = preg_match_all("/$words[0]/i",$text,$match);
+	if($res!=0)
+		return $match;
+	return $res;
+}

@@ -221,11 +221,11 @@ global $pageFullPath;
 	$globalform=<<<globalform
 	<table style="width:100%">
 	<tr>
-	<td>Upload Limit (bytes) :</td>
-	<td><input type="text" name='upload_limit' value='$upload_limit'></td>
+	<td style="width:35%">Upload Limit (bytes) </td>
+	<td style="width:"65%"><input type="text" name='upload_limit' value='$upload_limit'></td>
 	</tr>
 	<tr>
-	<td>Site Reindex Frequency (days) :</td>
+	<td>Site Reindex Frequency (days) </td>
 	<td><input type="text" name='reindex_frequency' value='$reindex_frequency'></td>
 	</tr>
         <tr>
@@ -235,11 +235,16 @@ global $pageFullPath;
 			<label><input type="radio" name="openid_enabled" id="optEnableOpenIDYes" value="true" $openidyes_ischecked />Yes</label>
 			</td>
 	</tr>
+	<tr>
+		<td>Censor Words (use | to seperate the words. Please dont use spaces) </td>
+		<td><textarea style="width:98%" rows=10 cols=10 name='censor_words' />$censor_words</textarea></td>
+	</tr>
         
 	</table>
 globalform;
 return $globalform;
 }
+
 
 
 
@@ -524,7 +529,7 @@ function updateGlobalSettings()
 	$global['cms_desc']=escape($_POST['cms_desc']);
 	$global['cms_keywords']=escape($_POST['cms_keywords']);
 	$global['cms_footer']=escape($_POST['cms_footer']);
-	
+	$global['censor_words']=safe_html($_POST['censor_words']);
 	if(isset($_POST['openid_enabled']) && escape($_POST['openid_enabled']=='true')) //if user submitted true
 	  { 
 	    if (iscurlinstalled()) //check if curl is enabled
