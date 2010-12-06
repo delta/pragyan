@@ -962,19 +962,19 @@ PRE;
 			$r = mysql_query($q) or displayerror(mysql_error() . "View of Thread failed L:962");
 			$r = mysql_fetch_array($r);
 		if($post == 0){
-			$topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
+			$topic = censor_words(ucfirst(parseubb(parsesmileys($rows['forum_thread_topic']))));
 			$name = ucfirst(getUserName($rows['forum_thread_user_id']));
 			$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
 			$threadUserId = $rows['forum_thread_user_id'];
-			$detail = parseubb(parsesmileys($rows['forum_detail']));
+			$detail = censor_words(parseubb(parsesmileys($rows['forum_detail'])));
 			$posts = $this->getTotalPosts($rows['forum_thread_user_id']);
 			$reg_date = $this->getRegDateFromUserID($rows['forum_thread_user_id']);
 			$postTime = $rows['forum_thread_datetime'];
 			}
 			if($post == 1){
 			$postUserId = $rows['forum_post_user_id'];
-			$topic = ucfirst(parseubb(parsesmileys($rows['forum_post_title'])));
-			$detail = (parseubb(parsesmileys($rows['forum_post_content'])));
+			$topic = censor_words(ucfirst(parseubb(parsesmileys($rows['forum_post_title']))));
+			$detail = censor_words(parseubb(parsesmileys($rows['forum_post_content'])));
 			$name = ucfirst(getUserName($rows['forum_post_user_id']));
 			$posts = $this->getTotalPosts($rows['forum_post_user_id']);
 			$reg_date = $this->getRegDateFromUserID($rows['forum_post_user_id']);

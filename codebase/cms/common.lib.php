@@ -745,8 +745,7 @@ function censor_words($text)
 	$query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'censor_words'";
 	$words = mysql_query($query);
 	$words = mysql_fetch_row($words);
-	$res = preg_match_all("/$words[0]/i",$text,$match);
-	if($res!=0)
-		return $match;
+	$replace = "<b>CENSORED</b>";
+	$res = preg_replace("/$words[0]/i",$replace,$text);
 	return $res;
 }
