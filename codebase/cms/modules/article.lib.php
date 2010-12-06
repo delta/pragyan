@@ -102,6 +102,7 @@ RET;
 			$result = mysql_query($query);
 			if($row = mysql_fetch_assoc($result)) {
 				$text = $row['article_content'];
+				$text = censor_words($text);
 				global $PAGELASTUPDATED;
 				$PAGELASTUPDATED = $row['article_lastupdated'];
 			}
@@ -155,10 +156,6 @@ RET;
 
 
 			/*Save the diff :-*/
-			$cen_res = "";
-			$cen_res = censor_words($_POST['CKEditor1']);
-			if(!$cen_res)
-			{
 			$query = "SELECT article_content FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
 			$result = mysql_query($query);
 			$row = mysql_fetch_assoc($result);
@@ -194,15 +191,6 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 				index_url($page, 0, 0, '', 0, 0, 1);
 			}
 			return $this->actionView();
-			}
-			else
-			{
-			$words ="";
-			for($i = 0; $i <= count($cen_res); ++$i)
-				$words .= $cen_res[0][$i].", ";
-			displayerror("You have used the words that were censored (". $words ."). Please remove them and try again.");
-			return $this->getCkBody(stripslashes($_POST['CKEditor1']));
-			}
 		}
 		$fulleditpage = $this->getCkBody();
 		

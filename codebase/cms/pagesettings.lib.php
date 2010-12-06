@@ -445,6 +445,7 @@ MOVECOPY;
 				</tr><tr>
 					<td><label for='displayicon'> Show icon in menu </label></td>
 					<td><input type='checkbox' name='displayicon' id='displayicon' $displayicon /></td>
+					<td rowspan="4"><input type="checkbox" name='icon_propogate' value='yes' />Propogate Icon settings to all child pages </td>
 				</tr>
 				
 	        </table>
@@ -518,7 +519,7 @@ FORMDISPLAY;
  * @param $showMenuBar Boolean indicating whether the page shows its menubar
  * @return String containing a description of any errors encountered, a null string indicating success
  */
-function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList,$visiblesChildList, $visibleiChildList, $page_template, $template_propogate, $menu_type, $menu_depth, $menu_propogate, $showInSiteMap, $displayicon) {
+function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $showHeading, $showMenuBar, $showSiblingMenu, $visibleChildList,$visiblesChildList, $visibleiChildList, $page_template, $template_propogate, $menu_type, $menu_depth, $menu_propogate, $showInSiteMap, $displayicon,$icon_propogate) {
 
 	$updateQuery = '';
 	$updates = array ();
@@ -582,7 +583,10 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	{
 		setChildMenuStyleFromParentID($pageId,$menu_type,$showMenuBar,$showSiblingMenu,$menu_depth);	
 	}
-	
+	if($icon_propogate==true)
+	{
+		setChildIconFromParentID($pageId,$displayicon);	
+	}
 	if($menu_type!=NULL)
 	{
 		$updates[] = "`page_menutype` = '$menu_type'";
@@ -680,7 +684,19 @@ function setChildMenuStyleFromParentID($parentId,$menu_type,$showMenuBar,$showSi
 		setChildMenuStyleFromParentID($childPageId,$menu_type,$showMenuBar,$showSiblingMenu,$menu_depth);
 	}
 }
-
+function setChildIconFromParentID($parentId,$displayicon)
+{if($displayicon=='')$displayicon=0;
+	$parentId=escape($parentId);
+	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
+	$result=mysql_query($query);
+	while($row=mysql_fetch_row($result))
+	{
+		$childPageId=$row[0];
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_displayicon`=$displayicon WHERE `page_id`=$childPageId";
+		mysql_query($query);
+		setChildIconFromParentID($childPageId,$displayicon);
+	}
+}
 
 
 /**
@@ -737,13 +753,14 @@ function pagesettings($pageId, $userId) {
 	
 				$template_propogate=isset($_POST['template_propogate'])?true:false;
 				$menu_propogate=isset($_POST['menustyle_propogate'])?true:false;
+				$icon_propogate=isset($_POST['icon_propogate'])?true:false;
 				$_POST['pagename']=isset($_POST['pagename'])?$_POST['pagename']:"";
 				$_POST['pagetitle']=isset($_POST['pagetitle'])?$_POST['pagetitle']:"";
 				$var = (isset($_POST['allowComments'])?1:0);
 				$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
 				$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 				mysql_query("UPDATE `article_content` SET `allowComments` = $var WHERE `page_modulecomponentid` = '{$modulecomponentid}'");
-				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList,$visiblesChildList,$visibleiChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL,$menu_propogate,isset($_POST['showinsitemap']),isset($_POST['displayicon']));
+				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList,$visiblesChildList,$visibleiChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL,$menu_propogate,isset($_POST['showinsitemap']),isset($_POST['displayicon']),$icon_propogate);
 
 				
 
