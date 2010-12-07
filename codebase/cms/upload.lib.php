@@ -136,9 +136,9 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 	move_uploaded_file($tempFileName, "$uploadDir/$moduleName/$finalName");
 	if($moduleName=="gallery")
 	{
-		if (!file_exists($uploadDir . '/' . $moduleName . '/Thumbs'))
-			mkdir($uploadDir . '/' . $moduleName. '/Thumbs', 0755);
-		createThumbs("$uploadDir/$moduleName/$finalName","$uploadDir/$moduleName/Thumbs/$finalName",100);
+		$thumb_upload_fileid = $upload_fileid + 1;
+		$thumb_finalName = str_pad($thumb_upload_fileid, 10, '0', STR_PAD_LEFT) . '_thumb_' . $uploadFileName;
+		createThumbs("$uploadDir/$moduleName/$finalName","$uploadDir/$moduleName/$thumb_finalName",136);
 	}
 
 	if(strpbrk($uploadFileName, '"')) {
@@ -158,7 +158,16 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
 				"VALUES ($moduleComponentId, '$moduleName', $upload_fileid, " .
 				"'" . mysql_escape_string($uploadFileName) . "', '$uploadFileType', $userId)";
-		mysql_query($query) or die(mysql_error() . "upload.lib L:36<br />");
+		mysql_query($query) or die(mysql_error() . "upload.lib L:160<br />");
+		if($moduleName=="gallery")
+		{
+		$thumb_name="thumb_".$uploadFileName;
+		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
+				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
+				"VALUES ($moduleComponentId, '$moduleName', $thumb_upload_fileid, " .
+				"'" . mysql_escape_string($thumb_name) . "', '$uploadFileType', $userId)";
+		mysql_query($query) or die(mysql_error() . "upload.lib L:160<br />");
+		}
 		return $uploadFileName;
 	}
 }
@@ -248,7 +257,8 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	$upload_filename = stripslashes($upload_filename);
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` =$moduleComponentId AND `page_module` = '$page_module' AND `upload_filename`= '" . mysql_escape_string($upload_filename) . "'";
 
-	$result = mysql_query($query) or die(mysql_error() . "upload L:85");
+	$result = mysql_query($query) or die(mysql_error() . "upload L:260");
+	if(mysql_num_rows($result)<1) return false;
 	$row = mysql_fetch_assoc($result);
 	$upload_fileid = $row['upload_fileid'];
 
@@ -257,6 +267,11 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	} else
 		displayerror("File data has  NOT been deleted from the SERVER");
 	$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `upload_fileid`=$upload_fileid";
+	if($page_module=="gallery")
+	{
+		$thumb_name = "thumb_".$upload_filename;
+		deleteFile($moduleComponentId,$page_module,$thumb_name);
+	}
 	mysql_query($query);
 	if (mysql_affected_rows() > 0) {
 	//	displayinfo("File data has been deleted from the database");
@@ -478,11 +493,9 @@ function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth )
       $tmp_img = imagecreatetruecolor( $new_width, $new_height );
 
       // copy and resize old image into new image 
-      imagecopyresized( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+      imagecopyresampled( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
 
       // save thumbnail into a file
       imagejpeg( $tmp_img, "{$pathToThumbs}" );
-  // close the directory
-  closedir( $dir );
 }
 ?>

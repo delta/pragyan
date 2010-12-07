@@ -88,7 +88,11 @@ JS;
 		$content .= "<h2><center>{$row['gallery_name']}</center></h2><br/><center><h3>{$row['gallery_desc']}</center></h3>";
 		$perPage = $row['imagesPerPage'];
 		include_once ("$sourceFolder/" . 'upload.lib.php');
-		$arr = getUploadedFiles($this->moduleComponentId, 'gallery');
+		$query = "SELECT `upload_filename` FROM `gallery_pics` WHERE `page_modulecomponentid` =". $this->moduleComponentId;
+		$pic_result = mysql_query($query) or die(mysql_error());
+		$arr = array ();
+		while ($row = mysql_fetch_assoc($pic_result))
+			$arr[] = $row;
 		$numPic = count($arr);
 		if(isset($_GET['gallerypage']))
 			$page = (int)escape($_GET['gallerypage']) - 1;
@@ -109,7 +113,7 @@ JS;
 			$row2 = mysql_fetch_assoc($gallResult2);
 			if ($row2) {
 				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this)">';
-				$content .= "<img src=\"./" . $arr[$i]['upload_filename'] . "\" alt='{$row2['gallery_filecomment']}' title='Click to enlarge' height='100' width='136' /></a>";
+				$content .= "<img src=\"./thumb_" . $arr[$i]['upload_filename'] . "\" alt='{$row2['gallery_filecomment']}' title='Click to enlarge' /></a>   &nbsp;";
 			}
 		}
 		$content .= '</div>';
@@ -136,7 +140,7 @@ JS;
 			if($i == $pageVal)
 				$pages .= " $pageVal ";
 			else
-				$pages .= " <a href='./+view&gallerypage={$i}'>{$i}</a> ";
+				$pages .= " <a href='./+view&gallerypage={$i}'>{$i}</a>&nbsp;";
 		if(ceil($numPic/$perPage) - $page > 5)
 			$pages .= " ...";
 		$content .= "<p>" . $prevButton . $pages . $nextButton . "</p>";
@@ -257,7 +261,7 @@ GALFORM;
 				$content2 .=<<<IMGFORM
 				<span style="float:left">
 					<center>
-						<img src="$galleryFilename" alt="$galleryFilename" title="Click on the image to delete it" height="100" width="136" />
+						<img src="thumb_$galleryFilename" alt="$galleryFilename" title="Click on the image to delete it"/>
 					</center>
 					<div class="highslide-caption" id="caption$i">$galleryComment</div>
 					<input type="hidden" name="imagename" value="$galleryFilename" />
@@ -294,6 +298,8 @@ IMGFORM;
 		$destinationPage_moduleComponentId = $gallResult2['max'] + 1;
 		while ($gallRow) {
 			fileCopy($moduleComponentId, 'gallery', $gallRow['upload_filename'], $destinationPage_moduleComponentId, 'gallery', $gallRow['upload_filename'], $this->userId);
+			$thumb ="thumb_".$gallRow['upload_filename'];
+			fileCopy($moduleComponentId, 'gallery', $thumb, $destinationPage_moduleComponentId, 'gallery', $gallRow['upload_filename'], $this->userId);
 		}
 	}
 }
