@@ -134,6 +134,12 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 
 	$finalName = str_pad($upload_fileid, 10, '0', STR_PAD_LEFT) . '_' . $uploadFileName;
 	move_uploaded_file($tempFileName, "$uploadDir/$moduleName/$finalName");
+	if($moduleName=="gallery")
+	{
+		if (!file_exists($uploadDir . '/' . $moduleName . '/Thumbs'))
+			mkdir($uploadDir . '/' . $moduleName. '/Thumbs', 0755);
+		createThumbs("$uploadDir/$moduleName/$finalName","$uploadDir/$moduleName/Thumbs/$finalName",100);
+	}
 
 	if(strpbrk($uploadFileName, '"')) {
 		displayerror("Double quotes (\") are not allowed in the file name.");
@@ -457,4 +463,26 @@ UPLOAD;
 		//if($i!="" && $i != "")
 		return($errorcodes[$i]);
 	}
+function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth ) 
+{
+      // load image and get image size
+      $img = imagecreatefromjpeg( "{$pathToImages}" );
+      $width = imagesx( $img );
+      $height = imagesy( $img );
 
+      // calculate thumbnail size
+      $new_width = $thumbWidth;
+      $new_height = floor( $height * ( $thumbWidth / $width ) );
+
+      // create a new temporary image
+      $tmp_img = imagecreatetruecolor( $new_width, $new_height );
+
+      // copy and resize old image into new image 
+      imagecopyresized( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
+
+      // save thumbnail into a file
+      imagejpeg( $tmp_img, "{$pathToThumbs}" );
+  // close the directory
+  closedir( $dir );
+}
+?>

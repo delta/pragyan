@@ -746,6 +746,9 @@ function censor_words($text)
 	$words = mysql_query($query);
 	$words = mysql_fetch_row($words);
 	$replace = "<b>CENSORED</b>";
-	$res = preg_replace("/$words[0]/i",$replace,$text);
+	if($words[0]=='')
+		return $text;
+	else
+		$res = preg_replace("/$words[0]/i",$replace,$text);
 	return $res;
 }
