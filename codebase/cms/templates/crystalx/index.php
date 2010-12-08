@@ -90,7 +90,9 @@
     <div id="footer">
         <div id="top" class="noprint"><p><span class="noscreen">Back to top</span> <a href="#header" title="Back to top ^">^<span></span></a></p></div>
         <hr class="noscreen" />
+       
         <p id="copyright"><?php echo $FOOTER; ?>  <?php if(isset($WIDGETS[5])) echo $WIDGETS[5]; ?></p>
+         <div id="pragyan_banner_footer"></div>
     </div> <!-- /footer -->
 
 </div> <!-- /main -->
