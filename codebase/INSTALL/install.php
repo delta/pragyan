@@ -95,14 +95,23 @@ function installCMS() {
 					//array('indexSite', 'Indexing site', false)
 			);
 
+	///If URL Rewrite is disabled, then skip the saveHtaccess installation step.
+	if($URL_REWRITE=='false')
+			unset($installationSteps[4]);
+			
+	///If OPEN ID not required, skip checkOpenidCurl. Notice the order of unsetting. First we unset 4 (prev. comment), then 2. Going otherwise would have gone wrong.
+	if(OPENID_ENABLED!='true')
+			unset($installationSteps[2]);
 	
+	///Required for fixing index values after unsettings		
+	$installationSteps=array_values($installationSteps);
+
 	for ($i = 0; $i < count($installationSteps); ++$i) {
 		$installationProcedure = $installationSteps[$i][0];
+	
 		$stepResult = $installationProcedure();
 		
-		///If URL Rewrite is disabled, then skip the saveHtaccess installation step.
-		if($URL_REWRITE=='false')
-			unset($installationSteps[4]);
+		
 		if ($stepResult != '') {
 			$installationSteps[$i][] = $stepResult;
 			return $installationSteps;
