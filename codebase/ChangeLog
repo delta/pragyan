@@ -1,3 +1,6 @@
+Revision 179  by  abhishekdelta  on  2010-12-08 14:41:0
+Description : Fixed bug in breadcrumbs due to URL Rewriting
+--------------------------------------------------------------------------------
 Revision 178  by  balanivash  on  2010-12-07 22:41:3
 Description : Funtion to create thumbnails for images in gallery
 --------------------------------------------------------------------------------
