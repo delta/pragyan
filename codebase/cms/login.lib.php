@@ -224,7 +224,7 @@ if(function_exists('filter_input')) {
   
 }
 /**
- * Performs the actual login once the authentication has been confirmed
+ * Performs the actual openid login once the authentication has been confirmed
  * from the Provider.
  * Basically deals with four cases:
  * 1. The user has used this OpenID before:
@@ -297,9 +297,16 @@ function openid_login($userdata){
       $_SESSION['openid_email']=$userdata['email'];
       if(array_key_exists('email',$userdata))
 	{
-	  ///the OpenID provider did sent us the email of the user. Check if it exists in our database
-	  $userid=getUserIdFromEmail($userdata['email']);
-	  if($userid)
+	  ///the OpenID provider did sent us the email of the user. Check if it exists in our database and is activated
+	  $userdetails = getUserInfo($userdata['email']);
+	  $userid= $userdetails['user_id'];
+	  /// ASSUMPTION : the `user_activated' column in _users table is 1 if and only if his email is verified.
+	  if($userdetails['user_activated']==0)
+		{
+			displayerror("Your account is not activated yet. Please verify your account using the email sent to you during registration or contact site administrator.");
+			return;
+		}
+	  if($userdetails && $userdetails['user_activated'] && ($userdetails['user_loginmethod']!='openid'))
 	    {
 	      ///if the Email was found in the records
 	      ///Display a Form to capture the Password and connect it 
