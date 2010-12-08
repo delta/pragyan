@@ -434,10 +434,11 @@ function loginForm()
 <form action="./+login&subaction=openid_login" method="post" id="openid_form">
         <input type="hidden" name="process" value="1" />
         
-			    Sign-in using your exiting account on popular websites
+			   <p> Sign-in using your existing account on popular websites
+<br>Please click your account provider:</p>
 
                 <div id="openid_choice">
-                        <p>Please click your account provider:</p>
+    
                         <div id="openid_btns"></div>
                         </div>
                         
@@ -468,7 +469,7 @@ OPENIDLOGIN;
 					}
 					-->
 					</script>
-					<form method="POST" class="registrationform" name="user_loginform" onsubmit="return checkLoginForm(this);" action="./+login" autocomplete="off">
+					<form method="POST" class="registrationform" name="user_loginform" id="pragyan_loginform" onsubmit="return checkLoginForm(this);" action="./+login" autocomplete="off">
 						<fieldset>
 						<legend>Login</legend>
 							<table>

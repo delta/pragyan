@@ -192,10 +192,17 @@
 
 	</div>
 	<?php echo $ACTIONBARPAGE ?>
-	<div id="hc_loginform">
-			<?php echo $LOGINFORM; ?>
-		<a href="+login" id="pragyanLogin">Pragyan Login</a><a href="+login" id="openidLogin">Open-id Login</a>
-	</div>
+<?php                                                                           
+global $action;                                                                 
+if($action!='login'){                                                           
+ /*show the form only if the page is not a loginpage*/                          
+?>                                                                              
+        <div id="hc_loginform">                                                 
+        <a href="+login" id="pragyanLogin">Pragyan Login</a><a href="+login" id="openidLogin">Open-id Login</a>                                                
+
+        <?php echo $LOGINFORM;?>                                                
+        </div>                                                                  
+<?php }?>    
 	<!--
 	* Hard Coded links to profile and logout.
 	-->

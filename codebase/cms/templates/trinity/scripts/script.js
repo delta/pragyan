@@ -107,17 +107,33 @@ $(function() {
 				});
 		});
 	});
-	
-	/**
-	* Trigger normal and Open id menu
-	*/
-	$('#pragyanLogin').bind("click",function(e){
-		$("#openid_form *").fadeIn(100,function(){
-			$("hc_loginform fieldset").fadeOut();
-		});
-		e.preventDefault();
-		return false;
-	});
+	/**                                                                              
+	 * Trigger normal and Open id menu                                                
+	 */
+	$('#openid_form *').hide()
+        $('#openidLogin').bind("click",function(e){
+                $("#openid_form *").fadeIn(100,function(){
+                        $("hc_loginform fieldset").fadeOut();
+		    });
+                $("#pragyan_loginform *").fadeOut(100,function(){
+                        $("hc_loginform fieldset").fadeOut();
+		    });
+
+                e.preventDefault();
+                return false;
+	    });
+
+        $('#pragyanLogin').bind("click",function(e){
+                $("#pragyan_loginform *").fadeIn(100,function(){
+                        $("hc_loginform fieldset").fadeOut();
+		    });
+                $("#openid_form *").fadeOut(100,function(){
+                        $("hc_loginform fieldset").fadeOut();
+		    });
+
+                e.preventDefault();
+                return false;
+	    });
 	
 	/**
 	* Enable ticker
