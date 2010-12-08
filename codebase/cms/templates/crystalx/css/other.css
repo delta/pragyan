@@ -1,3 +1,16 @@
+div#pragyan_banner {
+	background : transparent url('../../common/images/pragyancms/cms_logo_banner.jpg') no-repeat;
+	width : 269px;
+	height : 100px;
+}
+div#pragyan_banner_footer {
+	background : transparent url('../../common/images/pragyancms/cms_powerd_small') no-repeat;
+	width : 96px;
+	height : 35px;
+	float : right;
+	margin-right : 270px;
+}
+
 
 /**
 *For action bar
