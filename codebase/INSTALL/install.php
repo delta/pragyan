@@ -91,15 +91,12 @@ function installCMS() {
 					array('checkDatabaseAccess', 'Checking Database Access', false),
 					array('checkOpenidCurl','Checking if cURL needed and installed',false),
 					array('importDatabase', 'Importing Database', false),
-					array('saveHtaccess', 'Checking .htaccess Settings', false)
+					array('saveHtaccess', 'Checking .htaccess Settings (for Pretty URLs)', false)
 					//array('indexSite', 'Indexing site', false)
 			);
-
-	///If URL Rewrite is disabled, then skip the saveHtaccess installation step.
-	if($URL_REWRITE=='false')
-			unset($installationSteps[4]);
+	
 			
-	///If OPEN ID not required, skip checkOpenidCurl. Notice the order of unsetting. First we unset 4 (prev. comment), then 2. Going otherwise would have gone wrong.
+	///If OPEN ID not required, skip checkOpenidCurl.
 	if(OPENID_ENABLED!='true')
 			unset($installationSteps[2]);
 	
@@ -111,6 +108,9 @@ function installCMS() {
 	
 		$stepResult = $installationProcedure();
 		
+		///If URL Rewrite is disabled, then skip the saveHtaccess installation step. It will be on last.
+		if($i==1 && $URL_REWRITE=='false')
+			unset($installationSteps[count($installationSteps)-1]);
 		
 		if ($stepResult != '') {
 			$installationSteps[$i][] = $stepResult;
