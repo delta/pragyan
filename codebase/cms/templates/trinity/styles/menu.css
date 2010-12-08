@@ -222,7 +222,7 @@ display:none;
 	background: url(../images/menu.png)
 }
 .menucontainer ul.subnav {
-	background: rgba(256,256,256,0.9);
+	background: rgba(25,25,25,0.9);
 	position: absolute;
 	display: none;
 }
@@ -247,7 +247,7 @@ display:none;
 	color: #AAA;
 }
 .menucontainer ul.subnav > li:hover > a > div{
-	background: #123;
+	background : rgba(75,75,75,0.5);
 	color: #FFF;
 }
 .menucontainer li:hover > ul.subnav[class="depth2"]{
