@@ -61,13 +61,16 @@ Version 3.0+
     * Enable/disable login
     * User profile form
     * Target option in links module
-
+    * Thumbnail generation for Gallery
+    * Censor words
+    * Widgets : Countdown, News
+    
 - Boopathi R <boopathi[at]live.com>
     * Trinity Template
     * Complete Menu
     * Icons Management
 
-Also thanks to Aparna Chugh for the Poll Module, Siddhant Sanyam for Open ID integration and Shiva Nandan for enabling Pragyan CMS to work without URL Rewriting.
+Also thanks to Aparna Chugh for the Poll Module, Siddhant Sanyam for Open ID integration and Shiva Nandan for enabling Pragyan CMS to work without URL Rewriting. 
 
 Version 2.0-2.6
 ---------------

@@ -1,3 +1,45 @@
+Revision 178  by  balanivash  on  2010-12-07 22:41:3
+Description : Funtion to create thumbnails for images in gallery
+--------------------------------------------------------------------------------
+Revision 177  by  balanivash  on  2010-12-07 16:45:5
+Description : Correcting problems with censor words
+--------------------------------------------------------------------------------
+Revision 176  by  balanivash  on  2010-12-06 18:58:2
+Description : Including Propagate for icon enable/disable and modifying censor words
+--------------------------------------------------------------------------------
+Revision 175  by  abhishekdelta  on  2010-12-06 16:31:0
+Description : Fixed a typo in an install query
+--------------------------------------------------------------------------------
+Revision 174  by  balanivash  on  2010-12-05 22:02:4
+Description : Function for censoring content
+--------------------------------------------------------------------------------
+Revision 173  by  balanivash  on  2010-12-05 21:13:4
+Description : Enable/Disable icon in menu
+--------------------------------------------------------------------------------
+Revision 172  by  abhishekdelta  on  2010-12-05 04:10:0
+Description : Template modification in Trinity
+--------------------------------------------------------------------------------
+Revision 171  by  abhishekdelta  on  2010-12-05 03:46:3
+Description : Fixing the url parsing regular expression in book module
+--------------------------------------------------------------------------------
+Revision 170  by  abhishekdelta  on  2010-12-05 03:15:5
+Description : Fixing bug with classic menu generation when the url has an action in it
+--------------------------------------------------------------------------------
+Revision 169  by  abhishekdelta  on  2010-12-05 02:40:3
+Description : Fixing a bug with the tabs styling of book module
+--------------------------------------------------------------------------------
+Revision 168  by  abhishekdelta  on  2010-12-05 02:24:4
+Description : Fixed bug in classic menu generation
+--------------------------------------------------------------------------------
+Revision 167  by  abhishekdelta  on  2010-12-05 00:26:1
+Description : Added warning to the user upon logout regarding logging out completely from openid
+--------------------------------------------------------------------------------
+Revision 166  by  abhishekdelta  on  2010-12-04 19:19:3
+Description : Applying the openid disabling patch
+--------------------------------------------------------------------------------
+Revision 165  by  chakradarraju  on  2010-12-03 17:15:0
+Description : Added safedit module
+--------------------------------------------------------------------------------
 Revision 164  by  abhishekdelta  on  2010-11-28 07:02:0
 Description : Adding Poll Module
 --------------------------------------------------------------------------------
