@@ -201,7 +201,10 @@ if($action!='login'){
         <a href="+login" id="pragyanLogin">Pragyan Login</a><a href="+login" id="openidLogin">Open-id Login</a>                                                
 
         <?php echo $LOGINFORM;?>                                                
-        </div>                                                                  
+        </div>    
+<script>
+	$('#openid_form *').hide();
+</script>                                                              
 <?php }?>    
 	<!--
 	* Hard Coded links to profile and logout.
