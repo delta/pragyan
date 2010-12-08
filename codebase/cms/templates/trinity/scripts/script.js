@@ -110,7 +110,7 @@ $(function() {
 	/**                                                                              
 	 * Trigger normal and Open id menu                                                
 	 */
-	$('#openid_form *').hide()
+
         $('#openidLogin').bind("click",function(e){
                 $("#openid_form *").fadeIn(100,function(){
                         $("hc_loginform fieldset").fadeOut();
