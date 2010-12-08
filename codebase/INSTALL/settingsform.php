@@ -541,13 +541,7 @@ $settingsForm = <<<SETTINGSFORM
 			<label><input type="radio" name="optEnableOpenID" id="optEnableOpenIDYes" value="Yes" />Yes</label>
 			</td>
 		</tr>
-		<tr>
-	  <td><label for="btnCheckOpenID">Check if OpenID is supported (Click this button to check if your server can support OpenID)</label></td>
-			<td>
-				<input type="button" name="btnCheckOpenID" id="btnCheckOpenID" value="Check OpenID Support"/>
-				
-			</td>
-		</tr>	</table>
+		</table>
 </fieldset>
 
 <script type="text/javascript" language="javascript">
