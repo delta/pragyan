@@ -301,7 +301,7 @@ function openid_login($userdata){
 	  $userdetails = getUserInfo($userdata['email']);
 	  $userid= $userdetails['user_id'];
 	  /// ASSUMPTION : the `user_activated' column in _users table is 1 if and only if his email is verified.
-	  if($userdetails['user_activated']==0)
+	  if($userdetails && ($userdetails['user_activated']==0))
 		{
 			displayerror("Your account is not activated yet. Please verify your account using the email sent to you during registration or contact site administrator.");
 			return;
