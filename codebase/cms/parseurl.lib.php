@@ -30,14 +30,14 @@
 	 *	J from 0 to count(urlPieces) - 1
 	 */
 
-	$selectString = "SELECT ";//node0.page_id AS pageid0";
-  $fromString=" FROM ";//`$pagesTable` AS node0";
-  $whereString=" WHERE ";//node0.page_id=node0.page_parentid";
+	$selectString = "SELECT node0.page_id AS pageid0";
+  $fromString=" FROM `$pagesTable` AS node0";
+  $whereString=" WHERE node0.page_id=node0.page_parentid";
   for($i = 1; $i < count($urlPieces); $i++) {
 		if($urlPieces[$i] != "") {
-			$selectString.=($i>1?", ":"")."node".$i.".page_id AS pageid".$i;
-			$fromString.=($i>1?", ":"")."`$pagesTable` as node".$i;
-			$whereString.=($i>1?"and ":"")." node".$i.".page_parentid = ".($i==1?"0 ":"IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id)")." and node".$i.".page_name='".$urlPieces[$i]."'";
+			$selectString.=", node".$i.".page_id AS pageid".$i;
+			$fromString.=", `$pagesTable` as node".$i;
+			$whereString.=" and node".$i.".page_parentid = IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id) and node".$i.".page_name='".$urlPieces[$i]."'";
 	  }
 	}
   	$pageid_query = $selectString.$fromString.$whereString;
