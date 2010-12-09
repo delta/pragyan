@@ -294,7 +294,8 @@ INSERT IGNORE INTO `pragyanV3_userpageperm` (`perm_type`, `page_id`, `usergroup_
 --
 
 INSERT IGNORE INTO `pragyanV3_widgetsinfo` (`widget_id`, `widget_name`, `widget_classname`, `widget_description`, `widget_version`, `widget_author`, `widget_foldername`) VALUES
-(1, 'Server Date and Time', 'serverDateTime', 'Display the current date and time in the website', '0.01', 'Abhishek Shrivastava', 'server_date_time');
+(1, 'Server Date and Time', 'serverDateTime', 'Display the current date and time in the website', '0.01', 'Abhishek Shrivastava', 'server_date_time'),
+(2, 'Count Down', 'count_down', 'Display the countdown to a given date', '0.01', 'Balanivash', 'count_down');
 
 
 --
