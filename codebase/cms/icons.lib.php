@@ -33,6 +33,7 @@ $ICON_ARRAY=array(
 'Edit Page'=>"actions/edit-select-all.png",
 'New User'=>"actions/contact-new.png",
 'Uploaded Files'=>"actions/document-open.png",
+'Drafts'=>"actions/edit-paste.png",
 'Page Revisions'=>"apps/preferences-system-session.png",
 'Page Comments'=>"apps/internet-group-chat.png",
 'Global Settings'=>"categories/preferences-desktop.png",
