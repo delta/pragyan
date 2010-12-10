@@ -135,6 +135,12 @@ $(function() {
                 return false;
 	    });
 	
+	
+	///Expand on mouse click in registration field
+	
+	$("form.cms-registrationform input[type=text]").focus(focusField).blur(blurField);
+	$("form.cms-registrationform input[type=password]").focus(focusField).blur(blurField);
+	
 	/**
 	* Enable ticker
 	*/
@@ -164,3 +170,21 @@ function changeHomeImage()
 	$(this).find("img").attr("src",templateBrowserPath+"/images/home.png");
 }
 
+///Function focus for registration menu
+function focusField(){
+	$(this).animate({
+		fontSize: "12px"
+	},50).css({
+		background: "#fff",
+		color: "black"
+	});
+}
+	
+function blurField(){
+	$(this).animate({
+		fontSize: "10px",
+	},50).css({
+		background: "#ddd",
+		color: "#666"
+	});
+}

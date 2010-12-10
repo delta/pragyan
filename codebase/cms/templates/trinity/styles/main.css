@@ -186,3 +186,43 @@ body img
 #right3 div.link:hover {
 	background-color : #444;
 }
+
+/**
+* For the registration page 
+**/
+form.cms-registrationform table,form.cms-registrationform tr,form.cms-registrationform td {
+	border:0;
+}
+form.cms-registrationform input[type=text], form.cms-registrationform [type=password] {
+	padding: 3px 5px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+form.cms-registrationform {
+	width: 100%;
+}
+form.cms-registrationform fieldset {
+	border: 0;
+}
+form.cms-registrationform table{
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 20px;
+	background: RGBA(150,150,150,0.1);
+	font-size: 12px;
+	margin: auto;
+}
+form.cms-registrationform tr{
+	height: 50px;
+	vertical-align: middle;
+}
+form.cms-registrationform fieldset legend{
+	display:none;
+}
+form.cms-registrationform a{
+	text-decoration: none;
+	font-size: 10px;
+	color: white;
+}

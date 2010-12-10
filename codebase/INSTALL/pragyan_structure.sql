@@ -58,6 +58,18 @@ CREATE TABLE IF NOT EXISTS `article_comments` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `article_draft`
+--
+
+CREATE TABLE IF NOT EXISTS `article_draft` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `draft_number` int(11) NOT NULL,
+  `draft_content` text NOT NULL,
+  `draft_lastsaved` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `book_desc`
