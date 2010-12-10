@@ -629,6 +629,8 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 0 WHERE ' .
 		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
 	}
+	if(!$icon_propogate)
+	{
 	if (is_array($visibleiChildList) && count($visibleiChildList) > 0) {
 		$visibleiChildList = "'" . join($visibleiChildList, "', '") . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 1 WHERE ' .
@@ -640,7 +642,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 0 WHERE ' .
 		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
 	}
-
+	}
 	mysql_query($updateQuery);
 
 	return $errors;
