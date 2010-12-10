@@ -42,6 +42,8 @@ function getActionbarPage($userId, $pageId) {
 	$hostURLL = hostURL();
 	if($action == "profile")
 		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\"><img src=\"{$hostURLL}/{$cmsFolder}/{$templateFolder}/common/images/usericon.png\" style=\"position:relative;top:3px;\"\/> $actionname</a></span>\n";
+	else if($action == "pdf")
+		$actionbar.="<span class=\"cms-actionbarPageItem\"><a id=\"a\" onclick=\"javascript:var x=prompt('Enter Depth (-1 for full depth)');if(x)document.getElementById('a').href = document.getElementById('a').href + '&depth=' + x;\" class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	else
 		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}

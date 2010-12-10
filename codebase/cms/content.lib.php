@@ -162,6 +162,12 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	
 	if($action=="pdf")
 	{
+		$depth=$_GET['depth'];
+		if(!is_numeric($depth))
+		{
+			$depth=0;
+		}
+		
 		global $TITLE;
 		global $sourceFolder;
 		require_once("$sourceFolder/modules/pdf/html2fpdf.php");
@@ -169,6 +175,56 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		$pdf->setModuleComponentId($moduleComponentId);
 		$pdf->AddPage();
 		$pdf->WriteHTML($page->getHtml($userId,$moduleComponentId,"view"));
+		
+		$cp=array();
+		$j=0;
+		
+		if($depth == -1)
+		{
+			$cp=child($pageId,$userId,$depth);
+		
+			if($cp[0][0])
+				{
+					for($i=0 ; $cp[$i][0] != NULL ; $i++)
+					{
+						require_once($sourceFolder."/".$moduleFolder."/".$cp[$i][2].".lib.php");						
+						$page1 = new $cp[$i][2]();					
+						$modCompId = $cp[$i][5];
+						$pdf->setModuleComponentId($modCompId);
+						$pdf->AddPage();
+						$pdf->WriteHTML($page1->getHtml($userId,$modCompId,"view"));
+					}
+				}
+		}
+		
+		else if ($depth>0)
+		{
+			$cp=child($pageId,$userId,$depth);
+			--$depth;
+			while($depth>0)
+			{
+				$count = count($cp);
+				for($j; $j<$count; $j++)
+				{
+					$cp=array_merge((array)$cp,(array)child($cp[$j][0],$userId,$depth));
+				}
+				--$depth;
+			}
+		
+			if($cp[0][0])
+			{
+				for($i=0 ; isset($cp[$i]) ; $i++)
+				{
+					require_once($sourceFolder."/".$moduleFolder."/".$cp[$i][2].".lib.php");						
+						$page1 = new $cp[$i][2]();	
+					$modCompId = $cp[$i][5];
+					$pdf->setModuleComponentId($modCompId);
+					$pdf->AddPage();
+					$pdf->WriteHTML($page1->getHtml($userId,$modCompId,"view"));
+				}
+			}
+						
+		}
 		$filePath = $sourceFolder . "/uploads/temp/" . $TITLE . ".pdf";
 		while(file_exists($filePath))
 			$filePath = $sourceFolder . "/uploads/temp/" . $TITLE."-".rand() . ".pdf";
@@ -183,7 +239,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		header("Content-Length: ".filesize($filePath));
 		@readfile("$filePath");
 		unlink($filePath);
-	}	
+	}
 	return $page->getHtml($userId, $moduleComponentId, $action);
 }
 
@@ -210,6 +266,29 @@ function getTitle($pageId,$action, &$heading) {
 	if ($action=="settings")	$heading = $pagetitle_values['page_title']." - Page Settings";
 	else $heading = $pagetitle_values['page_title'];
 	return true;
+}
+
+function child($pageId, $userId,$depth) {
+	$pageId=escape($pageId);
+	if($depth < 0)
+	{
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+
+	}
+	else
+	{
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	}
+	
+	
+	$childrenResult = mysql_query($childrenQuery);
+	$children = array();
+	while ($childrenRow = mysql_fetch_assoc($childrenResult))
+		if ($childrenRow['page_displayinmenu'] == true && getPermissions($userId, $childrenRow['page_id'], 'view', $childrenRow['page_module']) == true)
+			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_module'], $childrenRow['page_image'],$childrenRow['page_displayicon'],$childrenRow['page_modulecomponentid']);
+			
+		
+	return $children;
 }
 
 /**
