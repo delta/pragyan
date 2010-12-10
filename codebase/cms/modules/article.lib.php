@@ -85,19 +85,28 @@ RET;
 	}
 	
 	public function actionView($text="") {
+	
+	if (isset($_GET['draft']) && isset ($_POST['CKEditor1'])){
+				
+				//$query = "UPDATE `article_draft` SET `draft_content` = '" . $_POST["CKEditor1"] . "' WHERE `page_modulecomponentid` =".$this->moduleComponentId;
+				$query="SELECT MAX(draft_number) AS MAX FROM `article_draft` WHERE page_modulecomponentid =" . $this->moduleComponentId;
+			$result = mysql_query($query);
+			if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
+			if(mysql_num_rows($result))
+			{
+				$drow = mysql_fetch_assoc($result);
+				$draftId = $drow['MAX'] + 1;
+			}
+			else $draftId=1;
+			
+				$query = "INSERT INTO `article_draft` (`page_modulecomponentid`,`draft_number`,`draft_content`,`draft_lastsaved`,`user_id`) VALUES ('".$this->moduleComponentId."','".$draftId."','".$_POST['CKEditor1']."',now(),'".$this->userId."')";
+				$result = mysql_query($query) or die(mysql_error());
+					if(mysql_affected_rows() < 1)
+					displayerror("Unable to draft the article");
+				
+				}
 		
-		if($this->isCommentsEnabled() && isset($_POST['btnSubmit'])) {
-			$id = mysql_fetch_array(mysql_query("SELECT MAX(`comment_id`) AS MAX FROM `article_comments`"));
-			$id = $id['MAX'] + 1;
-			$user = getUserName($this->userId);
-			$comment = escape(safe_html($_POST['comment']));
-			mysql_query("INSERT INTO `article_comments`(`comment_id`,`page_modulecomponentid`,`user`,`comment`) VALUES('$id','{$this->moduleComponentId}','$user','$comment')");
-			if(mysql_affected_rows())
-				displayinfo("Post successful");
-			else
-				displayerror("Error in posting comment");
-		}
-		if($text=="") {
+		
 			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
 			$result = mysql_query($query);
 			if($row = mysql_fetch_assoc($result)) {
@@ -107,7 +116,7 @@ RET;
 				$PAGELASTUPDATED = $row['article_lastupdated'];
 			}
 			else return "Article not yet created.";
-		}
+		
 		global $sourceFolder;
 		global $moduleFolder;
 		require_once($sourceFolder."/latexRender.class.php");
@@ -133,10 +142,37 @@ RET;
 		}
 		return $ret;
 	}
+	
+	
 	public function actionEdit() {
 		global $sourceFolder,$ICONS;
 		//require_once("$sourceFolder/diff.lib.php");
 		require_once($sourceFolder."/upload.lib.php");
+		
+		if (isset($_GET['deldraft']))
+		{
+		$dno = escape($_GET['dno']);
+		$query = "DELETE FROM `article_draft` WHERE `page_modulecomponentid`=". $this->moduleComponentId." AND `draft_number`=".$dno;
+		$result = mysql_query($query) or die(mysql_error());
+		}
+		
+		global $ICONS;
+		$header = <<<HEADER
+		<fieldset><legend><a name='topquicklinks'>Quicklinks</a></legend>
+		<table class='iconspanel'>
+		<tr>
+		<td><a href='#editor'><div>{$ICONS['Edit Page']['large']}<br/>Edit Page</div></a></td>
+		<td><a href='#files'><div>{$ICONS['Uploaded Files']['large']}<br/>Manage Uploaded Files</div></a></td>
+		<td><a href='#drafts'><div>{$ICONS['Drafts']['large']}<br/>Saved Drafts</div></a></td>
+		<td><a href='#revisions'><div>{$ICONS['Page Revisions']['large']}<br/>Page Revisions</div></a></td>
+		<td><a href='#comments'><div>{$ICONS['Page Comments']['large']}<br/>Page Comments</div></a></td>
+		</tr>
+		</table>
+	
+        
+		</fieldset><br/><br/>
+HEADER;
+		
 		submitFileUploadForm($this->moduleComponentId,"article",$this->userId,UPLOAD_SIZE_LIMIT);
 		if(isset($_GET['delComment']) && $this->userId == 1) {
 			mysql_query("DELETE FROM `article_comments` WHERE `comment_id` = '".escape($_GET['delComment'])."'");
@@ -152,6 +188,13 @@ RET;
 			$revision = $this->getRevision($_GET['version']);
 			return "<div id=\"preview\" class=\"warning\"><a name=\"preview\">Previewing Revision Number ".$_GET['version']."</a></div>".$this->actionView($revision).$this->getCkBody($revision);
 		}
+		if (isset($_GET['dversion'])) {
+			$draft = $this->getDraft($_GET['dversion']);
+			displayinfo("Viewing Draft number ".$_GET['dversion']);
+			return $header.$this->getCkBody($draft);
+		}
+
+		
 		if (isset ($_POST['CKEditor1'])) {
 
 
@@ -213,21 +256,6 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		$commentsedit .="</fieldset>";
 		$top="<a href='#topquicklinks'>Top</a>";
 		$fulleditpage .= $commentsedit.$top;
-		global $ICONS;
-		$header = <<<HEADER
-		<fieldset><legend><a name='topquicklinks'>Quicklinks</a></legend>
-		<table class='iconspanel'>
-		<tr>
-		<td><a href='#editor'><div>{$ICONS['Edit Page']['large']}<br/>Edit Page</div></a></td>
-		<td><a href='#files'><div>{$ICONS['Uploaded Files']['large']}<br/>Manage Uploaded Files</div></a></td>
-		<td><a href='#revisions'><div>{$ICONS['Page Revisions']['large']}<br/>Page Revisions</div></a></td>
-		<td><a href='#comments'><div>{$ICONS['Page Comments']['large']}<br/>Page Comments</div></a></td>
-		</tr>
-		</table>
-	
-        
-		</fieldset><br/><br/>
-HEADER;
 		
 		return $header.$fulleditpage;
 
@@ -324,7 +352,20 @@ HEADER;
 		}
 		return $revision;
 	}
-
+	
+	public function getDraft($draftNo) {
+		$currentquery = "SELECT draft_content FROM article_draft WHERE page_modulecomponentid=" . $this->moduleComponentId;
+		$currentresult = mysql_query($currentquery);
+		$currentrow = mysql_fetch_assoc($currentresult);
+		$draft = $currentrow['draft_content'];
+		$diffquery = "SELECT * FROM `article_draft` WHERE `page_modulecomponentid`= $this->moduleComponentId AND draft_number >= '$draftNo' ORDER BY draft_number DESC";
+		$diffresult = mysql_query($diffquery);
+		while($diffrow = mysql_fetch_assoc($diffresult)) {
+			$draft = $this->patch($draft,$diffrow['draft_content']);
+		}
+		return $draft;
+	}
+	
 	public function getCkBody($content=""){
 			global $sourceFolder;
 			global $cmsFolder;
@@ -342,7 +383,7 @@ HEADER;
 			$CkForm =<<<Ck
 						<form action="./+edit" method="post">
 						<a name="editor"></a>
-						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)">
+						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
                         To upload files and images, go to the <a href="#files">files section</a>.
 Ck;
 			$top ="<a href='#topquicklinks'>Top</a>";
@@ -354,7 +395,7 @@ Ck;
 			$Ckbody = $oCKEditor->editor('CKEditor1',$content);
 
 			$CkFooter =<<<Ck1
-					      <input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)">
+					      <input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
 					   		 </form>
 					   	 <script language="javascript">
 					    	function submitarticleformPreview(butt) {
@@ -363,6 +404,10 @@ Ck;
 					    	}
 					    	function submitarticleformCancel(butt) {
 					    		butt.form.action="./+view";
+					    		butt.form.submit();
+					    	}
+					    	function submitarticleformDraft(butt) {
+					    		butt.form.action="./+view&draft=yes";
 					    		butt.form.submit();
 					    	}
 					    </script><br />
@@ -380,12 +425,12 @@ Ck1;
 		$revisionrow = mysql_fetch_assoc($revisionresult);
 		$start = $revisionrow['MAX'] - 10;
 		if(isset($_GET['revisionno']))
-			$start = $_GET['revisionno'];
+			$start = escape($_GET['revisionno']);
 		if($start>$revisionrow['MAX']-9) $start = $revisionrow['MAX']-10;
 		if($start<0) $start = 0;
 		$count = 10;
 		if(isset($_GET['count']))
-			$count = $_GET['count'];
+			$count = escape($_GET['count']);
 		if($count>($revisionrow['MAX']-$start+1)) $count = $revisionrow['MAX']-$start+1;
 		$query = "SELECT article_revision,article_updatetime,user_id FROM `article_contentbak` where page_modulecomponentid = $this->moduleComponentId ORDER BY article_revision LIMIT $start,$count";
 		$result = mysql_query($query);
@@ -401,10 +446,49 @@ Ck1;
 				"<input type=\"button\" value=\">\" onclick=\"window.location='./+edit&revisionno=".($start + 10)."'\" /> " .
 				"<input type=\"button\" value=\">>\" onclick=\"window.location='./+edit&revisionno=".($revisionrow['MAX']-10)."'\" /> " .
 				"</fieldset>";
-
-		/* Revisions end*/
+				
+			/* Drafts available */
+		$draftquery = "SELECT MAX(draft_number) AS MAX FROM `article_draft` where page_modulecomponentid = $this->moduleComponentId";
+		$draftresult = mysql_query($draftquery);
+		$draftrow = mysql_fetch_assoc($draftresult);
+		$dstart = $draftrow['MAX'] - 10;
+		if(isset($_GET['draftno']))
+			$dstart = escape($_GET['draftno']);
+		if($dstart>$draftrow['MAX']-9) $dstart = $draftrow['MAX']-10;
+		if($dstart<0) $dstart = 0;
+		$dcount = 10;
+		if(isset($_GET['dcount']))
+			$dcount = escape($_GET['dcount']);
+		if($dcount>($draftrow['MAX']-$dstart+1)) $dcount = $draftrow['MAX']-$dstart+1;
 		
-		return  $CkForm . $Ckbody . $CkFooter.$top.$revisionTable.$top;
+		$query = "SELECT `draft_lastsaved`,`draft_number`,`user_id` FROM `article_draft` where `page_modulecomponentid` = $this->moduleComponentId ORDER BY `draft_lastsaved` LIMIT $dstart,$dcount";
+		$result = mysql_query($query);
+		$draftTable = "<fieldset>
+					        <legend><a name='drafts'>{$ICONS['Page Revisions']['small']}Drafts Saved : </a></legend>" .
+					        		"<table border='1'><tr><td>Draft Number</td><td>Date Drafted</td><td>User Fullname</td><td>User Email</td><td>Delete</td></tr>";
+					    
+		while ($row = mysql_fetch_assoc($result)) {
+			$draftTable .= "<tr><td><a href=\"./+edit&dversion=".$row['draft_number']."#preview\">".$row['draft_number']."</a></td><td>".$row['draft_lastsaved']."</td><td>".getUserFullName($row['user_id'])."</td><td>".getUserEmail($row['user_id'])."</td><td><form action='./+edit&deldraft=yes&dno=".$row['draft_number']."' method='post'><input type='button' value='Delete' onclick='submitarticleformDeldraft(this);'></form>
+		<script language='javascript'>
+					    	function submitarticleformDeldraft(butt) {
+					   		if(confirm('Are you sure you want to delete this draft ? '))
+					    		butt.form.submit();
+					    	}
+		</script></td></tr>";
+		}
+		$draftTable .="</table>" .
+				"<input type=\"button\" value=\"<<\" onclick=\"window.location='./+edit&draftnno=0'\" /> " .
+				"<input type=\"button\" value=\"<\" onclick=\"window.location='./+edit&draftno=".($dstart - 10)."'\" /> " .
+				"<input type=\"button\" value=\">\" onclick=\"window.location='./+edit&draftno=".($dstart + 10)."'\" /> " .
+				"<input type=\"button\" value=\">>\" onclick=\"window.location='./+edit&draftno=".($draftrow['MAX']-10)."'\" /> " .
+				"</fieldset>";
+
+		/* Drafts end*/ 
+		
+		
+
+		
+		return  $CkForm . $Ckbody . $CkFooter.$draftTable.$top.$revisionTable.$top;
 	}
 
 	public function createModule(&$moduleComponentId) {
