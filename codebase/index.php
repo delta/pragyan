@@ -255,7 +255,7 @@ $MENUBAR = getMenu($userId, $pageIdArray);
 
 ///Gets the menu bar from root, upto a certain depth.
 ///Used if the user wants to have some links in the menubar always.
-$COMPLETEMENU = getMenu($userId, $pageIdArray, true,true);
+$COMPLETEMENU = getMenu($userId, $pageIdArray, true);
 
 ///The Login form to be displayed from login.lib.php
 if($userId == 0)
