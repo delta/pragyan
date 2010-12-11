@@ -58,7 +58,7 @@ function getRegistrationForm() {
 <form class="cms-registrationform"  method="POST" name="user_reg_usrFrm" onsubmit="return checkRegistrationForm(this)" action="./+login&subaction=register" enctype="multipart/form-data">
 	<fieldset>
 	<legend> Sign Up</legend>
-		<table>
+		<table border="0" cellspacing="0" cellpadding="0">
 	       <tr>	<td><label for="user_email" class="labelrequired">Email *</label></td>
 				<td><input name="user_email" id="user_email" class="required" onchange="if(this.length!=0) return checkEmail(this);" type="text"></td>
            </tr>
