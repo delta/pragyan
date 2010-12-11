@@ -63,7 +63,7 @@
 		<div id="header">
 			
 			<div id="invisibleContainer">
-				<a href="<?php echo $urlRequestRoot?>/home">
+				<a href="<?php echo $urlRequestRoot?>">
 					<div id="invisible">Pragyan 2011</div>
 				</a>
 			</div>
