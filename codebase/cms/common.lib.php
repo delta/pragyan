@@ -26,9 +26,8 @@ function disconnect() {
 }
 function prettyurl($str) {
 	global $urlRequestRoot;
-	$page = (isset($_GET['page']))?$_GET['page']:"/home/";
+	$page = (isset($_GET['page']))?$_GET['page']:"/";
 	$file="";
-	//echo $str." -";
 	if(strripos($str,"./")!=strripos($str,"../")) {
 		$file= substr($str,strripos($str,"/")+1);
 		$str = substr($str,0,strripos($str,"/")+1);
@@ -47,8 +46,8 @@ function prettyurl($str) {
 	$str = ereg_replace("^./",$urlRequestRoot."/?page=".$page,$str);
 	$str = ereg_replace("^../",$urlRequestRoot."/?page=".$page,$str);
 	$str = ereg_replace("\+","&action=",$str);
-	$str = ereg_replace("^".hostURL()."/home",hostURL()."/?page=/home",$str);
-	$str = ereg_replace("^".$urlRequestRoot."/home","./?page=/home",$str);
+	$str = ereg_replace("^".hostURL()."/home",hostURL()."/?page=",$str);
+	$str = ereg_replace("^".$urlRequestRoot."/home","./?page=",$str);
 	if($file!="")
 		$str .= "&fileget=".$file;
 	return $str;
