@@ -27,7 +27,7 @@ function dragOverHandler(event) {
 	event.preventDefault();
 }
 function dragOutHandler(event) {
-	$(event.target).css({background:"none", color: "none"});
+	$(event.target).css({background:"none", color: "#fff"});
 }
 function dropHandler(event) {
 	$(event.target).load(rootUri+"/index.php?action=admin&subaction=icon&iconURL="+escape(currentURL)+"&targetId="+event.target.id.substr(1));
