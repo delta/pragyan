@@ -23,7 +23,10 @@ function handleIconManagement() {
 	
 			mysql_query("UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_image`='$iconURL' WHERE `page_id`='$target'");
 			$pageDetails = getPageInfo($target);
-			echo "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/weather-clear.png\" /> ";
+			if($pageDetails['page_image'] != NULL)
+				echo "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/weather-clear.png\" /> ";
+			else
+				echo "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/dialog-error.png\" width=12 height=12/> ";
 			echo $pageDetails["page_name"];
 	
 		}
@@ -64,18 +67,27 @@ ICONFORM;
 			margin:0;
 			padding:0;
 		}
+		#iconTreeMenu {
+			position:relative;
+		}
 		.myIconForm ul {
 			margin: 5px;
+			width: 100%;
 			margin-left: 10px;
 			padding: 0;
-			border-left: solid 1px #DDD;
+			border-left: solid 1px #333;
 		}
 		.myFormIcon ul li a {
 			padding: 5px;
 		}
+		.myIconList {
+			height:300px;
+			overflow:scroll;
+			max-width:100%;
+		}
 		</style>
 STYLES;
-	$iconForm .= "<table class=\"myIconForm\"><tr><td>";
+	$iconForm .= "<table class=\"myIconForm\"><tr><td id=\"iconTreeMenu\">";
 	$iconForm .= getTreeView(0,-1,$myhostURL,$userId,1);
 	$iconForm .= "</td>";
 	$iconForm .="<td>";
@@ -150,31 +162,66 @@ SCRIPTS;
 	.dragme{
 		float:left;
 	}
+	.myIconList #noImage {
+		width: 30px;
+		height: 30px;
+		border: solid 1px #000;
+		color: white;
+		background: #AA0000;
+		font-size: 10px;
+		text-indent: -3px;
+		font-family: sans-serif;
+	}
+	.myIconList #noImage > img {
+		display: none;
+	}
 	</style>
 STYLES;
-	$iconList .= "<div class='myIconList' style='height:300px;overflow:scroll;max-width:100%;'>";
+	$iconList .= "<div class='myIconList'>";
 	$id=0;
-	foreach($handle as $item) {
-		if($item != '.' && $item != '..' && $item[0]!="." ) {
-			if(is_dir($dir.$item)) {
-				$h = scandir($dir.$item);
-				foreach($h as $i)
-					if($i != "." && $i != ".." && $i[0] != ".")
-					{
-						$iconList .= "<div class=\"dragme\" id=\"d$id\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\"><img title='$i' alt='$i' src='{$rootUri}/{$dir}{$item}/{$i}' width=32 height=32/></div>\n";
-						$id++;
-					}
-			}
-			else {
-			//$iconList .= $item;
-			$iconList .= "<div class=\"dragme\" id=\"d$id\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\">";
-			$iconList .= "<img title='$item' alt='$item' src='{$rootUri}/{$dir}{$item}'/></div>\n";
-			$id++;
-			}
-		}
-	}
+	$iconList .= <<<NONE
+		<div class="dragme" draggable="true" ondragstart="dragStartHandler(event,this)" id="noImage">
+		ERASE<br />ICON
+		<img src="" width=32 height=32/>
+		</div>
+NONE;
+	$iconList .= getListOfFiles($dir,true);
+	
 	$iconList .= "</div>";
 	return $iconList;
 }
+
+/*
+* @function "To generate File list given a folder"
+* @param $dir Name of the directory : Relative path
+* @param $isTopLevel This is to ensure that the $iconList doesnt get emptied when recursion occurs.
+*	@usage Always call the function as getListOfFiles(<Directory>, true)
+* @author boopathi
+*/
+function getListOfFiles($dir, $isTopLevel=false) {
+	global $iconList;
+	if(substr($dir,-1) != '/')
+		$dir .= "/";
+	$rootUri = hostURL();
+	if($isTopLevel)
+		$iconList = "";
+	if(is_readable($dir)) {
+		$handle = scandir($dir);
+		foreach($handle as $item) {
+			if($item != '.' && $item != '..' && $item[0]!=".") {
+				if(is_dir($dir.$item))
+					getListOfFiles($dir.$item);
+				else {
+					if(is_readable($dir.$item)) {
+					$iconList .= "<div class=\"dragme\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\">";
+					$iconList .= "<img title='$item' alt='$item' src='{$rootUri}/{$dir}{$item}' width=32 height=32 /></div>\n";
+					}
+				}
+			}
+		}
+	}
+	return $iconList;
+}
+
 
 ?>
