@@ -213,8 +213,11 @@ function getListOfFiles($dir, $isTopLevel=false) {
 					getListOfFiles($dir.$item);
 				else {
 					if(is_readable($dir.$item)) {
-					$iconList .= "<div class=\"dragme\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\">";
-					$iconList .= "<img title='$item' alt='$item' src='{$rootUri}/{$dir}{$item}' width=32 height=32 /></div>\n";
+						$type = explode("/",mime_content_type($dir.$item));
+						if($type[0] == "image") {
+							$iconList .= "<div class=\"dragme\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\">";
+							$iconList .= "<img title='$item' alt='$item' src='{$rootUri}/{$dir}{$item}' width=32 height=32 /></div>\n";
+						}
 					}
 				}
 			}

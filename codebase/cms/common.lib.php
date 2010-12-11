@@ -423,7 +423,7 @@ function getParentPage($pageid) {
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {
-	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
+	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image`, `page_displayicon` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
 	$pageparent_result = mysql_query($pageparent_query);
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row;

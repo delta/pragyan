@@ -21,26 +21,21 @@ function findMenuIndex($menuArray, $pageId) {
 	return -1;
 }
 
-///The third parameter indicates whether menu is obtained from / or the current page.
-///true --> generate from / till depth
-///false --> generate from current page till depth relatively.
-
-function getMenu($userId, $pageIdArray, $complete = false) {
+/*
+*	Now $COMPLETEMENU AND $MENUBAR mean the same in /index.php
+* 3rd type of menu added in database - completemenu
+*/
+function getMenu($userId, $pageIdArray) {
 
 
 	///This hostURL is to replace all ".(dot)s" with the current address, making the link absolute.	
 	///@functions hostURL() common.lib.php - http://pragyan.org/11
 	///@functions selfURI() common.lib.php - http://pragyan.org/11/home/how_to_use/mypage/mypage2
+	
 	$hostURL = ".";
-	if(!$complete) {
-		$pageId = $pageIdArray[count($pageIdArray) - 1];
-		$hostURL=strstr(selfURI(),'+',true);
-	}
-	else {
-		$pageId = 0;
-		$hostURL = hostURL() . "/home";
+	$pageId = $pageIdArray[count($pageIdArray) - 1];
+	$hostURL = hostURL();
 
-	}
 	$pageRow = getPageInfo($pageId);
 	$depth = $pageRow['page_menudepth'];
 	if ($depth == 0) $depth=1;
@@ -52,6 +47,35 @@ function getMenu($userId, $pageIdArray, $complete = false) {
 	
 	if($menutype=="classic")
 	{
+		$pageId = $pageIdArray[count($pageIdArray) - 1];
+		$depth = 1;
+		$hostURL = strstr(selfURI(), '+', true);
+		$childListGenerated = getChildList($pageId, $depth, hostURL(), $userId, 1);
+		if($childListGenerated != "")
+			$menuHtml .= $childListGenerated;
+		else {
+			$imageTag = "";
+			$pageR = getPageInfo($pageId);
+			if($pageR['page_displayicon'] == 1) {
+				if($pageR['page_image'] != NULL)
+					$imageTag = "<img width=32 height=32 src=\"{$pageR['page_image']}\" alt=\"{$pageR['page_image']}\" />";
+	  	}
+			$menuHtml .= <<<MENU
+				<ul class="topnav">
+				<li>
+					<a href="./"><div class="cms-menuitem">{$imageTag} {$pageRow['page_title']}</div></a>
+				</li>
+				</ul>
+MENU;
+			}
+		/*
+		@TO BE REMOVED 
+		@author Boopathi
+		
+		JUST FOR A BACKUP THIS IS PRESERVED
+		
+		Test the code with different possibilities of menu structures and COMMENT.
+		
 		$menuHtml =<<<MENUHTML
 		<div id="menubar">
 			<div id="menubarcontent">
@@ -79,20 +103,42 @@ MENUHTML;
 		}
 
 		$menuHtml .= '</div></div>';
-		
+		*/
 	}
 	else
 	{
-
+		if($menutype == "multidepth") {
+		$pageId = $pageIdArray[count($pageIdArray) - 1];
+		}
+		else {
+			$pageId = 0;
+		}
+	
 		$rootUri = hostURL();
-		
-		$pageId = ($pageId!=0)?getParentPage($pageId):$pageId;
 		
 		$pageRow = getPageInfo($pageId);
 			
-		$menuHtml .= getChildList($pageId,$depth,$rootUri,$userId,1);
-				
+		$childListGenerated = getChildList($pageId,$depth,$rootUri,$userId,1);
+		if($childListGenerated != "")
+			$menuHtml .= $childListGenerated;
+		else {
+			$imageTag = "";
+			$pageR = getPageInfo($pageId);
+			if($pageR['page_displayicon'] == 1) {
+				if($pageR['page_image'] != NULL)
+					$imageTag = "<img width=32 height=32 src=\"{$pageR['page_image']}\" alt=\"{$pageR['page_image']}\" />";
+	  	}
+			$menuHtml .= <<<MENU
+				<ul class="topnav">
+				<li>
+					<a href="./"><div class="cms-menuitem">{$imageTag} {$pageRow['page_title']}</div></a>
+				</li>
+				</ul>
+MENU;
+		}
 	}
+	
+	// return the final HTMl
 	return $menuHtml;
 
 }
@@ -103,6 +149,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   else $classname="subnav";
   
   $pageRow = getChildren($pageId,$userId);
+
   $var = "<ul class='{$classname} depth{$curdepth}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
   	$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$pageRow[$i][0]}'";
@@ -154,7 +201,7 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 			$menuHtml .= ' class="currentpage"';
 		$menuHtml .= '>';
 		if (($menuArray[$i][4]) && ($menuArray[$i][3] != ''))
-			$menuHtml .= "<img src=\"{$menuArray[$i][3]}\" />";
+			$menuHtml .= "<img src=\"{$menuArray[$i][3]}\" width=32 height=32 />";
 		$menuHtml .= "<div class='cms-menuitem'> {$menuArray[$i][2]} </div></a>\n";
 	}
 	
