@@ -6,7 +6,7 @@
  * For more details, see README
  */
 
-function resetPasswd() {
+function resetPasswd($allow_login) {
 	if((!isset($_POST['user_email']))&&(!isset($_GET['key']))) {
 		$resetPasswd =<<<RESET
 					<form class="registrationform" method="POST" name="user_passreset" onsubmit="return checkForm(this)" action="./+login&subaction=resetPasswd">
@@ -22,12 +22,15 @@ function resetPasswd() {
 								</tr>
 								<tr>
 									<td><input type="submit" id="submitbutton" value="Submit"></td>
-									<td><a href='./+login&subaction=register'>Sign Up</a> <a href="./+login">Login</a></td>
+									<td>
+RESET;
+		if($allow_login)
+			$resetPasswd .="<a href='./+login&subaction=register'>Sign Up</a> ";
+			$resetPasswd .= "<a href='./+login'>Login</a></td>
 								</tr>
 							</table>
 						</fieldset>
-					</form>
-RESET;
+					</form>";
 		return $resetPasswd;
 	}
 	elseif(!isset($_GET['key'])) {
@@ -398,7 +401,7 @@ OPENIDFORM;
     }
 }
 
-function loginForm()
+function loginForm($allow_login=1)
 {
   global $urlRequestRoot;
   global $cmsFolder;
@@ -482,12 +485,15 @@ OPENIDLOGIN;
 								</tr>
 								<tr>
 									<td><input type="submit" value="Login" /></td>
-									<td><a href="./+login&subaction=resetPasswd">Lost Password?</a> <a href="./+login&subaction=register">Sign Up</a></td>
+									<td><a href="./+login&subaction=resetPasswd">Lost Password?</a> 
+LOGIN;
+	if($allow_login)
+		$login_str .= "<a href=\"./+login&subaction=register\">Sign Up</a>";
+		$login_str .= "</td>
 								</tr>
 							</table>
 						</fieldset>
-					</form>
-LOGIN;
+					</form>";
 	global $openid_enabled;
 	if($openid_enabled=='true')
 	  return $openid_login_str.$login_str;
@@ -500,16 +506,20 @@ LOGIN;
  * @todo Document it
  */
 function login() {
+  $allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
+  $allow_login_result = mysql_query($allow_login_query);
+  $allow_login_result = mysql_fetch_array($allow_login_result);
   if(isset($_GET['subaction'])) {
     if($_GET['subaction']=="resetPasswd") {
-      return resetPasswd();
+      return resetPasswd($allow_login_result[0]);
     }
+   if($allow_login_result[0])
     if($_GET['subaction']=="register") {
       require_once("registration.lib.php");
       return register();
     }
     global $openid_enabled;
-    if($openid_enabled=='true'){
+    if(($openid_enabled=='true')&&($allow_login_result[0])){
       if($_GET['subaction']=="openid_login")
 	{
 	  if(isset($_POST['process']))
@@ -631,7 +641,7 @@ function login() {
   }
 
   if (!isset ($_POST['user_email'])) {
-    return loginForm();
+    return loginForm($allow_login_result[0]);
   } else {
 			
     /*if it is, 

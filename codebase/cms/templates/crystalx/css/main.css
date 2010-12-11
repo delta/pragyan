@@ -161,6 +161,7 @@ code, kbd, samp {font-family:monospace; font-size:110%;}
 /* Right column */
 #col {float:left; width:200px; margin:0; padding:0; background:#CEDBF9 url("../design/col_bg.gif") 0 0 repeat-y;}
 #col-in {padding:20px 10px; background:url("../design/col_top.gif") 0 0 no-repeat;}
+#col-in ul {list-style:none; padding:0; text-decoration:none;}
 #col h3, #col h2 {padding:13px 15px 14px 15px; margin:0 -10px 15px -10px; background:#A0B9F3 url("../design/col_title_bg.gif") 0 0 repeat-y; color:#192666;}
 
     /* Right column - About me */
@@ -185,7 +186,7 @@ code, kbd, samp {font-family:monospace; font-size:110%;}
     /* Right column - Links */
     #col ul#links, #col ul.sideMenu {margin:15px 0; padding:0; list-style:none;}
     #col ul#links, #col ul.sideMenu li {margin:0; padding:0; border-bottom:1px solid #E0E8FA;}
-    #col ul#links, #col ul.sideMenu li a {display:block; padding:3px 0 3px 22px; background:url("../design/ico_links.gif") 5px 6px no-repeat; text-decoration:none;}
+    #col #links li, #col ul.sideMenu li a {display:block; padding:3px 0 3px 22px; background:url("../design/ico_links.gif") 5px 6px no-repeat; text-decoration:none;}
     #col ul#links, #col ul.sideMenu li a:hover {background-color:#D3DFF8; color:#192666;}
 
 /* Footer */

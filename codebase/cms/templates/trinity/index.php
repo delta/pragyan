@@ -26,7 +26,7 @@
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
     <script language="JavaScript">
-			TargetDate = "02/01/2011 00:00 AM";
+			TargetDate = "02/17/2011 00:00 AM";
 			BackColor = "none";
 			ForeColor = "white";
 			CountActive = true;
@@ -63,7 +63,7 @@
 		<div id="header">
 			
 			<div id="invisibleContainer">
-				<a href="<?php echo $urlRequestRoot?>/home">
+				<a href="<?php echo $urlRequestRoot?>">
 					<div id="invisible">Pragyan 2011</div>
 				</a>
 			</div>

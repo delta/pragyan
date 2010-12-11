@@ -340,8 +340,10 @@ MOVECOPY;
 	$menudepth=$page_values['page_menudepth'];
 	$classictype="";
 	$multidepthtype="";
+	$completetype="";
 	if($menuType=="classic") $classictype="selected";
-	else $multidepthtype="selected";
+	else if($menuType=="multidepth") $multidepthtype="selected";
+	else $completetype="selected";
 	
 	$row = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$modulecomponentid}'"));
 	$allowComments = $row['allowComments'] == 1 ? 'checked="checked" ' : '';
@@ -428,10 +430,11 @@ MOVECOPY;
 					<td>
 					<select name="menutype" id="menutype" onchange="toggleMenuType();">
 						<option value='classic' $classictype>Classic</option>
+						<option value='complete' $completetype>Complete</option>
 						<option value='multidepth' $multidepthtype>Multi-Depth</option>
 					</select>
 					</td>
-					<td rowspan="4"><input type="checkbox" name='menustyle_propogate' value='yes' />Propogate Menu settings to all child pages <br /><br /> Menu Depth = -1 : Generate Complete Menu till the last child page.</td>
+					<td rowspan="4"><input type="checkbox" name='menustyle_propogate' value='yes' checked="checked" />Propogate Menu settings to all child pages <br /><br /> Menu Depth = -1 : Generate Complete Menu till the last child page.</td>
 				<tr>
 					<td><label for='showmenubar'>Show menu bar in page</label></td>
 					<td><input type='checkbox' id='showmenubar' name='showmenubar' $showmenubar/></td>
@@ -591,7 +594,7 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 	{
 		$updates[] = "`page_menutype` = '$menu_type'";
 		
-		if($menu_type=="multidepth" && $menu_depth!=NULL)
+		if(($menu_type=="multidepth" || $menu_type=="complete")&& $menu_depth!=NULL)
 		{
 			$updates[] = "`page_menudepth` = $menu_depth";
 		}
@@ -600,7 +603,6 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 			$updates[] = '`page_displaysiblingmenu` = ' . ($showSiblingMenu == true ? 1 : 0);
 		}
 	}
-	
 	if (count($updates) > 0) {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = $pageId;";
 		mysql_query($updateQuery);

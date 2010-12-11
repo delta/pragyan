@@ -26,9 +26,8 @@ function disconnect() {
 }
 function prettyurl($str) {
 	global $urlRequestRoot;
-	$page = (isset($_GET['page']))?$_GET['page']:"/home/";
+	$page = (isset($_GET['page']))?$_GET['page']:"/";
 	$file="";
-	//echo $str." -";
 	if(strripos($str,"./")!=strripos($str,"../")) {
 		$file= substr($str,strripos($str,"/")+1);
 		$str = substr($str,0,strripos($str,"/")+1);
@@ -47,8 +46,8 @@ function prettyurl($str) {
 	$str = ereg_replace("^./",$urlRequestRoot."/?page=".$page,$str);
 	$str = ereg_replace("^../",$urlRequestRoot."/?page=".$page,$str);
 	$str = ereg_replace("\+","&action=",$str);
-	$str = ereg_replace("^".hostURL()."/home",hostURL()."/?page=/home",$str);
-	$str = ereg_replace("^".$urlRequestRoot."/home","./?page=/home",$str);
+	$str = ereg_replace("^".hostURL()."/home",hostURL()."/?page=",$str);
+	$str = ereg_replace("^".$urlRequestRoot."/home","./?page=",$str);
 	if($file!="")
 		$str .= "&fileget=".$file;
 	return $str;
@@ -423,7 +422,7 @@ function getParentPage($pageid) {
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {
-	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
+	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image`, `page_displayicon` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
 	$pageparent_result = mysql_query($pageparent_query);
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row;
