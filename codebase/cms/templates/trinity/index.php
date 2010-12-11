@@ -25,19 +25,16 @@
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
-    
-  
-  
-    	<link media="screen" rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/stylesheet/jquery.epiclock.css"/>
-        <link media="screen" rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro/epiclock.retro.css"/>
-        <link media="screen" rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro-countdown/epiclock.retro-countdown.css"/>
-        
-        
-        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/javascript/jquery.dateformat.js"></script>
-        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/javascript/jquery.epiclock.js"></script>
-        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro/epiclock.retro.js"></script>
-        <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/epiclock/renderers/retro-countdown/epiclock.retro-countdown.js"></script>
-        
+    <script language="JavaScript">
+			TargetDate = "02/01/2011 00:00 AM";
+			BackColor = "none";
+			ForeColor = "white";
+			CountActive = true;
+			CountStepper = -1;
+			LeadingZero = true;
+			DisplayFormat = "%%D%% Days, %%H%% Hours, <br>%%M%% Minutes, %%S%% Seconds.";
+			FinishMessage = "Day 0 pragyan";
+		</script>
  
     <script language="javascript" type="text/javascript">
 		//defined here for use in javascript
@@ -86,24 +83,14 @@
 					
 					<div id="right1" class="cont">
 						<!-- Countdown dashboard start -->
-						<div id="countdown_dashboard">
-							 <div id="countdown-retro"></div>
-							
-							<h4>ETA Pragyan 2011</h4>
+						<div id="myCountDown">
+						<script language="JavaScript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/countdown.js"></script>
 						</div>
-						 <script language="javascript" type="text/javascript">
-							    $(function ()
-            {             
-                $('#clock').epiclock();        
-                $('#countdown-retro').epiclock({mode: $.epiclock.modes.countdown, time: new Date('February 18 2011, 00:00:00 GMT'), format: 'V:x:i:s', renderer: 'retro-countdown'});          
-            });
-							
-						</script>
 					<!-- Countdown dashboard end -->
 					
 					</div> 
 					<div id="right2" class="cont">
-				
+					<h4>ETA Pragyan 2011</h4>				
 					<object width="250" height="200"><param name="movie" value="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3"></param>
 					<param name="allowFullScreen" value="true"></param>
 					<param name="allowScriptAccess" value="always"></param>
