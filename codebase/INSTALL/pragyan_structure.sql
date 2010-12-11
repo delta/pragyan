@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `article_draft` (
   `draft_lastsaved` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `user_id` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-- --------------------------------------------------------
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `book_desc`
