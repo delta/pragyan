@@ -17,6 +17,8 @@ function getRegistrationForm() {
 	$body = '<script language="javascript" type="text/javascript" src="'.$jsPath2.'"></script>';
 	$body .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/form/calendar/calendar.css" title="Aqua" />' .
 						 '<script type="text/javascript" src="'.$calpath.'/form/calendar/calendar.js"></script>';
+
+	$captchaHtml = getCaptchaHtml();
 	$jsValidationFunctions = array();
 	$containsFileUploadFields = false;
 	$dynamicFields = getFormElementsHtmlAsArray(0, 0, $jsValidationFunctions, $containsFileUploadFields);
@@ -25,7 +27,6 @@ function getRegistrationForm() {
 		$dynamicFields = "<tr>$dynamicFields</tr>";
 	}
 	$jsValidationFunctions = join($jsValidationFunctions, ' && ');
-	$captchaHtml = getCaptchaHtml();
 	$reg_str =<<<REG
 <script language="javascript">
 			function checkPassword(inputhandler2) {
@@ -105,11 +106,11 @@ SCRIPT;
 
 function register() {
 	///registration formmessenger
-	global $uploadFolder;global $sourceFolder;global $moduleFolder;global $urlRequestRoot;
+	global $uploadFolder,$sourceFolder,$moduleFolder,$urlRequestRoot;
 	require("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
 	require("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
-	if ((!isset ($_GET['key'])) && (!isset ($_GET['reSendKey'])) && (!isset ($_POST['user_email']))) {
-		return getRegistrationForm();
+	if ((!isset ($_GET['key'])) && (!isset ($_GET['reSendKey'])) && (!isset ($_POST['user_email']))) {	
+		return getRegistrationForm();		
 	}
 	///Activation key resend form
 	elseif ((isset ($_GET['reSendKey'])) && (!isset ($_POST['resend_key_email'])) && SEND_MAIL_ON_REGISTRATION) {

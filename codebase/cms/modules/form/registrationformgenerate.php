@@ -97,6 +97,33 @@ SCRIPT;
 
 	function getCaptchaHtml() {
 			global $uploadFolder, $sourceFolder, $moduleFolder, $cmsFolder, $urlRequestRoot;
+			$captcha_query = "SELECT * FROM `". MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'recaptcha'";
+			$captcha_res = mysql_fetch_assoc(mysql_query($captcha_query));
+			$recaptcha =0;			
+			if($captcha_res['value'])
+			{
+			if(!fsockopen("www.google.com",80))
+				$recaptcha = 0;
+			else {
+			$recaptcha =1;
+			$query = "SELECT `value` FROM `". MYSQL_DATABASE_PREFIX ."global` WHERE `attribute`='recaptcha_public'";
+			$res = mysql_fetch_assoc(mysql_query($query));
+			$public_key = $res['value']; 
+			$query = "SELECT `value` FROM `". MYSQL_DATABASE_PREFIX ."global` WHERE `attribute`='recaptcha_private'";
+			$res = mysql_fetch_assoc(mysql_query($query));
+			$private_key = $res['value'];
+			if(($public_key==NULL)||($private_key==NULL))
+				$recaptcha = 0;
+			}
+			}
+			if($recaptcha)
+			{
+			require_once("$sourceFolder/$moduleFolder/form/captcha/recaptcha/recaptchalib.php");
+			$body = "<tr><td colspan=2>".recaptcha_get_html($public_key)."</td></tr>";
+			$body .="<input type='hidden' name='captcha' value='1'>";
+			}
+			else
+			{
 			require_once("$sourceFolder/$moduleFolder/form/captcha/class/captcha.class.php");
 			$captcha = new captcha($sourceFolder, $moduleFolder, $uploadFolder, $urlRequestRoot,$cmsFolder,6);
 			$_SESSION['CAPTCHAString'] = $captcha->getCaptchaString();
@@ -104,6 +131,8 @@ SCRIPT;
 			$body = '<tr><td>Enter the text as shown in the image :</td><td>' .
 					'<img style="border:1px solid;padding:0px" src="' . $captcha->getCaptchaUrl() . '" alt="CAPTCHA" border="1"/><br/>' .
 					'<input type="text" class="required" name="txtCaptcha" /><td></tr>';
+			$body .="<input type='hidden' name='captcha' value='0'>";
+			}			
 			return $body;
 	}
 
