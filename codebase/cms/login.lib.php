@@ -660,9 +660,11 @@ function login() {
     global $cookieSupported;
     $login_status = false;
     if($cookieSupported==true) {
-      if ((($_POST['user_email']) == "") || (($_POST['user_password']) == ""))
+      if ((($_POST['user_email']) == "") || (($_POST['user_password']) == "")){
 	displayerror("Blank e-mail or password NOT allowed. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
-      else {
+      	return loginForm($allow_login_result[0]);
+	}
+	else {
 	$user_email = escape($_POST['user_email']);
 	$user_passwd = escape($_POST['user_password']);
 	$login_method = '';
@@ -724,7 +726,8 @@ function login() {
 	  }
 	}
 	else {
-	  displaywarning("Wrong E-mail or password. <a href='./+login&subaction=resetPasswd'>Lost Password?</a><br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
+	  displaywarning("Wrong E-mail or password. <a href='./+login&subaction=resetPasswd'>Lost Password?</a><br />");
+		return loginForm($allow_login_result[0]);
 	}
       }
       return 0;

@@ -139,9 +139,29 @@
 	/** Checks if user entered correct captcha generated from getCaptchaHtml()
 	 */
 	function submitCaptcha(){
-		if(isset($_SESSION['CAPTCHAString']) && isset($_POST['txtCaptcha']))
+		if($_POST['captcha'])
+			{
+			global $sourceFolder, $moduleFolder, $cmsFolder;
+			require_once("$sourceFolder/$moduleFolder/form/captcha/recaptcha/recaptchalib.php");
+			$query = "SELECT `value` FROM `". MYSQL_DATABASE_PREFIX ."global` WHERE `attribute`='recaptcha_private'";
+			$res = mysql_fetch_assoc(mysql_query($query));
+			$private_key = $res['value'];
+			if ($_POST["recaptcha_response_field"]) {
+       					$resp = recaptcha_check_answer ($private_key,
+                                        $_SERVER["REMOTE_ADDR"],
+                                        $_POST["recaptcha_challenge_field"],
+                                        $_POST["recaptcha_response_field"]);
+
+       			 if ($resp->is_valid) 
+		                return true;
+				}
+			}
+			else
+			{
+		  if(isset($_SESSION['CAPTCHAString']) && isset($_POST['txtCaptcha']))
 			if(strtolower($_SESSION['CAPTCHAString']) == strtolower($_POST['txtCaptcha']))
 				return true;
+			}
 		displayerror('The text did not match the letters in the image. Please try again.');
 		return false;
 	}

@@ -218,6 +218,7 @@ global $pageFullPath;
 		$$var=$val;
 	$openidno_ischecked=($openid_enabled=='false')?'checked':'';
 	$openidyes_ischecked=($openid_enabled=='false')?'':'checked';
+	$recapt_ischecked=($recaptcha=='1')?'checked':'';
 	$globalform=<<<globalform
 	<table style="width:100%">
 	<tr>
@@ -239,7 +240,20 @@ global $pageFullPath;
 		<td>Censor Words (use | to seperate the words. Please dont use spaces) </td>
 		<td><textarea style="width:98%" rows=10 cols=10 name='censor_words' />$censor_words</textarea></td>
 	</tr>
-        
+	<tr>
+	<td>Use ReCAPTCHA ?</td>
+        <td>
+				<label><input type="checkbox" name="recaptcha_enable" id="recaptcha_enable" value="Yes" $recapt_ischecked/>Yes</label>
+			</td>
+		</tr>
+		<tr>
+			<td><label for="public_key">ReCAPTCHA Public Key:</label></td>
+			<td><input type="text" id="public_key" name="public_key" value='$recaptcha_public' /></td>
+		</tr>
+		<tr>
+			<td><label for="private_key">ReCAPTCHA Private Key:</label></td>
+			<td><input type="text" id="private_key" name="private_key" value='$recaptcha_private' /></td>
+		</tr>
 	</table>
 globalform;
 return $globalform;
@@ -543,6 +557,23 @@ function updateGlobalSettings()
 	  }
 	else  //if user submitted false
 	  $global['openid_enabled']='false'; //disable openid
+	if(isset($_POST['recaptcha_enable'])) //if user submitted true
+	  { 
+	    if (($_POST['public_key']!=NULL)&&($_POST['private_key']!=NULL))
+		{	    
+		  $global['recaptcha']='1'; // enable recaptcha
+		  $global['recaptcha_public']=escape($_POST['public_key']);
+		  $global['recaptcha_private']=escape($_POST['private_key']);
+	    
+		}
+	else
+	      {
+		displaywarning("Public/Private Key is NULL. ReCAPTCHA could not be enabled"); //dispaly warning
+		$global['recaptcha']='0'; //disable recaptcha
+	      }
+	  }
+	else
+	    $global['recaptcha']='0';
 	setGlobalSettings($global);
 
 	displayinfo("Global Settings successfully updated! Changes will come into effect on next page reload.");

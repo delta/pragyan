@@ -75,6 +75,9 @@ $SITEDESCRIPTION = "";
 ///Site keywords to be used in the HTML <meta> tag
 $SITEKEYWORDS = ""; 
 
+///Login form to be used in template
+$LOGINFORM = ""; 
+
 ///Debugging information
 $DEBUGINFO = ""; 
 
