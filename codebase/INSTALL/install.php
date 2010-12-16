@@ -96,22 +96,26 @@ function installCMS() {
 			);
 	
 			
-	///If OPEN ID not required, skip checkOpenidCurl.
-	if(OPENID_ENABLED!='true')
-			unset($installationSteps[2]);
 	
-	///Required for fixing index values after unsettings		
-	$installationSteps=array_values($installationSteps);
+	
+	
 
 	for ($i = 0; $i < count($installationSteps); ++$i) {
 		$installationProcedure = $installationSteps[$i][0];
 	
 		$stepResult = $installationProcedure();
 		
+		///If OPEN ID not required, skip checkOpenidCurl.
+		if($i==1 && OPENID_ENABLED!='true')
+			unset($installationSteps[2]);
+		
 		///If URL Rewrite is disabled, then skip the saveHtaccess installation step. It will be on last.
 		if($i==1 && $URL_REWRITE=='false')
 			unset($installationSteps[count($installationSteps)-1]);
 		
+		///Required for fixing index values after unsettings		
+		$installationSteps=array_values($installationSteps);
+	
 		if ($stepResult != '') {
 			$installationSteps[$i][] = $stepResult;
 			return $installationSteps;
