@@ -19,10 +19,7 @@
  */
 function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxFileSizeInBytes=false, $uploadableFileTypesArray = false) {
 	if($maxFileSizeInBytes===false) $maxFileSizeInBytes = 2*1024*1024;
-	/**
-	 * TODO: the following is only until PHP 2.3 comes
-	 * In php 2.3 we can call static function directly without making an instance of the class.
-	 */
+	
 	global $sourceFolder;
 	global $uploadFolder;
 	$uploadDir = $sourceFolder . "/" . $uploadFolder;
@@ -487,7 +484,8 @@ function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth )
 
       // calculate thumbnail size
       $new_width = $thumbWidth;
-      $new_height = floor( $height * ( $thumbWidth / $width ) );
+     // $new_height = floor( $height * ( $thumbWidth / $width ) );
+      $new_height = $thumbWidth;
 
       // create a new temporary image
       $tmp_img = imagecreatetruecolor( $new_width, $new_height );
