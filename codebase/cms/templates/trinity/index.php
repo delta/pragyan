@@ -13,12 +13,13 @@
     <link rel="index" href="./" title="Home" />
 <link rel="shortcut icon" href="http://pragyan.org/favicon.ico" type="image/x-icon">
 
+  <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
+
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/content.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/error.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/other.css" />
 
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
@@ -89,20 +90,15 @@
 					<!-- Countdown dashboard end -->
 					
 					</div> 
+					<div id="right2" class="cont"> </div>
 					<div id="right2" class="cont">
 					<h4>ETA Pragyan 2011</h4>				
-					<object width="250" height="200"><param name="movie" value="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3"></param>
-					<param name="allowFullScreen" value="true"></param>
-					<param name="allowScriptAccess" value="always"></param>
-					<param name="wmode" value="transparent"> 
-					<embed src="http://www.youtube.com/v/ps47-vzcOTs&rel=0&hl=en_US&feature=player_embedded&version=3&showinfo=0" wmode="transparent" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="250" height="200"></embed>
-					</object>
-					From the archives : The making of the Pragyan Wheel
 					</div>
 					
 					<div id="right3" class="cont">
 					
 						<h3>Links</h3>
+						<div class="link"><a href="http://www.pragyan.org/11/home/making_of_pragyan_wheel">Video : Making of the Pragyan Wheel</a></div>
 						<div class="link"><a href="http://www.pragyan.org/blog">Pragyan Blog</a></div>
 						<div class="link"><a href="http://www.youtube.com/user/nittpragyan">Pragyan's Youtube Channel</a></div>
 						<div class="link"><a href="http://www.pragyan.org/10">Pragyan 2010</a></div>
@@ -115,8 +111,7 @@
 						<ul id="js-news" class="js-hidden">
 <li class="news-item"><a href="http://www.pragyan.org/11/home/events/engineering_tomorrow/sorption/">Event format and deadline for Sorption updated !</a></li>							
 <li class="news-item"><a href="#">Pragyan 2011 is coming soon! Stay tuned.</a></li>
-							<li class="news-item"><a href="#">Pragyan 2011 website is up!</a></li>
-							
+<li class="news-item"><a href="http://www.pragyan.org/11/home/events/openit/">Event Format, Rules and Regulations for OpeNIT updated !!!</a></li>
 						</ul>
 					</div>
 					<div class="contentContainer">
