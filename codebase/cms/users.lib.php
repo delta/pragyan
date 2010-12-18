@@ -168,8 +168,17 @@ function handleUserMgmt()
 		}
 		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId";
 		if(mysql_query($query))
-			displayinfo("User Successfully Deleted!");
+		{
+			$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."openid_users` WHERE `user_id` = $userId";
+			if(mysql_query($query))
+			{
+				displayinfo("User Successfully Deleted!");
+			}
+			else displayerror("User not deleted from OpenID database!");
+		}
 		else displayerror("User Not Deleted!");
+		
+		
 		return registeredUsersList($_POST['editusertype'],"edit",false);
 		
 	}
