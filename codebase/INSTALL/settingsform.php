@@ -537,7 +537,7 @@ $settingsForm = <<<SETTINGSFORM
 		<tr>
 			<td><label for="optEnableOpenID">Enable OpenID?</label></td>
 			<td>
-			<labe><input type="radio" name="optEnableOpenID" id="optEnableOpenIDNo" value="No" />No</label>
+			<labe><input type="radio" name="optEnableOpenID" id="optEnableOpenIDNo" checked="checked" value="No" />No</label>
 			<label><input type="radio" name="optEnableOpenID" id="optEnableOpenIDYes" value="Yes" />Yes</label>
 			</td>
 		</tr>
