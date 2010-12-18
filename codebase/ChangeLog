@@ -1,3 +1,72 @@
+Revision 202  by  balanivash  on  2010-12-15 04:36:1
+Description : Options to use recaptcha
+--------------------------------------------------------------------------------
+Revision 201  by  balanivash  on  2010-12-12 00:34:1
+Description : Correcting minor problems in login/register disable
+--------------------------------------------------------------------------------
+Revision 200  by  scriptle  on  2010-12-12 00:21:0
+Description : prettyURL changed. Works fine with the present menu and breadcrumb
+--------------------------------------------------------------------------------
+Revision 199  by  scriptle  on  2010-12-11 23:21:5
+Description : Menu errors corrected
+--------------------------------------------------------------------------------
+Revision 198  by  scriptle  on  2010-12-11 15:50:5
+Description : Changed clock date in trinity template
+--------------------------------------------------------------------------------
+Revision 197  by  scriptle  on  2010-12-11 15:39:3
+Description : Icon Management Improvements - Erase Icon, File fetch changed
+--------------------------------------------------------------------------------
+Revision 196  by  scriptle  on  2010-12-11 12:01:1
+Description : Countdown timer changed
+--------------------------------------------------------------------------------
+Revision 195  by  scriptle  on  2010-12-11 11:04:3
+Description : Registration form styling
+--------------------------------------------------------------------------------
+Revision 194  by  balanivash  on  2010-12-11 10:29:3
+Description : Correcting typo in pragyan_structures.sql
+--------------------------------------------------------------------------------
+Revision 193  by  balanivash  on  2010-12-11 05:22:3
+Description : Correcting problems in icon enable/diable propagate
+--------------------------------------------------------------------------------
+Revision 192  by  balanivash  on  2010-12-11 05:02:4
+Description : Adding Funtion for saving article edits as draft #93
+--------------------------------------------------------------------------------
+Revision 191  by  balanivash  on  2010-12-11 03:54:5
+Description : Option to include Child pages in pdf Ticket#12
+--------------------------------------------------------------------------------
+Revision 190  by  balanivash  on  2010-12-11 00:15:5
+Description : Adding News widget
+--------------------------------------------------------------------------------
+Revision 189  by  balanivash  on  2010-12-10 02:53:1
+Description : Adding Count Down Widget
+--------------------------------------------------------------------------------
+Revision 188  by  abhishekdelta  on  2010-12-09 04:33:2
+Description : Color change in the menu css of trinity
+--------------------------------------------------------------------------------
+Revision 187  by  abhishekdelta  on  2010-12-09 04:04:5
+Description : Fixing some minor bugs in openid
+--------------------------------------------------------------------------------
+Revision 186  by  abhishekdelta  on  2010-12-09 03:53:4
+Description : Adding pragyan logos, banners and images and also adding them in the trinity template
+--------------------------------------------------------------------------------
+Revision 185  by  abhishekdelta  on  2010-12-09 03:28:5
+Description : Resizing the countdown timer in trinity
+--------------------------------------------------------------------------------
+Revision 184  by  abhishekdelta  on  2010-12-09 02:54:0
+Description : Fixing conflicts between openid and trintiy template : courtesy siddhant
+--------------------------------------------------------------------------------
+Revision 183  by  abhishekdelta  on  2010-12-09 01:08:5
+Description : Fixed bug in installation, duh
+--------------------------------------------------------------------------------
+Revision 182  by  abhishekdelta  on  2010-12-09 00:37:4
+Description : Fixing the installation script with some installation steps being done even though user has selected not to install that feature
+--------------------------------------------------------------------------------
+Revision 181  by  abhishekdelta  on  2010-12-08 23:50:2
+Description : Undoing commit 179 regarding breadcrumbs url rewrite bug, some fatal error found
+--------------------------------------------------------------------------------
+Revision 180  by  abhishekdelta  on  2010-12-08 22:43:3
+Description : Fixed openid bug which logged in even deactivated users
+--------------------------------------------------------------------------------
 Revision 179  by  abhishekdelta  on  2010-12-08 14:41:0
 Description : Fixed bug in breadcrumbs due to URL Rewriting
 --------------------------------------------------------------------------------
