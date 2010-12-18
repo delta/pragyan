@@ -268,6 +268,22 @@ function openid_login($userdata){
       //print_r($row);
       ///Fetch the user_id that corresponds to user_id in the _users table
       $userid=$openid_row['user_id'];
+      
+    
+        ///the OpenID provider did sent us the email of the user. Check if it exists in our database and is activated
+	$userdetails = getUserInfo(getUserEmail($userid));
+	
+	if(!$userdetails)
+	{
+		displayerror("Your openid registration is corrupted. Please contact site administrator.");
+		return;
+	}
+	/// ASSUMPTION : the `user_activated' column in _users table is 1 if and only if his email is verified.
+	if($userdetails && ($userdetails['user_activated']==0))
+	{
+			displayerror("Your account is not activated. Please verify your account using the email sent to you during registration or contact site administrator.");
+			return;
+	}
     
       ///Assign the value to $_SESSION['last_to_last_login_datetime']
       $query = "SELECT `user_lastlogin` FROM `". MYSQL_DATABASE_PREFIX .  "users` WHERE `user_id`=".$openid_row['user_id']. ";";
@@ -306,7 +322,7 @@ function openid_login($userdata){
 	  /// ASSUMPTION : the `user_activated' column in _users table is 1 if and only if his email is verified.
 	  if($userdetails && ($userdetails['user_activated']==0))
 		{
-			displayerror("Your account is not activated yet. Please verify your account using the email sent to you during registration or contact site administrator.");
+			displayerror("Your account is not activated. Please verify your account using the email sent to you during registration or contact site administrator.");
 			return;
 		}
 	  if($userdetails && $userdetails['user_activated'] && ($userdetails['user_loginmethod']!='openid'))
@@ -628,12 +644,12 @@ function login() {
 		  $result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to Link OpenID account");
 		  if($result)
 		    {
-		      displayinfo("Account successfully Registered. Log In one more time to continue.");
+		      displayinfo("Account successfully registered. You can now login via OpenID. Please complete your profile information after logging in.");
 		    }
 
 		}
 	    
-	      return "Done Registration for OpenID";
+	      return "";
 	      
 	    }
 	}
