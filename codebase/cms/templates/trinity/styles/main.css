@@ -121,8 +121,9 @@ body img
  
 .introbox
 {
- border:groove black 2px; width: 315px; padding : 10px;float: left;
- margin-left : 10px; margin-top : 10px; background-color : #F5F5F5;
+ border:groove #777 2px; width: 315px; padding : 10px;float: left;
+ margin-left : 10px; margin-top : 10px; background-color : transparent;
+ color : #FFFFFF !important;
 }
 .introbox img
 {
@@ -131,15 +132,14 @@ body img
 }
 .introbox h3
 {
-        background-color : #778899 !important;
+        background-color : #333 !important;
         color : #FFFFFF !important;
-        padding-left : 10px !important;
+        padding : 5px  0px 5px 5px !important;
         font-weight : bold !important;
         text-decoration : none !important;
 }
 .introbox h4,h5
 {
-	color : #000 ;
 	text-decoration : none;
 	font-size : 13px;
 	font-weight : normal;
