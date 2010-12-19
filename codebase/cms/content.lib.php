@@ -162,12 +162,16 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	
 	if($action=="pdf")
 	{
-		if(isset($_GET['depth'])){$depth=$_GET['depth'];
+
+		if(isset($_GET['depth']))
+		 $depth=$_GET['depth'];
+		else $depth=0;
+		
 		if(!is_numeric($depth))
 		{
 			$depth=0;
 		}
-		
+
 		global $TITLE;
 		global $sourceFolder;
 		require_once("$sourceFolder/modules/pdf/html2fpdf.php");
@@ -240,9 +244,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		@readfile("$filePath");
 		unlink($filePath);
 	}
-	else 
-		return $page->getHtml($userId, $moduleComponentId, "view");	
-	}
+	
 	return $page->getHtml($userId, $moduleComponentId, $action);
 }
 
