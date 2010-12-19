@@ -15,10 +15,10 @@ require_once("$sourceFolder/widgetFramework.class.php");
 class serverDateTime extends widgetFramework
 {
 	public $configs;
+	public $includes;
 	public $timeformat;
 	public $globaldisable;
 	public $displaytext;
-
 	
 	public function __construct($widgetId,$widgetInstanceId,$pageId)
 	{
@@ -46,6 +46,7 @@ class serverDateTime extends widgetFramework
 			'global' => 1
 			)
 		);
+		
 		parent::__construct($widgetId,$widgetInstanceId,$pageId,$this->configs);
 		
 	}
@@ -56,6 +57,11 @@ class serverDateTime extends widgetFramework
 		$this->timeformat = $this->settings['time_format'];
 		$this->globaldisable = $this->settings['global_disable'];
 		$this->displaytext = $this->settings['display_text'];
+	}
+	
+	public function getCommonHTML()
+	{
+		return $this->includes;
 	}
 	
 	public function getHTML()
