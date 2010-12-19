@@ -23,12 +23,15 @@ abstract class widgetFramework
 	public $data; ///<A sort of RAM or heap store for the widget in key=>value format
 	public $defaultConfigs; ///<Default configurations of the widget
 	
+	
 	/// For widget initialization.
 	abstract public function initWidget();
 	
 	/// For retrieving the widget output.
 	abstract public function getHTML();
 	
+	/// For retrieving the widget output which is common for all instances of same widget.
+	abstract public function getCommonHTML();
 	
 	/**
 	 * Constructor.
@@ -44,6 +47,7 @@ abstract class widgetFramework
 		$this->pageId=$pageId;
 		$this->defaultConfigs=$defaultconfigs;
 		$this->loadWidget();
+		
 		
 	} 
 	

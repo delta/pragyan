@@ -7,7 +7,7 @@
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  * @TODO Add support for File Upload/Download via the widget's configurations
- * @TODO Reload Widgets ,Get Widget Instances
+ * @TODO Reload Widgets ,Get Widget Instances. see bottom.
  */
  
  /** 
@@ -103,6 +103,7 @@ function populateWidgetVariables($pageId)
 
 	global $cmsFolder,$widgetFolder,$WIDGETS;	
 	$enwidgets=getEnabledWidgets($pageId);
+	$widgetsenmap=array();
 	
 	foreach( $enwidgets as $enwidget )
 	{
@@ -123,6 +124,13 @@ function populateWidgetVariables($pageId)
 		}
 		
 		$widget->initWidget();
+		
+		if(!isset($widgetsenmap[$enwidget['id']]) || $widgetsenmap[$enwidget['id']]==false)
+		{
+			$WIDGETS[(int)$enwidget['location']] .= $widget->getCommonHTML();
+			$widgetsenmap[$enwidget['id']]=true;
+		}
+		
 		$WIDGETS[(int)$enwidget['location']] .= $widget->getHTML();
 	}
 }
