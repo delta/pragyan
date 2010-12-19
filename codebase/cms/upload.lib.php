@@ -128,21 +128,11 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 	if(!is_null($row[0])) {
 		$upload_fileid = $row[0] + 1;
 	}
-
 	$finalName = str_pad($upload_fileid, 10, '0', STR_PAD_LEFT) . '_' . $uploadFileName;
-	move_uploaded_file($tempFileName, "$uploadDir/$moduleName/$finalName");
-	if($moduleName=="gallery")
-	{
-		$thumb_upload_fileid = $upload_fileid + 1;
-		$thumb_finalName = str_pad($thumb_upload_fileid, 10, '0', STR_PAD_LEFT) . '_thumb_' . $uploadFileName;
-		createThumbs("$uploadDir/$moduleName/$finalName","$uploadDir/$moduleName/$thumb_finalName",136);
-	}
-
-	if(strpbrk($uploadFileName, '"')) {
-		displayerror("Double quotes (\") are not allowed in the file name.");
+	if(strpbrk($uploadFileName, '%#&')) {
+		displayerror("(\") , ( % ) and ( & ) are not allowed in the file name.");
 		return false;
 	}
-	else {
 		$duplicateCheckQuery = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` " .
 				"WHERE `page_modulecomponentid` = $moduleComponentId AND `page_module` = '$moduleName'" .
 				" AND upload_filename = '$uploadFileName'";
@@ -150,23 +140,31 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 		if(mysql_num_rows($duplicateCheckResult) >= 1) {
 			displayerror("A file with the name $uploadFileName already exists. Please use a different filename.");
 			return false;
-		}
+			}
 		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
 				"VALUES ($moduleComponentId, '$moduleName', $upload_fileid, " .
 				"'" . mysql_escape_string($uploadFileName) . "', '$uploadFileType', $userId)";
-		mysql_query($query) or die(mysql_error() . "upload.lib L:160<br />");
+		mysql_query($query) or die(mysql_error() . "upload.lib L:148<br />");
 		if($moduleName=="gallery")
 		{
+		$thumb_upload_fileid = $upload_fileid + 1;
 		$thumb_name="thumb_".$uploadFileName;
+		$thumb_finalName = str_pad($thumb_upload_fileid, 10, '0', STR_PAD_LEFT) . '_' . $thumb_name;
+		$thmb = createThumbs($tempFileName,"$uploadDir/$moduleName/$thumb_finalName",136);
+		if(!$thmb)
+			{
+			displayerror("Unable to generate thumbnail / open file. Try later");
+			return false; 
+			}
 		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
 				"VALUES ($moduleComponentId, '$moduleName', $thumb_upload_fileid, " .
 				"'" . mysql_escape_string($thumb_name) . "', '$uploadFileType', $userId)";
-		mysql_query($query) or die(mysql_error() . "upload.lib L:160<br />");
+		mysql_query($query) or die(mysql_error() . "upload.lib L:163<br />");
 		}
+		move_uploaded_file($tempFileName, "$uploadDir/$moduleName/$finalName");
 		return $uploadFileName;
-	}
 }
 
 
@@ -514,9 +512,20 @@ function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth )
       imagecopyresampled( $tmp_img, $img, 0, 0, 0, 0, $new_width, $new_height, $width, $height );
 
       // save thumbnail into a file
-      imagejpeg( $tmp_img, "{$pathToThumbs}" );
-      return true;
+    $size=getimagesize("{$pathToImages}");
+     switch($size["mime"]){
+        case "image/jpeg":
+            $im = imagejpeg( $tmp_img, "{$pathToThumbs}" );
+        break;
+        case "image/gif":
+            $im = imagegif( $tmp_img, "{$pathToThumbs}" );
+      break;
+      case "image/png":
+          $im = imagepng( $tmp_img, "{$pathToThumbs}" );
+      break;
       }
+     return true;
+     }
      return false;
 }
 ?>
