@@ -64,16 +64,10 @@ class count_down extends widgetFramework
 		$this->format = $this->settings['format'];
 	}
 	
-	public function getHTML()
+	public function getCommonHTML()
 	{
-		if($this->globaldisable=='1' || $this->globaldisable=='Yes') return "";
-		$date =$this->date;
-		if($this->event!="")
-			$event=$this->event;
-		else
-			$event="Event";
-		$format = $this->format;
-		$count =<<<COUNT
+	
+			$count =<<<COUNT
 <script type="text/javascript">
 function cdtime(container, targetdate){
 if (!document.getElementById || !document.getElementById(container)) return;
@@ -131,6 +125,24 @@ dayfield=hourfield=minutefield="";
 this.container.innerHTML=this.formatresults(dayfield, hourfield, minutefield, secondfield);
 setTimeout(function(){thisobj.showresults()}, 1000); //update results every second
 }
+</script>
+COUNT;
+	return $count;
+
+	}
+	public function getHTML()
+	{
+		if($this->globaldisable=='1' || $this->globaldisable=='Yes') return "";
+		$date =$this->date;
+		if($this->event!="")
+			$event=$this->event;
+		else
+			$event="Event";
+		$format = $this->format;
+		$ran = rand();	
+		$count ="<div id=\"countdowncontainer_$ran\"></div>";
+		$count .=<<<COUNT
+<script type="text/javascript">
 function result(){
 var eventstring = "$event";
 if (this.timesup==false){ //if target date/time not yet met
@@ -144,17 +156,11 @@ else
 }
 return displaystring;
 }
-</script>
-COUNT;
-
-	$count .="<div id=\"countdowncontainer\"></div>";
-	$count .=<<<COUNT
-<script type="text/javascript">
-var count_down_date=new cdtime("countdowncontainer","$date");
+var count_down_date=new cdtime("countdowncontainer_$ran","$date");
 count_down_date.displaycountdown("$format", result);
 </script>
 COUNT;
-	return $count;
+		return $count;
 	}	
 }
 
