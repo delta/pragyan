@@ -475,10 +475,30 @@ UPLOAD;
 		//if($i!="" && $i != "")
 		return($errorcodes[$i]);
 	}
+function open_image ($file) {
+    //detect type and process accordinally
+    $size=getimagesize($file);
+    switch($size["mime"]){
+        case "image/jpeg":
+            $im = imagecreatefromjpeg($file); //jpeg file
+        break;
+        case "image/gif":
+            $im = imagecreatefromgif($file); //gif file
+      break;
+      case "image/png":
+          $im = imagecreatefrompng($file); //png file
+      break;
+    default: 
+        $im=false;
+    break;
+    }
+    return $im;
+}
 function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth ) 
 {
       // load image and get image size
-      $img = imagecreatefromjpeg( "{$pathToImages}" );
+      $img = open_image( "{$pathToImages}" );
+    if($img!=false){
       $width = imagesx( $img );
       $height = imagesy( $img );
 
@@ -495,5 +515,8 @@ function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth )
 
       // save thumbnail into a file
       imagejpeg( $tmp_img, "{$pathToThumbs}" );
+      return true;
+      }
+     return false;
 }
 ?>

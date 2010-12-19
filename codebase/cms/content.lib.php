@@ -162,7 +162,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	
 	if($action=="pdf")
 	{
-		$depth=$_GET['depth'];
+		if(isset($_GET['depth'])){$depth=$_GET['depth'];
 		if(!is_numeric($depth))
 		{
 			$depth=0;
@@ -239,6 +239,9 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		header("Content-Length: ".filesize($filePath));
 		@readfile("$filePath");
 		unlink($filePath);
+	}
+	else 
+		return $page->getHtml($userId, $moduleComponentId, "view");	
 	}
 	return $page->getHtml($userId, $moduleComponentId, $action);
 }
