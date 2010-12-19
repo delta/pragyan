@@ -73,6 +73,14 @@ class news extends widgetFramework
 		$this->gjs = $this->settings['global_jsenable'];		
 	}
 	
+
+	public function getCommonHTML()
+	{
+	global $urlRequestRoot,$cmsFolder;
+	$scripts ="<script src='$urlRequestRoot/$cmsFolder/templates/common/scripts/jcarousellite_1.0.1.js' type='text/javascript'></script> ";
+	return $scripts;
+
+	}
 	public function getHTML()
 	{
 		global $urlRequestRoot,$cmsFolder;
@@ -80,22 +88,21 @@ class news extends widgetFramework
 		if($this->globaldisable=='1' || $this->globaldisable=='Yes') return "";
 		if($this->js=='yes' && $this->gjs=='yes') $jsenable = 1;	
 		$num = $this->num;
+		$ran = rand();
 		$style =<<<STYLE
 <style type="text/css">
-#news ul {
+#news_$ran ul {
 list-style:none;
 }
-#news ul a{
+#news_$ran ul a{
 text-decoration:none;
 }
 </style>
 STYLE;
 		$script =<<<SCRIPT
-<script src="$urlRequestRoot/$cmsFolder/templates/common/scripts/jquery-latest.js" type="text/javascript"></script>  
-<script src="$urlRequestRoot/$cmsFolder/templates/common/scripts/jcarousellite_1.0.1.js" type="text/javascript"></script> 
 <script type="text/javascript">  
 $(function() {  
-$("#news").jCarouselLite({  
+$("#news_$ran").jCarouselLite({  
         vertical: true,  
         visible: $num,  
         auto:500,  
@@ -106,9 +113,10 @@ $("#news").jCarouselLite({
 SCRIPT;
 		$news=explode('|',$this->news);
 		$newsHtml = "";		
+		$newsHtml .= $style."<div id='news_container'>";
 		if($jsenable==1)
-			$newsHtml = $script;
-		$newsHtml .= $style."<div id='news_container'><div id='news'><ul>";
+			$newsHtml .= $script;		
+		$newsHtml .="<div id='news_$ran'><ul>";
 		for($i = 0; $i < count($news); $i++) {
 			$str = explode('[',$news[$i],2);
 			if(isset($str[1]))
