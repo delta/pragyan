@@ -6,8 +6,8 @@
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
- * @todo Add support for File Upload/Download via the widget's configurations
- * @todo Reload Widgets ,Get Widget Instances
+ * @TODO Add support for File Upload/Download via the widget's configurations
+ * @TODO Reload Widgets ,Get Widget Instances
  */
  
  /** 
@@ -388,11 +388,15 @@ function createWidgetInstance($pageId,$widgetId)
 	
 	$widgetLocation;
 	$widgetOrder;
+	
+	///Now create the actual instance with a unique instance Id.
 	$success=$widget->createWidget($pageId,$widgetLocation,$widgetOrder);
 
 	if(!$success)
 		displayinfo("{$row['name']} widget instance successfully created at location $widgetLocation with ordering $widgetOrder. You can now change its configurations and location from <a href='./+widgets#enabledwidgets'>here</a>.");
 	else displayerror("An error occurred while creating an instance of this widget.");
+	
+	return $success;
 		
 }
 /**

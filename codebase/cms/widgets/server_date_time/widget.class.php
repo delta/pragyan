@@ -17,6 +17,8 @@ class serverDateTime extends widgetFramework
 	public $configs;
 	public $timeformat;
 	public $globaldisable;
+	public $displaytext;
+
 	
 	public function __construct($widgetId,$widgetInstanceId,$pageId)
 	{
@@ -27,6 +29,13 @@ class serverDateTime extends widgetFramework
 			'options' => '12 Hour|24 Hour',
 			'displaytext' => 'Time display format',
 			'default' => '12 Hour',
+			'global' => 0
+			),
+			array (
+			'name' => 'display_text',
+			'type' => 'text',
+			'displaytext' => 'Display text with the time ( [%s] will be substituted with time )',
+			'default' => 'Server time : [%s].',
 			'global' => 0
 			),
 			array (
@@ -46,16 +55,21 @@ class serverDateTime extends widgetFramework
 	{
 		$this->timeformat = $this->settings['time_format'];
 		$this->globaldisable = $this->settings['global_disable'];
-		
+		$this->displaytext = $this->settings['display_text'];
 	}
 	
 	public function getHTML()
 	{
 		if($this->globaldisable=='1' || $this->globaldisable=='Yes') return "";
 		
+		$finaltime = "";
+		
 		if($this->timeformat == "12 Hour")
-			return date("g:i:s a");
-		else return date("H:i:s a");
+			$finaltime = date("g:i:s a");
+		else $finaltime = date("H:i:s a");
+		
+		$finaltext = preg_replace('/(.*)\[\%s\](.*)/','$1 '.$finaltime.'$2',$this->displaytext);
+		return $finaltext;
 	}	
 }
 
