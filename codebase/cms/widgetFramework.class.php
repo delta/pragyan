@@ -137,6 +137,7 @@ abstract class widgetFramework
 	/**
 	 * Checks whether the widget has been installed properly. It checks the install flag in data. 
 	 * If its 0, it assumes the widget needs installation.
+	 * @note It will only work if widgetInstanceId = -1 (i.e. global) since we need not check installation of every instance.
 	 * @return Boolean True if widget is properly installed, else False.
 	 */
 	function validInstall()
@@ -163,7 +164,7 @@ abstract class widgetFramework
 	}
 	
 	/**
-	 * Sets the widget settings by creating or updating the settings in the database.
+	 * Sets the widget settings by creating the settings in the database. Only needed during installation.
 	 * @param $configs Configuration for the widget.
 	 * @return true on success, else false.
 	 */
@@ -191,8 +192,8 @@ abstract class widgetFramework
 	 */
 	public final function saveSetting($key,$value)
 	{
-		$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$value' WHERE `config_key`='$key' AND `widget_id`={$this->widgetId} AND `widget_instanceid`={$this->widgetInstanceId}";
-	
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$value' WHERE `config_name`='$key' AND `widget_id`={$this->widgetId} AND `widget_instanceid`={$this->widgetInstanceId}";
+
 		if(mysql_query($query)===false) {
 			displayerror("Error in saving setting for the widget {$this->widgetName}.");
 			return false; 
