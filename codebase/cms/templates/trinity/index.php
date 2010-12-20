@@ -111,11 +111,6 @@
 					
 					 <?php if(isset($WIDGETS[1])) echo $WIDGETS[1]; ?>
 					
-						<ul id="js-news" class="js-hidden">
-<li class="news-item"><a href="http://www.pragyan.org/11/home/events/engineering_tomorrow/sorption/">Event format and deadline for Sorption updated !</a></li>							
-<li class="news-item"><a href="#">Pragyan 2011 is coming soon! Stay tuned.</a></li>
-<li class="news-item"><a href="http://www.pragyan.org/11/home/events/openit/">Event Format, Rules and Regulations for OpeNIT updated !!!</a></li>
-						</ul>
 					</div>
 					<div class="contentContainer">
 						<div id="titlebar">
