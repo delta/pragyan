@@ -9,6 +9,7 @@
  * @author Abhishek Shrivastava
  * @author Chakradar Raju
  * @author Balanivash
+ * @author Boopathi Rajaa
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
@@ -202,7 +203,7 @@ if ($pageId === false) {
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was not found on this server.<br />$_SERVER[SERVER_SIGNATURE]".
 		"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU,$LOGINFORM);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();
 }
 
@@ -218,7 +219,7 @@ if(URLSecurityCheck($_GET))
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
 			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU,$LOGINFORM);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();
 }
 
@@ -256,10 +257,6 @@ $BREADCRUMB = breadcrumbs($pageIdArray,"&nbsp;»&nbsp;");
 ///Gets the menubar consisting of the child pages from the current location upto a certain depth
 $MENUBAR = getMenu($userId, $pageIdArray); 
 
-///Gets the menu bar from root, upto a certain depth.
-///Used if the user wants to have some links in the menubar always.
-$COMPLETEMENU = $MENUBAR;
-
 ///The Login form to be displayed from login.lib.php
 if($userId == 0)
 	$LOGINFORM = loginForm();
@@ -282,7 +279,6 @@ populateWidgetVariables($pageId);
 if($rewriteEngineEnabled=='false') {
 	$TITLE = convertUri($TITLE);
 	$MENUBAR = convertUri($MENUBAR);
-	$COMPLETEMENU = convertUri($COMPLETEMENU);
 	$CONTENT = convertUri($CONTENT);
 	$INHERITEDINFO = convertUri($INHERITEDINFO);
 	$BREADCRUMB = convertUri($BREADCRUMB);
@@ -316,7 +312,7 @@ if($debugSet == "on") {
 setcookie("cookie_support", "enabled", 0, "/"); 
 	
 ///Apply the template on the generated content and display the page
-templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$COMPLETEMENU,$LOGINFORM);
+templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 
 disconnect();
 exit();
