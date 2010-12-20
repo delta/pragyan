@@ -26,9 +26,9 @@ class count_down extends widgetFramework
 		$this->configs = array (
 			array (
 			'name' => 'date',
-			'type' => 'text',
+			'type' => 'datetime',
 			'displaytext' => 'Enter the date to countdown to',
-			'default' => 'MM DD YYYY hh:mm:ss',
+			'default' => '',
 			'global' => 0
 			),
 			array (
