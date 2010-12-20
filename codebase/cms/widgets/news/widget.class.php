@@ -17,6 +17,10 @@ class news extends widgetFramework
 	public $configs;
 	public $timeformat;
 	public $globaldisable;
+	public $news;
+	public $js;
+	public $num;
+	public $gjs;
 	
 	public function __construct($widgetId,$widgetInstanceId,$pageId)
 	{
@@ -88,7 +92,7 @@ class news extends widgetFramework
 		if($this->globaldisable=='1' || $this->globaldisable=='Yes') return "";
 		if($this->js=='yes' && $this->gjs=='yes') $jsenable = 1;	
 		$num = $this->num;
-		$ran = rand();
+		$ran = $this->widgetInstanceId;
 		$style =<<<STYLE
 <style type="text/css">
 #news_$ran ul {
