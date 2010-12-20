@@ -141,6 +141,11 @@ COUNT;
 			$event=$this->event;
 		else
 			$event="Event";
+		
+		
+		///Converting to proper format
+		$date=preg_replace('/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})[\s]+([0-9]{1,2}):([0-9]{1,2})/i','$2 $3 $1 $4:$5',$date);
+		
 		$format = $this->format;
 		$ran = $this->widgetInstanceId;
 		$count ="<div id=\"countdowncontainer_$ran\"></div>";

@@ -844,7 +844,7 @@ function renderDatetimeTypeField($elementName,$value,$options,&$htmlOutput)
 	
 	$datetimeFormat = "'%Y-%m-%d %H:%M'";
 
-	$validCheck .= ' dateformat="YY-MM-DD hh:mm" ';
+	$validCheck = ' dateformat="YY-MM-DD hh:mm" ';
 
 
 	$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
