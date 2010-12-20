@@ -40,13 +40,20 @@ class news extends widgetFramework
 			'default' => 'yes',
 			'global' => 0
 			),
+				array (
+			'name' => 'classname',
+			'type' => 'noinput',
+			'displaytext' => 'BELOW IS THE LIST OF ADVANCED OPTIONS',
+			'global' => 0
+			),
 			array (
 			'name' => 'number',
-			'type' => 'text',
+			'type' => 'integer',
 			'displaytext' => 'Number of news items in one block (if js enabled)',
 			'default' => '3',
 			'global' => 0
 			),
+		
 			array (
 			'name' => 'global_disable',
 			'type' => 'bool',

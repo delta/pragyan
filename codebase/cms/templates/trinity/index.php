@@ -108,6 +108,9 @@
 				</div>
 				<div id="centerContent" class="cont">
 					<div id="ticker-wrapper" class="no-js">
+					
+					 <?php if(isset($WIDGETS[1])) echo $WIDGETS[1]; ?>
+					
 						<ul id="js-news" class="js-hidden">
 <li class="news-item"><a href="http://www.pragyan.org/11/home/events/engineering_tomorrow/sorption/">Event format and deadline for Sorption updated !</a></li>							
 <li class="news-item"><a href="#">Pragyan 2011 is coming soon! Stay tuned.</a></li>
