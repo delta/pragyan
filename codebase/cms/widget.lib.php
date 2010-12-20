@@ -599,10 +599,16 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
 function getFormInputField($configentry, $value="", $isglobal) {
 
 
-
-	$htmlOutput = '<td>' . $configentry['confdisplay'];
-
 	$elementType = $configentry['conftype'];
+	
+	if($elementType == 'noinput')
+		$htmlOutput = '<td colspan=2>';
+	else
+		$htmlOutput = '<td>';
+		
+	$htmlOutput .=  $configentry['confdisplay'];
+
+	
 	$elementTypeOptions = $configentry['confoptions'];
 	
 	$options = explode('|', $elementTypeOptions);
@@ -615,8 +621,9 @@ function getFormInputField($configentry, $value="", $isglobal) {
 	else $formname='pageconfform';
 	
 	$elementName = "{$formname}_" .  $configentry['confname'];
-
-	$htmlOutput .='</td><td>';
+	
+	if($elementType != 'noinput')
+		$htmlOutput .='</td><td>';
 	
 	$functionName = "render".ucfirst(strtolower($elementType))."TypeField";
 	
@@ -630,7 +637,7 @@ function getFormInputField($configentry, $value="", $isglobal) {
  * Renders the Text-Area type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -645,7 +652,7 @@ function renderTextareaTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Select type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -671,7 +678,7 @@ function renderSelectTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Radio type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -700,7 +707,7 @@ function renderRadioTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Bool type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -731,7 +738,7 @@ function renderBoolTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Checkbox type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -758,7 +765,7 @@ function renderCheckboxTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the File type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @see getFileUploadField
  * @return true if succesful, or false if rendering failed.
@@ -783,7 +790,7 @@ function renderFileTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Text type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -798,7 +805,7 @@ function renderTextTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Integer type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -813,7 +820,7 @@ function renderIntegerTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Hidden type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -828,7 +835,7 @@ function renderHiddenTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Datetime type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -847,7 +854,7 @@ function renderDatetimeTypeField($elementName,$value,$options,&$htmlOutput)
  * Renders the Date type element
  * @param $elementName	The name of the field
  * @param $value The current value
- * @param $elementTypeOptions The extra options related to this field type
+ * @param $options The extra options related to this field type
  * @param $htmlOutput Will contain the actual HTML Output
  * @return true if succesful, or false if rendering failed.
  */
@@ -862,6 +869,20 @@ function renderDateTypeField($elementName,$value,$options,&$htmlOutput)
 	$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
 	return true;
 }
+
+/**
+ * Renders the Noinput type element. Will only display some text, and not take any input.
+ * @param $elementName	The name of the field
+ * @param $value The current value
+ * @param $options The extra options related to this field type
+ * @param $htmlOutput Will contain the actual HTML Output
+ * @return true if succesful, or false if rendering failed.
+ */
+function renderNoinputTypeField($elementName,$value,$options,&$htmlOutput)
+{
+	return true;
+}
+
 /**
  * Gets the widget information and instance-specific configuration settings about a particular widget
  * @param $widgetid Id of the widget type
@@ -869,7 +890,7 @@ function renderDateTypeField($elementName,$value,$options,&$htmlOutput)
  */
 function getWidgetPageConfigInfo($widgetid)
 {
-	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=0 ";
+	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=0 ORDER BY `config_rank`";
 	$res=mysql_query($query);
 	$ret=array();
 	while($arr=mysql_fetch_assoc($res))
@@ -886,7 +907,7 @@ function getWidgetPageConfigInfo($widgetid)
  */
 function getWidgetGlobalConfigInfo($widgetid)
 {
-	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=1 ";
+	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=1 ORDER BY `config_rank`";
 	$res=mysql_query($query);
 	$ret=array();
 	while($arr=mysql_fetch_assoc($res))
@@ -1038,6 +1059,10 @@ function interpretSubmitValue($conftype,$postvar,$options=NULL)
 	{
 		return isset($_POST[$postvar])?$_POST[$postvar]:false;	
 	}	
+	else if($conftype=='noinput')
+	{
+		return NULL;
+	}
 	return false;
 	
 }

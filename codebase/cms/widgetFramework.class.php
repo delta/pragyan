@@ -174,11 +174,13 @@ abstract class widgetFramework
 	 */
 	public final function setConfigs($configs)
 	{
+		$rank=0;
 		foreach($configs as $config)
 		{
 			$config['global']=(int)$config['global'];
 			
-			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` (`widget_id`,`config_name`,`config_type`,`config_options`,`config_displaytext`,`config_default`,`is_global`) VALUES ({$this->widgetId},'{$config['name']}','{$config['type']}','{$config['options']}','{$config['displaytext']}','{$config['default']}',{$config['global']})";
+			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` (`widget_id`,`config_name`,`config_type`,`config_options`,`config_displaytext`,`config_default`,`is_global`,`config_rank`) VALUES ({$this->widgetId},'{$config['name']}','{$config['type']}','{$config['options']}','{$config['displaytext']}','{$config['default']}',{$config['global']},{$rank})";
+			$rank++;
 			if(mysql_query($query)==false)
 			{
 				displayerror("Error in saving configurations for the widget {$this->widgetName}");

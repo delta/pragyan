@@ -735,12 +735,12 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsdata` (
 CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsconfiginfo` (
   `widget_id` int(11) NOT NULL,
   `config_name` varchar(128) NOT NULL,
-
-  `config_type` enum('text','textarea','bool','integer','date','select','hidden','datetime','file','radio','checkbox') NOT NULL,
+  `config_type` enum('text','textarea','bool','integer','date','select','hidden','datetime','file','radio','checkbox','noinput') NOT NULL,
   `config_options` text NOT NULL,
   `config_displaytext` text NOT NULL,
   `config_default` longtext NOT NULL,
   `is_global` int(1) NOT NULL,
+  `config_rank` int(10) NOT NULL,
   PRIMARY KEY (`widget_id`,`config_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
