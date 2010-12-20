@@ -36,6 +36,29 @@ function dropHandler(event) {
 	return false;
 }
 function dragStartHandler(event,target) {
+	if(target.id != "noImage")
 	currentURL = $(target).children("img").attr("src");
+	else
+		currentURL = "";
+}
+function selectItem(event, target) {
+	$(".dropme").css("background", "none");
+	$(target).css({background:"green"});
 	
+		$(target).load(rootUri+"/index.php?action=admin&subaction=icon&iconURL="+escape(currentURL)+"&targetId="+event.target.id.substr(1));
+		$(".selection").children("p").html("Hit Refresh Once you've made all the changes.").css("font-weight","bold");
+		
+	event.preventDefault();
+	return false;
+}
+function selectIcon(event, target) {
+	$(".dragme").css("background", "none");
+	$(".dropme").css("background", "none");
+	if(target.id != "noImage")
+		currentURL = $(target).children("img").attr("src");
+	else
+		currentURL = "";
+	$(target).css({background:"green"});
+	event.preventDefault;
+	return false;
 }
