@@ -278,7 +278,6 @@ $ACTIONBARMODULE = getActionbarModule($userId, $pageId);
 ///Initializes the widgets in the page
 populateWidgetVariables($pageId);
 
-
 ///If its disabled, then all the links in the generated page are converted into non-pretty URLs using regex
 if($rewriteEngineEnabled=='false') {
 	$TITLE = convertUri($TITLE);

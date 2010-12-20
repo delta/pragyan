@@ -157,7 +157,12 @@ abstract class widgetFramework
 	 */
 	function installWidget()
 	{
-	
+		
+		///If some configuration fields are already there in table, we remove them.
+		$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`={$this->widgetId}";
+		mysql_query($query);
+		
+		
 		$install=$this->setConfigs($this->defaultConfigs);
 		if($install==true)
 		{
@@ -179,7 +184,10 @@ abstract class widgetFramework
 		{
 			$config['global']=(int)$config['global'];
 			
+			foreach($config as $key=>$value) $config[$key]=escape($value);
+			
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` (`widget_id`,`config_name`,`config_type`,`config_options`,`config_displaytext`,`config_default`,`is_global`,`config_rank`) VALUES ({$this->widgetId},'{$config['name']}','{$config['type']}','{$config['options']}','{$config['displaytext']}','{$config['default']}',{$config['global']},{$rank})";
+			
 			$rank++;
 			if(mysql_query($query)==false)
 			{
@@ -198,6 +206,9 @@ abstract class widgetFramework
 	 */
 	public final function saveSetting($key,$value)
 	{
+		$value = escape($value);
+		$key = escape($key);
+		
 		$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$value' WHERE `config_name`='$key' AND `widget_id`={$this->widgetId} AND `widget_instanceid`={$this->widgetInstanceId}";
 
 		if(mysql_query($query)===false) {
@@ -216,6 +227,8 @@ abstract class widgetFramework
 	 */
 	public final function saveData($key,$value)
 	{
+		$value = escape($value);
+		$key = escape($key);
 		
 		if(isset($this->data[$key]))
 			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsdata` SET `widget_datavalue`='$value' WHERE `widget_datakey`='$key' AND `widget_id`={$this->widgetId} AND `widget_instanceid`={$this->widgetInstanceId}";

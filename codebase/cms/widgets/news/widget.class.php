@@ -21,6 +21,11 @@ class news extends widgetFramework
 	public $js;
 	public $num;
 	public $gjs;
+	public $makeunique;
+	public $divid;
+	public $divclass;
+	public $ulclass;
+	public $ulid;
 	
 	public function __construct($widgetId,$widgetInstanceId,$pageId)
 	{
@@ -29,7 +34,7 @@ class news extends widgetFramework
 			'name' => 'news',
 			'type' => 'textarea',
 			'displaytext' => 'News (Specify the link like News[link]) (Use | to separate two events items)',
-			'default' => 'News',
+			'default' => 'News 1 : Google[http://www.google.com] | News 2 | News 3 | News 4',
 			'global' => 0
 			),
 			array (
@@ -40,12 +45,6 @@ class news extends widgetFramework
 			'default' => 'yes',
 			'global' => 0
 			),
-				array (
-			'name' => 'classname',
-			'type' => 'noinput',
-			'displaytext' => 'BELOW IS THE LIST OF ADVANCED OPTIONS',
-			'global' => 0
-			),
 			array (
 			'name' => 'number',
 			'type' => 'integer',
@@ -53,7 +52,47 @@ class news extends widgetFramework
 			'default' => '3',
 			'global' => 0
 			),
-		
+			array (
+			'name' => 'noinput1',
+			'type' => 'noinput',
+			'displaytext' => '<b>Below is the list of advanced options. If you don\'t know how to configure them, please leave them as it is.</b>',
+			'global' => 0
+			),
+			array (
+			'name' => 'makeunique',
+			'type' => 'bool',
+			'displaytext' => 'Make the IDs unique automatically by appending a unique number ?',
+			'default' => '1',
+			'global' => 0
+			),
+			array (
+			'name' => 'divclass',
+			'type' => 'text',
+			'displaytext' => 'DIV Class',
+			'default' => '',
+			'global' => 0
+			),
+			array (
+			'name' => 'divid',
+			'type' => 'text',
+			'displaytext' => 'DIV ID',
+			'default' => 'news_',
+			'global' => 0
+			),
+			array (
+			'name' => 'ulclass',
+			'type' => 'text',
+			'displaytext' => 'UL Class',
+			'default' => '',
+			'global' => 0
+			),
+			array (
+			'name' => 'ulid',
+			'type' => 'text',
+			'displaytext' => 'UL ID',
+			'default' => '',
+			'global' => 0
+			),
 			array (
 			'name' => 'global_disable',
 			'type' => 'bool',
@@ -80,9 +119,15 @@ class news extends widgetFramework
 		$this->news = $this->settings['news'];
 		$this->js = $this->settings['jsenable'];
 		$this->num = $this->settings['number'];
+		$this->makeunique = $this->settings['makeunique'];	
+		$this->divid = $this->settings['divid'];	
+		$this->divclass = $this->settings['divclass'];
+		$this->ulid = $this->settings['ulid'];
+		$this->ulclass = $this->settings['ulclass'];
+	
 		$this->globaldisable = $this->settings['global_disable'];
-		$this->gjs = $this->settings['global_jsenable'];		
-	}
+		$this->gjs = $this->settings['global_jsenable'];
+	}	
 	
 
 	public function getCommonHTML()
@@ -97,15 +142,24 @@ class news extends widgetFramework
 		global $urlRequestRoot,$cmsFolder;
 		$jsenable = 0;
 		if($this->globaldisable=='1' || $this->globaldisable=='Yes') return "";
-		if($this->js=='yes' && $this->gjs=='yes') $jsenable = 1;	
+		if($this->js=='yes' && $this->gjs=='yes') $jsenable = 1;
+			
 		$num = $this->num;
-		$ran = $this->widgetInstanceId;
+		
+		$ran = '';
+		if($this->makeunique=='1' || $this->makeunique=='Yes')
+			$ran = $this->widgetInstanceId;
+	
+		
+		$divid = $this->divid.$ran;
+		$ulid = $this->ulid.$ran;
+		
 		$style =<<<STYLE
 <style type="text/css">
-#news_$ran ul {
+#$divid ul {
 list-style:none;
 }
-#news_$ran ul a{
+#$divid ul a{
 text-decoration:none;
 }
 </style>
@@ -113,7 +167,7 @@ STYLE;
 		$script =<<<SCRIPT
 <script type="text/javascript">  
 $(function() {  
-$("#news_$ran").jCarouselLite({  
+$("#$divid").jCarouselLite({  
         vertical: true,  
         visible: $num,  
         auto:500,  
@@ -127,7 +181,7 @@ SCRIPT;
 		$newsHtml .= $style."<div id='news_container'>";
 		if($jsenable==1)
 			$newsHtml .= $script;		
-		$newsHtml .="<div id='news_$ran'><ul>";
+		$newsHtml .="<div class='{$this->divclass}' id='$divid'><ul id='$ulid' class='{$this->ulclass}'>";
 		for($i = 0; $i < count($news); $i++) {
 			$str = explode('[',$news[$i],2);
 			if(isset($str[1]))
