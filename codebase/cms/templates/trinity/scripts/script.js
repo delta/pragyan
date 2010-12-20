@@ -25,7 +25,7 @@ $(function() {
 	 */
 	$("ul.topnav li").hover(function(e){
 	 	$(this).children("ul.subnav").fadeIn();
-	}.debounce(400), function() {
+	}.debounce(250), function() {
 		$(this).children("ul.subnav").css({display: 'none'});
 	});
 	$("ul.topnav li").bind({

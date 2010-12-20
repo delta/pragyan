@@ -35,7 +35,7 @@ function getMenu($userId, $pageIdArray) {
 	$hostURL = ".";
 	$pageId = $pageIdArray[count($pageIdArray) - 1];
 	$hostURL = hostURL();
-
+	$MYHOST = hostURL();
 	$pageRow = getPageInfo($pageId);
 	$depth = $pageRow['page_menudepth'];
 	if ($depth == 0) $depth=1;
@@ -58,9 +58,9 @@ function getMenu($userId, $pageIdArray) {
 					
 		if($pageRow['page_displaysiblingmenu']) {
 			if($pageId != 0) {
-				$imageTage = "";
+				$imageTag = "";
 				if($parentPageRow['page_displayicon'] == 1 && $parentPageRow['page_image'] != NULL) {
-					$imageTag = "<img width=32 height=32 src=\"{$parentPageRow['page_image']}\" alt=\"{$parentPageRow['page_image']}\" />";
+					$imageTag = "<img width=32 height=32 src=\"{$MYHOST}/{$parentPageRow['page_image']}\" alt=\"{$parentPageRow['page_image']}\" />";
 	  		}
 				$menuHtml .= '<a href="'.$hostURL.'../"><div class="cms-menuhead">'.$imageTag.$parentPageRow["page_title"].'</div></a>';
 				$siblingMenu = getChildList($parentPage,1,hostURL(),$userId,1);
@@ -73,7 +73,7 @@ function getMenu($userId, $pageIdArray) {
 			$pageR = getPageInfo($pageId);
 			if($pageR['page_displayicon'] == 1) {
 				if($pageR['page_image'] != NULL)
-					$imageTag = "<img width=32 height=32 src=\"{$pageR['page_image']}\" alt=\"{$pageR['page_image']}\" />";
+					$imageTag = "<img width=32 height=32 src=\"{$MYHOST}/{$pageR['page_image']}\" alt=\"{$pageR['page_image']}\" />";
 	  	}
 			$menuHtml .= <<<MENU
 				<ul class="topnav">
@@ -85,7 +85,11 @@ MENU;
 		}
 		
 		if($childListGenerated != "") {
-			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">'.$pageRow["page_title"].'</div></a>';
+			$imageTag = "";
+				if($pageRow['page_displayicon'] == 1 && $pageRow['page_image'] != NULL) {
+					$imageTag = "<img width=32 height=32 src=\"{$MYHOST}/{$pageRow['page_image']}\" alt=\"{$pageRow['page_image']}\" />";
+	  	}
+			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">'.$imageTag.$pageRow["page_title"].'</div></a>';
 			$menuHtml .= $childListGenerated;
 		}
 			
@@ -147,7 +151,7 @@ MENUHTML;
 			$pageR = getPageInfo($pageId);
 			if($pageR['page_displayicon'] == 1) {
 				if($pageR['page_image'] != NULL)
-					$imageTag = "<img width=32 height=32 src=\"{$pageR['page_image']}\" alt=\"{$pageR['page_image']}\" />";
+					$imageTag = "<img width=32 height=32 src=\"{$rootUri}/{$pageR['page_image']}\" alt=\"{$pageR['page_image']}\" />";
 	  	}
 			$menuHtml .= <<<MENU
 				<ul class="topnav">
@@ -168,7 +172,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   if($depth>0 || $depth==-1) {
   if($curdepth==1 || $pageId==0) $classname="topnav";
   else $classname="subnav";
-  
+  $MYHOST = hostURL();
   $pageRow = getChildren($pageId,$userId);
 
   $var = "<ul class='{$classname} depth{$curdepth}'>";
@@ -184,7 +188,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
 	  $imageTag = '';
 	  if($pageRow[$i][4]) {
 	  	if($pageRow[$i][3] != NULL)
-	  		$imageTag = "<img width=32 height=32 src=\"{$pageRow[$i][3]}\" alt=\"{$pageRow[$i][1]}\" />";
+	  		$imageTag = "<img width=32 height=32 src=\"{$MYHOST}/{$pageRow[$i][3]}\" alt=\"{$pageRow[$i][1]}\" />";
 	  	/*
 	  	 *@usage: display a default folder icon if the table value is NULL
 	  	 *@code:
