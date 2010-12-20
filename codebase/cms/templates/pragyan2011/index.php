@@ -38,7 +38,7 @@
 <div class="outercontainer">
 	<div class="innercontainer">
 	<div class="menucontainer">
-	    		<?php echo $COMPLETEMENU; ?>
+	    		<?php echo $MENUBAR; ?>
 	</div> 
 			
 		<div id="header">
