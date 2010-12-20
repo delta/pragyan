@@ -50,10 +50,25 @@ function getMenu($userId, $pageIdArray) {
 		$pageId = $pageIdArray[count($pageIdArray) - 1];
 		$depth = 1;
 		$hostURL = strstr(selfURI(), '+', true);
+		
+		$parentPage = getParentPage($pageId);
+		$parentPageRow = getPageInfo($parentPage);
+		
 		$childListGenerated = getChildList($pageId, $depth, hostURL(), $userId, 1);
-		if($childListGenerated != "")
-			$menuHtml .= $childListGenerated;
-		else {
+					
+		if($pageRow['page_displaysiblingmenu']) {
+			if($pageId != 0) {
+				$imageTage = "";
+				if($parentPageRow['page_displayicon'] == 1 && $parentPageRow['page_image'] != NULL) {
+					$imageTag = "<img width=32 height=32 src=\"{$parentPageRow['page_image']}\" alt=\"{$parentPageRow['page_image']}\" />";
+	  		}
+				$menuHtml .= '<a href="'.$hostURL.'../"><div class="cms-menuhead">'.$imageTag.$parentPageRow["page_title"].'</div></a>';
+				$siblingMenu = getChildList($parentPage,1,hostURL(),$userId,1);
+				$menuHtml .= $siblingMenu;
+			}
+		}
+		
+		if($pageRow['page_displaysiblingmenu']==0 && $childListGenerated == null) {
 			$imageTag = "";
 			$pageR = getPageInfo($pageId);
 			if($pageR['page_displayicon'] == 1) {
@@ -67,7 +82,13 @@ function getMenu($userId, $pageIdArray) {
 				</li>
 				</ul>
 MENU;
-			}
+		}
+		
+		if($childListGenerated != "") {
+			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">'.$pageRow["page_title"].'</div></a>';
+			$menuHtml .= $childListGenerated;
+		}
+			
 		/*
 		@TO BE REMOVED 
 		@author Boopathi

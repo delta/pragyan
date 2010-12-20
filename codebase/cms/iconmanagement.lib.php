@@ -95,7 +95,11 @@ STYLES;
 
 	$iconForm .= <<<SELECTION
 		<div class="selection" id="targetIcon">
-				<p align="right">Drag and Drop the Icons over the menu.</p>
+				<p align="right">Drag and Drop the Icons over the menu. <br />
+				Drag and drop works only with HTML5 enabled browsers.<br />
+				Alternative Procedure: <br/>
+				Select an icon from list (1<br />
+				Select the target on the tree view of menu (2</p>
 			<h3>List of available icons</h3>
 			<div class="selectlist">
 				{$selectionList}
@@ -122,7 +126,7 @@ function getTreeView($pageId,$depth,$rootUri,$userId,$curdepth) {
   $var = "<ul class='{$classname}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
 	  $newdepth=$curdepth+1;
-	  $var .= "<li><a href=\"./\" class=\"dropme\"";
+	  $var .= "<li><a href=\"./\" class=\"dropme\" onclick=\"return selectItem(event,this)\"";
 	  $var .= <<<DROPZONE
 	  ondragenter="dragEnterHandler(event)" ondragover="dragOverHandler(event)" ondragleave="dragOutHandler(event)" ondrop="dropHandler(event)" id="p{$pageRow[$i][0]}">  
 DROPZONE;
@@ -166,23 +170,14 @@ SCRIPTS;
 		width: 30px;
 		height: 30px;
 		border: solid 1px #000;
-		color: white;
-		background: #AA0000;
-		font-size: 10px;
-		text-indent: -3px;
-		font-family: sans-serif;
-	}
-	.myIconList #noImage > img {
-		display: none;
 	}
 	</style>
 STYLES;
 	$iconList .= "<div class='myIconList'>";
 	$id=0;
 	$iconList .= <<<NONE
-		<div class="dragme" draggable="true" ondragstart="dragStartHandler(event,this)" id="noImage">
-		ERASE<br />ICON
-		<img src="" width=32 height=32/>
+		<div class="dragme" draggable="true" ondragstart="dragStartHandler(event,this)" id="noImage" onclick="selectIcon(event,this)">
+		<img src="{$rootUri}/{$cmsFolder}/{$templateFolder}/common/images/erase_icon.jpg" width=30 height=30/>
 		</div>
 NONE;
 	$iconList .= getListOfFiles($dir,true);
@@ -215,7 +210,7 @@ function getListOfFiles($dir, $isTopLevel=false) {
 					if(is_readable($dir.$item)) {
 						$type = explode("/",mime_content_type($dir.$item));
 						if($type[0] == "image") {
-							$iconList .= "<div class=\"dragme\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\">";
+							$iconList .= "<div class=\"dragme\" draggable=\"true\" ondragstart=\"dragStartHandler(event,this)\" onclick=\"selectIcon(event,this)\">";
 							$iconList .= "<img title='$item' alt='$item' src='{$rootUri}/{$dir}{$item}' width=32 height=32 /></div>\n";
 						}
 					}
