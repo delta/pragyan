@@ -18,7 +18,11 @@ function handleIconManagement() {
 		$rootUri = hostURL();	
 		global $cmsFolder,$templateFolder;
 		if(isset($_GET["iconURL"]) && isset($_GET['targetId'])) {
-			$iconURL = escape($_GET["iconURL"]);
+			//Security checks
+			$iconURL = $_GET["iconURL"];
+			$iconURL = str_replace($rootUri, "", $iconURL);
+			$iconURL = strstr($_GET["iconURL"], "$cmsFolder/$templateFolder/common/icons/");
+			$iconURL = escape($iconURL);
 			$target = escape($_GET["targetId"]);
 	
 			mysql_query("UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_image`='$iconURL' WHERE `page_id`='$target'");
@@ -95,11 +99,11 @@ STYLES;
 
 	$iconForm .= <<<SELECTION
 		<div class="selection" id="targetIcon">
-				<p align="right">Drag and Drop the Icons over the menu. <br />
-				Drag and drop works only with HTML5 enabled browsers.<br />
-				Alternative Procedure: <br/>
-				Select an icon from list (1<br />
-				Select the target on the tree view of menu (2</p>
+				<p align="left">
+				Usage : <br />
+				- Drag and drop<br />
+				- Select an icon and then choose the target.
+				</p>
 			<h3>List of available icons</h3>
 			<div class="selectlist">
 				{$selectionList}
