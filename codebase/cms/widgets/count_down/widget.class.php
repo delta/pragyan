@@ -17,6 +17,9 @@ class count_down extends widgetFramework
 	public $configs;
 	public $timeformat;
 	public $globaldisable;
+	public $date;
+	public $event;
+	public $format;
 	
 	public function __construct($widgetId,$widgetInstanceId,$pageId)
 	{
@@ -25,7 +28,7 @@ class count_down extends widgetFramework
 			'name' => 'date',
 			'type' => 'text',
 			'displaytext' => 'Enter the date to countdown to',
-			'default' => 'MM DD YYYY',
+			'default' => 'MM DD YYYY hh:mm:ss',
 			'global' => 0
 			),
 			array (
@@ -139,7 +142,7 @@ COUNT;
 		else
 			$event="Event";
 		$format = $this->format;
-		$ran = rand();	
+		$ran = $this->widgetInstanceId;
 		$count ="<div id=\"countdowncontainer_$ran\"></div>";
 		$count .=<<<COUNT
 <script type="text/javascript">
