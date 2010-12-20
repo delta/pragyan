@@ -77,7 +77,7 @@
 			<div class="contentinnertube">
 				<div id="leftContent">
 					<div class="menucontainer">
-		    				<?php echo $COMPLETEMENU; ?>
+		    				<?php echo $MENUBAR; ?>
 					</div> 
 				</div>
 				<div id="rightContent">
