@@ -563,7 +563,7 @@ function hostURL() {
  * @param $new New Action
  *
  * @return the URL with the new action
- * @todo check for rewrite enabled and handle +action as well as &action=action kind of URLs
+ * @TODO check for rewrite enabled and handle +action as well as &action=action kind of URLs
  * @warning Whats the guarantee it won't convert some word in the URL which matches the Old Action ?
  */
 function replaceAction($url,$old,$new) {
