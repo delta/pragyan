@@ -694,6 +694,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgets` (
   `page_id` int(11) NOT NULL,
   `widget_location` int(11) NOT NULL,
   `widget_order` int(11) NOT NULL,
+  `widget_propagate` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`widget_id`,`widget_instanceid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
