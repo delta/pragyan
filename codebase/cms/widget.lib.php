@@ -103,6 +103,8 @@ function populateWidgetVariables($pageId)
 
 	global $cmsFolder,$widgetFolder,$WIDGETS;	
 	$enwidgets=getEnabledWidgets($pageId);
+	$inwidgets=getInheritedWidgets($pageId);
+	$enwidgets=array_merge($enwidgets,$inwidgets);
 	$widgetsenmap=array();
 	
 	foreach( $enwidgets as $enwidget )
@@ -154,6 +156,7 @@ function handleWidgetPageSettings($pageId)
         <table class='iconspanel'>
         <tr>
         <td><a href='./+widgets#enabledwidgets'><div>{$ICONS['Widgets']['large']}<br/>Enabled Widgets for this Page</div></a></td>
+        <td><a href='./+widgets#inheritedwidgets'><div>{$ICONS['Propagate']['large']}<br/>Inherited Widgets for this Page</div></a></td>
         <td><a href='./+widgets&subaction=enable'><div>{$ICONS['Add']['large']}<br/>Add More Widgets</div></a></td>
         </tr>
         </table>   
@@ -224,6 +227,10 @@ function handleWidgetPageSettings($pageId)
    		}
    		else if($subaction=="delete")
    			deleteWidgetInstance($widgetid,$widgetinstanceid);
+   		else if($subaction=='propagate')
+   			propagateWidgetInstance($widgetid,$widgetinstanceid);
+   		else if($subaction=='unpropagate')
+   			unpropagateWidgetInstance($widgetid,$widgetinstanceid);
       	}
       	if(isset($_GET['subaction']) && isset($_GET['subsubaction']) && isset($_GET['widgetid']) && isset($_GET['widgetinstanceid']) )
       	{
@@ -259,28 +266,96 @@ function handleWidgetPageSettings($pageId)
 	$enabledwidgetsarr=getEnabledWidgets($pageId);
 	
 	$enabled = "<fieldset><legend>{$ICONS['Widgets']['small']}Enabled Widgets</legend><a name='enabledwidgets'></a>";
-	$enabled .= "<table class='pragyan_fulltable'><tbody><tr><th colspan=5>Enabled Widgets <br/><i>in order of their appearance</i></th></tr>
+	$enabled .= "<table class='pragyan_fulltable'><tbody><tr><th colspan=4>Enabled Widgets <br/><i>in order of their appearance</i></th></tr>
 	<tr><th>Widget</th><th>Location</th><th>Order</th><th>Actions</th></tr>";
 	
 	foreach ( $enabledwidgetsarr as $widget )
 	{
-		$configbtn = "<a href='./+widgets&subaction=config&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Edit']['small']}' title='Configure this instance of this widget' /></a>";
+		$propagatebtn = "<a href='./+widgets&subaction=propagate&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Propagate']['small']}' title='Propagate : Add this widget to all the child pages recursively. Widget will retain its location.' /></a>";
+		$unpropagatebtn = "<a href='./+widgets&subaction=unpropagate&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Unpropagate']['small']}' title='Unpropagate : Remove the copies of this widget from all the child pages recursively.' /></a>";
 		
-		$deletebtn = "<a href='./+widgets&subaction=delete&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Delete']['small']}' title='Delete this instance of this widget' /></a>";
+		$configbtn = "<a href='./+widgets&subaction=config&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Edit']['small']}' title='Edit : Configure this instance of this widget' /></a>";
+		
+		$deletebtn = "<a href='./+widgets&subaction=delete&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Delete']['small']}' title='Delete : Delete this instance of this widget' /></a>";
 		$locationup = "<a href='./+widgets&subaction=location&subsubaction=up&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Up']['small']}' title='Move to an upper location' /></a>";
 		$locationdown = "<a href='./+widgets&subaction=location&subsubaction=down&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Down']['small']}' title='Move to a lower location' /></a>";
 		
 		$orderup = "<a href='./+widgets&subaction=order&subsubaction=up&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Up']['small']}' title='Move to an upper order' /></a>";
 		$orderdown = "<a href='./+widgets&subaction=order&subsubaction=down&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'><img src='{$ICONS_SRC['Down']['small']}' title='Move to a lower order' /></a>";
 		
-		$enabled .= "\n<tr><td><a title='{$widget['description']}' href='./+widgets&subaction=config&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'>{$widget['name']}</a></td><td>{$widget['location']} $locationup $locationdown</td><td>{$widget['order']} $orderup $orderdown</td><td>$configbtn $deletebtn</td></tr>";
+		if($widget['propagate']=='1') $propunpropbtn=$unpropagatebtn;
+		else $propunpropbtn=$propagatebtn;
+		
+		$enabled .= "\n<tr><td><a title='{$widget['description']}' href='./+widgets&subaction=config&widgetid={$widget['id']}&widgetinstanceid={$widget['instanceid']}'>{$widget['name']}</a></td><td>{$widget['location']} $locationup $locationdown</td><td>{$widget['order']} $orderup $orderdown</td><td>$configbtn $deletebtn $propunpropbtn</td></tr>";
 		
 	}
 	$enabled .="</tbody></table></fieldset>";
+	$enabled .="<fieldset><legend>{$ICONS['Propagate']['small']}</legend><a name='inheritedwidgets'></a><b>Note: Inherited widgets can be configured from the origin page only and they are always ordered last in their location in the inherited pages.</b>";
+	$enabled .="<table class='pragyan_fulltable'><tbody><tr><th colspan=3>Inherited Widgets <br/><i>due to propagation from a parent page</i></th></tr><tr><th>Widget</th><th>Location</th><th>Origin</th></tr>";
+	
+	$inheritedwidgetsarr=getInheritedWidgets($pageId);
+	foreach ( $inheritedwidgetsarr as $widget )
+	{
+		$link=hostURL().$widget['source'];
+		$enabled .= "\n<tr><td><a title='{$widget['description']}'>{$widget['name']}</a></td><td>{$widget['location']}</td><td><a href='$link'>{$widget['source']}</a></td></tr>";
+	}
+	$enabled .="</tbody></table>";
+	
+	
+	
+	$enabled .="</fieldset>";
 	
 	
 	return $html.$enabled.$quicklinks;
 	
+}
+/**
+ * Gets the information about all the widgets which are inherited to a page via any parent page.
+ * @param $pageId Page Id of the given page 
+ * @return Array of widgets containing widgets information
+ */
+function getInheritedWidgets($pageId)
+{
+	$parentId=getParentPage($pageId);
+	
+	if($parentId==$pageId) return array();
+	
+	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`=$parentId AND t1.`widget_propagate`=1 AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location` ASC";
+	$result=mysql_query($query);
+	$return=array();
+	while($row=mysql_fetch_array($result))
+	{
+		$row['source']=getPagePath($parentId);
+		$return[]=$row;
+	}
+	
+	$more=getInheritedWidgets($parentId);
+	$return=array_merge($return,$more);
+	return $return;
+}
+
+/**
+ * Marks the widget for propagation to all child pages.
+ * @param $widgetId Widget ID
+ * @param $widgetInstanceId Instance of the widget that is to be propagated
+ */
+function propagateWidgetInstance($widgetId,$widgetInstanceId)
+{
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=1 WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	mysql_query($query);
+	displayinfo("Widget has been succesfully propagated to all child pages recursively.");
+}
+
+/**
+ * Unmarks the widget for propagation to all child pages. So that it wont be propagated anymore.
+ * @param $widgetId Widget ID
+ * @param $widgetInstanceId Instance of the widget that is to be unpropagated
+ */
+function unpropagateWidgetInstance($widgetId,$widgetInstanceId)
+{
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=0 WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	mysql_query($query);
+	displayinfo("Widget copies has been succesfully removed from all child pages recursively.");
 }
 
 /**
@@ -415,7 +490,7 @@ function createWidgetInstance($pageId,$widgetId)
  */
 function getEnabledWidgets($pageId)
 {
-	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t1.`widget_order` AS 'order', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`=$pageId AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location`, t1.`widget_order` ASC";
+	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t1.`widget_order` AS 'order', t1.`widget_propagate` AS 'propagate', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`=$pageId AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location`, t1.`widget_order` ASC";
 	$result=mysql_query($query);
 	$return=array();
 	while($row=mysql_fetch_array($result))
@@ -492,9 +567,11 @@ function handleWidgetAdmin($pageId)
 			$html .= ' enctype="multipart/form-data"';
 		$html .= '>';
 		
-		$html.="<table width=100%><tr><th colspan=2>Widget : {$widgetinfo['name']}</th><tr>";
+		$html.="<table width=100%><tr><th colspan=2>Widget : {$widgetinfo['name']}</th></tr>";
 		$html.="<tr><td>Description : </td><td> {$widgetinfo['description']}</td></tr>";
-		$html.="<tr><td>Instances : </td><td>";
+		
+		//Uncomment when support for retrieving instances is there
+		/*$html.="<tr><td>Instances : </td><td>";
 		$instances=getWidgetInstances($widgetid);
 		if(count($instances)>0) $html.="<ol>";
 		else $html.="None"; 
@@ -504,7 +581,8 @@ function handleWidgetAdmin($pageId)
 					"{$instance['name']} [{instance['url']}]</li>";
 		}
 		if(count($instances)>0) $html.="</ol>";
-		
+		$html.="</td></tr>";
+		*/
 		
 		$html .="<tr>".join($formElements, "</tr>\n<tr>")."</tr>";
 		
