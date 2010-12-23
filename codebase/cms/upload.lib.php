@@ -461,6 +461,20 @@ UPLOAD;
 
 	}
 
+/**
+* HTML 5 MULTIPLE UPLOAD FILE
+*
+* @param same as others.
+* @usage just include this field once.
+*/
+	function getMultipleFileUploadField($uploadFieldName, $moduleName, $maxFileSizeInBytes = false, $validCheck = "") {
+		if($maxFileSizeInBytes===false) $maxFileSizeInBytes = 2*1024*1024;
+		$uploadFormString ='<input type="hidden" name="MAX_FILE_SIZE" value="'.$maxFileSizeInBytes.'" />' .
+			'<input name="'.$uploadFieldName.'[]" type="file" multiple '.$validCheck.'  />
+	      	<input type="hidden" name="FileUploadForm" value="'.$uploadFieldName.'" />';
+	    return $uploadFormString;
+	}
+
 	function getFileUploadError($i) {
 		$errorcodes = array(UPLOAD_ERR_OK => "There is no error, the file uploaded with success.",
 							 UPLOAD_ERR_INI_SIZE=> "The uploaded file exceeds the upload_max_filesize directive in php.ini.",
