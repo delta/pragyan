@@ -10,6 +10,22 @@
 
 function handleIconManagement() {
 
+	/*
+	*	Upload a new icon
+	*/
+	if(isset($_POST['FileUploadForm'])){
+		global $userId,$sourceFolder;
+		require_once("$sourceFolder/upload.lib.php");
+		$allowableTypes = array (
+				'jpeg',
+				'jpg',
+				'png',
+				'gif'
+			);
+		$result = submitFileUploadForm($userId, 'iconman', $userId, false, $allowableTypes, 'iconUpload');
+		
+	}
+
 	/**
 	 * If user is setting an icon to a page, then generate an ajax response
 	 */
@@ -36,7 +52,7 @@ function handleIconManagement() {
 		}
 		else if(isset($_GET['iconAction'])) {
 			$action = $_GET['iconAction'];
-	
+			
 		}
 		else
 		{
@@ -61,6 +77,7 @@ function handleIconManagement() {
 ICONFORM;
 	//Get data from Database
 	global $cmsFolder;
+	global $sourceFolder;
 	global $templateFolder;
 	global $userId;
 	$myhostURL = hostURL();
@@ -85,12 +102,27 @@ ICONFORM;
 			padding: 5px;
 		}
 		.myIconList {
-			height:300px;
+			height:500px;
 			overflow:scroll;
 			max-width:100%;
 		}
 		</style>
 STYLES;
+	
+	require_once("$sourceFolder/upload.lib.php");
+	$fakeid = $userId;
+
+	$imageUploadField = getMultipleFileUploadField('iconUpload','iconman',512*1024);
+	
+	//$iconForm .= $imageUploadField;
+	$iconForm .= <<<FORM
+	<form method="POST" action="./+admin&subaction=icon" enctype="multipart/form-data">
+	$imageUploadField
+	<input type="submit" />
+	</form>
+	
+FORM;
+	
 	$iconForm .= "<table class=\"myIconForm\"><tr><td id=\"iconTreeMenu\">";
 	$iconForm .= getTreeView(0,-1,$myhostURL,$userId,1);
 	$iconForm .= "</td>";
@@ -151,9 +183,13 @@ DROPZONE;
 function getIconList() {
 	$iconList = "";
 	$rootUri = hostURL();
-	global $cmsFolder;
+	global $cmsFolder,$sourceFolder;
 	global $templateFolder;
 	$dir = "$cmsFolder/$templateFolder/common/icons/32x32/";
+	$uploaded = "";
+	if(is_dir("$sourceFolder/uploads/iconman/")) {
+		$uploaded = "$cmsFolder/uploads/iconman/";
+	}
 	
 	//$dir = "$cmsFolder/$templateFolder/trinity/images/events/";
 	
@@ -178,13 +214,32 @@ SCRIPTS;
 	</style>
 STYLES;
 	$iconList .= "<div class='myIconList'>";
+	
 	$id=0;
 	$iconList .= <<<NONE
 		<div class="dragme" draggable="true" ondragstart="dragStartHandler(event,this)" id="noImage" onclick="selectIcon(event,this)">
 		<img src="{$rootUri}/{$cmsFolder}/{$templateFolder}/common/images/erase_icon.jpg" width=30 height=30/>
 		</div>
 NONE;
+
+
+	if($uploaded != "") {
+		$iconList .= <<<HTMl
+			<style type="text/css">
+				.myUploadedIcons {
+					clear: both;
+				}
+			</style>
+			<div class="myUploadedIcons">
+			<h3>My Uploads: </h3>
+HTMl;
+		$iconList .= getListOfFiles($uploaded, true);
+		$iconList .= "</div><div class=\"clearer\"></div>";
+	}
+	
+	$iconList .= "<h3>CMS icons</h3>";
 	$iconList .= getListOfFiles($dir,true);
+	
 	
 	$iconList .= "</div>";
 	return $iconList;
