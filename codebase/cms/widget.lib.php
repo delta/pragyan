@@ -1,4 +1,11 @@
 <?php
+if(!defined('__PRAGYAN_CMS'))
+{ 
+	http_send_status(403);
+	echo "<h1>403 Forbidden<h1><h4>You are not authorized to access the page.</h4>";
+	echo '<hr/>'.$_SERVER['SERVER_SIGNATURE'];
+	exit(1);
+}
 /**
  * @package pragyan
  * @author Abhishek Shrivastava
@@ -290,7 +297,7 @@ function handleWidgetPageSettings($pageId)
 		
 	}
 	$enabled .="</tbody></table></fieldset>";
-	$enabled .="<fieldset><legend>{$ICONS['Propagate']['small']}</legend><a name='inheritedwidgets'></a><b>Note: Inherited widgets can be configured from the origin page only and they are always ordered last in their location in the inherited pages.</b>";
+	$enabled .="<fieldset><legend>{$ICONS['Propagate']['small']}Inherited Widgets</legend><a name='inheritedwidgets'></a><b>Note: Inherited widgets can be configured from the origin page only and they are always ordered last in their location in the inherited pages.</b>";
 	$enabled .="<table class='pragyan_fulltable'><tbody><tr><th colspan=3>Inherited Widgets <br/><i>due to propagation from a parent page</i></th></tr><tr><th>Widget</th><th>Location</th><th>Origin</th></tr>";
 	
 	$inheritedwidgetsarr=getInheritedWidgets($pageId);

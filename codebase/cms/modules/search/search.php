@@ -1,11 +1,17 @@
 <?php
+if(!defined('__PRAGYAN_CMS'))
+{ 
+	http_send_status(403);
+	echo "<h1>403 Forbidden<h1><h4>You are not authorized to access the page.</h4>";
+	echo '<hr/>'.$_SERVER['SERVER_SIGNATURE'];
+	exit(1);
+}
 /*******************************************
 * Sphider Version 1.3.x
 * This program is licensed under the GNU GPL.
 * By Ando Saabas          ando(a t)cs.ioc.ee
 ********************************************/
 //error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING); 
-error_reporting(E_ALL); 
 $include_dir = "./include"; 
 include ("$include_dir/commonfuncs.php");
 //extract(getHttpVars());

@@ -1,4 +1,11 @@
 <?php
+if(!defined('__PRAGYAN_CMS'))
+{ 
+	http_send_status(403);
+	echo "<h1>403 Forbidden<h1><h4>You are not authorized to access the page.</h4>";
+	echo '<hr/>'.$_SERVER['SERVER_SIGNATURE'];
+	exit(1);
+}
 /**
  * @package pragyan
  * @author Ankit Srivastava
@@ -6,6 +13,7 @@
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
+
 
 /**
  * breadcrumbs.lib.php
