@@ -1,4 +1,12 @@
 <?php
+if(!defined('__PRAGYAN_CMS'))
+{ 
+	http_send_status(403);
+	echo "<h1>403 Forbidden<h1><h4>You are not authorized to access the page.</h4>";
+	echo '<hr/>'.$_SERVER['SERVER_SIGNATURE'];
+	exit(1);
+}
+
 /**
  * Diff and patch functions created using the documentation from the Wikipedia
  * article at http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
