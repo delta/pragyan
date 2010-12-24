@@ -37,7 +37,10 @@ function handleIconManagement() {
 			//Security checks
 			$iconURL = $_GET["iconURL"];
 			$iconURL = str_replace($rootUri, "", $iconURL);
-			$iconURL = strstr($_GET["iconURL"], "$cmsFolder/$templateFolder/common/icons/");
+			$parse = strstr($iconURL, "$cmsFolder/$templateFolder/common/icons/");
+			if($parse == "")
+				$parse = strstr($iconURL, "$cmsFolder/uploads/iconman/");
+			$iconURL = $parse;
 			$iconURL = escape($iconURL);
 			$target = escape($_GET["targetId"]);
 	
@@ -115,7 +118,7 @@ STYLES;
 	$imageUploadField = getMultipleFileUploadField('iconUpload','iconman',512*1024);
 	
 	//$iconForm .= $imageUploadField;
-	$iconForm .= <<<FORM
+	$uploadForm .= <<<FORM
 	<form method="POST" action="./+admin&subaction=icon" enctype="multipart/form-data">
 	$imageUploadField
 	<input type="submit" />
@@ -131,12 +134,17 @@ FORM;
 
 	$iconForm .= <<<SELECTION
 		<div class="selection" id="targetIcon">
+			<h3>Upload new icons</h3>
 				<p align="left">
+					{$uploadForm}<br/>
+					- Select Multiple files
+				</p>
+			<h3>List of available icons</h3>
+			<p align="left">
 				Usage : <br />
 				- Drag and drop<br />
 				- Select an icon and then choose the target.
 				</p>
-			<h3>List of available icons</h3>
 			<div class="selectlist">
 				{$selectionList}
 			</div>
