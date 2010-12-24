@@ -25,6 +25,9 @@
  * For more details, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
  */
 
+///Very important variable for detecting direct script access to any other .php file
+define('__PRAGYAN_CMS',')$!%^!%#^@');
+
 ///Folder containing all library files
 $cmsFolder="cms";
 

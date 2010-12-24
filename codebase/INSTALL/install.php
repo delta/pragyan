@@ -60,6 +60,9 @@ else if ($installPageNumber == 3) {
 	$installPageContent = "<br /><table width=\"100%\" border=\"0\">\n $installPageContent </table>\n $installationErrors";
 	if ($installationErrors == '') {
 		$installPageContent .= <<<HTTPDCONF
+		<b>Your installation is almost over. As a security measure, either delete the INSTALL folder or remove read permissions from it so that no-one else can access that folder.</b>
+		
+		
 			For Pragyan CMS to work, .htaccess needs to be supported your webserver. <br />
 			For this, the <b>AllowOverride</b> setting in the httpd.conf has to be made <i>Options FileInfo Limit</i> under the relevant <mono>&lt;Directory&gt;</mono> section.<br />
 			The default location of httpd.conf is <mono>/etc/httpd/conf/httpd.conf</mono>, but may be different for you according to your installation.
