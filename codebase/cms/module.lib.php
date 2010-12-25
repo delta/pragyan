@@ -47,14 +47,14 @@ FORM;
 	return $form;
 }
 
-function processUploaded() {
+function processUploaded($type) {
 	global $sourceFolder;
-	if(!file_exists($sourceFolder . "/uploads/modules/"))
-		mkdir($sourceFolder . "/uploads/modules/");
-	$zipFile = $sourceFolder ."/uploads/modules/".$_FILES['file']['name'];
+	if(!file_exists($sourceFolder . "/uploads/{$type}/"))
+		mkdir($sourceFolder . "/uploads/{$type}/");
+	$zipFile = $sourceFolder ."/uploads/{$type}/".$_FILES['file']['name'];
 	$ext = extension($zipFile);
 	while(file_exists($zipFile))
-		$zipFile = $sourceFolder . "/uploads/modules/" . rand() . $ext;
+		$zipFile = $sourceFolder . "/uploads/{$type}/" . rand() . $ext;
 	move_uploaded_file($_FILES['file']['tmp_name'],$zipFile);
 
 	$len = strlen($zipFile);
@@ -62,9 +62,9 @@ function processUploaded() {
 	if(substr($zipFile,$len-4,4)==".zip") {
 		$zip = new ZipArchive();
 		if ($zip->open($zipFile) === TRUE) {
-			$extractedPath = $sourceFolder . "/uploads/modules/" . $moduleName . "/";
+			$extractedPath = $sourceFolder . "/uploads/{$type}/" . $moduleName . "/";
 			while(file_exists($extractedPath))
-				$extractedPath = $sourceFolder . "/uploads/modules/". rand() . "/";
+				$extractedPath = $sourceFolder . "/uploads/{$type}/". rand() . "/";
 			$zip->extractTo($extractedPath);
 			$zip->close();
 		} else {
@@ -77,13 +77,24 @@ function processUploaded() {
 		unlink($zipFile);
 		return -1;
 	}
-
-	$moduleActualPath = actualModulePath($extractedPath);
+	$function = "actual{$type}Path";
+	$moduleActualPath = $function($extractedPath);
 	
 	if($moduleActualPath != NULL) {
-		$moduleName = getModuleName($moduleActualPath);
-		if(mysql_fetch_array(mysql_query("SELECT `module_name` FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` = '{$moduleName}'"))) {
-			displayerror("A module with name '{$moduleName}' already exist, Installation aborted");
+		$function = "get{$type}Name";
+		$moduleName = $function($moduleActualPath);
+		if($type=="Module") {
+			$colName = "module_name";
+			$tableName = "modules";
+		} else if($type=="Widget") {
+			$colName = "widget_foldername";
+			$tableName = "widgetsinfo";
+		} else if($type=="Template") {
+			$colName = "template_name";
+			$tableName = "templates";
+		}
+		if(mysql_fetch_array(mysql_query("SELECT `{$colName}` FROM `".MYSQL_DATABASE_PREFIX."{$tableName}` WHERE `{$colName}` = '{$moduleName}'"))) {
+			displayerror("A {$type} with name '{$moduleName}' already exist, Installation aborted");
 			delDir($extractedPath);
 			unlink($zipFile);
 			return -1;
@@ -93,15 +104,15 @@ function processUploaded() {
 		return $result['id'];
 	}
 	
-	displayerror("Module file not found");
+	displayerror("{$type} file not found");
 	delDir($extractedPath);
 	unlink($zipFile);
 	
 	return -1;
 }
 
-function finalizeInstallation($uploadId) {
-	global $sourceFolder;
+function finalizeInstallation($uploadId,$type) {
+	global $sourceFolder, $widgetFolder, $templateFolder;
 	$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
 	if($result != NULL) {
 		$zipFile = $result['filePath'];
@@ -112,62 +123,116 @@ function finalizeInstallation($uploadId) {
 	}
 
 	$issues = "";
-	$ret = checkForIssues($moduleActualPath,$moduleName,$issues);
+	$function = "checkFor{$type}Issues";
+	$ret = $function($moduleActualPath,$moduleName,$issues);
 	if($ret[0] == 1) 
 	{
-		displayerror("Your module is still not compatible with Pragyan CMS. Please fix the reported issues during installation.");
+		displayerror("Your {$type} is still not compatible with Pragyan CMS. Please fix the reported issues during installation.");
 		delDir($extractedPath);
 		unlink($zipFile);
 		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
 		return "";
 	}
-		
-	if(mysql_fetch_array(mysql_query("SELECT `module_name` FROM `" . MYSQL_DATABASE_PREFIX . "modules` WHERE `module_name` = '{$moduleName}'"))) 
+	
+ 	if($type=="Module") {
+ 		$colName = "module_name";
+ 		$tableName = "modules";
+ 	} else if($type=="Widget") {
+ 		$colName = "widget_foldername";
+ 		$tableName = "widgetsinfo";
+ 	} else if($type=="Template") {
+ 		$colName = "template_name";
+ 		$tableName = "templates";
+ 	}
+ 	
+ 	if(mysql_fetch_array(mysql_query("SELECT `{$colName}` FROM `" . MYSQL_DATABASE_PREFIX . "{$tableName}` WHERE `{$colName}` = '{$moduleName}'"))) 
 	{
-		displayerror("Template Installation failed : Module already exist");
+		displayerror("{$type} Installation failed : {$type} already exist");
 		delDir($extractedPath);
 		unlink($zipFile);
 		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
 		return "";
 	}
-	installModuleFiles($moduleActualPath, $sourceFolder . "/modules/", $moduleName);
-	$handle = @fopen($moduleActualPath."/moduleQueries.sql", "r");
-	$query = "";
-	if ($handle) {
-		while (!feof($handle)) {
-			$buffer = fgets($handle, 4096);
-			if (strpos($buffer,"--")!==0)
-				$query.=$buffer;
+
+ 	if($type=="Module")
+ 		installModuleFiles($moduleActualPath, $sourceFolder . "/modules/", $moduleName);
+ 	else if($type=="Widget") {
+ 		$destination = "$sourceFolder/$widgetFolder/$moduleName/";
+ 		if(!file_exists($destination))
+ 			mkdir($destination);
+ 		rename($moduleActualPath,$destination);
+ 	} else if($type=="Template") {
+ 		$destination = "$sourceFolder/$templateFolder/$moduleName/";
+ 		if(!file_exists($destination))
+ 			mkdir($destination)
+ 		rename($moduleActualPath,$destination);
+ 	}
+	
+	$notice = "";
+	if($type=="Module") {
+		$handle = @fopen($moduleActualPath."/moduleQueries.sql", "r");
+		$query = "";
+		if ($handle) {
+			while (!feof($handle)) {
+				$buffer = fgets($handle, 4096);
+				if (strpos($buffer,"--")!==0)
+					$query.=$buffer;
+			}
+			fclose($handle);
 		}
-		fclose($handle);
-	}
-	$query = str_replace("pragyanV3_",MYSQL_DATABASE_PREFIX,$query);
-	$singlequeries = explode(";\n",$query);
-	foreach ($singlequeries as $singlequery) {
-		if (trim($singlequery)!="") {
-			$result1 = mysql_query($singlequery);
-			if (!$result1) {
-	  			displayerror("<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to execute query. " . mysql_error());
+		$query = str_replace("pragyanV3_",MYSQL_DATABASE_PREFIX,$query);
+		$singlequeries = explode(";\n",$query);
+		foreach ($singlequeries as $singlequery) {
+			if (trim($singlequery)!="") {
+				$result1 = mysql_query($singlequery);
+				if (!$result1) {
+		  			displayerror("<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to execute query. " . mysql_error());
+				}
 			}
 		}
+		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "modules`(`module_name`,`module_tables`) VALUES('{$moduleName}','" . escape(file_get_contents($moduleActualPath . "moduleTables.txt")) . "')") or displayerror(mysql_error());
+		$notice = "";
+		if(file_exists($moduleActualPath . "moduleNotice.txt"))
+			$notice = ", New module says:<br>" . file_get_contents($moduleActualPath . "moduleNotice.txt");
+	} else if($type=="Widget") {
+ 		$content = explode("|",file_get_contents($moduleActualPath . "../WidgetInfo.pgyn"));
+ 		$widgetName = '';
+ 		$widgetClassName = '';
+ 		$widgetDescription = '';
+ 		$widgetVersion = '';
+ 		$widgetAuthor = '';
+ 		$widgetFolder = $moduleName;
+ 		if(count($content)==5) {
+ 			$widgetName = escape($content[0]);
+ 			$widgetClassName = escape($content[1]);
+ 			$widgetDescription = escape($content[2]);
+ 			$widgetVersion = escape($content[3]);
+ 			$widgetAuthor = escape($content[4]);
+ 		} else
+ 			displaywarning("Widget information could not be read properly");
+ 		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "widgetsinfo`(`widget_name`,`widget_classname`,`widget_description`,`widget_version`,`widget_author`,`widget_foldername`) VALUES ('{$widgetName}','{$widgetClassName}','{$widgetDescription}','{$widgetVersion}','{$widgetAuthor}','{$widgetFolder}')");
+ 		if(!mysql_affected_rows()) {
+ 			displayerror("Installation error, try again later");
+ 			delDir($sourceFolder . "/widgets/" . $moduleName);
+ 		}
+	} else if($type=="Template") {
+		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "templates`(`template_name`) VALUES('{$moduleName}')");
+		if(!mysql_affected_rows())
+			displayerrro("Problem including uploaded template to database, try <a href='./+admin&subaction=reloadtemplates'>reload templates</a>");
 	}
-	mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "modules`(`module_name`,`module_tables`) VALUES('{$moduleName}','" . escape(file_get_contents($moduleActualPath . "moduleTables.txt")) . "')") or displayerror(mysql_error());
-	$notice = "";
-	if(file_exists($moduleActualPath . "moduleNotice.txt"))
-		$notice = ", New module says:<br>" . file_get_contents($moduleActualPath . "moduleNotice.txt");
 	delDir($extractedPath);
 	unlink($zipFile);
 	mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
-	displayinfo("Module installation complete" . $notice);
+	displayinfo("{$type} installation complete" . $notice);
 	return "";
 }
 
 function handleModuleManagement() {
 	global $sourceFolder;
 	if(isset($_POST['btn_install'])) {
-		$uploadId = processUploaded();
+		$uploadId = processUploaded("Module");
 		if($uploadId != -1)
-			return installModule($uploadId);
+			return installModule($uploadId,"Module");
 	} else if(isset($_POST['btn_uninstall'])) {
 		if(!isset($_GET['delmodule']) || $_GET['delmodule']=="") return "";
 		
@@ -216,7 +281,7 @@ Some of the page of type {$modulename} are:<br>
 RET;
 		return $ret;
 	} else if(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'finalize') {		
-		return finalizeInstallation(escape($_POST['id']));
+		return finalizeInstallation(escape($_POST['id']),"Module");
 	} 
 	else if(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'cancel') 
 	{
@@ -272,7 +337,7 @@ function installModuleFiles($from, $to, $module) {
 	return true;
 }
 
-function installModule($uploadId) {
+function installModule($uploadId,$type) {
 	global $sourceFolder;
 	$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
 	if($result != NULL) {
@@ -283,9 +348,10 @@ function installModule($uploadId) {
 		$moduleName = $temp[2];
 	}
 	
-	$issueType = checkForIssues($moduleActualPath,$moduleName,$issues);
+ 	$function = "checkFor{$type}Issues";
+ 	$issueType = $function($moduleActualPath,$moduleName,$issues);
 	if($issues == "")
-		return finalizeInstallation($uploadId);
+		return finalizeInstallation($uploadId,$type);
 	$issues ="
 	<table name='issues_table'>
 	<tr><th>S.No.</th><th>Issue Details</th><th>Issue Type</th><th>Ignore ?</th></tr>
@@ -298,7 +364,7 @@ function installModule($uploadId) {
 	return $issues;
 }
 
-function checkForIssues($modulePath,$moduleName,&$issues) {
+function checkForModuleIssues($modulePath,$moduleName,&$issues) {
 	$id = 1;
 	$i = 0;
 	$j = 0;
