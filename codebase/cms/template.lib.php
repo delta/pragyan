@@ -49,7 +49,7 @@ function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$B
 	include ($TEMPLATECODEPATH."/index.php");
 }
 
-function actualPath($templatePath) {
+function actualTemplatePath($templatePath) {
 	$templateActualPath = $templatePath;
 	$dirHandle = opendir($templatePath);
 	$files = '';
@@ -63,6 +63,10 @@ function actualPath($templatePath) {
 		}
 	}
 	return NULL;
+}
+
+function getTemplateName($actualPath) {
+	return name($actualPath,".");
 }
 
 function installTemplate($str) {
@@ -217,7 +221,7 @@ function addfatalissue(&$issues,$str,$id)
 }
 
 
-function reportIssues($templatePath,&$issues) {
+function checkForTemplateIssues($templatePath,$templateName,&$issues) {
 	$content = file_get_contents($templatePath . "index.php");
 	$reqd = array("\$CONTENT","\$ACTIONBARMODULE","\$ACTIONBARPAGE","\$SITEDESCRIPTION","\$SITEKEYWORDS","\$FOOTER","\$ERRORSTRING","\$WARNINGSTRING","\$INFOSTRING");
 	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$DEBUGINFO","\$MENUBAR","\$INHERITEDINFO",);
@@ -274,6 +278,10 @@ function handleTemplateMgmt()
 	global $sourceFolder;
 	if(isset($_POST['btn_install']))
 	{
+		$uploadId = processUploaded("Template");
+		if($uploadId != -1)
+			return installModule($uploadId,"Template");
+/*
 		if(!file_exists($sourceFolder . "/uploads/templates/"))
 			mkdir($sourceFolder . "/uploads/templates/");
 		$str = $sourceFolder ."/uploads/templates/".$_FILES['file']['name'];
@@ -303,7 +311,7 @@ function handleTemplateMgmt()
 				break;
 			default:
 				return $return;
-		}
+		}*/
 		
 	}
 	else if(isset($_POST['btn_uninstall']))		
@@ -325,6 +333,11 @@ function handleTemplateMgmt()
 		displayerror("Template uninstallation failed!");
 		return "";
 	} 
+	/*
+	this finalize and cancel subsubactions are vulnerabilities, any one can vary $_POST['path'] and make cms to delete itself.
+	so template installation is also merged with module and widget installation,
+	but some extra features specific to template installation(ie ignoring missing template variables and changing template name)
+	are missing in that installation, these will remain commented for reference till those features are implemented the other way
 	else if(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'finalize') 
 	{		
 	
@@ -375,7 +388,7 @@ RET;
 		delDir(escape($_POST['path']));
 		unlink(escape($_POST['file']));
 		return "";
-	}
+	}*/
 	
 }
 function templateManagementForm()
