@@ -33,6 +33,7 @@ if(!defined('__PRAGYAN_CMS'))
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
+    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.debounce.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
     <script language="JavaScript">
@@ -107,11 +108,13 @@ if(!defined('__PRAGYAN_CMS'))
 					<div id="right3" class="cont">
 					
 						<h3>Links</h3>
-						<div class="link"><a href="http://www.pragyan.org/11/home/making_of_pragyan_wheel">Video : Making of the Pragyan Wheel</a></div>
-						<div class="link"><a href="http://www.pragyan.org/blog">Pragyan Blog</a></div>
-						<div class="link"><a href="http://www.youtube.com/user/nittpragyan">Pragyan's Youtube Channel</a></div>
-						<div class="link"><a href="http://www.pragyan.org/10">Pragyan 2010</a></div>
-						<div class="link"><a href="http://www.pragyan.org/09">Pragyan 2009</a></div>
+						<a href="http://www.pragyan.org/11/home/making_of_pragyan_wheel">
+						<div class="link">Video : Making of the Pragyan Wheel</div></a>
+						<a href="http://www.pragyan.org/blog"><div class="link">Pragyan Blog</div></a>
+						<a href="http://www.youtube.com/user/nittpragyan"><div class="link">Pragyan's Youtube Channel
+						</div></a>
+						<a href="http://www.pragyan.org/10"><div class="link">Pragyan 2010</div></a>
+						<a href="http://www.pragyan.org/09"><div class="link">Pragyan 2009</div></a>
 					</div>
 					
 				</div>
