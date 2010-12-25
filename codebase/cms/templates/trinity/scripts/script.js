@@ -2,7 +2,7 @@
  * @author Boopathi
  * @description Adding an extra behaviour to the native Javascript function
  * @usage function(){}.debounce()
- **/
+ 
 Function.prototype.debounce = function(threshold, execAsap) {
 	var func = this, timeout;
 	return function debounced(){
@@ -19,24 +19,25 @@ Function.prototype.debounce = function(threshold, execAsap) {
 		timeout = setTimeout(delayed, threshold || 100);
 	}
 }
+ **/
 $(function() {
 	/*
 	 * Hover Function for Menu
 	 */
-	$("ul.topnav li").hover(function(e){
+	$("ul.topnav li").hover(function(){
 	 	$(this).children("ul.subnav").fadeIn();
-	}.debounce(250), function() {
-		$(this).children("ul.subnav").css({display: 'none'});
-	});
-	$("ul.topnav li").bind({
-		mouseenter: function(){
-			$(this).animate({left: "+=2"}, 100);
-		},
-		mouseleave: function(){
-			$(this).animate({left: "-=2"}, 250);
-		}
+	},function() {
+		$(this).find("ul.subnav").css({display: 'none'});
 	});
 	
+	$("ul.topnav li").bind({
+		mouseenter: function() {
+			$(this).animate({left: "+=2"}, 50);
+		},
+		mouseleave: function() {
+			$(this).animate({left: "-=2"}, 50);
+		}
+	});
 	///Write in StatusBar - "To"
 	$("a").bind({
 		mouseenter: function(){
@@ -112,12 +113,13 @@ $(function() {
 	 */
 
         $('#openidLogin').bind("click",function(e){
+        				$("#hc_loginform").animate({width: 500});
                 $("#openid_form *").fadeIn(100,function(){
                         $("hc_loginform fieldset").fadeOut();
-		    });
+		    				});
                 $("#pragyan_loginform *").fadeOut(100,function(){
                         $("hc_loginform fieldset").fadeOut();
-		    });
+		    				});
 
                 e.preventDefault();
                 return false;
@@ -126,10 +128,10 @@ $(function() {
         $('#pragyanLogin').bind("click",function(e){
                 $("#pragyan_loginform *").fadeIn(100,function(){
                         $("hc_loginform fieldset").fadeOut();
-		    });
+		    				});
                 $("#openid_form *").fadeOut(100,function(){
                         $("hc_loginform fieldset").fadeOut();
-		    });
+		    				});
 
                 e.preventDefault();
                 return false;

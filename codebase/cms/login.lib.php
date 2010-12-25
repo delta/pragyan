@@ -498,7 +498,7 @@ OPENIDLOGIN;
 					<form method="POST" class="registrationform" name="user_loginform" id="pragyan_loginform" onsubmit="return checkLoginForm(this);" action="./+login" autocomplete="off">
 						<fieldset>
 						<legend>Login</legend>
-							<table>
+							<table cellspacing=0 cellpadding=0>
 								<tr>
 									<td><label for="user_email"  class="labelrequired">Email</label></td>
 									<td><input type="text" name="user_email" id="user_email" class="required" onchange="if(this.length!=0) return checkEmail(this);"/><br /></td>
