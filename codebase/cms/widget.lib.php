@@ -505,6 +505,64 @@ function getEnabledWidgets($pageId)
 	return $return;
 }
 
+// To be modified for widget
+function checkForWidgetIssues($modulePath,$moduleName,&$issues) {
+	$id = 1;
+	$i = 0;
+	$j = 0;
+/*	if(!file_exists($modulePath . "moduleTables.txt")) {
+		addFatalIssue($issues,"Module Info file is missing",$id++);
+		$i = 1;
+	}
+	if(!file_exists($modulePath . $moduleName . ".lib.php")) {
+		addFatalIssue($issues,"The module file is corrupt, Please download a fresh copy of the module",$id++);
+		$i = 1;
+	} else {
+		$content = file_get_contents($modulePath . $moduleName . ".lib.php");
+		$reqd = array("class ".$moduleName." implements module","public function getHtml","public function createModule","public function deleteModule","public function copyModule");
+		foreach($reqd as $var)
+			switch(mycount($content,$var)) {
+				case 0:
+					addFatalIssue($issues,"$var is missing",$id);
+					$i = 1;
+					$id++;
+					break;
+				case 1:
+					break;
+				default:
+					addFatalIssue($issues,"$var is more than once",$id);
+					$i = 1;
+					$id++;
+			}
+	}
+	if(!file_exists($modulePath . $moduleName . ".sql")) {
+		addIssue($issue,"No sql file found",$id++);
+		$j = 1;
+	}
+*/
+	return array($i,$j);
+}
+
+function actualWidgetPath($modulePath) {
+	$moduleActualPath = $modulePath;
+	$dirHandle = opendir($modulePath);
+	while($file = readdir($dirHandle)) {
+		if($file=="widget.class.php")
+			return $modulePath;
+		elseif(is_dir($modulePath . $file) && $file != '.' && $file != '..') {
+			$return = actualWidgetPath($modulePath . $file . "/");
+			if($return != NULL)
+				return $return;
+		}
+	}
+	return NULL;
+}
+
+function getWidgetName($actualPath) {
+	$actualPath = substr($actualPath,0,-1);
+	return substr(strrchr($actualPath,"/"),1);
+}
+
 /**
  * Handles the global widget administration interface.
  * @param $pageId Id of the current page
@@ -512,13 +570,47 @@ function getEnabledWidgets($pageId)
  */
 function handleWidgetAdmin($pageId)
 {
-	global $ICONS,$urlRequestRoot,$cmsFolder,$moduleFolder;
+	global $ICONS,$urlRequestRoot,$cmsFolder,$moduleFolder,$sourceFolder,$widgetFolder;
 	$html = "";
+	if(isset($_GET['subsubaction'])) {
+		if($_GET['subsubaction']=="installwidget") {
+			require_once("$sourceFolder/module.lib.php");
+			$uploadId = processUploaded("Widget");
+			if($uploadId != -1) {
+				$ret = installModule($uploadId,"Widget");
+				if($ret != "")
+					return $ret;
+			}
+		} 
+	}
+	if(isset($_GET["deletewidget"])) {
+		$widgetId = escape($_GET['deletewidget']);
+		if(is_numeric($widgetId)) {
+			$widget = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "widgetsinfo` WHERE `widget_id` = '{$widgetId}'"));
+			$error = false;
+			$deletelist = array("widgets","widgetsinfo","widgetsconfiginfo","widgetsconfig","widgetsdata");
+			$rowCount = 0;
+			foreach($deletelist as $deleteitem) {
+				$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . $deleteitem . "` WHERE `widget_id` = '{$widgetId}'";
+				mysql_query($query) or die($query . "<br><br>" . mysql_error());
+				
+				$ans = mysql_fetch_row(mysql_query("SELECT COUNT(*) FROM `" . MYSQL_DATABASE_PREFIX . $deleteitem . "` WHERE `widget_id` = '{$widgetId}'"));
+				$rowCount += $ans[0];
+			}
+			if(is_dir("$sourceFolder/$widgetFolder/{$widget['widget_foldername']}"))
+				if(!delDir("$sourceFolder/$widgetFolder/{$widget['widget_foldername']}"))
+					$error = true;
+			if($rowCount!=0||$error)
+				displayerror("There was some error in deleting widget {$widget['widget_name']}");
+			else
+				displayinfo("{$widget['widget_name']} successfully deleted.");
+		}
+	}
+
 	
 	if(isset($_GET['widgetid']))
 	{
-		$widgetid=escape($_GET['widgetid']);
-		
+		$widgetid=escape($_GET['widgetid']);		
 		
 		$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetid";
 		$res=mysql_query($query);
@@ -606,13 +698,19 @@ function handleWidgetAdmin($pageId)
 	
 	$html .= "<fieldset><legend>{$ICONS['Widgets']['small']}Available Widgets</legend>";
 	
-	$html .= "<table width=100%><tr><th colspan=3>Available Widgets<br/><i>Mouse over for description and Click for configuration</i></th></tr>
-	<tr><th>Name</th><th>Version</th><th>Author</th></tr>";
+	$html .= "<table width=100%><tr><th colspan=4>Available Widgets<br/><i>Mouse over for description and Click for configuration</i></th></tr>
+	<tr><th>Name</th><th>Version</th><th>Author</th><th>Actions</th></tr>";
 	foreach( $widgetsarr as $widget )
 	{
-		$html.="<tr><td><a title='".$widget['description']."' href='./+admin&subaction=widgets&widgetid=".$widget['id']."'>".$widget['name']."</a></td><td>{$widget['version']}</td><td>{$widget['author']}</td></tr>";
+		$html.="<tr><td><a title='".$widget['description']."' href='./+admin&subaction=widgets&widgetid=".$widget['id']."'>".$widget['name']."</a></td><td>{$widget['version']}</td><td>{$widget['author']}</td><td><a href='./+admin&subaction=widgets&widgetid={$widget['id']}'>{$ICONS['Edit']['small']}</a><a href='./+admin&subaction=widgets&deletewidget={$widget['id']}'>{$ICONS['Delete']['small']}</a></td></tr>";
 	}
-	$html.="</table></fieldset>";
+	$html .= <<<HTML
+<tr><td>Install new widget:</td><td colspan=3>
+<form method='POST' action='./+admin&subaction=widgets&subsubaction=installwidget' enctype="multipart/form-data">
+<input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload'>
+</form>
+</td></tr></table></fieldset>
+HTML;
 	return $html;
 }
 /**
