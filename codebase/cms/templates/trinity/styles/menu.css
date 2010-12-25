@@ -1,7 +1,7 @@
 /* TOP MENU  - --- HEADER MENU */
 #quicklinks{
 	border: 0;
-	padding: 3px 5px;
+	padding: 1px 5px;
 	margin: 0;
 	background: url(../images/quicklinks.jpg) repeat-x;
 	color: white;
@@ -88,7 +88,7 @@
  */
 #hc_loginform {
 	position: absolute;
-	background: #EFEFEF;
+	background: #EEE;
 	color: black;
 	z-index: 1000;
 	right: 0px;
@@ -97,7 +97,7 @@
 	padding: 5px;
 	border: solid 1px white;
 	display:none;
-	width: 500px;
+	width: 250px;
 	font-size: 13px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -120,16 +120,21 @@
 	padding: 3px;
 	font-size: smaller;
 }
+#hc_loginform tr{
+	background: #EEE;
+	border: 0;
+}
 #hc_loginform input[type="text"],#hc_loginform input[type="password"]{
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	border: solid 1px #555;
-	padding: 3px;
+	border: 0;
 	position: relative;
-	top: -3px;
+	top: -4px;
 	color: black;
 	background: #EEE;
+	font-size: 14px;
+	font-family: verdana;
 }
 #hc_loginform #openid_choice > *{
 	display: none;
@@ -143,15 +148,15 @@ display:none;
 }
 #hc_profile{
 	position: absolute;
-	background: #FEFEE0;
+	background: rgba(200,200,200,0.8);
 	color: black;
-	width: 200px;
+	width: 150px;
 	z-index: 1000;
 	right: 2px;
 	top: 0px;
 	text-align: center;
 	margin-top: 26px;
-	padding: 10px 4px;
+	padding: 10px 20px;
 	border: solid 1px #AAA;
 	display:none;
 	border-radius: 3px;
@@ -165,7 +170,8 @@ display:none;
 }
 #hc_profile a > div {
 	width: 100%;
-	background: #FFE;
+	margin: auto;
+	background: rgba(200,200,200,0.8);
 	margin: 1px;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -207,19 +213,22 @@ display:none;
 	position: relative;
 }
 .menucontainer ul.topnav > li {
-	width: 100%;
-	background: url(../images/rt.png);
-	height: 30px;
-	padding-top: 5px;
-	padding-bottom : 5px;
+	
+	background: url(../images/rt.png) ;
+	height: 45px;
+	padding : 0px;
 	position: relative;
 	left: -2px;
 }
 .menucontainer ul.topnav > li > a div{
+	padding: 6px;
 	padding-left: 15px;
+	font-size: 13px;
+	font-family: Verdana;
+	color: white;
 }
 .menucontainer ul.topnav > li:hover {
-	background: url(../images/menu.png)
+	background: url(../images/menu.png) 0 6px;
 }
 .menucontainer ul.subnav {
 	background: rgba(25,25,25,0.9);
@@ -243,23 +252,35 @@ display:none;
 	border: solid 1px transparent;
 }
 .menucontainer ul.subnav > li > a > div{
-	padding: 3px 10px;
 	color: #AAA;
+	padding: 3px;
 }
 .menucontainer ul.subnav > li:hover > a > div{
-	background : rgba(75,75,75,0.5);
+	background : rgba(36,115,189,0.1);
 	color: #FFF;
 }
+.menucontainer ul.subnav.depth2 > li > a > div {
+	border-top: solid transparent;
+	padding: 10px 10px;
+}
+.menucontainer ul.subnav.depth2 > li:hover > a > div {
+	border-color: #247ebd;
+} 
 .menucontainer li:hover > ul.subnav[class="depth2"]{
 	display:block;
 }
 .menucontainer ul.depth2 > li > a > div{
 	width: 150px;
-	height: 100px;
 }
 .menucontainer ul.depth3 {
 	position: absolute;
-	margin-top: -30px;
+	margin-top: -2px;
+	width: 10px;
+	border-left: solid #84cc3c;
+}
+.menucontainer ul.depth3 > li {
+	width: 150px;
+	background: rgba(10,10,10,1);
 }
 .menucontainer ul.depth4, .menucontainer ul.depth4 ul.subnav{
 	display: none;
