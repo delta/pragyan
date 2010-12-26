@@ -104,7 +104,7 @@ if(!defined('__PRAGYAN_CMS'))
 					<div id="right2" class="cont">
 					<h4>ETA Pragyan 2011</h4>				
 					</div>
-					
+					<?php if(isset($WIDGETS[3])) echo $WIDGETS[3]; ?>
 					<div id="right3" class="cont">
 					
 						<h3>Links</h3>
@@ -116,6 +116,7 @@ if(!defined('__PRAGYAN_CMS'))
 						<a href="http://www.pragyan.org/10"><div class="link">Pragyan 2010</div></a>
 						<a href="http://www.pragyan.org/09"><div class="link">Pragyan 2009</div></a>
 					</div>
+					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 					
 				</div>
 				<div id="centerContent" class="cont">

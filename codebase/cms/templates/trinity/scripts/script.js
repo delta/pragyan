@@ -139,7 +139,7 @@ $(function() {
 	
 	
 	///Expand on mouse click in registration field
-	
+
 	$("form.cms-registrationform input[type=text]").focus(focusField).blur(blurField);
 	$("form.cms-registrationform input[type=password]").focus(focusField).blur(blurField);
 	
