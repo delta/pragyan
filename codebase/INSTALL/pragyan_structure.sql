@@ -77,7 +77,6 @@ CREATE TABLE IF NOT EXISTS `article_draft` (
 
 CREATE TABLE IF NOT EXISTS `book_desc` (
   `page_modulecomponentid` int(11) NOT NULL,
-  `page_title` varchar(128) NOT NULL,
   `initial` int(11) NOT NULL,
   `list` varchar(256) NOT NULL,
   `menu_hide` varchar(500) NOT NULL,

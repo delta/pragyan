@@ -10,8 +10,23 @@ if(!defined('__PRAGYAN_CMS'))
  * @package pragyan
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
- * For more details, see README
- * UNDER CONSTRUCTION
+ * @author Jack<chakradarraju@gmail.com>
+ *
+ * The purpose of book module is to contain its subpages and provide an client-side interface to switch between them.
+ * It helps avoiding page reload for user, reduces number of page request for server,
+ * and most important of all we can use javascript libraries give different effects for page switching.
+ * Book module doesnt stores any content on itself,
+ * it only stores information about which subpages are to be considered as pages inside book and
+ * which subpages are to be shown as child pages on global menubar.
+ * 
+ * Book module uses one table to stores its data:
+ * book_desc:
+ *     page_modulecomponentid - unique id for each book instance
+ *     initial - default page of book
+ *     list - list of page_id s to be considered as page of book
+ *     menu_hide - list of page_id s to be hidden from global menu
+ * 
+ * If the client browser is not capable of handling javascript workaround has been made using css
  */
 
 class book implements module {
@@ -19,26 +34,36 @@ class book implements module {
 	private $moduleComponentId;
 	private $action;
 	private $pageId;
-
+	
+	/**
+	 * function getHtml:
+	 * Gateway through which CMS interacts with module
+	 * This function will be called from getContent function of cms/content.lib.php
+	 */
 	public function getHtml($gotuid, $gotmoduleComponentId, $gotaction) {
 		$this->userId = $gotuid;
 		$this->moduleComponentId = $gotmoduleComponentId;
 		$this->action = $gotaction;
 		$this->pageId = getPageIdFromModuleComponentId("book",$gotmoduleComponentId);
 		$this->bookProps = mysql_fetch_assoc(mysql_query("SELECT * FROM `book_desc` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
-		$this->bookProps['list'] = explode(",",$this->bookProps['list']);
+		$page_title = mysql_fetch_row(mysql_query("SELECT `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$this->pageId}'"));
+		$this->bookProps['page_title'] = $page_title[0];
 		$this->hideInMenu();
 		if ($this->action == "edit")
 			return $this->actionEdit();
 		return $this->actionView();
 	}
 	
+	/**
+	 * function actionView:
+	 * @returns HTML View of the Book according to the properties set
+	 */
 	public function actionView() {
 		global $INFOSTRING, $WARNINGSTRING, $ERRORSTRING;
 
-		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_modulecomponentid`, `page_name` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` != ' . $this->pageId . ' ORDER BY `page_menurank`';
+		$childrenQuery = 'SELECT `page_title`, `page_id`, `page_module`, `page_modulecomponentid`, `page_name` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` IN (' . $this->bookProps['list'] . ') ORDER BY `page_menurank`';
 		$result = mysql_query($childrenQuery);
-		$ret = $this->tabStyle() . $this->tabScript();
+		$ret = $this->tabScript();
 		$ret .=<<<RET
 <h2>{$this->bookProps['page_title']}</h2>
 <div class='tabEnvelope'>
@@ -52,8 +77,6 @@ RET;
 		$backup_warning = $WARNINGSTRING;
 		$backup_error = $ERRORSTRING;
 		while($row = mysql_fetch_assoc($result)) {
-			if(!in_array($row['page_id'],$this->bookProps['list']))
-				continue;
 			if(getPermissions($this->userId, $row['page_id'], "view")) {
 				$INFOSTRING = "";
 				$WARNINGSTRING = "";
@@ -79,6 +102,10 @@ RET;
 		return $ret;
 	}
 	
+	/**
+	 * function actionEdit:
+	 * @returns HTML Edit interface for book module's properties
+	 */
 	public function actionEdit() {
 		if(isset($_POST['page_title'])) {
 			$tList = "";
@@ -95,14 +122,16 @@ RET;
 			$tList = rtrim($tList,",");
 			$hList = rtrim($hList,",");
 			if($found) {
-				$query = "UPDATE `book_desc` SET `page_title` = '" . escape($_POST['page_title']) . "', `initial` = '" . escape($_POST['optInitial']) . "', `list` = '{$tList}', `menu_hide` = '{$hList}' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
-				mysql_query($query) or die(mysql_error() . ": book.lib L:5");
-				displayinfo("Book Properties saved properly");
 				$this->bookProps['page_title'] = escape($_POST['page_title']);
 				$this->bookProps['initial'] = escape($_POST['optInitial']);
-				$this->bookProps['list'] = explode(",",$tList);
+				$this->bookProps['list'] = $tList;
 				$this->bookProps['menu_hide'] = $hList;
 				$this->hideInMenu();
+				$query = "UPDATE `book_desc` SET `initial` = '" . escape($_POST['optInitial']) . "', `list` = '{$tList}', `menu_hide` = '{$hList}' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
+				mysql_query($query) or die(mysql_error() . ": book.lib.php L:131");
+				$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_title` = '" . $this->bookProps['page_title'] . "' WHERE `page_id` = '{$this->pageId}'";
+				mysql_query($query) or die(mysql_error() . ": book.lib.php L:133");
+				displayinfo("Book Properties saved properly");
 			} else
 				displayerror("You've choosen a hidden sub-page as default which is not possible, so the settings are not saved.");
 		}
@@ -110,6 +139,7 @@ RET;
 		$result = mysql_query($childrenQuery);
 		$table = "";
 		$hide_list = explode(",",$this->bookProps['menu_hide']);
+		$show_list = explode(",",$this->bookProps['list']);
 		if(mysql_num_rows($result)) {
 			$table = "<table><thead><td>Initial</td><td>Show in Tab</td><td>Hide in Menu</td><td>Page</td></thead>";
 			while($row = mysql_fetch_assoc($result)) {
@@ -118,7 +148,7 @@ RET;
 					$radio = "checked";
 				$checkbox = "";
 				$hide_checkbox = "";
-				if(in_array($row['page_id'],$this->bookProps['list']))
+				if(in_array($row['page_id'],$show_list))
 					$checkbox = "checked=checked ";
 				if(in_array($row['page_id'],$hide_list))
 					$hide_checkbox = "checked=checked ";
@@ -130,7 +160,7 @@ RET;
 			}
 			$table .= "</table>";
 		} else {
-			$table = "No child page available";
+			$table = "No child page available<br />";
 		}
 		$ret =<<<RET
 <form action='./+edit' method=POST>
@@ -141,50 +171,56 @@ Title: <input type=text name="page_title" value="{$this->bookProps['page_title']
 RET;
 		return $ret;
 	}
-	
+
+	/**
+	 * function createModule:
+	 * safedit module pages needs no initialization.
+	 * will be called when safedit module instance is created.
+	 */	
 	public function createModule(&$moduleComponentId) {
 		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `book_desc` ";
 		$result = mysql_query($query) or die(mysql_error() . "book.lib L:1");
 		$row = mysql_fetch_assoc($result);
 		$compId = $row['MAX'] + 1;
 		
-		$query = "INSERT INTO `book_desc` (`page_modulecomponentid` ,`page_title`, `initial`, `list`,`menu_hide`)VALUES ('$compId', '" . escape($_POST['childpagename']) . "','0','','0')";
-		$result = mysql_query($query) or die(mysql_error()."book.lib L:76");
+		$query = "INSERT INTO `book_desc` (`page_modulecomponentid` , `initial`, `list`,`menu_hide`)VALUES ('$compId','','','')";
+		$result = mysql_query($query) or die(mysql_error()."book.lib L:187");
 		if (mysql_affected_rows()) {
 			$moduleComponentId = $compId;
 			return true;
 		} else
 			return false;
 	}
-
+	
+	/**
+	 * function deleteModule:
+	 * delete all book module data corresponding to the passed page_modulecomponentid
+	 * will be called when safedit module instance is getting deleted.
+	 */
 	public function deleteModule($moduleComponentId) {
-		$result = mysql_query("DELETE FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
+		$result = mysql_query("DELETE FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'") or die(mysql_error());
 		if(mysql_affected_rows())
 			return true;
 		else
 			return false;
 	}
 	
+	/**
+	 * function copyModule:
+	 * duplicates book with a new moduleComponentId
+	 */
 	public function copyModule($moduleComponentId) {
 		$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"));
 		$max = mysql_fetch_row(mysql_query("SELECT MAX(`page_modulecomponentid`) AS 'max' FROM `book_desc`"));
 		$compId = $max[0] + 1;
-		$query = mysql_query("INSERT INTO `book_desc`(`page_modulecomponentid` ,`page_title`, `initial`, `list`)VALUES ('$compId', '{$result['page_title']}','','')");
+		$query = mysql_query("INSERT INTO `book_desc`(`page_modulecomponentid` , `initial`, `list`)VALUES ('$compId','','')");
+		return $compId;
 	}
 	
-	public function tabStyle() {
-		global $tabStyleDone;
-		$ret = "";
-		if(!$tabStyleDone)
-			$ret =<<<RET
-<style>
-
-</style>
-RET;
-		$tabStyleDone = true;
-		return $ret;
-	}
-	
+	/**
+	 * function tabScript:
+	 * @returns Javascript which takes care of client-side page switching
+	 */
 	public function tabScript() {
 		global $urlRequestRoot, $cmsFolder, $tabScriptDone;
 		$ret = "";
@@ -192,9 +228,11 @@ RET;
 			$ret =<<<RET
 
 <script type="text/javascript">
+<!--
 var delay = 500;
 var initialInfo = new Object();
 $(document).ready(function() {
+	$('.active').removeClass('active');
 	activate({$this->pageId});
 });
 $(document).ready(function() {
@@ -226,11 +264,20 @@ function activate(id) {
 RET;
 		else
 			$ret = "<script type=\"text/javascript\">";
-		$ret .= "initialInfo[{$this->pageId}] = {$this->bookProps['initial']};</script>";
+		$ret .=<<<RET
+initialInfo[{$this->pageId}] = {$this->bookProps['initial']};
+//-->
+</script>
+RET;
 		$tabScriptDone = true;
 		return $ret;
 	}
 	
+	/**
+	 * function isPresent:
+	 * recursive function used to find if a page identified by $pageId is inside book identified by $parentId
+	 * $parentId is page_id of the book(where we're searching) and not its page_moduleComponentId
+	 */
 	public function isPresent($parentId,$pageId) {
 		$moduleComponentId = getModuleComponentIdFromPageId($parentId,'book');
 		$list = mysql_fetch_assoc(mysql_query("SELECT `list` FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"));
@@ -243,6 +290,11 @@ RET;
 		}
 		return false;
 	}
+	
+	/**
+	 * function hideInMenu:
+	 * This function hides the specified child pages from global menu
+	 */
 	private function hideInMenu() {
 		$cond = "";
 		if($this->bookProps['menu_hide'] != "") {
@@ -252,9 +304,4 @@ RET;
 		mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 1 WHERE `page_parentid` = '{$this->pageId}'{$cond}");
 	}
 }
-
- /**
-  * -Jack
-  */
-
 ?>
