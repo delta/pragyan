@@ -78,12 +78,6 @@ class slider extends widgetFramework
 			'global' => 0
 			),
 			array (
-			'name' => 'noinput2',
-			'type' => 'noinput',
-			'displaytext' => '<b>Below is the list of advanced options for Advance Slider. If you are not using it, please leave them as it is.</b>',
-			'global' => 0
-			),
-			array (
 			'name' => 'effect',
 			'type' => 'select',
 			'options' => 'random|swirl|rain|straight',
@@ -94,9 +88,10 @@ class slider extends widgetFramework
 			array (
 			'name' => 'noinput1',
 			'type' => 'noinput',
-			'displaytext' => '<b>Below is the list of advanced options. If you don\'t know how to configure them, please leave them as it is.</b>',
+			'displaytext' => '<b>Below is the list of advanced options for Advance Slider. If you are not using it, please leave them as it is.</b>',
 			'global' => 0
 			),
+			
 			array (
 			'name' => 'makeunique',
 			'type' => 'bool',

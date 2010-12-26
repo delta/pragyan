@@ -237,17 +237,21 @@ $(document).ready(function() {
 });
 $(document).ready(function() {
 	$('.tabElement').find("a").click(function() {
-		var selector = '#tab' + $(this).attr('id');
+		var selid=$(this).attr('id');
+		var selector = '#tab' + selid;
 		var page = selector.substr(1,selector.indexOf('_')-1);
 		var activeClasses = $('.active');
+		
 		for(i=0;i<activeClasses.length;i++) {
 			var thisid = activeClasses.get(i).id; 
 			if(page == thisid.substr(0,page.length)) {
 				$('#' + thisid + ' .active').removeClass('active');
 				$('#' + thisid).removeClass('active');
+				$('#' + thisid.substr(3,thisid.length) + ' > span').removeClass('tabitemactive');
 				$('#' + thisid).fadeOut(delay, function() {
 			
 					$(selector).fadeIn(delay).addClass('active');
+					$('#'+selector.substr(4,selector.length)+' > span').addClass('tabitemactive');
 					activate(selector.substr(selector.indexOf('_')+1));
 				});
 			}
