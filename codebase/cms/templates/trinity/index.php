@@ -152,7 +152,7 @@ if(!defined('__PRAGYAN_CMS'))
 							<?php echo $INFOSTRING; ?>
 							<?php echo $WARNINGSTRING;?>
 							<?php echo $ERRORSTRING; ?>
-
+<?php if(isset($WIDGETS[2])) echo $WIDGETS[2]; ?>
 							<?php echo $CONTENT; ?>
 						</div>
 						<div id="statusbar">
