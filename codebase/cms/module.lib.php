@@ -164,7 +164,7 @@ function finalizeInstallation($uploadId,$type) {
  	} else if($type=="Template") {
  		$destination = "$sourceFolder/$templateFolder/$moduleName/";
  		if(!file_exists($destination))
- 			mkdir($destination)
+ 			mkdir($destination);
  		rename($moduleActualPath,$destination);
  	}
 	
