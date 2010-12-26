@@ -88,20 +88,20 @@
  */
 #hc_loginform {
 	position: absolute;
-	background: #EEE;
+	background: rgba(200,200,200,1);
 	color: black;
 	z-index: 1000;
-	right: 0px;
+	right: 2px;
 	top: 0px;
 	margin-top: 26px;
 	padding: 5px;
-	border: solid 1px white;
+	border: solid 1px #AAA;
 	display:none;
-	width: 250px;
 	font-size: 13px;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	line-height: 25px;
 }
 #hc_loginform fieldset {
 	border: 0;
@@ -110,6 +110,7 @@
 }
 #hc_loginform fieldset legend{
 	display: none;
+	visibility : hidden;
 }
 #hc_loginform table,#hc_loginform tr, #hc_loginform td{
 	border:0;
@@ -121,7 +122,7 @@
 	font-size: smaller;
 }
 #hc_loginform tr{
-	background: #EEE;
+	background: rgba(200,200,200,1);
 	border: 0;
 }
 #hc_loginform input[type="text"],#hc_loginform input[type="password"]{
@@ -132,7 +133,7 @@
 	position: relative;
 	top: -4px;
 	color: black;
-	background: #EEE;
+	background: white;
 	font-size: 14px;
 	font-family: verdana;
 }
@@ -238,7 +239,7 @@ display:none;
 .menucontainer ul.topnav > li > ul.subnav {
 	margin: 0 0 0 180px;
 	top: 0;
-	width: 707px;
+	width: 750px;
 	padding: 10px;
 	background: rgba(2,2,2,0.95);
 	border-radius: 10px;
@@ -253,7 +254,7 @@ display:none;
 }
 .menucontainer ul.subnav > li > a > div{
 	color: #AAA;
-	padding: 3px;
+	padding: 8px;
 }
 .menucontainer ul.subnav > li:hover > a > div{
 	background : rgba(36,115,189,0.1);
@@ -261,6 +262,7 @@ display:none;
 }
 .menucontainer ul.subnav.depth2 > li > a > div {
 	border-top: solid transparent;
+	border-left: solid transparent;
 	padding: 10px 10px;
 }
 .menucontainer ul.subnav.depth2 > li:hover > a > div {
@@ -279,8 +281,12 @@ display:none;
 	border-left: solid #84cc3c;
 }
 .menucontainer ul.depth3 > li {
-	width: 150px;
+
 	background: rgba(10,10,10,1);
+}
+.menucontainer ul.depth3 > li > a > div {
+	width: 150px;
+
 }
 .menucontainer ul.depth4, .menucontainer ul.depth4 ul.subnav{
 	display: none;
@@ -299,6 +305,9 @@ display:none;
 	border-radius: 3px;
 	float:left;
 
+}
+.tabitemactive{
+	background: url(../images/tabsel.png) !important;
 }
 #tabList{
 	height: 50px;

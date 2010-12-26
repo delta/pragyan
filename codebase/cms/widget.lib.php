@@ -136,7 +136,9 @@ function populateWidgetVariables($pageId)
 		
 		if(!isset($widgetsenmap[$enwidget['id']]) || $widgetsenmap[$enwidget['id']]==false)
 		{
-			$WIDGETS[(int)$enwidget['location']] .= $widget->getCommonHTML();
+			if(empty($WIDGETS[(int)$enwidget['location']]))
+			  $WIDGETS[(int)$enwidget['location']] = $widget->getCommonHTML();
+			else $WIDGETS[(int)$enwidget['location']] .= $widget->getCommonHTML();
 			$widgetsenmap[$enwidget['id']]=true;
 		}
 		

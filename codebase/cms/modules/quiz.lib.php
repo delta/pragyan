@@ -32,8 +32,6 @@ class quiz implements module {
 				return $this->actionEdit();
 			case 'correct':
 				return $this->actionCorrect();
-			case 'viewresults':
-				return $this->actionViewResults();
 		}
 	}
 
@@ -244,8 +242,6 @@ class quiz implements module {
 		return getQuizUserListHtml($this->moduleComponentId);
 	}
 
-	public function actionViewResults() {
-	}
 
 	public function createModule(&$moduleComponentId) {
 		$insertQuery = "INSERT INTO `quiz_descriptions`(`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" .

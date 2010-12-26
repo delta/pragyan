@@ -250,6 +250,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	$toggleColumns = "<fieldset><legend>Select Columns</legend><table><tr>";
 	$tableJqueryStuff = "";
 	$c=0;
+	$d=0;
 	if($showEditButtons) {
 		$tableCaptions .= '<th>Actions</th>';
 		$tableJqueryStuff = "null,";
@@ -261,13 +262,14 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 		
 		$c=$c+1;
 		$checked="checked";
-		if($columnName=="useremail" || $columnName=="registrationdate" || $columnName=="lastupdated")
+		if(!($columnName=="useremail" || $columnName=="registrationdate" || $columnName=="lastupdated"))
 		{
 			$tableJqueryStuff.="/* $columnTitle */ { \"bVisible\": false },";
 			$checked="";
 		}
 		else $tableJqueryStuff.="null,";
-		if($c-2==($showEditButtons?3:2))
+		
+		if($d++%5==0)
 		 $toggleColumns.="</tr><tr>";
 		$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide($c);' $checked />$columnTitle <br/></td>";
 	}
@@ -309,7 +311,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	global $STARTSCRIPTS;
 	$STARTSCRIPTS.="initSmartTable();";
 	$javascriptBody = <<<JAVASCRIPTBODY
-		$smarttable;
+		$smarttable
 		<script>
 			function fnShowHide( iCol )
 			{
@@ -318,9 +320,6 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 			}
 
 		</script>
-		<link rel="stylesheet" type="text/css" href="$urlRequestRoot/$cmsFolder/$moduleFolder/form/tablesort/sortstyles.css" />
-		<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/form/tablesort/tablesort.js"></script>
-		<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/form/tablesort/paginate.js"></script>
 		<script language="javascript">
 			function gotopage(pagepath,useremail) {
 				if(confirm("Are you sure you want to remove "+useremail+" from this form?"))
