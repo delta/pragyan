@@ -11,7 +11,26 @@ if(!defined('__PRAGYAN_CMS'))
  * @copyright (c) 2010 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * @author Jack<chakradarraju@gmail.com>
- * For more details, see README
+ * 
+ * Safedit module can be used to maintain uniformity among pages even if different people are editing.
+ * It prevents custom formatting in page by striping all html tags from user,
+ * and It provides ways to define absolutely necessary tags like <ul>, <ol>, <img>, <a>
+ * Also it provides editing interface that requires no knowledge about HTML.
+ * 
+ * It stores its contents as sections in database table:
+ * safedit_sections:
+ *     page_modulecomponentid - used to record with safedit page instance this section belongs to
+ *     section_id - unique id to differentiate each sections within each instance of safedit
+ *     section_heading - heading for the section
+ *     section_type - type of section
+ *         Different types of sections are ('para','ulist','olist','picture'):
+ *             para - Nomal section
+ *             ulist - Content are displayed in unordered list(<ul>)
+ *             olist - Content are displayed in ordered list(<ol>)
+ *             picture - Content points to a uploaded picture, which will be displayed
+ *     section_show - used to hide section(if needed)
+ *     section_priority - used for ordering of sections
+ *     section_content - Content of the section (Rendered according to the section type)
  */
 
 class safedit implements module, fileuploadable {
@@ -22,7 +41,7 @@ class safedit implements module, fileuploadable {
 	/**
 	 * function getHtml:
 	 * Gateway through which CMS interacts with module
-	 * will be called from getContent function of cms/content.lib.php
+	 * This function will be called from getContent function of cms/content.lib.php
 	 */
 	public function getHtml($gotuid, $gotmoduleComponentId, $gotaction) {
 		$this->userId = $gotuid;
@@ -89,7 +108,14 @@ class safedit implements module, fileuploadable {
 	 * will be called from $this->getHtml function
 	 */
 	public function actionEdit() {
-		$ret = "";
+		$ret =<<<RET
+<style type="text/css">
+textarea {
+	font-size: 130%;
+	background: white;
+}
+</style>
+RET;
 		global $sourceFolder,$ICONS;
 		require_once($sourceFolder."/upload.lib.php");
 		submitFileUploadForm($this->moduleComponentId,"safedit",$this->userId,UPLOAD_SIZE_LIMIT);
@@ -341,10 +367,4 @@ RET;
 		return $newId;
 	}
 }
-
-/*
- * Todo:
- * Ask boopathi, how to make css of input to match h3
- */
-
 ?>
