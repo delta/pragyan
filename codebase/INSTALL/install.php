@@ -6,6 +6,9 @@
  * For more details, see README
  */
 
+///Very important variable for detecting direct script access to any other .php file
+define('__PRAGYAN_CMS',')$!%^!%#^@');
+
 global $sourceFolder;
 global $scriptPath;
 global $URL_REWRITE;
@@ -16,6 +19,7 @@ $cmsFolder = "../$sourceFolder";
 $templateFolder = "$cmsFolder/templates/crystalx";
 $scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
 $scriptPath = substr($scriptPathWithFolder , 0, strrpos($scriptPathWithFolder , '/'));
+
 
 
 require_once($cmsFolder."/common.lib.php");
