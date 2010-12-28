@@ -14,39 +14,6 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
-function moduleManagementForm() {
-	$modules = getAvailableModules();
-	$modulesList = "<select id='modules'>";
-	foreach($modules as $module)
-		$modulesList .= "<option value='" . $module . "'>" . $module . "</option>";
-	$modulesList .= "</select>";
-	global $ICONS;
-	displaywarning("Module Installation/Uninstallation has the potential to completely bring down the CMS, so Install only modules from trusted source");
-	require_once("template.lib.php");
-	$form=<<<FORM
-	<script type="text/javascript">
-	function delconfirm(obj) {
-		if(confirm("Are you sure want to delete '" + document.getElementById('modules').value + "' module?"))
-		{
-			document.getElementById("file").value="";
-			obj.form.action += "uninstall&delmodule=" + document.getElementById('modules').value;
-			return true;
-		}
-		return false;
-	
-	}
-	</script>
-	<form name='module' method='POST' action='./+admin&subaction=module&subsubaction=' enctype="multipart/form-data">
-	<fieldset>
-	<legend>{$ICONS['Modules Management']['small']}Module Management</legend>
-	Add new Module (select a ZIP file containing module): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
-	<br/><br/>Delete Existing Module: {$modulesList}<input type='submit' name='btn_uninstall' value='Uninstall' onclick='return delconfirm(this);'>
-	</fieldset>
-	</form>
-FORM;
-	return $form;
-}
-
 function processUploaded($type) {
 	global $sourceFolder;
 	if(!file_exists($sourceFolder . "/uploads/{$type}/"))
@@ -121,7 +88,8 @@ function finalizeInstallation($uploadId,$type) {
 		$moduleActualPath = $temp[1];
 		$moduleName = $temp[2];
 	}
-
+	
+//	die("Zipfile: {$zipFile}<br />extratedPath: {$extractedPath}<br />moduleActualPath: {$moduleActualPath}<br />moduleName: {$moduleName}");
 	$issues = "";
 	$function = "checkFor{$type}Issues";
 	$ret = $function($moduleActualPath,$moduleName,$issues);
@@ -234,48 +202,43 @@ function handleModuleManagement() {
 		if($uploadId != -1)
 			return installModule($uploadId,"Module");
 	} else if(isset($_POST['btn_uninstall'])) {
-		if(!isset($_GET['delmodule']) || $_GET['delmodule']=="") return "";
+		if(!isset($_POST['Module']) || $_POST['Module']=="") return "";
 		
-		if($_GET['delmodule']=='article') {
+		if($_POST['Module']=='article') {
 			displayerror("Article module can't be deleted for the home page itself is a article");
 			return "";
 		}
-		$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '" . escape($_GET['delmodule']) . "' LIMIT 10";
+		$toDelete = escape($_POST['Module']);
+		$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '{$toDelete}' LIMIT 10";
 		$result = mysql_query($query) or displayerror(mysql_error());
-		if(mysql_num_rows($result)==0)
-			if(deleteModule(escape($_GET['delmodule']))) {
-				displayinfo("Module ".safe_html($_GET['delmodule'])." uninstalled!");
+		if(mysql_num_rows($result)==0||isset($_POST['confirm']))
+			if(deleteModule($toDelete)) {
+				displayinfo("Module ".safe_html($_POST['Module'])." uninstalled!");
 				return "";
 			} else {
 				displayerror("Module uninstallation failed!");
 				return "";
 			}
 		if(isset($_POST['confirm'])) {
-			$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '" . escape($_GET['delmodule']) . "'";
+			$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '" . $toDelete . "'";
 			mysql_query($query) or displayerror(mysql_error());
-			if(deleteModule(escape($_GET['delmodule']))) {
-				displayinfo("Module ".safe_html($_GET['delmodule'])." uninstalled!");
-				return "";
-			} else {
-				displayerror("Module uninstallation failed!");
-				return "";
-			}
 		}
 		
 		$pageList = "";
 		while($row = mysql_fetch_assoc($result))
 			$pageList .= "/home" . getPagePath($row['page_id']) . "<br>";
 		
-		$modulename = safe_html($_GET['delmodule']);
+		$modulename = safe_html($_POST['Module']);
 		$ret=<<<RET
 <fieldset>
 <legend>{$ICONS['Modules Management']['small']}Module Management</legend>
 Some of the page of type {$modulename} are:<br>
 {$pageList}
 <div class='cms-error'>These pages will be removed and cant be recovered, If you proceed deleting the module.</div>
-<form method=POST action='./+admin&subaction=module&subsubaction=uninstall&delmodule={$modulename}'>
-<input type=submit value='Delete module' name='btn_uninstall'>
-<input type=hidden value='confirm' name='confirm'>
+<form method=POST action='./+admin&subaction=module&subsubaction=uninstall'>
+<input type=hidden value='{$modulename}' name='Module' />
+<input type=submit value='Delete module' name='btn_uninstall' />
+<input type=hidden value='confirm' name='confirm' />
 </form>
 </fieldset>
 RET;
@@ -318,10 +281,10 @@ function deleteModule($module) {
 		$perms = rtrim($perms, ",");
 		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_id` IN ({$perms})") or displayerror(mysql_error());
 		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module` = '" . $module . "'") or displayerror(mysql_error());
-		$moduleDir = $sourceFolder . "/modules/" . escape($_GET['delmodule']) . "/";
+		$moduleDir = $sourceFolder . "/modules/" . $module . "/";
 		if(file_exists($moduleDir))
 			delDir($moduleDir);
-		$moduleFile = $sourceFolder . "/modules/" . escape($_GET['delmodule']) . ".lib.php";
+		$moduleFile = $sourceFolder . "/modules/" . $module . ".lib.php";
 		if(file_exists($moduleFile))
 			unlink($moduleFile);
 		return true;

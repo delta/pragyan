@@ -389,23 +389,17 @@ ADMINPAGE;
 			return  displayEmail(escape($_POST['emailtemplates'])).$quicklinks ;
 		}
 	}
-        if(isset($_GET['subaction']) && $_GET['subaction']=='template')
-	{ 
-		
-		if(isset($_GET['subsubaction']))
-		{
-			require_once("template.lib.php"); 
-			$op=handleTemplateMgmt();
-			if($op!="") return $op;
-			else return templateManagementForm().$quicklinks;
-		}
-		else return templateManagementForm().$quicklinks;
-	}
-	if(isset($_GET['subaction']) && $_GET['subaction']=='module') {
+	if(isset($_GET['subaction']) && ($_GET['subaction']=='module'||$_GET['subaction']=='template')) {
+		$type = escape($_GET['subaction']);
+		if($type=='module')
+			displaywarning("Module Installation/Uninstallation has the potential to completely bring down the CMS, so Install only modules from trusted source");
 		require_once("module.lib.php");
-		$op = handleModuleManagement();
+		require_once("template.lib.php");
+		$type = ucfirst($type);
+		$function = "handle{$type}Management";
+		$op = $function();
 		if($op != "") return $op.$quicklinks;
-		return moduleManagementForm().$quicklinks;
+		return managementForm($type).$quicklinks;
 	}
 	global $sourceFolder;	
 	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) return $quicklinks;
@@ -531,6 +525,37 @@ ADMINPAGE;
 	return $str.$op.$quicklinks;
 
 }
+
+function managementForm($type) {
+	$function = "getAvailable{$type}s";
+	$modules = $function();
+	$modulesList = "<select name='{$type}'>";
+	foreach($modules as $module)
+		$modulesList .= "<option value='" . $module . "'>" . $module . "</option>";
+	$modulesList .= "</select>";
+	global $ICONS;
+	$smallIcon = $ICONS[$type.'s Management']['small'];
+	$subaction = ($type=="Module")?'module':($type=="Template"?'template':"");
+	$form=<<<FORM
+	<script type="text/javascript">
+	function delconfirm(obj) {
+		return confirm("Are you sure want to delete '" + document.getElementById('modules').value + "' {$type}?");
+	}
+	</script>
+	<fieldset>
+	<legend>{$smallIcon}{$type} Management</legend>
+	<form name='module' method='POST' action="./+admin&subaction={$subaction}&subsubaction=install" enctype="multipart/form-data">
+	Add new {$type}: <input type='file' name='file' id='file' /><input type='submit' name='btn_install' value='Upload' />
+	</form>
+	<br/><br/>
+	<form method='POST' action="./+admin&subaction={$subaction}&subsubaction=uninstall" enctype="multipart/form-data">
+	Delete Existing {$type}: {$modulesList}<input type='submit' name='btn_uninstall' value='Uninstall' onclick='return delconfirm(this);' />
+	</form>
+	</fieldset>
+FORM;
+	return $form;
+}
+
 function updateGlobalSettings()
 {
        
