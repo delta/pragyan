@@ -57,7 +57,7 @@ function actualTemplatePath($templatePath) {
 		if($file == "index.php")
 			return $templatePath;
 		elseif(is_dir($templatePath . $file) && $file != '.' && $file != '..') {
-			$return = actualPath($templatePath . $file . "/");
+			$return = actualTemplatePath($templatePath . $file . "/");
 			if($return != NULL)
 				return $return;
 		}
@@ -66,7 +66,7 @@ function actualTemplatePath($templatePath) {
 }
 
 function getTemplateName($actualPath) {
-	return name($actualPath,".");
+	return getWidgetName($actualPath);
 }
 
 function installTemplate($str) {
@@ -224,7 +224,8 @@ function addfatalissue(&$issues,$str,$id)
 function checkForTemplateIssues($templatePath,$templateName,&$issues) {
 	$content = file_get_contents($templatePath . "index.php");
 	$reqd = array("\$CONTENT","\$ACTIONBARMODULE","\$ACTIONBARPAGE","\$SITEDESCRIPTION","\$SITEKEYWORDS","\$FOOTER","\$ERRORSTRING","\$WARNINGSTRING","\$INFOSTRING");
-	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$DEBUGINFO","\$MENUBAR","\$INHERITEDINFO",);
+//	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$DEBUGINFO","\$MENUBAR","\$INHERITEDINFO",);
+	$nreqd = array("\$STARTSCRIPTS","\$TITLE","\$BREADCRUMB","\$MENUBAR");
 	$id = 0;
 	$i = 0;
 	$j = 0;
@@ -271,7 +272,7 @@ function mycount($content,$find) {
 }
 
 
-function handleTemplateMgmt()
+function handleTemplateManagement()
 {
 
 
@@ -281,53 +282,22 @@ function handleTemplateMgmt()
 		$uploadId = processUploaded("Template");
 		if($uploadId != -1)
 			return installModule($uploadId,"Template");
-/*
-		if(!file_exists($sourceFolder . "/uploads/templates/"))
-			mkdir($sourceFolder . "/uploads/templates/");
-		$str = $sourceFolder ."/uploads/templates/".$_FILES['file']['name'];
-		$ext = extension($str);
-		while(file_exists($str))
-			$str = $sourceFolder . "/uploads/templates/" . rand() . $ext;
-		move_uploaded_file($_FILES['file']['tmp_name'],$str);
-		require_once("template.lib.php");
-		$return = installTemplate($str);
-		switch($return[0]) 
-		{
-			case "0":
-				displayerror("index.php not found");
-				delDir($return[2]);
-				unlink($return[1]);
-		
-				break;
-			case "1":
-				displayerror("Error while opening archive");
-				unlink($return[1]);
-			
-				break;
-			case "2":
-				displayinfo("Please upload a ZIP file");
-				unlink($return[1]);
-			
-				break;
-			default:
-				return $return;
-		}*/
-		
 	}
 	else if(isset($_POST['btn_uninstall']))		
 	{
-		if(!isset($_GET['deltemplate']) || $_GET['deltemplate']=="") return "";
+		if(!isset($_POST['Template']) || $_POST['Template']=="") return "";
 		
-		$query="SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . escape($_GET['deltemplate']) . "'";
+		$toDelete = escape($_POST['Template']);
+		$query="SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . $toDelete . "'";
 		
 		if($row = mysql_fetch_array(mysql_query($query)))
 		{
-			$query="DELETE FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . escape($_GET['deltemplate']) . "'";
+			$query="DELETE FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . $toDelete . "'";
 			mysql_query($query);
-			$templateDir = $sourceFolder . "/templates/" . escape($_GET['deltemplate']) . "/";
+			$templateDir = $sourceFolder . "/templates/" . $toDelete . "/";
 			if(file_exists($templateDir))
 				delDir($templateDir);
-			displayinfo("Template ".safe_html($_GET['deltemplate'])." uninstalled!");
+			displayinfo("Template ".safe_html($_POST['Template'])." uninstalled!");
 			return "";
 		}
 		displayerror("Template uninstallation failed!");
@@ -390,37 +360,4 @@ RET;
 		return "";
 	}*/
 	
-}
-function templateManagementForm()
-{
-	$templates = getAvailableTemplates();
-	$templatesList = "<select id='templates'>";
-	
-	foreach($templates as $template)
-		$templatesList .= "<option value='" . $template . "'>" . $template . "</option>";
-	$templatesList .= "</select>";
-	global $ICONS;
-	require_once("upload.lib.php");
-	$form=<<<FORM
-	<script type="text/javascript">
-	function delconfirm(obj) {
-		if(confirm("Are you sure want to delete '" + document.getElementById('templates').value + "' template?"))
-		{
-			document.getElementById("file").value="";
-			obj.form.action += "uninstall&deltemplate=" + document.getElementById('templates').value;
-			return true;
-		}
-		return false;
-		
-	}
-	</script>
-	<form name='template' method='POST' action='./+admin&subaction=template&subsubaction=' enctype="multipart/form-data">
-	<fieldset>
-	<legend>{$ICONS['Templates Management']['small']}Template Management</legend>
-	Add new Template (select a ZIP file containing template): <input type='file' name='file' id='file'><input type='submit' name='btn_install' value='Upload' onclick='this.form.action+="install"'>
-	<br/><br/>Delete Existing Template: {$templatesList}<input type='submit' name='btn_uninstall' value='Uninstall' onclick='return delconfirm(this);'>
-	</fieldset>
-	</form>
-FORM;
-	return $form;
 }
