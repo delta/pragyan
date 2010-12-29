@@ -300,7 +300,8 @@ INSERT IGNORE INTO `pragyanV3_widgetsinfo` (`widget_id`, `widget_name`, `widget_
 (1, 'Server Date and Time', 'serverDateTime', 'Display the current date and time in the website', '0.01', 'Abhishek Shrivastava', 'server_date_time'),
 (2, 'Count Down', 'count_down', 'Display the countdown to a given date', '0.01', 'Balanivash', 'count_down'),
 (3, 'News', 'news', 'Display the news/updates', '0.01', 'Balanivash', 'news'),
-(4, 'Slider', 'slider', 'An image slider or display an image', '0.01', 'Balanivash', 'slider');
+(4, 'Slider', 'slider', 'An image slider or display an image', '0.01', 'Balanivash', 'slider'),
+(5, 'Facebook', 'facebook', 'To include facebook like option for a page in the site or the whole site or a facebook page', '0.01', 'Balanivash', 'facebook');
 
 
 --
