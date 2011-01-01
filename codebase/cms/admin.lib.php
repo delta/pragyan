@@ -355,20 +355,21 @@ function admin($pageid, $userid) {
 	<a name='quicklinks'></a>
 	<table class="iconspanel">
 	<tr>
-	<td><a href="./+admin&subaction=global"><div>{$ICONS['Global Settings']['large']}<br/>Global Settings</div></a></td>
-	<td><a href="./+admin&subaction=expert"><div>{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</div></a></td>
+	<td><a href="./+admin&subaction=global"><div>{$ICONS['Global Settings']['large']}<br/>Global Settings</div></a></td>	
 	<td><a href="./+admin&subaction=template"><div>{$ICONS['Templates Management']['large']}<br/>Templates Management</div></a></td>
 	<td><a href="./+admin&subaction=module"><div>{$ICONS['Modules Management']['large']}<br/>Module Management</div></a></td>
+	<td><a href="./+admin&subaction=widgets"><div>{$ICONS['Widgets']['large']}<br/>Widgets Management</div></a></td>
 	</tr>
 	<tr>
-	<td><a href="./+admin&subaction=useradmin"><div>{$ICONS['User Management']['large']}<br/>User Management</div></a></td>
-	<td><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
+	<td><a href="./+admin&subaction=icon"><div>{$ICONS['Icons']['large']}<br/>Icons Management</div></a></td>
 	<td><a href="./+admin&subaction=email"><div>{$ICONS['Email Registrants']['large']}<br/>Email Registrants</div></a></td>
 	<td><a href="./+admin&subaction=editgroups"><div>{$ICONS['User Groups']['large']}<br/>Group Management</div></a></td>
+	<td><a href="./+admin&subaction=expert"><div>{$ICONS['Site Maintenance']['large']}<br/>Site Maintenance</div></a></td>
 	</tr>
 	<tr>
-	<td colspan=2><a href="./+admin&subaction=icon"><div>{$ICONS['Icons']['large']}<br/>Icons Management</div></a></td>
-	<td colspan=2><a href="./+admin&subaction=widgets"><div>{$ICONS['Widgets']['large']}<br/>Widgets Management</div></a></td>
+	
+	<td colspan=2><a href="./+admin&subaction=useradmin"><div>{$ICONS['User Management']['large']}<br/>User Management</div></a></td>
+	<td colspan=2><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
 	</tr>
 
 	</table>

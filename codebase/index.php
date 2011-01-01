@@ -19,10 +19,10 @@
  * This CMS allows very fine user & group permissions and generating pages like articles, forms, quizzes, forums, gallery, etc.
  * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps, Latex, etc.
  * 
- * @section License, Credits and other details
- * Please see README.
+ * @section For License, Credits and other details
+ * Please see README.html in docs folder.
  * 
- * For more details, contact Abhishek Shrivastava i.abhi27 [at] gmail [dot] com
+ * For more details, contact Abhishek Shrivastava abhishek [at] teamdeltaforce.org
  */
 
 ///Very important variable for detecting direct script access to any other .php file
@@ -146,8 +146,7 @@ foreach($globals as $var=>$val)
 	$$var=$val;
 
 
-if($openid_enabled=='true'){
-  ///Library required for OpenID authentication                                                                                                                                                     
+if($openid_enabled=='true'){                                                                                                                                                 
   set_include_path('cms/openid/');
   require_once 'cms/openid/class.dopeopenid.php';
 }
