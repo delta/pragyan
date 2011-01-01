@@ -25,6 +25,10 @@ Under the following conditions:
 
 Your fair use and other rights are in no way affected by the above.
 ******************************************************************************/
+//global variables---------
+var ajaxbug,checkViews;
+var views=-1;
+//-------------
 if (!hs) { var hs = {
 // Language strings
 lang : {
@@ -290,11 +294,12 @@ getPosition : function(el)	{
 	return p;
 },
 
-expand : function(a, params, custom, type) {
+expand : function(a, params, custom, type, viewRef, cViews) {
+	checkViews = cViews;
 	if (!a) a = hs.createElement('a', null, { display: 'none' }, hs.container);
 	if (typeof a.getParams == 'function') return params;	
 	try {	
-		new hs.Expander(a, params, custom);
+		new hs.Expander(a, params, custom,0,viewRef);
 		return false;
 	} catch (e) { return true; }
 },
@@ -1135,7 +1140,46 @@ setPos: function(i) {
 }
 };
 
-hs.Expander = function(a, params, custom, contentType) {
+hs.Expander = function(a, params, custom, contentType, viewRef) {
+//--------------------------- inclusion of ajax call code
+	if((views==-1))
+		views=viewRef.value;
+	else if(a!=ajaxbug){
+		views=viewRef.value;
+		}
+	ajaxbug = a;
+	if(window.ActiveXObject){
+		var request = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else if(XMLHttpRequest){
+		var request = new XMLHttpRequest();
+	}
+	the_url='sample'+a.getAttribute('href');
+	the_url='./+view&subaction=ajax&ref='+the_url;
+	request.open("GET",the_url);
+	request.onreadystatechange = function(){
+	if(request.readyState==4){
+		if(window.ActiveXObject){
+				var request1 = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+			else if(XMLHttpRequest){
+				var request1 = new XMLHttpRequest();
+				}
+			the_url1='sample'+a.getAttribute('href');
+			the_url1="./+view&subaction=ajax&getView="+the_url1;
+			request1.open("GET",the_url1);
+			request1.onreadystatechange = function(){
+			if(request1.readyState==4)
+			{
+			
+			views = request1.responseText;
+			viewRef.value=views;
+			}
+			}
+			request1.send(null);
+			}}
+request.send(null);
+//---------------------- Ajax call ends here
 	if (document.readyState && hs.ie && !hs.isReady) {
 		hs.addEventListener(document, 'ready', function() {
 			new hs.Expander(a, params, custom, contentType);
@@ -1834,9 +1878,10 @@ getNumber : function() {
 	if (this[this.numberPosition]) {
 		var arr = hs.anchors.groups[this.slideshowGroup || 'none'];
 		if (arr) {
+			var showView = ((checkViews)?' Views : '+ views + ' ': '');
 			var s = hs.lang.number.replace('%1', this.getAnchorIndex() + 1).replace('%2', arr.length);
 			this[this.numberPosition].innerHTML = 
-				'<div class="highslide-number">'+ s +'</div>'+ this[this.numberPosition].innerHTML;
+				'<div class="highslide-number">'+ s  + showView +'</div>'+ this[this.numberPosition].innerHTML;
 		}
 	}
 },
