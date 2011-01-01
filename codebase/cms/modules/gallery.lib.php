@@ -57,6 +57,32 @@ class gallery implements module, fileuploadable {
 		global $urlRequestRoot;
 		global $moduleFolder;
 		global $uploadFolder;
+		// Ajax request for returning the views of the image
+		if(isset($_GET['subaction'])&&$_GET['subaction']=='ajax') {
+		if($_GET['ref']){
+			$arr=explode("/",$_GET['ref']);
+			$arr = $arr[sizeof($arr)-1];
+			$query="SELECT* FROM `gallery_pics` WHERE upload_filename='".$arr."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
+			$result=mysql_query($query);
+			if($result){
+				$newrate = mysql_result($result,0,'pic_rate')+1;
+				$query="UPDATE `gallery_pics` SET `pic_rate`='".$newrate."' WHERE upload_filename='".$arr."' AND page_modulecomponentid='$this->moduleComponentId'";
+				mysql_query($query);
+			}}
+		else if($_GET['getView']){
+			$arr1=explode("/",$_GET['getView']);
+			$arr1 = $arr1[sizeof($arr1)-1];
+			$query="SELECT* FROM `gallery_pics` WHERE upload_filename='".$arr1."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
+			$result1=mysql_query($query);
+			if($result1){
+				$view = mysql_result($result1,0,'pic_rate');
+				echo $view;
+			}
+			}
+			disconnect();
+			exit(0);
+		}
+		// Ajax request for views ends here
 		$content =<<<JS
 			<script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/highslide-with-gallery.js"></script>
 			<link rel="stylesheet" type="text/css" href="$urlRequestRoot/$cmsFolder/$moduleFolder/gallery/highslide.css" />
@@ -94,6 +120,7 @@ JS;
 		$row = mysql_fetch_assoc($gallResult);
 		$content .= "<h2><center>{$row['gallery_name']}</center></h2><br/><center><h3>{$row['gallery_desc']}</center></h3>";
 		$perPage = $row['imagesPerPage'];
+		$viewCheck = $row['allowViews'];
 		include_once ("$sourceFolder/" . 'upload.lib.php');
 		$query = "SELECT `upload_filename` FROM `gallery_pics` WHERE `page_modulecomponentid` =". $this->moduleComponentId;
 		$pic_result = mysql_query($query) or die(mysql_error());
@@ -119,7 +146,8 @@ JS;
 			$gallResult2 = mysql_query($gallQuery2);
 			$row2 = mysql_fetch_assoc($gallResult2);
 			if ($row2) {
-				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this)">';
+				$content .= "<input type=\"hidden\" id=\""."thumb_"."{$row2['upload_filename']}\" value=\"{$row2['pic_rate']}\" />";
+				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this,0,0,0,document.getElementById(\'thumb_' .$row2['upload_filename'].'\'),'.$viewCheck.')">';
 				$content .= "<img src=\"./thumb_" . $arr[$i]['upload_filename'] . "\" alt='{$row2['gallery_filecomment']}' title='Click to enlarge' /></a>   &nbsp;";
 			}
 		}
@@ -187,7 +215,8 @@ JS;
 		if (isset ($_POST['btnEditGallname']) && isset ($_POST['gallName']) && isset ($_POST['gallDesc']) && $_POST['gallName'] != '' && $_POST['gallDesc'] != '') {
 			if(is_numeric($_POST['imagesPerPage']))
 				$perPage = (int)escape($_POST['imagesPerPage']);
-			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."' WHERE `page_modulecomponentid`=$moduleComponentId";
+				$viewCount = ( $_POST['allowViews'] ? 1 : 0 );
+			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."',`allowViews`=".$viewCount." WHERE `page_modulecomponentid`=$moduleComponentId";
 			$gallResult = mysql_query($gallQuery);
 		}
 
@@ -211,6 +240,9 @@ JS;
 		$content2="<fieldset><legend>{$ICONS['Gallery Edit']['small']}Edit Gallery</legend>".$content2;
 		
 		$result = mysql_fetch_array(mysql_query("SELECT * FROM `gallery_name` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
+		if($result){
+			$checkViews = ($result['allowViews'] == 1 ? 'checked="checked" ': '' );
+		}
 		$content2 .=<<<GALFORM
 					<br /><br />
 					<script type="text/javascript">
@@ -241,6 +273,10 @@ JS;
 						<tr>
 							<td>New Gallery Description</td>
 							<td><input type='text' name="gallDesc" value='{$result['gallery_desc']}'></td>
+						</tr>
+						<tr>
+							<td>Allow View Count</td>
+							<td><input type="checkbox" name="allowViews" $checkViews></td>
 						</tr>
 						<tr>
 							<td>Images Per Page</td>
