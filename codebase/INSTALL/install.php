@@ -439,14 +439,12 @@ function CheckPrerequisites() {
 	$cmsfolder = "$scriptPath/$sourceFolder";
 	
 	$checklist=array( 
-			"$scriptPath/.htaccess" => "file",
 			"$cmsfolder" => "folder", 
 			"$cmsfolder/uploads" => "folder",
 			"$cmsfolder/templates" => "folder",
 			"$cmsfolder/widgets" => "folder",
 			"$cmsfolder/languages" => "folder",
 			"$cmsfolder/modules" => "folder",
-			"$cmsfolder/config.inc.php" => "file",	
 			"$cmsfolder/modules/search/settings/database.php" => "file",
 			);
 	
