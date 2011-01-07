@@ -484,15 +484,15 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtIMAPServerAddress">Server Address:</label></td>
-			<td><input type="text" id="txtIMAPServerAddress" name="txtIMAPServerAddress" value="10.0.0.2" onblur="validate_domain(this,0)" /></td>
+			<td><input type="text" id="txtIMAPServerAddress" name="txtIMAPServerAddress" onblur="validate_domain(this,0)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtIMAPPort">Port:</label></td>
-			<td><input type="text" id="txtIMAPPort" name="txtIMAPPort" value="143" onblur="validate_port(this,0)" /></td>
+			<td><input type="text" id="txtIMAPPort" name="txtIMAPPort" onblur="validate_port(this,0)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtIMAPUserDoman">User Domain:</label></td>
-			<td><input type="text" id="txtIMAPUserDomain" name="txtIMAPUserDomain" value="nitt.edu" /></td>
+			<td><input type="text" id="txtIMAPUserDomain" name="txtIMAPUserDomain" /></td>
 		</tr>
 
 		<tr>
@@ -504,15 +504,15 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtLDAPServerAddress">Server Address:</label></td>
-			<td><input type="text" id="txtLDAPServerAddress" name="txtLDAPServerAddress" value="delta.nitt.edu" /></td>
+			<td><input type="text" id="txtLDAPServerAddress" name="txtLDAPServerAddress" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtLDAPSearchGroup">Search Group:</label></td>
-			<td><input type="text" id="txtLDAPSearchGroup" name="txtLDAPSearchGroup" value="ou=Webteam,dc=delta,dc=nitt.edu" /></td>
+			<td><input type="text" id="txtLDAPSearchGroup" name="txtLDAPSearchGroup" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtLDAPUserDomain">User Domain:</label></td>
-			<td><input type="text" id="txtLDAPUserDomain" name="txtLDAPUserDomain" value="delta.nitt.edu" /></td>
+			<td><input type="text" id="txtLDAPUserDomain" name="txtLDAPUserDomain"  /></td>
 		</tr>
 
 		<tr>
@@ -524,15 +524,15 @@ $settingsForm = <<<SETTINGSFORM
 		</tr>
 		<tr>
 			<td><label for="txtADSServerAddress">Server Address:</label></td>
-			<td><input type="text" id="txtADSServerAddress" name="txtADSServerAddress" value="10.0.0.2" onblur="validate_domain(this,0)" /></td>
+			<td><input type="text" id="txtADSServerAddress" name="txtADSServerAddress" onblur="validate_domain(this,0)" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtADSNetworkName">Network Name:</label></td>
-			<td><input type="text" id="txtADSNetworkName" name="txtADSNetworkName" value="NITT\\" /></td>
+			<td><input type="text" id="txtADSNetworkName" name="txtADSNetworkName" /></td>
 		</tr>
 		<tr>
 			<td><label for="txtADSUserDomain">User Domain:</label></td>
-			<td><input type="text" id="txtADSUserDomain" name="txtADSUserDomain" value="sangam.nitt.edu" /></td>
+			<td><input type="text" id="txtADSUserDomain" name="txtADSUserDomain"/></td>
 		</tr>
 	</table>
 </fieldset>
