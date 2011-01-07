@@ -79,7 +79,7 @@ class facebook extends widgetFramework
 			array (
 			'name' => 'layout',
 			'type' => 'select',
-			'options' => 'standard|button_count',
+			'options' => 'standard|button_count|box_count',
 			'displaytext' => 'Layout',
 			'default' => 'standard',
 			'global' => 0
