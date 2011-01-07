@@ -112,8 +112,18 @@ RET;
 					displayerror("Unable to draft the article");
 				
 				}
-		
-		
+		if($this->isCommentsEnabled() && isset($_POST['btnSubmit'])) {
+			$id = mysql_fetch_array(mysql_query("SELECT MAX(`comment_id`) AS MAX FROM `article_comments`"));
+			$id = $id['MAX'] + 1;
+			$user = getUserName($this->userId);
+			$comment = escape(safe_html($_POST['comment']));
+			mysql_query("INSERT INTO `article_comments`(`comment_id`,`page_modulecomponentid`,`user`,`comment`) VALUES('$id','{$this->moduleComponentId}','$user','$comment')");
+			if(mysql_affected_rows())
+				displayinfo("Post successful");
+			else
+				displayerror("Error in posting comment");
+		}
+		if($text==""){
 			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
 			$result = mysql_query($query);
 			if($row = mysql_fetch_assoc($result)) {
@@ -123,7 +133,7 @@ RET;
 				$PAGELASTUPDATED = $row['article_lastupdated'];
 			}
 			else return "Article not yet created.";
-		
+		}
 		global $sourceFolder;
 		global $moduleFolder;
 		require_once($sourceFolder."/latexRender.class.php");

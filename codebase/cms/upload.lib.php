@@ -26,7 +26,6 @@ if(!defined('__PRAGYAN_CMS'))
  */
 function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxFileSizeInBytes=false, $uploadableFileTypesArray = false) {
 	if($maxFileSizeInBytes===false) $maxFileSizeInBytes = 2*1024*1024;
-	
 	global $sourceFolder;
 	global $uploadFolder;
 	$uploadDir = $sourceFolder . "/" . $uploadFolder;
