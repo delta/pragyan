@@ -85,28 +85,16 @@ $(function() {
 	/**
 	 * Profile Menu
 	 */
-	$(".cms-actionprofile").hover(function(){
-		$(this).css({
-			backgroundColor : "white",
-			border: "solid 1px #345",
-			color : "black"
-		});
+	$(".cms-actionprofile").click(function(){
+		
 		$("#hc_profile").fadeIn(100);
 		$("#hc_profile").hover(function(){
 				$(this).css("display","block");
-				$("a.cms-actionprofile").css({
-					backgroundColor : "white",
-					border: "solid 1px #345",
-					color : "black"
-					});
 			}, function(){
-				$(this).fadeOut();//css("display","none");
-				$("a.cms-actionprofile").css({
-					background : "none",
-					border: "none",
-					color : "white"
-				});
+				$(this).fadeOut(200);//css("display","none");
+				
 		});
+		return false;
 	});
 	/**                                                                              
 	 * Trigger normal and Open id menu                                                
