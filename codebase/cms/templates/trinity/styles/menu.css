@@ -1,40 +1,42 @@
 /* TOP MENU  - --- HEADER MENU */
 #quicklinks{
-	border: 0;
 	padding: 1px 5px;
+	border: 0;
 	margin: 0;
 	background: url(../images/quicklinks.jpg) repeat-x;
 	color: white;
 	font-family: sans-serif;
 	font-size: normal;
-	height: 25px;
+	height: 20px;
 	position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
 }
 #quicklinks div{
 	float: right;
 }
 #quicklinks a{
-	font-size: small;
-	padding: 4px 7px;
+	font-size: 13px;
+	padding: 2px 4px;
 	color: white;
 	text-decoration: none;
 	border: solid 1px transparent;
-	-webkit-border-radius: 3px;
+	/*-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	border-radius: 3px;
+	border-radius: 3px;*/
+	background-repeat: no-repeat;
 	
 }
 #quicklinks span.qlinks {
 	padding: 3px 10px;
-	height: 23px;
+	height: 20px;
 }
 #quicklinks div#linksid{
 	position: absolute;
 	top: 1px;
+	font-size: 14px;
 }
 #quicklinks a span {
 	position: relative;
@@ -79,7 +81,6 @@
 	**/
 #quicklinks div#cms-actionbarPage a:hover {
 	background-color : white;
-	border: solid 1px #345;
 	color : black;
 }
 
@@ -119,7 +120,7 @@
 	color: black;
 	text-decoration: underline;
 	padding: 3px;
-	font-size: smaller;
+	font-size: small;
 }
 #hc_loginform tr{
 	background: rgba(200,200,200,1);
@@ -149,6 +150,7 @@ display:none;
 }
 #hc_profile{
 	position: absolute;
+	background-color: #555;
 	background: rgba(200,200,200,0.8);
 	color: black;
 	width: 150px;
@@ -215,24 +217,28 @@ display:none;
 }
 .menucontainer ul.topnav > li {
 	
-	background: url(../images/rt.png) ;
-	height: 45px;
+	background: url(../images/blue_dark.png) ;
+	line-height: 0px;
 	padding : 0px;
 	position: relative;
 	left: -2px;
 }
+.menucontainer ul.topnav > li > a > div > img {
+	width: 20px;
+	height: 20px;
+}
 .menucontainer ul.topnav > li > a div{
-	padding: 6px;
+	padding: 5px;
 	padding-left: 15px;
 	font-size: 13px;
 	font-family: Verdana;
 	color: white;
 }
 .menucontainer ul.topnav > li:hover {
-	background: url(../images/menu.png) 0 6px;
+	background: url(../images/menu.png) 0 -3px no-repeat;
 }
 .menucontainer ul.subnav {
-	background: rgba(25,25,25,0.9);
+	background: url(../images/rt.png);
 	position: absolute;
 	display: none;
 }
@@ -258,17 +264,17 @@ display:none;
 }
 .menucontainer ul.subnav > li:hover > a > div{
 	background : rgba(36,115,189,0.1);
+	/*color: #3488cc */
 	color: #FFF;
 }
-.menucontainer ul.subnav.depth2 > li > a > div {
-	border-top: solid transparent;
-	border-left: solid transparent;
+.menucontainer ul.depth2 > li > a > div {
+	border-top: solid transparent 1px;
 	padding: 10px 10px;
 }
-.menucontainer ul.subnav.depth2 > li:hover > a > div {
+.menucontainer ul.depth2 > li:hover > a > div {
 	border-color: #247ebd;
 } 
-.menucontainer li:hover > ul.subnav[class="depth2"]{
+.menucontainer li:hover > ul.subnav{
 	display:block;
 }
 .menucontainer ul.depth2 > li > a > div{

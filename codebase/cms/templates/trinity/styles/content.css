@@ -49,7 +49,7 @@
 }
 #centerContent div#breadcrumb{
 	
-	border-bottom: solid 1px #777;
+	border-bottom: solid 1px #4d4d4d;
 	background: url(../images/brd1.jpg);
 	height: 42px;
 	border-left: solid #4d4d4d;
@@ -151,12 +151,12 @@ div#content p > strong {
 	height: 22px;
 	background: #DDD url(../images/btm.png) bottom repeat-x;
 	padding-top: 3px;
-	font-size: smaller;
+	font-size: small;
+	overflow: hidden;
 	padding-left: 3px;
 	padding-bottom: 3px;
 	border-left: solid #4d4d4d;
 	border-right: solid #4d4d4d;
-	border-bottom: solid #4d4d4d 1px;
 	-webkit-border-radius: 0 0 10px 10px;
 	-moz-border-radius:  0 0 10px 10px;
 	border-radius:  0 0 10px 10px;
