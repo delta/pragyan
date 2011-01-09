@@ -258,7 +258,7 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	$upload_filename = stripslashes($upload_filename);
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` =$moduleComponentId AND `page_module` = '$page_module' AND `upload_filename`= '" . mysql_escape_string($upload_filename) . "'";
 
-	$result = mysql_query($query) or die(mysql_error() . "upload L:260");
+	$result = mysql_query($query) or displayerror(mysql_error() . "upload L:260");
 	if(mysql_num_rows($result)<1) return false;
 	$row = mysql_fetch_assoc($result);
 	$upload_fileid = $row['upload_fileid'];
