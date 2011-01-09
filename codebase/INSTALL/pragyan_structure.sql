@@ -1010,6 +1010,51 @@ CREATE TABLE IF NOT EXISTS `safedit_sections` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `share`
+--
+
+CREATE TABLE IF NOT EXISTS `share` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `page_desc` text NOT NULL,
+  `file_type` varchar(100) NOT NULL,
+  `maxfile_size` int(11) NOT NULL,
+  PRIMARY KEY (`page_modulecomponentid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `share_comments`
+--
+
+CREATE TABLE IF NOT EXISTS `share_comments` (
+  `comment_id` int(11) NOT NULL,
+  `file_id` int(11) NOT NULL,
+  `page_modulecomponentid` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `userid` int(11) NOT NULL,
+  `comment_datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`comment_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `share_files`
+--
+
+CREATE TABLE IF NOT EXISTS `share_files` (
+  `file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_modulecomponentid` int(11) NOT NULL,
+  `upload_filename` varchar(50) NOT NULL,
+  `file_name` varchar(50) NOT NULL,
+  `file_desc` text NOT NULL,
+  `upload_userid` int(11) NOT NULL,
+  PRIMARY KEY (`file_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sqlquery_desc`

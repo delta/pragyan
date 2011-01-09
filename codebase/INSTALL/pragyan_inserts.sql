@@ -137,7 +137,8 @@ INSERT IGNORE INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
 ('scrolltext', ''),
 ('sitemap', ''),
 ('quiz', 'quiz_answersubmissions;quiz_descriptions;quiz_objectiveoptions;quiz_questions;quiz_sections;quiz_userattempts;quiz_weightmarks'),
-('sqlquery', 'sqlquery_desc');
+('sqlquery', 'sqlquery_desc'),
+('share','share;share_files;share_comments');
 
 --
 -- Dumping data for table `pragyanV3_external`
@@ -250,7 +251,11 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`page_module`, `perm_action`, `pe
 ('sqlquery', 'create', 'Create', 0, 'Create'),
 ('safedit', 'view', 'View', 0, 'View'),
 ('safedit', 'edit', 'Edit', 1, 'Edit'),
-('safedit', 'create', 'Create', 2, 'Create');
+('safedit', 'create', 'Create', 2, 'Create'),
+('share', 'view', 'View', 0, 'View the share'),
+('share', 'edit', 'Edit', 0, 'Edit the share description'),
+('share', 'create', 'Create', 0, 'Create a Share'),
+('share', 'moderate', 'Moderate', 0, 'Moderate a share page');
 --
 -- Dumping data for table `pragyanV3_templates`
 --
