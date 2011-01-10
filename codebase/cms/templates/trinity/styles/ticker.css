@@ -7,7 +7,7 @@
 #ticker-content A:hover{color:#7DA0C9}
 #ticker-swipe{padding-top:7px;position:absolute;top:0;left:80px;background-color:#000;display:block;width:800px;height:23px}
 #ticker-swipe SPAN{margin-left:1px;background-color:#000;border-bottom:1px solid #1F527B;height:12px;width:7px;display:block}
-#ticker-controls{list-style-type:none;float:right;padding:10px 10px 0 0}
+#ticker-controls{list-style-type:none;float:right;padding:10px 10px 0 0; margin-left: 5px; margin-top: 23px; position: absolute; }
 #ticker-controls LI{margin-left:5px;float:left;cursor:pointer;height:16px;width:16px;display:block;padding:0}
 #ticker-controls LI#play-pause{background-image:url(../images/controls.png);background-position:32px 16px}
 #ticker-controls LI#play-pause.over{background-position:32px 32px}
