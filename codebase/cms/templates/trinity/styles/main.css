@@ -1,6 +1,6 @@
 body {
-	background: url(../images/light6.png) repeat;
-/*	background-color: #000000;*/
+	/*background: url(../images/light6.png) repeat;*/
+	background-color: #000000;
 	padding:0;
 	margin: 0;
 	min-width: 1050px;
@@ -30,15 +30,13 @@ body img
 #header #invisibleContainer {
 	float: left;
 	width: 100%;
-	height: 120px;
+	height: 180px;
 	margin: 0;
 	padding: 0;
-		background: url(../images/shadow.png) no-repeat;
-	/*background: black url(../images/pragyan10-banner.png) no-repeat 0px 0px;*/
+	background: black url(../images/pragyan10-banner.png) no-repeat 0px 0px;
 }
 #header > #invisibleContainer #invisible {
-	height: 120px;
-
+	height: 175px;
 	margin: 0;
 	padding: 0;
 	text-indent: -1000em;
@@ -72,11 +70,11 @@ body img
 	
 }
 #centerContent {
-	margin: 0px 10px;	
+	margin: 0px 10px;
 	padding-left: 20px;
 	padding-right: 20px;
 	overflow: hidden;
-	margin-right: 260px;
+	margin-right: 270px;
 }
 
 /**
@@ -242,3 +240,62 @@ font-size: 20px;
 font-family: Verdana;
 }
 
+/*Extended Header */
+
+div#exthead {
+	height: 0px;
+	position: relative;
+	top: -1px;
+	background: #EEE url(../images/shadow.png) no-repeat top center;
+	border-bottom: solid 5px #136cab;
+}
+div.extendedContainer {
+	display: none;
+}
+
+.extendHeadLink {
+	position: absolute;
+	left: 420px;
+	top: -1px;
+}
+div.extendHead img {
+	width: 12px;
+	height: 12px;
+	position: relative;
+	top: 1px;
+}
+div.extendHead {
+	padding: 2px 3px;
+	line-height: 18px;
+}
+div.extendHeadLink a:hover div.extendHead {
+	background: white;
+	color: black;
+}
+
+/* 
+Extended Content
+*/
+.extendedContainer {
+	overflow: hidden;
+}	
+.extendedContent {
+	width: 800px;
+	margin: 0 auto;
+}
+.extC {
+	float: left;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	width: 250px;
+}
+.extC li {
+	list-style: none;
+	text-align: left;
+	border: solid 1px transparent;
+}
+.extC li:hover {
+	background: #247ebd;
+	border-color: #000;
+}
