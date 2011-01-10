@@ -205,7 +205,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
 	  		$imageTag = "<img src=\"{$hostt}/$cmsFolder/$templateFolder/common/images/folder.png\" alt=\"{$pageRow[$i][1]}\" width=\"16\" height=\"16\"/>";
 	  	}*/
 	  }
-	  $var .= "\n<li><a href=\"".$rootUri.'/home'.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$imageTag." ".$pageRow[$i][2]."</div></a>";
+	  $var .= "\n<li id=\"cms-menu-item$i\"><a href=\"".$rootUri.'/home'.getPagePath($pageRow[$i][0])."\" $opennewtab ><div class='cms-menuitem'>".$imageTag." ".$pageRow[$i][2]."</div></a>";
 	  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth,true);
 	  $var .= "</li>";
 	}

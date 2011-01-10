@@ -33,7 +33,6 @@ if(!defined('__PRAGYAN_CMS'))
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
-    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.debounce.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
     <script language="JavaScript">
@@ -70,6 +69,20 @@ if(!defined('__PRAGYAN_CMS'))
 <body onload="<?php echo $STARTSCRIPTS; ?>" >
 <div class="outercontainer">
 	<div class="clearer"></div>
+	<div id="exthead">
+		<div class="extendedContainer">
+			<?php
+				$pageName = "extend";
+				$getQ = "SELECT page_modulecomponentid FROM ". MYSQL_DATABASE_PREFIX ."pages WHERE page_name='extend'";
+				$componentTempId = mysql_fetch_assoc(mysql_query($getQ));
+				$query = "SELECT article_content FROM article_content WHERE page_modulecomponentid=" . $componentTempId['page_modulecomponentid'];
+				$res = mysql_query($query);
+				while($r = mysql_fetch_assoc($res)) {
+					echo $r['article_content'];
+				}
+			?>
+		</div>
+	</div>
 	<div class="innercontainer">
 		<div id="header">
 			
@@ -170,30 +183,34 @@ if(!defined('__PRAGYAN_CMS'))
 		<?php echo $FOOTER;?>	
 	</div>
 	<div id="quicklinks">
-	<div id="linksid">
+		
+		<div id="linksid">
 
-		<a href="http://www.facebook.com/pragyan.nitt" target="_blank" title="Facebook"><span id="link1" class="qlinks">&nbsp;</span></a>
-		<a href="http://www.stumbleupon.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Stumbleupon"><span id="link2"  class="qlinks">&nbsp;</span></a> 
-		<a href="http://www.pragyan.org/mail" target="_blank" title="Mail"><span id="link3" class="qlinks">&nbsp;</span></a>
-		<a href="http://twitter.com/pragyan_nitt" target="_blank" title="Twitter"><span id="link4" class="qlinks" >&nbsp;</span></a>
-		<a href="http://www.pragyan.org/11/home/news/+rss" target="_blank" title="RSS"><span id="link5" class="qlinks">&nbsp;</span></a>
-		<a href="http://digg.com/submit?phase=2&url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Digg"><span id="link6" class="qlinks">&nbsp;</span></a>
-		<a href="http://www.furl.net/storeIt.jsp?u=http://www.pragyan.org&t=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Furl"><span id="link7" class="qlinks">&nbsp;</span></a>
-		<a href="http://www.google.com/bookmarks/mark?op=edit&bkmk=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Google"><span id="link8" class="qlinks">&nbsp;</span></a>
-		<a href="http://del.icio.us/post?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Delicious"><span id="link9" class="qlinks">&nbsp;</span></a>
-		<a href="http://reddit.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Reddit"><span id="link10" class="qlinks">&nbsp;</span></a>
-
-	</div>
+			<a href="http://www.facebook.com/pragyan.nitt" target="_blank" title="Facebook"><span id="link1" class="qlinks">&nbsp;</span></a>
+			<a href="http://www.stumbleupon.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Stumbleupon"><span id="link2"  class="qlinks">&nbsp;</span></a> 
+			<a href="http://www.pragyan.org/mail" target="_blank" title="Mail"><span id="link3" class="qlinks">&nbsp;</span></a>
+			<a href="http://twitter.com/pragyan_nitt" target="_blank" title="Twitter"><span id="link4" class="qlinks" >&nbsp;</span></a>
+			<a href="http://www.pragyan.org/11/home/news/+rss" target="_blank" title="RSS"><span id="link5" class="qlinks">&nbsp;</span></a>
+			<a href="http://digg.com/submit?phase=2&url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Digg"><span id="link6" class="qlinks">&nbsp;</span></a>
+			<a href="http://www.furl.net/storeIt.jsp?u=http://www.pragyan.org&t=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Furl"><span id="link7" class="qlinks">&nbsp;</span></a>
+			<a href="http://www.google.com/bookmarks/mark?op=edit&bkmk=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Google"><span id="link8" class="qlinks">&nbsp;</span></a>
+			<a href="http://del.icio.us/post?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Delicious"><span id="link9" class="qlinks">&nbsp;</span></a>
+			<a href="http://reddit.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Reddit"><span id="link10" class="qlinks">&nbsp;</span></a>
+		
+		</div>
 	<?php echo $ACTIONBARPAGE ?>
 <?php                                                                           
 global $action;                                                                 
 if($action!='login'){                                                           
  /*show the form only if the page is not a loginpage*/                          
 ?>                                                                              
-        <div id="hc_loginform">                                                 
-        <a href="+login" id="pragyanLogin">Pragyan Login</a><a href="+login" id="openidLogin">Open-id Login</a>                                                
-
-        <?php echo $LOGINFORM;?>                                                
+        <div id="hc_loginform">  
+        <div id="login_menu">                                               
+        <a href="+login" id="pragyanLogin"><div>Pragyan Login</div></a><a href="+login" id="openidLogin"><div>Open-id Login</div></a>                                                
+		</div>
+		<div id="login_actual_form">
+        <?php echo $LOGINFORM;?>    
+        </div>                                            
         </div>    
 <script>
 	$('#openid_form *').hide();
@@ -205,6 +222,13 @@ if($action!='login'){
 	<div id="hc_profile">
 		<a href="./+profile"><div>Profile</div></a><br/>
 		<a href="./+logout"><div>Logout</div></a>
+	</div>
+	<div class="extendHeadLink">
+			<a href="./" id="extendHead" >
+			<div class="extendHead">
+			<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/../common/icons/16x16/actions/go-down.png" />
+			Extended Menu
+			</div></a>
 	</div>
 </div>
 </body>
