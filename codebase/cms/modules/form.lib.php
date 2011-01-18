@@ -236,7 +236,11 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 			$sortOrder = escape($_GET['sortorder']);
 		global $ICONS;
 		$html= generateFormDataTable($this->moduleComponentId, $sortField, $sortOrder);
-		return "<fieldset><legend>{$ICONS['Form Registrants']['small']}View Form Registrants</legend>$html</fieldset>";
+		return "<fieldset><legend>{$ICONS['Form Registrants']['small']}View Form Registrants</legend>
+		<form action='./+viewregistrants' method='POST'>
+		<input type='submit' name='save_as_excel' value='Save as Excel'/>
+		</form>
+		$html</fieldset>";
 	}
 
 	public function actionEditregistrants() {
