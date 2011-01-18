@@ -78,18 +78,19 @@ USERFORM;
 	<legend>All Registered</legend>
 	<input type='submit' value='View' name='view_reg_users'/>
 	<input type='submit' value='Edit' name='edit_reg_users'/>
+	<input type='submit' value='Save as Excel' name='save_reg_users_excel'/>
 	</fieldset>&nbsp;
 	<fieldset style="float:left;">
 	<legend>Activated Users</legend>
 	<input type='submit' value='View' name='view_activated_users'/>
 	<input type='submit' value='Edit' name='edit_activated_users'/>
-	
+	<input type='submit' value='Save as Excel' name='save_activated_users_excel'/>
 	</fieldset>&nbsp;
 	<fieldset style="float:left;">
 	<legend>Non-Activated Users</legend>
 	<input type='submit' value='View' name='view_nonactivated_users'/>
 	<input type='submit' value='Edit' name='edit_nonactivated_users'/>
-	
+	<input type='submit' value='Save as Excel' name='save_nonactivated_users_excel'/>
 	</fieldset>
 	<div style="clear:both"></div>
 	<hr/>
@@ -311,7 +312,7 @@ function handleUserMgmt()
 	
 	
 	}
-	else if(isset($_POST['view_reg_users']))
+	else if(isset($_POST['view_reg_users']) || isset($_POST['save_reg_users_excel']))
 	{
 		return registeredUsersList("all","view",false);
 	}
@@ -319,7 +320,8 @@ function handleUserMgmt()
 	{
 		return registeredUsersList("all","edit",false);
 	}
-	else if(isset($_POST['view_activated_users']))
+	
+	else if(isset($_POST['view_activated_users']) || isset($_POST['save_activated_users_excel']))
 	{
 		return registeredUsersList("activated","view",false);
 	}
@@ -327,7 +329,7 @@ function handleUserMgmt()
 	{
 		return registeredUsersList("activated","edit",false);
 	}
-	else if(isset($_POST['view_nonactivated_users']))
+	else if(isset($_POST['view_nonactivated_users']) || isset($_POST['save_nonactivated_users_excel']))
 	{
 		return registeredUsersList("nonactivated","view",false);
 	}
@@ -591,11 +593,14 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		else return false;
 	}
 	</script>
-	<a name='userlist'></a><table class="userlisttable display" border="1" id='userstable'>
+	<a name='userlist'></a>
+USERLIST;
+	$userlisttable=<<<TABLE
+	<table class="userlisttable display" border="1" id='userstable'>
 	<thead>
 	<tr><th colspan="$columns">Users Registered on the Website</th></tr>
 	<tr>
-USERLIST;
+TABLE;
 
 		
 	
@@ -607,9 +612,9 @@ USERLIST;
 	{
 		if(isset($_POST[$usertablefields[$i].'_sel']) || $allfields)
 		{
-			$userlist.="<th>".$userfieldprettynames[$i];
+			$userlisttable.="<th>".$userfieldprettynames[$i];
 			if($act=="edit") $userlist.="<input type='hidden' name='{$usertablefields[$i]}_sel' value='checked'/>";
-			$userlist.="</th>";
+			$userlisttable.="</th>";
 			$displayfieldsindex[$c++]=$i;
 		}
 	}
@@ -620,9 +625,9 @@ USERLIST;
 	
 	if($act=="edit")
 	{
-		$userlist.="<th>Actions</th>";
+		$userlisttable.="<th>Actions</th>";
 	}
-	$userlist.="</tr></thead><tbody>";
+	$userlisttable.="</tr></thead><tbody>";
 	$rowclass="oddrow";
 	$flag=false;
 	$usercount=0;
@@ -634,31 +639,48 @@ USERLIST;
 		if($type=="nonactivated" && $userActivated[$i]=="Yes")
 			continue;
 		$flag=true;
-		$userlist.="<tr class='$rowclass'>";
+		$userlisttable.="<tr class='$rowclass'>";
 		
 		for($j=0; $j<count($displayfieldsindex); $j++)
 		{
-			$userlist.="<td class='{$userlisttdids[$j]}'>".${$userfieldvars[$displayfieldsindex[$j]]}[$i]."</td>";	
+			$userlisttable.="<td class='{$userlisttdids[$j]}'>".${$userfieldvars[$displayfieldsindex[$j]]}[$i]."</td>";	
 		}
 		
 		
 		if($act=="edit")
 		{
-			$userlist.="<td id='user_editactions'>";
+			$userlisttable.="<td id='user_editactions'>";
 			if($userActivated[$i]=="No")
-				$userlist.="<input title='Activate User' type='image' src='{$ICONS_SRC['Activate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_activate' value='Activate'>\n";
-			else $userlist.="<input  title='Deactivate User' type='image' src='{$ICONS_SRC['Deactivate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_deactivate' value='Deactivate'>\n";
-			$userlist.="<input  title='Edit User' type='image' src='{$ICONS_SRC['Edit']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_info' value='Edit'>\n";
-			$userlist.="<input  title='Delete User' type='image' src='{$ICONS_SRC['Delete']['small']}' onclick=\"return checkDelete(this,'".$userName[$i]."','".$userId[$i]."')\" name='user_delete' value='Delete'>\n";
-			$userlist.="</td>";
+				$userlisttable.="<input title='Activate User' type='image' src='{$ICONS_SRC['Activate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_activate' value='Activate'>\n";
+			else $userlisttable.="<input  title='Deactivate User' type='image' src='{$ICONS_SRC['Deactivate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_deactivate' value='Deactivate'>\n";
+			$userlisttable.="<input  title='Edit User' type='image' src='{$ICONS_SRC['Edit']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_info' value='Edit'>\n";
+			$userlisttable.="<input  title='Delete User' type='image' src='{$ICONS_SRC['Delete']['small']}' onclick=\"return checkDelete(this,'".$userName[$i]."','".$userId[$i]."')\" name='user_delete' value='Delete'>\n";
+			$userlisttable.="</td>";
 			
 		}
-		$userlist.="</tr>";
+		$userlisttable.="</tr>";
 		$rowclass=$rowclass=="evenrow"?"oddrow":"evenrow";
 		$usercount++;
 	}
-	$userlist.="</tbody></table>";
-	if($act=="edit") $userlist.="</form>";
+	$userlisttable.="</tbody></table>";
+	
+	///If users wants to download as excel sheet
+	if(isset($_POST['save_reg_users_excel'])|| isset($_POST['save_activated_users_excel']) || isset($_POST['save_nonactivated_users_excel']))
+	{
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false); 
+		header("Content-Type: application/vnd.ms-excel");
+		header("Content-Disposition: attachment; filename=\"users.xls\";" );
+		header("Content-Transfer-Encoding: binary");
+		echo $userlisttable;
+		exit(1);
+	}
+	
+	if($act=="edit") $userlist.=$userlisttable."</form>";
+	else $userlist.=$userlisttable;
+	
 	
 	
 	return ($flag)?$userlist:"No Users Found!";
