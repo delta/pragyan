@@ -352,6 +352,20 @@ EDITREGISTRANTSVIEW;
 	}
 	//$editRegistrantsView .= $javascriptBody.'<table border="1" id="registrantstable" class="paginate-20 max-pages-5 no-arrow rowstyle-alt colstyle-alt sortable display">' . $tableCaptions . $tableBody . '</table><br />';
 	$editRegistrantsView .= $javascriptBody.$toggleColumns.'<table border="1" id="registrantstable" class="display">' . $tableCaptions . $tableBody . '</table><br />';
+	
+	if(!$showEditButtons && isset($_POST['save_as_excel']))
+	{
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false); 
+		header("Content-Type: application/vnd.ms-excel");
+		header("Content-Disposition: attachment; filename=\"users.xls\";" );
+		header("Content-Transfer-Encoding: binary");
+		echo '<table>' . $tableCaptions . $tableBody . '</table>';
+		exit(1);
+	}
+	
 	if($action == 'editregistrants') {
 		$editRegistrantsView .= '<form name="emptyregistrants" method="POST" action="./+editregistrants" onsubmit="return confirm(\'Are you sure you wish to remove all registrants from this form? This will also remove the users from any groups associated with this form.\')">' .
 			'<input type="submit" name="btnEmptyRegistrants" value="Delete All Registrants" title="Deletes all registrations to this form" />' .
