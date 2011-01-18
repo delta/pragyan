@@ -188,7 +188,7 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 	}
 
 	$fValidatorPath = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts/formValidator.js";
-	$abhiValidatorPath = "$urlRequestRoot/$cmsFolder/$moduleFolder/form/validation.js";
+	$ValidatorPath = "$urlRequestRoot/$cmsFolder/$moduleFolder/form/validation.js";
 	$calpath = "$urlRequestRoot/$cmsFolder/$moduleFolder";
 	$formAction = './+profile';
 	if($forEditRegistrant) {
@@ -199,11 +199,10 @@ global $STARTSCRIPTS;
 $STARTSCRIPTS.="document.getElementsByName('profileimage[]')[0].disabled=true;";
 	$profileForm =<<<PREF
 
-<script language="javscript" type="text/javascript" src="$abhiValidatorPath"></script>
+<script language="javscript" type="text/javascript" src="$ValidatorPath"></script>
 <script language="javascript" type="text/javascript" src="$fValidatorPath"></script>
 <link rel="stylesheet" type="text/css" media="all" href="$calpath/form/calendar/calendar.css" title="Aqua" />
 <script language="javascript" type="text/javascript" src="$calpath/form/calendar/calendar.js"></script>
-
 <script language="javascript" type="text/javascript">
 	window.addEvent("domready", function() {
 		var exValidatorA = new fValidator("registrationform");
@@ -244,7 +243,6 @@ $STARTSCRIPTS.="document.getElementsByName('profileimage[]')[0].disabled=true;";
 	
 
 </script>
-<br />
 <div class="cms-registrationform">
 	<form id="cms-registrationform" class="fValidator-form" method="POST" name="user_profile_usrFrm" onsubmit="return checkProfileForm(this)" action="$formAction" enctype="multipart/form-data">
 		<fieldset style="width:80%">

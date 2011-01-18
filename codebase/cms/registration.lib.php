@@ -34,6 +34,15 @@ function getRegistrationForm() {
 		$dynamicFields = "<tr>$dynamicFields</tr>";
 	}
 	$jsValidationFunctions = join($jsValidationFunctions, ' && ');
+	$email_val = "";
+	$name_val = "";
+	$fullname_val = "";
+	if(isset($_POST['user_email']))
+		$email_val = escape($_POST['user_email']);
+	if(isset($_POST['user_name']))
+		$name_val = escape($_POST['user_name']);
+	if(isset($_POST['user_email']))
+		$fullname_val = escape($_POST['user_fullname']);
 	$reg_str =<<<REG
 <script language="javascript">
 			function checkPassword(inputhandler2) {
@@ -68,7 +77,7 @@ function getRegistrationForm() {
 	<legend> Sign Up</legend>
 		<table border="0" cellspacing="0" cellpadding="0">
 	       <tr>	<td><label for="user_email" class="labelrequired">Email *</label></td>
-				<td><input name="user_email" id="user_email" class="required" onchange="if(this.length!=0) return checkEmail(this);" type="text"></td>
+				<td><input name="user_email" id="user_email" class="required" value='{$email_val}' onchange="if(this.length!=0) return checkEmail(this);" type="text"></td>
            </tr>
            <tr>	<td><label for="user_password" class="labelrequired">Password *</label></td>
 	     		<td>  <input name="user_password" id="user_password" class="required" type="password"></td>
@@ -78,11 +87,11 @@ function getRegistrationForm() {
   			</tr>
   			<tr>
   				<td><label for="user_name" class="labelrequired">User name *</label></td>
-				<td><input name="user_name" id="user_name" class="required" type="text"></td>
+				<td><input name="user_name" id="user_name" class="required" value='{$name_val}' type="text"></td>
    			</tr>
    			<tr>
    				<td><label for="user_fullname" class="labelrequired">Full Name *</label></td>
-   				<td><input name="user_fullname" id="user_fullname" class="required" type="text"></td>
+   				<td><input name="user_fullname" id="user_fullname" class="required" value='{$fullname_val}' type="text"></td>
    			</tr>
 			$dynamicFields
    			$captchaHtml
