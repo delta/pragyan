@@ -122,11 +122,14 @@ SCRIPT;
 			if(($public_key==NULL)||($private_key==NULL))
 				$recaptcha = 0;
 			}
+			if(isset($_GET['recaptcha'])&&($_GET['recaptcha']=="off"))
+				$recaptcha = 0;
 			}
 			if($recaptcha)
 			{
 			require_once("$sourceFolder/$moduleFolder/form/captcha/recaptcha/recaptchalib.php");
-			$body = "<tr><td colspan=2>".recaptcha_get_html($public_key)."</td></tr>";
+			$body = "<tr><td colspan=2><center>".recaptcha_get_html($public_key)."</center></td></tr>";
+			$body .= "<tr><td colspan=2>Click <a href='".selfURI()."&recaptcha=off'>here</a> if you can't see the ReCAPTCHA</td></tr>";
 			$body .="<input type='hidden' name='captcha' value='1'>";
 			}
 			else
@@ -226,6 +229,8 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 		if($isRequired)
 			$htmlOutput .= '*';
 		$htmlOutput .='</td><td>';
+		if(isset($_POST[$elementName]))
+			$value = escape($_POST[$elementName]);
 		$functionName = "getFormElement".ucfirst(strtolower($elementType));
 		if($functionName($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,$jsOutput,$htmlOutput)==false)
 			displayerror("Unable to run function ".$functionName);
@@ -267,10 +272,10 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			if($isRequired)
 			$validCheck=" class=\"required\"";
 			else $validCheck="";
-
 			$options = split('\|', $elementTypeOptions);
 			$optionsHtml = '';
-	
+			if(isset($_POST[$elementName]))
+				$value = $options[$value];
 			for($i = 0; $i < count($options); $i++) {
 				if($options[$i] == $value) {
 					$optionsHtml .= '<option value="'.$i.'" selected="selected" >' . $options[$i] . "</option>\n";
@@ -290,9 +295,10 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			if($isRequired)
 			$validCheck=" class=\"required\"";
 			else $validCheck="";
-			$options = split('\|', $elementTypeOptions);
+			$options = explode("|", $elementTypeOptions);
 			$optionsHtml = '';
-
+			if(isset($_POST[$elementName]))
+				$value = $options[$value];
 			for($i = 0; $i < count($options); $i++) {
 				$optionsHtml .= '<label><input type="radio" id="'.$elementName.'" name="'.$elementName.'" value="'.
 												$i.'"';
@@ -311,13 +317,21 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 		/// CHECKBOXES
 		function getFormElementCheckbox($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,&$jsOutput,&$htmlOutput)
 		 {
-		 	$options = split('\|', $elementTypeOptions);
-
+		 	$options = explode("|", $elementTypeOptions);
 		 	$validCheck = "";
 		 	if($isRequired)
 				$jsOutput[] = "isChecked('$elementName','$elementHelpName',".count($options).")";
-
-
+			if(isset($_POST[$elementName."_0"])){			
+			$i=-1;
+			$value = array();
+			foreach($options as $val) {
+				$i++;
+				if(!isset($_POST[$elementName."_".$i]))
+					continue;
+				$value[] = $val;
+				}
+			$value = join($value,"|");
+			}
 			$optionsHtml = '';
 			$values=explode("|",$value);
 			for($i = 0; $i < count($options); $i++) {
@@ -408,7 +422,6 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			if(!is_null($elementLessThan) && $elementLessThan != '') {
 				$jsOutput[] = "checkUBDate('$elementName', '$elementLessThan', $datetimeFormat, '$elementHelpName')";
 			}
-
 			$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
 			return true;
 		}
