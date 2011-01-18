@@ -460,6 +460,9 @@ function handleUserMgmt()
 		$userForm="<form name='user_create_form' action='./+admin&subaction=useradmin&subsubaction=create&userid=$nextUserId' method='POST'><h3>Create New User</h3>";
 		$xcolumnNames=array_values(getColumnList(0, false, false, false, false, false));
 		$usertablefields2=array_merge($usertablefields,$xcolumnNames);
+		$calpath = "$urlRequestRoot/$cmsFolder/$moduleFolder";
+		$userForm .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/form/calendar/calendar.css" title="Aqua" />' .
+						 '<script type="text/javascript" src="'.$calpath.'/form/calendar/calendar.js"></script>';
 		for($i=0;$i<count($usertablefields2);$i++)
 			if(isset($_POST[$usertablefields2[$i].'_sel']))
 				$userForm.="<input type='hidden' name='{$usertablefields2[$i]}_sel' value='checked'/>";
