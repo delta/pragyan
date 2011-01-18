@@ -128,6 +128,7 @@ if(!defined('__PRAGYAN_CMS'))
 						</div></a>
 						<a href="http://www.pragyan.org/10"><div class="link">Pragyan 2010</div></a>
 						<a href="http://www.pragyan.org/09"><div class="link">Pragyan 2009</div></a>
+						
 					</div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 					
