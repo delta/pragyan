@@ -244,6 +244,9 @@ NONE;
 				.myUploadedIcons {
 					clear: both;
 				}
+				.cms-common-icons {
+					clear: both;
+				}
 			</style>
 			<div class="myUploadedIcons">
 			<h3>My Uploads: </h3>
@@ -252,9 +255,9 @@ HTMl;
 		$iconList .= "</div><div class=\"clearer\"></div>";
 	}
 	
-	$iconList .= "<h3>CMS icons</h3>";
+	$iconList .= "<div class=\"cms-common-icons\"><h3>CMS icons</h3>";
 	$iconList .= getListOfFiles($dir,true);
-	
+	$iconList .= "</div>";
 	
 	$iconList .= "</div>";
 	return $iconList;
