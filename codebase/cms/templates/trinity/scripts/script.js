@@ -42,7 +42,6 @@ $(function() {
 		}
 	}).find("ul.subnav > li").bind({
 		mouseenter: function(){
-			$(this).parent().find("ul.subnav").css({display: "none"});
 	 		$(this).children("ul.subnav").slideDown(100);
 		},
 		mouseleave: function() {
