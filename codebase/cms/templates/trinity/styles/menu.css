@@ -356,7 +356,7 @@ display:none;
 	width: 608px;
 	padding: 10px;
 	padding-left: 60px;
-	background: url(../images/sub-menu.png) 1px left no-repeat;
+	background: url(../images/sub-menu.png) top left no-repeat;
 	border-radius: 10px;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
