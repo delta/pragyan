@@ -293,16 +293,16 @@ display:none;
 .menucontainer ul.topnav > li#cms-menu-item7{background-position:  0px -260px;}
 .menucontainer ul.topnav > li#cms-menu-item8{background-position:  0px -290px;}
 .menucontainer ul.topnav > li#cms-menu-item9{background-position:  0px -320px;}
-.menucontainer ul.topnav > li#cms-menu-item10{background-position: 0px -50px;}
-.menucontainer ul.topnav > li#cms-menu-item11{background-position:  0px -80px;}
-.menucontainer ul.topnav > li#cms-menu-item12{background-position:  0px -60px;}
-.menucontainer ul.topnav > li#cms-menu-item13{background-position:  0px -90px;}
-.menucontainer ul.topnav > li#cms-menu-item14{background-position:  0px -120px;}
-.menucontainer ul.topnav > li#cms-menu-item15{background-position:  0px -150px;}
-.menucontainer ul.topnav > li#cms-menu-item16{background-position:  0px -180px;}
-.menucontainer ul.topnav > li#cms-menu-item17{background-position:  0px -210px;}
-.menucontainer ul.topnav > li#cms-menu-item18{background-position:  0px -240px;}
-.menucontainer ul.topnav > li#cms-menu-item19{background-position:  0px -270px;}
+.menucontainer ul.topnav > li#cms-menu-item10{background-position: 0px -50px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item11{background-position:  0px -80px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item12{background-position:  0px -60px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item13{background-position:  0px -90px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item14{background-position:  0px -120px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item15{background-position:  0px -150px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item16{background-position:  0px -180px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item17{background-position:  0px -210px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item18{background-position:  0px -240px;display: none;}
+.menucontainer ul.topnav > li#cms-menu-item19{background-position:  0px -270px;display: none;}
 
 .menucontainer ul.topnav > li:hover {
 	background: url(../images/side-menu-hover.png);
@@ -332,6 +332,17 @@ display:none;
 .menucontainer ul.topnav > li#cms-menu-item17:hover{background-position:  0px -210px;}
 .menucontainer ul.topnav > li#cms-menu-item18:hover{background-position:  0px -240px;}
 .menucontainer ul.topnav > li#cms-menu-item19:hover{background-position:  0px -270px;}
+
+
+.menucontainer ul.topnav > li#cms-menu-item1 > ul.depth2{background-position: 0px -30px;}
+.menucontainer ul.topnav > li#cms-menu-item2 > ul.depth2{background-position:  0px -60px;}
+.menucontainer ul.topnav > li#cms-menu-item3 > ul.depth2{background-position:  0px -90px;}
+.menucontainer ul.topnav > li#cms-menu-item4 > ul.depth2{background-position:  0px -120px;}
+.menucontainer ul.topnav > li#cms-menu-item5 > ul.depth2{background-position:  0px -150px;}
+.menucontainer ul.topnav > li#cms-menu-item6 > ul.depth2{background-position:  0px -180px;}
+.menucontainer ul.topnav > li#cms-menu-item7 > ul.depth2{background-position:  0px -210px;}
+.menucontainer ul.topnav > li#cms-menu-item8 > ul.depth2{background-position:  0px -240px;}
+.menucontainer ul.topnav > li#cms-menu-item9 > ul.depth2{background-position:  0px -270px;}
 
 
 .menucontainer ul.subnav {
