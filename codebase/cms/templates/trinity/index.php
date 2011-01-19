@@ -100,7 +100,13 @@ if(!defined('__PRAGYAN_CMS'))
 			<div class="contentinnertube">
 				<div id="leftContent">
 					<div class="menucontainer">
+						<div class="toptoptop">
+						&nbsp;
+						</div>
 		    				<?php echo $MENUBAR; ?>
+		    			<div class="bottombottombottom">
+		    			&nbsp;
+		    			</div>
 					</div> 
 				</div>
 				<div id="rightContent">
