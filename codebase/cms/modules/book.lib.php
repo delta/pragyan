@@ -229,7 +229,7 @@ RET;
 
 <script type="text/javascript">
 <!--
-var delay = 500;
+var delay = 100;
 var initialInfo = new Object();
 $(document).ready(function() {
 	$('.active').removeClass('active');
