@@ -616,7 +616,10 @@ RET;
 			)
 	);
 	$ret = smarttable::render(array('permtable','permtable2'),$smarttableconfig);
-	$baseURL = prettyurl("./+grant&doaction=changePerm");
+	$globals = getGlobalSettings();
+	$baseURL = "./+grant&doaction=changePerm";
+	if($globals['url_rewrite']=='false')
+		$baseURL = prettyurl($baseURL);
 	$ret .= <<<RET
 <style type="text/css" title="currentStyle">
 	div#permtable_filter input { width: 90px; }
