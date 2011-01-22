@@ -2,7 +2,7 @@
  * @author Boopathi
  * @description Adding an extra behaviour to the native Javascript function
  * @usage function(){}.debounce()
- 
+*/ 
 Function.prototype.debounce = function(threshold, execAsap) {
 	var func = this, timeout;
 	return function debounced(){
@@ -19,45 +19,61 @@ Function.prototype.debounce = function(threshold, execAsap) {
 		timeout = setTimeout(delayed, threshold || 100);
 	}
 }
- **/
+
 $(function() {
 	
 	/*
 	 * Hover Function for Menu
 	 */
-	
 	var topnavLi = $("ul.topnav > li");
-	var registerEvt = "<a href=\"register\" class=\"registerButton\" style=\"display:none;position:absolute;margin-top:-22px;left:120px;padding:0px 10px;border-radius: 10px;-moz-border-radius:10px;-webkit-border-radius:10px\">+</a>";
+	var registerEvt = "<a href=\"<<<href>>>\" class=\"registerButton\" style=\"display:none;position:absolute;margin-top:-22px;left:120px;padding:0px 10px;border-radius: 10px;-moz-border-radius:10px;-webkit-border-radius:10px\">+</a>";
+	var subMenuIsClosed = true;
 	
-	topnavLi.hover(function(){
-	 	$(this).children("ul.subnav").css({display:"block",opacity:0,left: 50}).animate({left: 0, opacity:1}, 250);
-	},function() {
-		$(this).find("ul.subnav").css({display: 'none'});
-	}).bind({
+	topnavLi.bind({
 		mouseenter: function() {
-			$(this).animate({paddingLeft: 10}, 75);
+			$(this).stop().animate({
+				paddingLeft: 10
+			}, 75).children("ul.subnav").css({
+				display:"block",opacity:0,left: 50
+			}).stop().delay(250).animate({
+				left: 0, opacity:1
+			}, 250).find("ul").css({
+				display:"none"
+			});
 		},
 		mouseleave: function() {
-			$(this).animate({paddingLeft: 0}, 100);
+			$(this).stop().animate({paddingLeft: 0}, 100).find("ul.subnav").css({display: 'none'});
 		}
-	}).find("ul.subnav > li").bind({
-		mouseenter: function(){
-	 		$(this).children("ul.subnav").slideDown(100);
+	}).find("ul.depth2 > li").bind({
+		click: function(){
+	 		var suub = $(this).children("ul.depth3");
+	 		if(subMenuIsClosed) {
+	 			suub.stop().slideDown(100);
+	 			subMenuIsClosed = false;
+	 		}
+	 		else {
+	 			suub.stop().slideUp(100);
+	 			subMenuIsClosed = true;
+	 		}
+	 		if((suub.length != 0) && (subMenuIsClosed == false))
+	 			return false;
+		},
+		dblclick: function() {
+			var url = $(this).children("a").attr("href");
+			location.href = url;
 		},
 		mouseleave: function() {
 			$(this).find("ul.subnav").css({display: 'none'});
+			subMenuIsClosed = true;
 		}
 	}).end().parent().children("#cms-menu-item0").find("ul.depth3 > li").append(registerEvt).bind({
 			mouseenter: function() {
-				$(this).find(".registerButton").show().bind({
+				$(this).find(".registerButton").stop().show().bind({
 					mouseenter: function(){
 						$(this).css({background: "white", color: "black"});
 					},
 					mouseleave: function(){
 						$(this).css({background: "none", color: "white"});
-					},
-					click: function(){
-						return false;
 					}
 				});
 			},

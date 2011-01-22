@@ -84,9 +84,29 @@ if(!defined('__PRAGYAN_CMS'))
 		</div>
 	</div>
 	<div class="innercontainer">
+	
 		<div id="header">
-			
+
 			<div id="invisibleContainer">
+			<!--
+				<svg style="position: absolute; width: 150px; height: 180px;background: white;">
+	    	 		<rect x="23" y="23" height="155" width="105" style="fill: #000; opacity: 0.2" />
+    	 	   
+			 		<path id="pragyan_legs" d="M114 117
+			 		c5 -25 -30 -14 -50 5
+			 		c-10 10 -25 25 -24 42
+			 		c4 -15 10 -25 28 -40
+			 		c20 -15 40 -20 45 -6
+			 		z
+			 		" style="fill: #000;stroke:blue;stroke-width:1;opacity: 0.71" />
+			 		
+			 		<path id="pragyan_wheel" d="M92 116
+			 		c-31 5 -31 43 0 47
+			 		c31 -5 31 -43 0 -47
+			 		z" style="fill: #999;stroke: #fedcba; stroke-width:1;" />
+			 		
+				</svg>
+			-->
 				<a href="<?php echo $urlRequestRoot?>">
 					<div id="invisible">Pragyan 2011</div>
 				</a>
@@ -96,6 +116,7 @@ if(!defined('__PRAGYAN_CMS'))
 		</div>
 		<div class="clearer"></div>
 		<div class="contentcontainer">
+		
 			<div class="clearer"></div>
 			<div class="contentinnertube">
 				<div id="leftContent">
@@ -140,6 +161,7 @@ if(!defined('__PRAGYAN_CMS'))
 					
 				</div>
 				<div id="centerContent" class="cont">
+
 					<div id="ticker-wrapper" class="no-js">
 					
 					 <?php if(isset($WIDGETS[1])) echo $WIDGETS[1]; ?>
