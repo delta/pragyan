@@ -18,6 +18,7 @@ if(!defined('__PRAGYAN_CMS'))
 <link rel="stylesheet" type="text/css" href="<? echo $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
 <link rel="stylesheet" type="text/css" href="<? echo $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
 <link rel="stylesheet" type="text/css" href="<? echo $TEMPLATEBROWSERPATH; ?>/index.css" media="all" />
+<script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/scripts/jquery-latest.js" ></script>
 <?global $urlRequestRoot;	global $PAGELASTUPDATED;
 if($PAGELASTUPDATED!="")
 	echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";

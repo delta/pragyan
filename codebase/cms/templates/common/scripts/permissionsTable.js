@@ -15,7 +15,7 @@ function changePerm(e, permid, usergroupid, ug) {
 			alert ("Browser does not support HTTP Request");
 			return;
 		}
-		var url = './+grant&doaction=changePerm&permid=' + permid + '&usergroupid=' + usergroupid + '&permtype=' + ug + '&pageid=' + pageid + '&perm=' + e.value;
+		var url = baseURL + '&permid=' + permid + '&usergroupid=' + usergroupid + '&permtype=' + ug + '&pageid=' + pageid + '&perm=' + e.value;
 		xmlhttp.onreadystatechange = stateChanged;
 		xmlhttp.open("GET",url,true);
 		xmlhttp.send(null);
