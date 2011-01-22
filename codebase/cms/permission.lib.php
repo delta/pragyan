@@ -616,6 +616,7 @@ RET;
 			)
 	);
 	$ret = smarttable::render(array('permtable','permtable2'),$smarttableconfig);
+	$baseURL = prettyurl("./+grant&doaction=changePerm");
 	$ret .= <<<RET
 <style type="text/css" title="currentStyle">
 	div#permtable_filter input { width: 90px; }
@@ -623,6 +624,7 @@ RET;
 </style>
 <script type="text/javascript" language="javascript" src="$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts/permissionsTable.js"></script>
 <script type="text/javascript">
+var baseURL = "$baseURL";
 var pageid = {$pageid};
 var permissions = {{$perms}};
 var permGroups;
