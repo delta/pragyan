@@ -170,7 +170,7 @@ body img
 #right2 object {
 	z-index: -100;
 }
-#right3 > h3 {
+.Rblue > h3 {
 	background: #136dac;
 	padding: 2px 5px;
 	position: relative;
@@ -178,19 +178,19 @@ body img
 	right: 0;
 	width: 259px;
 }
-#right3 div.link {
+.Rblue div.link {
 	background-color: transparent;
 	width : 100%;
 	padding : 3px 2px;
 	
 }
-#right3 a {
+.Rblue a {
 	text-decoration : none;
 	color : #aaa;
 	font-family : 'Lucida Grande','Lucida Sans Unicode',Verdana,Arial,Helvetica,sans-serif;
 	font-size : small;
 }
-#right3 div.link:hover {
+.Rblue div.link:hover {
 	background-color : #136dac;
 	color: white;
 }

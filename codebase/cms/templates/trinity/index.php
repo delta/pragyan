@@ -89,7 +89,7 @@ if(!defined('__PRAGYAN_CMS'))
 
 			<div id="invisibleContainer">
 			<!--
-				<svg style="position: absolute; width: 150px; height: 180px;background: white;">
+				<svg style="position: absolute; width: 150px; height: 180px;opacity:0.5">
 	    	 		<rect x="23" y="23" height="155" width="105" style="fill: #000; opacity: 0.2" />
     	 	   
 			 		<path id="pragyan_legs" d="M114 117
@@ -140,12 +140,11 @@ if(!defined('__PRAGYAN_CMS'))
 					<!-- Countdown dashboard end -->
 					
 					</div> 
-					<div id="right2" class="cont"> </div>
 					<div id="right2" class="cont">
 					<h4>ETA Pragyan 2011</h4>				
 					</div>
 					<?php if(isset($WIDGETS[3])) echo $WIDGETS[3]; ?>
-					<div id="right3" class="cont">
+					<div id="right3" class="cont Rblue">
 					
 						<h3>Links</h3>
 						<a href="http://www.pragyan.org/11/home/making_of_pragyan_wheel">
@@ -158,6 +157,21 @@ if(!defined('__PRAGYAN_CMS'))
 						
 					</div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
+					
+					<div id="right4" class="cont Rblue">
+						<h3>KeyBoard Shortcuts</h3>
+						<address>CTRL + ALT + K = Enable / Disable Keyboard Shortcuts</address>
+						<br />
+						<ul style="list-style:none;margin:0; padding: 0;">
+						<li>CTRL + H = Home</li>
+						<li>CTRL + E = Events</li>
+						<li>CTRL + W = Workshops</li>
+						<li>CTRL + Q = Quicklinks</li>
+						<li>CTRL + S = Save Page as PDF</li>
+						<li>CTRL + L = Login</li>
+						<li>CTRL + R = Register</li>
+						</ul>
+					</div>
 					
 				</div>
 				<div id="centerContent" class="cont">
@@ -256,7 +270,7 @@ if($action!='login'){
 			<a href="./" id="extendHead" >
 			<div class="extendHead">
 			<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/../common/icons/16x16/actions/go-down.png" />
-			Extended Menu
+			Quicklinks
 			</div></a>
 	</div>
 </div>
