@@ -26,9 +26,8 @@ $(function() {
 	 * Hover Function for Menu
 	 */
 	var topnavLi = $("ul.topnav > li");
-	var registerEvt = "<a href=\"<<<href>>>\" class=\"registerButton\" style=\"display:none;position:absolute;margin-top:-22px;left:120px;padding:0px 10px;border-radius: 10px;-moz-border-radius:10px;-webkit-border-radius:10px\">+</a>";
+	var registerEvt = "<a href=\"{{{href}}}\" class=\"registerButton\" style=\"display:none;color:blue;position:absolute;margin-top:-22px;left:120px;padding:0px 10px;border-radius: 10px;-moz-border-radius:10px;-webkit-border-radius:10px\">+</a>";
 	var subMenuIsClosed = true;
-	
 	topnavLi.bind({
 		mouseenter: function() {
 			$(this).stop().animate({
@@ -66,14 +65,17 @@ $(function() {
 			$(this).find("ul.subnav").css({display: 'none'});
 			subMenuIsClosed = true;
 		}
-	}).end().parent().children("#cms-menu-item0").find("ul.depth3 > li").append(registerEvt).bind({
+	}).end().parent().children("#cms-menu-item0").find("ul.depth3 > li").append(function(){
+		var actual = $(this).children("a").attr("href");
+		return registerEvt.replace("{{{href}}}", actual+"registrations");
+	}).bind({
 			mouseenter: function() {
 				$(this).find(".registerButton").stop().show().bind({
 					mouseenter: function(){
-						$(this).css({background: "white", color: "black"});
+						$(this).css({background: "#027703", color: "black"});
 					},
 					mouseleave: function(){
-						$(this).css({background: "none", color: "white"});
+						$(this).css({background: "none", color: "blue"});
 					}
 				});
 			},
@@ -94,21 +96,23 @@ $(function() {
 	
 	///Login Form
 	var loginForm = $("#hc_loginform");
-	$("a.cms-actionlogin").click(function() {
+	function openLoginDialog(target) {
+		if(target == null) target = this;
 		
 		///User-friendly and safety - password clear
 		loginForm.css({display:"block", top:-200}).animate({top:0}, 100).find("#user_email").focus().end().find("#user_password").attr("value","");
 		
 		///Display form when mouse over the table.
 		loginForm.hover(function(){
-				$(this).css({display: "block"});
+				$(target).css({display: "block"});
 				
 			}, function(){
-				$(this).slideUp(100);//css("display","none");
+				$(target).slideUp(100);//css("display","none");
 				
 		});
 		return false;
-	}).bind({
+	}
+	$("a.cms-actionlogin").click(openLoginDialog).bind({
 		click: function(event){ event.preventDefault(); return false; }
 	});
 	
@@ -117,7 +121,8 @@ $(function() {
 	 */
 	var isClosed = true;
 	var extTarget = $("#exthead"); //to reduce reflow
-	$(".extendHeadLink a").bind({
+	var extLink = $(".extendHeadLink a");
+	extLink.bind({
 		mouseenter: function() {
 			extTarget.css({top: -3});
 		},
@@ -125,22 +130,24 @@ $(function() {
 			if(isClosed)
 				extTarget.css({top: 0});
 		}
-	}).click(function() {
+	}).click(extendHeader);
+	
+	function extendHeader() {
 		if(isClosed) {
 			isClosed = false;
 			$("body").animate({scrollTop: 0}, 400);
-			extTarget.animate({height: 300}, 400,function(){$(this).children(".extendedContainer").fadeIn(50);});
+			extTarget.stop().animate({height: 300}, 400,function(){$(this).children(".extendedContainer").fadeIn(50);});
 			var path= templateBrowserPath + "/../common/icons/16x16/actions/go-up.png"
-			$(this).find("img").attr("src", path);
+			extLink.find("img").attr("src", path);
 		}
 		else {
 			isClosed = true;
-			extTarget.children(".extendedContainer").fadeOut(50, function(){$(this).parent().animate({height: 0}, 300);});
+			extTarget.children(".extendedContainer").fadeOut(50, function(){$(this).parent().stop().animate({height: 0}, 300);});
 			var path= templateBrowserPath + "/../common/icons/16x16/actions/go-down.png"
-			$(this).find("img").attr("src", path);
+			extLink.find("img").attr("src", path);
 		}
 		return false;
-	});	
+	}
 	
 	/**
 	 * Profile Menu
@@ -190,6 +197,50 @@ $(function() {
 	* Enable ticker
 	*/
 	$('#js-news').ticker({titleText: "Updates : "});
+	
+	
+	/**
+	* Enable keyboard Shortcuts
+	*/
+	$.ctrl = function(key, callback, args) {
+		var isCtrl = false;
+		var isAlt = false;
+		var isEnabled = true;
+		$(document).keydown(function(e) {
+			if(!args)args=[];
+			if(e.keyCode==17)isCtrl = true;
+			if(e.keyCode==18)isAlt = true;
+			if(e.keyCode == key.charCodeAt(0) && isCtrl && isEnabled) {
+            	callback.apply(this, args);
+            	return false;
+        	}
+        	if(e.keyCode == "K".charCodeAt(0) && isCtrl && isAlt) {
+        		var ot = $("#right4");
+        		if(isEnabled) {
+        			isEnabled=false;
+        			ot.children("ul").hide(50).parent().children("h3").html("Keyboard Shortcuts (Disabled)").css("background", "#666");
+        		}
+        		else {
+        			isEnabled=true;
+        			ot.children("h3").css("background", "#136dac").html("Keyboard Shortcuts (Enabled)").parent().children("ul").show(50);
+        		}
+        		return false;
+        	}
+    	}).keyup(function(e) {
+    	    if(e.keyCode == 17) isCtrl = false;
+    	    if(e.keyCode == 18) isAlt = false;
+		});
+    }
+    
+    //Assign Shortcuts
+    $.ctrl("H", function(){location.href=urlRequestRoot;});
+    $.ctrl("E", function(){location.href=urlRequestRoot+ "/home/events/";});
+    $.ctrl("Q", function(){extendHeader();});
+    $.ctrl("L", function(){openLoginDialog("a.cms-actionlogin")});
+    $.ctrl("W", function(){location.href=urlRequestRoot+"/home/workshops/";});
+    $.ctrl("S", function(){location.href="./+pdf"});
+    $.ctrl("R", function(){location.href="+login&subaction=register"});
+        
 });
 
 ///Login form Validation
