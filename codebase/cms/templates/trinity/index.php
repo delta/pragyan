@@ -33,6 +33,7 @@ if(!defined('__PRAGYAN_CMS'))
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
+    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.debounce.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
     <script language="JavaScript">
@@ -45,7 +46,6 @@ if(!defined('__PRAGYAN_CMS'))
 			DisplayFormat = "%%D%% Days, %%H%% Hours, <br>%%M%% Minutes, %%S%% Seconds.";
 			FinishMessage = "Day 0 pragyan";
 		</script>
- 
     <script language="javascript" type="text/javascript">
 		//defined here for use in javascript
 		var templateBrowserPath = "<?php echo $TEMPLATEBROWSERPATH ?>";
@@ -86,7 +86,7 @@ if(!defined('__PRAGYAN_CMS'))
 	<div class="innercontainer">
 	
 		<div id="header">
-
+			
 			<div id="invisibleContainer">
 			<!--
 				<svg style="position: absolute; width: 150px; height: 180px;opacity:0.5">
@@ -116,7 +116,6 @@ if(!defined('__PRAGYAN_CMS'))
 		</div>
 		<div class="clearer"></div>
 		<div class="contentcontainer">
-		
 			<div class="clearer"></div>
 			<div class="contentinnertube">
 				<div id="leftContent">
@@ -140,13 +139,71 @@ if(!defined('__PRAGYAN_CMS'))
 					<!-- Countdown dashboard end -->
 					
 					</div> 
+					<div id="right2" class="cont"> </div>
 					<div id="right2" class="cont">
 					<h4>ETA Pragyan 2011</h4>				
 					</div>
 					<?php if(isset($WIDGETS[3])) echo $WIDGETS[3]; ?>
 					<div id="right3" class="cont Rblue">
-					
+					<h3>Sponsors</h3>
+					<link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/slider.css" />
+					<script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/s3Slider.js"></script>
+			    <script type="text/javascript">
+			    $(document).ready(function() {
+      		 $('#slider').s3Slider({
+          	  timeOut: 3000
+       			 });
+    			});
+    			</script>
+					 <div id="slider">
+        <ul id="sliderContent">
+            <li class="sliderImage">
+                <a href=""><img src="http://www.pragyan.org/11/home/bhash%20updated.jpg" alt="1" /></a>
+                <span class="top"></span>
+            </li>
+            <li class="sliderImage">
+                <a href=""><img src="http://www.pragyan.org/11/home/bies%20updated.jpg" alt="2" /></a>
+                <span class="bottom"></span>
+            </li>
+            <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/dhl%20updated.jpg" alt="3" />
+                <span class="top"></span>
+            </li>
+            <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/ethos%20updated.jpg" alt="4" />
+                <span class="bottom"></span>
+            </li>
+             <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/freshersworld%20updated.jpg" alt="5" />
+                <span class="top"></span>
+            </li>
+            <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/gfg%20updated.jpg" alt="6" />
+                <span class="bottom"></span>
+            </li>
+             <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/landmark%20updated.jpg" alt="7" />
+                <span class="top"></span>
+            </li>
+            <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/mark%20my%20fest%20updated.jpg" alt="8" />
+                <span class="bottom"></span>
+            </li>
+             <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/mcafee%20updated.jpg" alt="9" />
+                <span class="top"></span>
+            </li>
+            <li class="sliderImage">
+                <img src="http://www.pragyan.org/11/home/thinkdigit%20updated.jpg" alt="10" />
+                <span class="bottom"></span>
+            </li>
+            <div class="clear sliderImage"></div>
+        </ul>
+    </div>
 						<h3>Links</h3>
+<a href="http://www.pragyan.org/11/home/publicity_video">
+                                                <div class="link">Video : Pragyan 2011 Publicity Video</div></a>
+
 						<a href="http://www.pragyan.org/11/home/making_of_pragyan_wheel">
 						<div class="link">Video : Making of the Pragyan Wheel</div></a>
 						<a href="http://www.pragyan.org/blog"><div class="link">Pragyan Blog</div></a>
@@ -154,7 +211,10 @@ if(!defined('__PRAGYAN_CMS'))
 						</div></a>
 						<a href="http://www.pragyan.org/10"><div class="link">Pragyan 2010</div></a>
 						<a href="http://www.pragyan.org/09"><div class="link">Pragyan 2009</div></a>
-						
+<h3>Downloads</h3>
+<a href="http://www.pragyan.org/11/home/guest_lectures/GL-Brochure1.pdf"><div class="link">Pragyan Guest Lectures Brochure</div></a>
+<h3><a href="http://www.pragyan.org/11/home/forum"><div 
+style="font-size:16px;color:#FFF;font-weight:bold;">Forum</div></a></h3>
 					</div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 					
@@ -175,7 +235,6 @@ if(!defined('__PRAGYAN_CMS'))
 					
 				</div>
 				<div id="centerContent" class="cont">
-
 					<div id="ticker-wrapper" class="no-js">
 					
 					 <?php if(isset($WIDGETS[1])) echo $WIDGETS[1]; ?>
@@ -226,21 +285,20 @@ if(!defined('__PRAGYAN_CMS'))
 		<?php echo $FOOTER;?>	
 	</div>
 	<div id="quicklinks">
-		
-		<div id="linksid">
+	<div id="linksid">
 
-			<a href="http://www.facebook.com/pragyan.nitt" target="_blank" title="Facebook"><span id="link1" class="qlinks">&nbsp;</span></a>
-			<a href="http://www.stumbleupon.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Stumbleupon"><span id="link2"  class="qlinks">&nbsp;</span></a> 
-			<a href="http://www.pragyan.org/mail" target="_blank" title="Mail"><span id="link3" class="qlinks">&nbsp;</span></a>
-			<a href="http://twitter.com/pragyan_nitt" target="_blank" title="Twitter"><span id="link4" class="qlinks" >&nbsp;</span></a>
-			<a href="http://www.pragyan.org/11/home/news/+rss" target="_blank" title="RSS"><span id="link5" class="qlinks">&nbsp;</span></a>
-			<a href="http://digg.com/submit?phase=2&url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Digg"><span id="link6" class="qlinks">&nbsp;</span></a>
-			<a href="http://www.furl.net/storeIt.jsp?u=http://www.pragyan.org&t=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Furl"><span id="link7" class="qlinks">&nbsp;</span></a>
-			<a href="http://www.google.com/bookmarks/mark?op=edit&bkmk=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Google"><span id="link8" class="qlinks">&nbsp;</span></a>
-			<a href="http://del.icio.us/post?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Delicious"><span id="link9" class="qlinks">&nbsp;</span></a>
-			<a href="http://reddit.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Reddit"><span id="link10" class="qlinks">&nbsp;</span></a>
-		
-		</div>
+		<a href="http://www.facebook.com/pragyan.nitt" target="_blank" title="Facebook"><span id="link1" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.stumbleupon.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Stumbleupon"><span id="link2"  class="qlinks">&nbsp;</span></a> 
+		<a href="http://www.pragyan.org/mail" target="_blank" title="Mail"><span id="link3" class="qlinks">&nbsp;</span></a>
+		<a href="http://twitter.com/pragyan_nitt" target="_blank" title="Twitter"><span id="link4" class="qlinks" >&nbsp;</span></a>
+		<a href="http://www.pragyan.org/11/home/news/+rssview" target="_blank" title="RSS"><span id="link5" class="qlinks">&nbsp;</span></a>
+		<a href="http://digg.com/submit?phase=2&url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Digg"><span id="link6" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.furl.net/storeIt.jsp?u=http://www.pragyan.org&t=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Furl"><span id="link7" class="qlinks">&nbsp;</span></a>
+		<a href="http://www.google.com/bookmarks/mark?op=edit&bkmk=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Google"><span id="link8" class="qlinks">&nbsp;</span></a>
+		<a href="http://del.icio.us/post?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Delicious"><span id="link9" class="qlinks">&nbsp;</span></a>
+		<a href="http://reddit.com/submit?url=http://www.pragyan.org&title=Pragyan%20:%20The%20International%20Technical%20Festival%20of%20NIT%20Trichy" target="_blank" title="Reddit"><span id="link10" class="qlinks">&nbsp;</span></a>
+
+	</div>
 	<?php echo $ACTIONBARPAGE ?>
 <?php                                                                           
 global $action;                                                                 
