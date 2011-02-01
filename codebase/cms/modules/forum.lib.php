@@ -373,8 +373,7 @@ PRE;
 			$postpart =<<<PRE
 		<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
         <p align="left"><a href="+post&subaction=post_reply&thread_id=$forum_id"><img title="Reply" src="$temp/reply.gif" /></a>&nbsp;
-        <a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
-        <p align="right"><a href="+view"><img title="Go Back to Forum" src="$temp/go_back.gif" /></a>
+        <a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a><a href="+view"><img title="Go Back to Forum" src="$temp/go_back.gif" /></a>
 		<table id="forum" width="100%" cellpadding="3" cellspacing="1" bordercolor="1" >
 		<tr>
         <td class="forumThreadRow" rowspan="2"><a href="+moderate&subaction=delete&thread_id=$rows[forum_thread_id]">
@@ -398,7 +397,7 @@ PRE;
 				$postpart .= <<<PRE
 						</strong><br /><br />
 						<script type="text/javascript" languauge="javascript" src="$js"></script>
-						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
+						<a  id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
 						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
 						$lastLogin </small></div>
 PRE;
@@ -465,7 +464,7 @@ PRE;
 					$postpart .= <<<PRE
 						</strong><br /><br />
 						<script type="text/javascript" languauge="javascript" src="$js"></script>
-						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
+						<a id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
 						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
 						$lastLogin </small></div>
 PRE;
@@ -958,8 +957,8 @@ PRE1;
 				}
 				$thread_Header .=<<<PRE
 				<link rel="stylesheet" href="$temp/styles.css" type="text/css" />
-				&nbsp<a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
-				<p align="right"><a href="+view"> <img title="Go Back to Forum" src="$temp/go_back.gif" /></a>
+				&nbsp<a href="+post&subaction=create_thread"><img title="New Thread" src="$temp/newthread.gif" /></a>&nbsp;<a 
+href="+view"> <img title="Go Back to Forum" src="$temp/go_back.gif" /></a>
 				<table width="100%" cellpadding="4" cellspacing="2" id="forum" >
 PRE;
 			$forumHtml = $thread_Header;
@@ -1019,7 +1018,7 @@ PRE;
 					$threadHtml .= <<<PRE
 						</strong><br /><br />
 						<script type="text/javascript" languauge="javascript" src="$js"></script>
-						<a class="threadRow" id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
+						<a id="$text" href="javascript:toggle('$content','$text');" >Show Details</a><br />
 						<div id="$content" style="display: none;"><small>Posts: $posts <br />Joined: $reg_date <br />Last Visit:
 						$lastLogin </small></div>
 PRE;

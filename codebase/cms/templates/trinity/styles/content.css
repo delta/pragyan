@@ -169,4 +169,8 @@ div#content p > strong {
 	-moz-border-radius:  0 0 10px 10px;
 	border-radius:  0 0 10px 10px;
 }
-
+.imagebox {
+background-color:transparent;
+border:2px solid #ABABAB;
+padding:3px;
+}

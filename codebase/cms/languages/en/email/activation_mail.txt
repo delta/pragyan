@@ -12,6 +12,5 @@ Administrator
 {WEBSITE} ({DOMAIN})
 
 -----------------------------------------------------------------------
-This mail was sent because you or someone registered on {DOMAIN} with this mail id.
-If you did not register with {DOMAIN} then kindly reply to this email address
-with "Mail removal" as the subject and a copy of this mail.
+This mail was sent because you or someone registered on {DOMAIN} with this
+mail id. Please ignore the mail if you didn't.

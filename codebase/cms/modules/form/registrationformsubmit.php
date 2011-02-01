@@ -118,7 +118,7 @@ if(!defined('__PRAGYAN_CMS'))
 				// send mail code starts here - see common.lib.php for more
 
 				if ($footerRow[1]) {
-					$from = CMS_EMAIL;
+					$from = ''; // Default CMS email will be added automatically if this is left blank
 					$to = getUserEmail($userId);
 
 					$pageId = getPageIdFromModuleComponentId('form',$moduleCompId);

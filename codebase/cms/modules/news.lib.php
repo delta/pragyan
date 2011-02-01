@@ -292,7 +292,8 @@ END;
 	public function actionView()
 	{
 		$moduleCompId=$this->moduleComponentId;
-		$newsId=isset($_GET['id'])?$_GET['id']:"";
+		$newsId=isset($_GET['id'])?escape($_GET['id']):"";
+
 		$newsView = "";
 		if($newsId=='')
 		{
@@ -311,9 +312,12 @@ END;
 		while($newsResult=mysql_fetch_assoc($result))
 		{
 			$newsView.=<<<NEWS
-				<h2><a href="$newsResult[news_link]"> $newsResult[news_title]</a></h2>
+<div class='pragyan_newsbox'>
+				<h3><a href="$newsResult[news_link]"> $newsResult[news_title]</a></h3>
 				<p>$newsResult[news_feed]</p>
+</div>
 NEWS;
+
 		}
 		$newsView .= "<br>" .$temp['news_copyright'];
 		return $newsView;

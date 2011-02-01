@@ -609,7 +609,7 @@ class messenger {
 				
 		function mailer($to,$mailtype,$key,$from) {
 				
-				if(!isset($from)) $from="from: ".CMS_TITLE." <".CMS_EMAIL.">";
+				if(empty($from)) $from="from: ".CMS_TITLE." <".CMS_EMAIL.">";
 				
 				//init mail template file path
 				$mail_filepath= MAILPATH."/".LANGUAGE."/email/$mailtype.txt"; 
