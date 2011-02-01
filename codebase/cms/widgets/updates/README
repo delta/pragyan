@@ -10,10 +10,10 @@
  */
 
 =========================================
-NEWS / UPDATE WIDGET
+UPDATES IDGET
 =========================================
 
-The News widget has 5 Variables
+The Updates widget has 5 Variables
 Three local and two global
 Local Variables - News, enable javascript, Number of news items to
 		 be displayed if js enabled

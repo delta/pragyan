@@ -19,7 +19,7 @@ if(!defined('__PRAGYAN_CMS'))
 global $sourceFolder;
 require_once("$sourceFolder/widgetFramework.class.php");
 
-class news extends widgetFramework
+class updates extends widgetFramework
 {
 	public $configs;
 	public $timeformat;
