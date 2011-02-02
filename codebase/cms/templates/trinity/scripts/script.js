@@ -155,11 +155,11 @@ $(function() {
 	var profileMenu = $("#hc_profile");
 	$(".cms-actionprofile").click(function(){
 		
-		profileMenu.slideDown(100);
+		profileMenu.slideDown(10);
 		profileMenu.hover(function(){
 				$(this).css("display","block");
 			}, function(){
-				$(this).slideUp(100);//css("display","none");
+				$(this).slideUp(10);//css("display","none");
 		});
 		return false;
 	});
@@ -197,11 +197,28 @@ $(function() {
 	* Enable ticker
 	*/
 	$('#js-news').ticker({titleText: "Updates : "});
-	
+
+	/**
+	 * Toggle display keyboard shortcuts
+         */
+	var kbd_shorts=$('#kbd_shortcuts');
+	var kbd_disp=$('#kbd_disp');
+	$('#kbd_disp').click(function(){
+		if(kbd_disp.html()=="[+]")
+		{
+			kbd_disp.html("[-]");
+			kbd_shorts.slideDown(100);
+		}
+		else {
+			kbd_disp.html("[+]");
+			kbd_shorts.slideUp(100);
+		}
+		});
+
 	
 	/**
-	* Enable keyboard Shortcuts
-	*/
+	 * Enable keyboard Shortcuts
+	 */
 	$.ctrl = function(key, callback, args) {
 		var isCtrl = false;
 		var isAlt = false;
