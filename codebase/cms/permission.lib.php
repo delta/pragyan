@@ -685,9 +685,9 @@ function getPerms($pageId, $groupuser, $yesno) {
 
 function customGetAllUsers() {
 	$ret = "";
-	$result = mysql_query("SELECT `user_name`,`user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+	$result = mysql_query("SELECT `user_email`,`user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
 	while($row = mysql_fetch_array($result))
-		$ret .= "'{$row['user_id']}' : '{$row['user_name']}', ";
+		$ret .= "'{$row['user_id']}' : '{$row['user_email']}', ";
 	$ret = rtrim($ret,", ");
 	return $ret;	
 }
