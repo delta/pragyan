@@ -381,8 +381,12 @@ BODY;
 				"`form_elementtype`, `form_elementsize`, `form_elementtypeoptions`, `form_elementdefaultvalue`, " .
 				"`form_elementmorethan`, `form_elementlessthan`, `form_elementcheckint`, `form_elementtooltiptext`," .
 				"`form_elementisrequired` ,`form_elementrank`) VALUES " .
-				"($moduleCompId, $elementId, 'username', 'Enter your name:', 'text', 100, NULL , NULL , NULL , NULL , 0, 'Enter your full name here', 0, $elementId)";
+				"($moduleCompId, $elementId, 'register', 'Are you sure you want to register ?', 'radio', 100, 'Yes|No' , NULL , NULL , NULL , 0, '', 0, $elementId)";
 		$resultAdd=mysql_query($queryInsert);
+
+
+
+
 
 		if(mysql_affected_rows()>0)
 			return true;
