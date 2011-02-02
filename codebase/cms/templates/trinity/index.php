@@ -213,13 +213,16 @@ if(!defined('__PRAGYAN_CMS'))
 						<a href="http://www.pragyan.org/09"><div class="link">Pragyan 2009</div></a>
 <h3>Downloads</h3>
 <a href="http://www.pragyan.org/11/home/guest_lectures/GL-Brochure1.pdf"><div class="link">Pragyan Guest Lectures Brochure</div></a>
-<h3><a href="http://www.pragyan.org/11/home/forum"><div 
-style="font-size:16px;color:#FFF;font-weight:bold;">Forum</div></a></h3>
-					</div>
+<h3>Forum</h3>
+<a href="http://www.pragyan.org/11/home/forum"><div class="link">Pragyan Main Forum</div></a>
+<a href="http://www.pragyan.org/11/home/events/brain_work/labyrinth/labyrinth_forum/"><div class="link">Labyrinth Forum</div></a>
+
+</div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 					
 					<div id="right4" class="cont Rblue">
-						<h3>KeyBoard Shortcuts</h3>
+						<h3>KeyBoard Shortcuts <a id='kbd_disp' style='float:right;cursor:pointer'>[+]</a></h3>
+<div id='kbd_shortcuts' style='display:none;'>
 						<address>CTRL + ALT + K = Enable / Disable Keyboard Shortcuts</address>
 						<br />
 						<ul style="list-style:none;margin:0; padding: 0;">
@@ -231,6 +234,7 @@ style="font-size:16px;color:#FFF;font-weight:bold;">Forum</div></a></h3>
 						<li>CTRL + L = Login</li>
 						<li>CTRL + R = Register</li>
 						</ul>
+</div>
 					</div>
 					
 				</div>
@@ -282,7 +286,7 @@ style="font-size:16px;color:#FFF;font-weight:bold;">Forum</div></a></h3>
 	</div>
 </div>
 	<div class="footercontainer">
-		<?php echo $FOOTER;?>	
+<a href="/11/home/contacts" style="float:left">Contact Us</a>		<?php echo $FOOTER;?>	<a href="/11/home/feedback" style="float:right">Feedback</a>
 	</div>
 	<div id="quicklinks">
 	<div id="linksid">

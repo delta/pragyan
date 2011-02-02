@@ -1,6 +1,6 @@
 #slider {
     width: 250px; /* important to be same as image width */
-    height: 90px; /* important to be same as image height */
+    height: 75px; /* important to be same as image height */
     position: relative; /* important */
 	overflow: hidden; /* important */
 	z-index:1;
@@ -18,7 +18,8 @@
     position: relative;
 	display: none;
 }
-.sliderImage span {
+.sliderImage span {
+
     display: none;
 }
 .clear {
