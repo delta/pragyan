@@ -194,6 +194,15 @@ body img
 	color: white;
 }
 
+div.rtbt {
+	float: left; 
+}
+div.rtbt h3 {
+	background: none repeat scroll 0 0 #136DAC;
+	padding: 2px 5px;
+	margin-right : 7px;
+}
+
 /**
 * For the registration page 
 **/
