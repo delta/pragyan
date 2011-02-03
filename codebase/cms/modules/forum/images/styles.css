@@ -1,21 +1,27 @@
 hr {	height : 1px;	border : 1px solid #eee;}
 hr.side-hr {	height : 1px;	border : 1px solid #eee;}
-td {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
-pre {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 11px;}
+td {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 14px;}
+pre {	font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 14px;}
 small {
 font-family : Verdana, Arial, Helvetica, sans-serif;	font-size : 10px;
 }
 .forumTableHeader {
-background-color : #A0B9F3;
+background-color : #777;
 text-align:center;
-border:1px solid #FFFFFF;
+border:1px solid #555;
+color:#FFF;
 }
 .forumTableIcon {
 vertical-align:middle;
 }
 .forumThreadRow {
-background-color : #DAE6FF;
-border:1px solid #FFFFFF;
+background-color : #CCC;
+border:1px solid #BBB;
+}
+.forumThreadRow a{
+color:#000;
+text-decoration:none;
+font-weight:bold;
 }
 .blank {
 border: 1px solid #FFFFFF;
@@ -25,7 +31,9 @@ background-color :#F6F4D0;
 border-left-color:#FFFFFF;
 }
 a.threadRow {
-text-decoration:none;
+color:#000;
+text-decoration:none !important;
+font-weight:bold !important;
 }
 a.threadRow:hover {
 text-decoration:underline;
