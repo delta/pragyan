@@ -239,7 +239,8 @@ if(!defined('__PRAGYAN_CMS'))
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 					
 					<div id="right4" class="cont Rblue">
-						<h3>KeyBoard Shortcuts</h3>
+
+    <h3>KeyBoard Shortcuts <a id='kbd_disp' style='float:right;cursor:pointer'>[+]</a></h3>
 <div id='kbd_shortcuts' style='display:none;'>
 						<address>CTRL + ALT + K = Enable / Disable Keyboard Shortcuts</address>
 						<br />

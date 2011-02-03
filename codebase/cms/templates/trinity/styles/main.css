@@ -196,6 +196,7 @@ body img
 
 div.rtbt {
 	float: left; 
+	cursor: pointer;
 }
 div.rtbt h3 {
 	background: none repeat scroll 0 0 #136DAC;

@@ -58,7 +58,7 @@ if(!defined('__PRAGYAN_CMS'))
 
 		$body .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/form/calendar/calendar.css" title="Aqua" />' .
 						 '<script type="text/javascript" src="'.$calpath.'/form/calendar/calendar.js"></script>';
-		$body .= '<br /><br /><div class="registrationform"><form class="fValidator-form" action="'.$action.'" method="post"';
+		$body .= '<br /><br /><div class="registrationform"><form class="fValidator-form cms-registrationform" action="'.$action.'" method="post"';
 		if($containsFileUploadFields)
 			$body .= ' enctype="multipart/form-data"';
 		$body .= '>';
@@ -69,7 +69,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$formResult = mysql_query($formQuery);
 		if(!$formResult)	{ displayerror('E52 : Invalid query: ' . mysql_error()); 	return false; }
 		if($formRow = mysql_fetch_assoc($formResult)) {
-			$body .= '<fieldset><legend>' . $formRow['form_heading'] . '</legend><br />' . $formRow['form_headertext'] . '<br />';
+			$body .= '<fieldset><legend>' . $formRow['form_heading'] . '</legend><br /><div style="text-align:center">' . $formRow['form_headertext'] . '</div><br />';
 		}
 		else {
 			displayerror('Could not load form data.');
@@ -85,9 +85,9 @@ if(!defined('__PRAGYAN_CMS'))
 		$body .= '<tr>'.
 				'<td colspan="2">* - Required Fields&nbsp;</td>'.
 			'</tr></table></fieldset>' .
-							'<br /><input type="submit" name="submitreg_form_'.$moduleCompId.'" value="Submit" />' .
+							'<br /><div style="text-align:center"><input type="submit" name="submitreg_form_'.$moduleCompId.'" value="Submit" />' .
 							'<br /><br />' . $formRow['form_footertext'] .
-							'</form></div>';
+							'</div></form></div>';
 
 		$body .= <<<SCRIPT
 			<script language="javascript" type="text/javascript">
