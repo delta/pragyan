@@ -198,6 +198,23 @@ $(function() {
 	*/
 	$('#js-news').ticker({titleText: "Updates : "});
 
+	/* Added by Abhishek */
+	
+	/**
+ 	 * For handling right columns sub menu
+ 	 */
+	$('#rt_topic_downloads').hide();
+	$('#rt_topic_forums').hide();
+	$('.rtbt').click(function(){
+
+		$('#rt_topic_links').slideUp(50);
+		$('#rt_topic_downloads').slideUp(50);
+		$('#rt_topic_forums').slideUp(50);
+		$key=$(this).attr('id').split("_").pop();
+		$('#rt_topic_'+$key).slideDown(300);
+	
+	});
+	
 	/**
 	 * Toggle display keyboard shortcuts
          */

@@ -200,7 +200,22 @@ if(!defined('__PRAGYAN_CMS'))
             <div class="clear sliderImage"></div>
         </ul>
     </div>
-						<h3>Links</h3>
+						
+<div style='clear:both;'>
+ <div class='rtbt' id='rt_bt_links'>
+ 	 <h3>Links</h3>
+ </div> 
+ <div class='rtbt' id='rt_bt_downloads'>
+	<h3>Downloads</h3>
+ </div> 
+ <div class='rtbt' id='rt_bt_forums'>
+	<h3>Forums</h3>
+ </div>
+</div>
+
+<div class='clearer'></div>
+
+<div id='rt_topic_links'>
 <a href="http://www.pragyan.org/11/home/publicity_video">
                                                 <div class="link">Video : Pragyan 2011 Publicity Video</div></a>
 
@@ -211,17 +226,20 @@ if(!defined('__PRAGYAN_CMS'))
 						</div></a>
 						<a href="http://www.pragyan.org/10"><div class="link">Pragyan 2010</div></a>
 						<a href="http://www.pragyan.org/09"><div class="link">Pragyan 2009</div></a>
-<h3>Downloads</h3>
+</div>
+<div id='rt_topic_downloads'>
 <a href="http://www.pragyan.org/11/home/guest_lectures/GL-Brochure1.pdf"><div class="link">Pragyan Guest Lectures Brochure</div></a>
-<h3>Forum</h3>
+</div>
+<div id='rt_topic_forums'>
 <a href="http://www.pragyan.org/11/home/forum"><div class="link">Pragyan Main Forum</div></a>
 <a href="http://www.pragyan.org/11/home/events/brain_work/labyrinth/labyrinth_forum/"><div class="link">Labyrinth Forum</div></a>
+</div>
 
 </div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 					
 					<div id="right4" class="cont Rblue">
-						<h3>KeyBoard Shortcuts <a id='kbd_disp' style='float:right;cursor:pointer'>[+]</a></h3>
+						<h3>KeyBoard Shortcuts</h3>
 <div id='kbd_shortcuts' style='display:none;'>
 						<address>CTRL + ALT + K = Enable / Disable Keyboard Shortcuts</address>
 						<br />
