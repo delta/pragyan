@@ -413,7 +413,7 @@ PRE;
 			$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`=$forum_id AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY forum_post_id ASC";
 			$result2 = mysql_query($sql2);
 			while ($rows = mysql_fetch_array($result2)) {
-				$count = $count + '1';
+				$count = $count + 1;
 				$post_title = ucfirst(parseubb(parsesmileys($rows['forum_post_title'])));
 				$post_content = (parseubb(parsesmileys($rows['forum_post_content'])));
 				$name = ucfirst(getUserName($rows['forum_post_user_id']));

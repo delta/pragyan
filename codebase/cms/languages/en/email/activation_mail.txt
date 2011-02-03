@@ -11,6 +11,8 @@ Regards,
 Administrator
 {WEBSITE} ({DOMAIN})
 
------------------------------------------------------------------------
-This mail was sent because you or someone registered on {DOMAIN} with this
-mail id. Please ignore the mail if you didn't.
+--------------------------------------------------------------------------
+This is an auto-generated email. Please do not reply to it as this email
+address is not monitored.
+This mail was sent because you or someone registered on {DOMAIN} 
+with this mail id. Please ignore the mail otherwise.
