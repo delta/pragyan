@@ -30,7 +30,7 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
 	global $uploadFolder;
 	$uploadDir = $sourceFolder . "/" . $uploadFolder;
 
-	$defaultUploadableFileTypes = '/\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z)$/i';
+	$defaultUploadableFileTypes = '/\.(css|xlsx|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z)$/i';
 	if($uploadableFileTypesArray === false)
 		$uploadFileTypesRegexp = $defaultUploadableFileTypes;
 	else {

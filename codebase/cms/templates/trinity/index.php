@@ -145,7 +145,7 @@ if(!defined('__PRAGYAN_CMS'))
 					</div>
 					<?php if(isset($WIDGETS[3])) echo $WIDGETS[3]; ?>
 					<div id="right3" class="cont Rblue">
-					<h3>Sponsors</h3>
+					<h3>Partners</h3>
 					<link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/slider.css" />
 					<script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/s3Slider.js"></script>
 			    <script type="text/javascript">
@@ -157,45 +157,54 @@ if(!defined('__PRAGYAN_CMS'))
  			</script>
 	 <div id="slider">
 	 <ul id="sliderContent">
+  <li class="sliderImage">
+                <a href="http://www.murugappa.com/"><img src="http://www.pragyan.org/11/home/murugappa.jpg" alt="10" /></a><span></span>
+
+            </li>
+  <li class="sliderImage">
+                <a href="http://www.codechef.com/goforgold"><img src="http://www.pragyan.org/11/home/gfg%20updated.jpg" alt="6" /></a><span></span>
+
+            </li>
+
+ <li class="sliderImage">
+                <a href="http://www.mcafee.com/"><img src="http://www.pragyan.org/11/home/mcafee%20updated.jpg" alt="9" /></a><span></span>
+
+            </li>
+
             <li class="sliderImage">
-                <a href="http://bhash.in/"><img src="http://www.pragyan.org/11/home/bhash%20updated.jpg" alt="1" /></a>
-                <span class="top"></span>
+                <a href="http://bhash.in/"><img src="http://www.pragyan.org/11/home/bhash%20updated.jpg" alt="1" /></a><span></span>
             </li>
             <li class="sliderImage">
-                <a href="http://www.bies.co.in/"><img src="http://www.pragyan.org/11/home/bies%20updated.jpg" alt="2" /></a>
-                <span class="bottom"></span>
+                <a href="http://www.bies.co.in/"><img src="http://www.pragyan.org/11/home/bies%20updated.jpg" alt="2" /></a><span></span>
+
             </li>
             <li class="sliderImage">
-                <a href="http://www.dhl.co.in/"><img src="http://www.pragyan.org/11/home/dhl%20updated.jpg" alt="3" /></a>
-                <span class="top"></span>
+                <a href="http://www.dhl.co.in/"><img src="http://www.pragyan.org/11/home/dhl%20updated.jpg" alt="3" /></a><span></span>
+
             </li>
             <li class="sliderImage">
-                <a href="http://www.ethosindia.in/"><img src="http://www.pragyan.org/11/home/ethos%20updated.jpg" alt="4" /></a>
-                <span class="bottom"></span>
+                <a href="http://www.ethosindia.in/"><img src="http://www.pragyan.org/11/home/ethos%20updated.jpg" alt="4" /></a><span></span>
+
             </li>
              <li class="sliderImage">
-                <a href="http://freshersworld.com/"><img src="http://www.pragyan.org/11/home/freshersworld%20updated.jpg" alt="5" /></a>
-                <span class="top"></span>
-            </li>
-            <li class="sliderImage">
-                <a href="http://www.codechef.com/goforgold"><img src="http://www.pragyan.org/11/home/gfg%20updated.jpg" alt="6" /></a>
-                <span class="bottom"></span>
+                <a href="http://freshersworld.com/"><img src="http://www.pragyan.org/11/home/freshersworld%20updated.jpg" alt="5" /></a><span></span>
+
             </li>
              <li class="sliderImage">
-                <a href="http://www.landmarkonthenet.com/"><img src="http://www.pragyan.org/11/home/landmark%20updated.jpg" alt="7" /></a>
-                <span class="top"></span>
+                <a href="http://www.landmarkonthenet.com/"><img src="http://www.pragyan.org/11/home/landmark%20updated.jpg" alt="7" /></a><span></span>
+
             </li>
             <li class="sliderImage">
-                <a href="http://markmyfest.com/"><img src="http://www.pragyan.org/11/home/mark%20my%20fest%20updated.jpg" alt="8" /></a>
-                <span class="bottom"></span>
+                <a href="http://markmyfest.com/"><img src="http://www.pragyan.org/11/home/mark%20my%20fest%20updated.jpg" alt="8" /></a><span></span>
+
+            </li>
+            <li class="sliderImage">
+                <a href="http://www.thinkdigit.com/"><img src="http://www.pragyan.org/11/home/thinkdigit%20updated.jpg" alt="10" /></a><span></span>
+
             </li>
              <li class="sliderImage">
-                <a href="http://www.mcafee.com/"><img src="http://www.pragyan.org/11/home/mcafee%20updated.jpg" alt="9" /></a>
-                <span class="top"></span>
-            </li>
-            <li class="sliderImage">
-                <a href="http://www.thinkdigit.com/"><img src="http://www.pragyan.org/11/home/thinkdigit%20updated.jpg" alt="10" /></a>
-                <span class="bottom"></span>
+                <a href="http://www.btechguru.com/"><img src="http://www.pragyan.org/11/home/btechguru.jpg" alt="10" /></a><span></span>
+
             </li>
             <div class="clear sliderImage"></div>
         </ul>
@@ -237,7 +246,10 @@ if(!defined('__PRAGYAN_CMS'))
 
 </div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
-					
+<div class="clearer"></div>
+<div class="Rblue"><h3>
+<a href="http://www.pragyan.org/11/home/schedule.xlsx"><div class="link">Schedule</div></a>
+</h3></div>
 					<div id="right4" class="cont Rblue">
 
     <h3>KeyBoard Shortcuts <a id='kbd_disp' style='float:right;cursor:pointer'>[+]</a></h3>
