@@ -807,7 +807,7 @@ function submitQuizEditForm($quizId) {
 		else {
 			if (!isset($_POST[$fieldMap[$i][0]]))
 				continue;
-			$update .= "'" . safe_html($_POST[$fieldMap[$i][0]]) . "'";
+			$update .= "'" . ($_POST[$fieldMap[$i][0]]) . "'";
 		}
 		$updates[] = $update;
 	}
