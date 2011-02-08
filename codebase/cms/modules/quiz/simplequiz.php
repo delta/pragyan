@@ -420,7 +420,8 @@ QUIZSTARTFORM;
 			$sectionRow = getSectionRow($this->quizId,$sectionId);
 			$limit = $sectionRow['quiz_sectiontimelimit'];
 			$divs[] = '<div id="pageTimerlimit" class="quiz_limit">Section Limit: ' . $limit . '</div>';
-			$divs[] = '<div id="sectionTimerContainer" class="quiz_testtimer">Section Time Elapsed: </div>';
+			$divs[] = '<div id="sectionTimerContainer" 
+class="quiz_testtimer">Section Time Elapsed: </div><br /><br />';
 		}
 
 		global $urlRequestRoot, $cmsFolder, $moduleFolder;
@@ -459,7 +460,9 @@ TIMERSCRIPT;
 		$questionType = $questionRow['quiz_questiontype'];
 		if ($questionType == 'subjective') {
 			$fieldName = 'txtAnswer' . $questionRow['quiz_sectionid'] . '_' . $questionRow['quiz_questionid'];
-			$answer = '<textarea rows="6" cols="36" name="' . $fieldName . '" id="' . $fieldName . '"></textarea>';
+			$answer = '<textarea 
+style="width:95%;height:100px;" name="' . 
+$fieldName . '" id="' . $fieldName . '"></textarea>';
 		}
 		else {
 			$optionList = getQuestionOptionList($this->quizId, $questionRow['quiz_sectionid'], $questionRow['quiz_questionid']);
@@ -496,7 +499,7 @@ TIMERSCRIPT;
 		return <<<QUESTIONFORM
 			<input type="hidden" name="$hiddenFieldName" id="$hiddenFieldName" value="" />
 			<div class="quiz_questioncontainer">
-				{$questionDesc}
+				<br /><b>{$questionDesc}</b><br /><br />
 			</div>
 			<div class="quiz_answercontainer">
 				$answer
