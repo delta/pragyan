@@ -33,8 +33,8 @@ if(!defined('__PRAGYAN_CMS'))
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/ticker.css" />
     
     <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/scripts/jquery-latest.js" ></script>
-    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.debounce.min.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/jquery.ticker.min.js"></script>
+    <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/easynews.js"></script>
     <script type="text/javascript" src="<?php echo $TEMPLATEBROWSERPATH; ?>/scripts/script.js"></script>
     <script language="JavaScript">
 			TargetDate = "02/17/2011 00:00 AM";
@@ -209,7 +209,45 @@ if(!defined('__PRAGYAN_CMS'))
             <div class="clear sliderImage"></div>
         </ul>
     </div>
+    
+    
+   <div class="cont Rblue">
+<h3>News</h3>
+
+	<div id="updatestab" class="ui-tabs-panel">
 						
+						
+						<div style="display: none;" id="newscontainer">
+						
+						<div class="news_style" rel="Das Kapital Prelims" id="news0"><h4><a href="http://www.pragyan.org/10/home/events/managing_technology/das_kapital">Das Kapital Prelims</a></h4>  <img 110="" src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/controls.png" alt="Das Kapital" style="margin: 0pt 6px;" width="70" height=" align="left"><p>Online prelims of Das Kapital is now open! Click<a href="http://www.pragyan.org/10/home/events/managing_technology/das_kapital/prelims/"> here</a> to take the quiz.</p></div>
+						
+						<div class="news_style" rel="Bytecode Registrations" id="news1"><h4><a href="http://www.pragyan.org/10/home/events/encypher/bytecode/">Bytecode Registrations</a></h4><img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/controls.png" style="margin: 8px;" align="left"><p>Registrations for <a href="http://www.pragyan.org/10/home/events/encypher/bytecode/">Bytecode</a>, the algorithm intensive online programming contest have been opened!</p>
+<p>The prize structure has been announced!</p></div>
+
+						</div>
+
+
+			<div id="newsouterbar">
+				<div id="newsbarwrapper">
+				
+				<div style="display: none;" id="newsbar"><h4><a href="http://www.pragyan.org/10/home/highlights/jagriti">Jagriti Registrations</a></h4>     <img 110="" src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/controls.png" alt="Jagriti" style="margin: 0pt 6px;" width="70
+ height=" align="left">
+			<p>Registrations for the social consciousness event <a href="http://www.pragyan.org/10/home/highlights/jagriti/"> Jagriti </a>is now open! Click <a href="http://www.pragyan.org/10/home/highlights/jagriti/register/">here </a>to register!</p></div> 
+			
+			
+			</div>
+				<div class="buttondiv" id="newsbuttons">
+					<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/prev.gif" id="news_prev" align="absmiddle"><img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/pause.gif" id="news_pause" align="absmiddle"><img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/next0.gif" id="news_next" align="absmiddle">
+				</div>
+				<div id="newsbartitle">Now Viewing: 5/12<br>Next: Reverse Engineering - Ada'Venture</div>
+				<div class="clearer"></div>
+			</div>
+		</div>
+	</div>
+<div class="Rblue"><h3>
+<a href="http://www.pragyan.org/11/home/schedule.xlsx"><div class="link">Schedule</div></a>
+</h3></div>	
+				
 <div style='clear:both;'>
  <div class='rtbt' id='rt_bt_links'>
  	 <h3>Links</h3>
@@ -247,9 +285,9 @@ if(!defined('__PRAGYAN_CMS'))
 </div>
 					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 <div class="clearer"></div>
-<div class="Rblue"><h3>
-<a href="http://www.pragyan.org/11/home/schedule.xlsx"><div class="link">Schedule</div></a>
-</h3></div>
+
+
+
 					<div id="right4" class="cont Rblue">
 
     <h3>KeyBoard Shortcuts <a id='kbd_disp' style='float:right;cursor:pointer'>[+]</a></h3>
