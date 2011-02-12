@@ -285,9 +285,7 @@ CREATE TABLE IF NOT EXISTS `hospi_accomodation_status` (
   `hospi_guest_college` varchar(100) NOT NULL,
   `hospi_guest_phone` bigint(11) NOT NULL,
   `hospi_guest_email` varchar(100) NOT NULL,
-  `hospi_projected_checkin` datetime NOT NULL,
   `hospi_actual_checkin` datetime NOT NULL,
-  `hospi_projected_checkout` datetime NOT NULL,
   `hospi_actual_checkout` datetime NOT NULL,
   `hospi_checkedin_by` int(11) NOT NULL,
   `hospi_cash_collected` tinyint(1) NOT NULL DEFAULT '0',
@@ -306,9 +304,9 @@ CREATE TABLE IF NOT EXISTS `hospi_hostel` (
   `hospi_room_id` int(11) NOT NULL,
   `hospi_hostel_name` varchar(11) NOT NULL,
   `hospi_room_capacity` int(11) NOT NULL DEFAULT '0',
-  `hospi_room_no` int(11) NOT NULL DEFAULT '0'
+  `hospi_room_no` int(11) NOT NULL DEFAULT '0',
+  `hospi_floor` int(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 -- --------------------------------------------------------
 
 --
