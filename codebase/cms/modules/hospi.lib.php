@@ -583,6 +583,7 @@ public function actionAddroom() {
 	  		}
 	  		$query="INSERT INTO `hospi_hostel` (`hospi_room_id`,`hospi_hostel_name`,`hospi_room_capacity`,`hospi_room_no`,`hospi_floor`)".
 					"VALUES('$room_id','{$_POST['hostels']}',{$_POST['capacity']},{$_POST['roomNo1']},'{$_POST['floor']}') ";
+					echo $query;
 			$result=mysql_query($query);
 			if(!$result)
 			{
