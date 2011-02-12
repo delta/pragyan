@@ -250,7 +250,6 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	$toggleColumns = "<fieldset><legend>Select Columns</legend><table><tr>";
 	$tableJqueryStuff = "";
 	$c=0;
-	$d=0;
 	if($showEditButtons) {
 		$tableCaptions .= '<th>Actions</th>';
 		$tableJqueryStuff = "null,";
@@ -269,7 +268,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 		}
 		else $tableJqueryStuff.="null,";
 		
-		if($d++%5==0)
+		if($c++%5==0)
 		 $toggleColumns.="</tr><tr>";
 		$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide($c);' $checked />$columnTitle <br/></td>";
 	}

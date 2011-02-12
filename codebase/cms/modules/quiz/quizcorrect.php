@@ -96,8 +96,12 @@ function getQuizUserListHtml($quizId) {
 	}
 
 	if (!isQuizEvaluated($quizId)||isset($_POST['btnRecalculateMarks']))
+	{
 		evaluateQuiz($quizId);
-	updateSectionMarks($quizId);
+		updateSectionMarks($quizId);
+	}
+	
+	
 	$tableJqueryStuff="";
 	$numSecColumns=0;
 	$userTable = MYSQL_DATABASE_PREFIX . 'users';
@@ -105,6 +109,15 @@ function getQuizUserListHtml($quizId) {
 			"`$userTable`.`user_id` = `quiz_userattempts`.`user_id` AND " .
 			"`quiz_userattempts`.`page_modulecomponentid` = $quizId " .
 			"GROUP BY `quiz_userattempts`.`user_id` ORDER BY `total` DESC, `timetaken`, `starttime`, `finishtime`, `email`";
+	
+	$profileQuery = 'SELECT `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = 0 ORDER BY `form_elementrank`';
+	$profileResult = mysql_query($profileQuery);
+	$profilecolumns=array();
+	while($profileRow = mysql_fetch_row($profileResult)) {
+		$profilecolumns['form0_' . $profileRow[0]] = $profileRow[0];
+	}
+
+	
 	$markResult = mysql_query($markQuery);
 	if (!$markResult) {
 		displayerror($markQuery . '  ' . mysql_error());
@@ -130,8 +143,31 @@ function getQuizUserListHtml($quizId) {
 		$numSecColumns++;
 		$c++;
 	}
-	$secCols.="</tr>";
 	$toggleColumns.=$secCols;
+		
+	foreach($profilecolumns as $columnName => $columnTitle) 
+	{
+		$sectionHead .= "<th>$columnTitle</th>\n";
+		$columnNames[] = $columnName;
+		
+		
+		$checked="checked";
+		if(!($columnName=="useremail" || $columnName=="registrationdate" || $columnName=="lastupdated"))
+		{
+			$tableJqueryStuff.="/* $columnTitle */ { \"bVisible\": false },";
+			$checked="";
+		}
+		else $tableJqueryStuff.="null,";
+	
+		if($c%6==0)
+		 $toggleColumns.="</tr><tr>";
+		$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide($c);' $checked />$columnTitle <br/></td>";
+		
+		$c=$c+1;
+	}
+	
+	$toggleColumns.="</tr>";
+	
 	global $urlRequestRoot, $cmsFolder, $STARTSCRIPTS;
 	
 	$tableJqueryStuff=<<<STUFF
@@ -169,6 +205,8 @@ HEAD;
 		"<form action='./+correct' method=POST><input type='submit' value='Recalculate Marks' name='btnRecalculateMarks' /></form>
 		<table class=\"userlisttable display\" border=\"1\" id='userstable'>" .
 		"<thead><tr><th>User Full Name</th><th>User Email</th><th>Total Marks</th><th>Time Taken</th><th>Started</th><th>Finished</th>$sectionHead<th>Action</th></tr></thead><tbody>";
+		
+		
 	while ($markRow = mysql_fetch_assoc($markResult)) {
 		$userMarks = "";
 		$marksResult = mysql_query("SELECT `quiz_marksallotted`,`quiz_sectionid` FROM `quiz_userattempts` WHERE `user_id` = {$markRow['user_id']} AND `page_modulecomponentid` = $quizId ORDER BY `quiz_sectionid`");
@@ -187,14 +225,40 @@ HEAD;
 		}
 		
 		while($cc<=$numSecColumns) {  $userMarks .= "<td>-0</td>"; $cc++;}
+		
 		if (is_null($markRow['finishtime'])) {
 			$markRow['finished'] = 0;
 			$markRow['finishtime'] = 'NULL';
 		}
 		$userfullname=getUserFullNameFromEmail($markRow['email']);
+		
+		$elementDataQuery = 'SELECT `form_elementdata`, `form_elementdesc`.`form_elementid`, `form_elementdesc`.`form_elementname`, `form_elementdesc`.`form_elementtype` FROM `form_elementdesc`, `form_elementdata` WHERE ' .
+						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = {$markRow['user_id']} AND " .
+						"`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND " .
+						"`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ORDER BY `form_elementrank`";
+			$elementDataResult = mysql_query($elementDataQuery) or die($elementDataQuery . '<br />' . mysql_error());
+			$elementRow=array();
+			while($elementDataRow = mysql_fetch_assoc($elementDataResult)) {
+				$elementRow['form0_' . $elementDataRow['form_elementname']] = $elementDataRow['form_elementdata'];
+				if($elementDataRow['form_elementtype'] == 'file') {
+					$elementRow['form0_' . $elementDataRow['form_elementname']] = '<a href="./'.$elementDataRow['form_elementdata'].'">' . $elementDataRow['form_elementdata'] . '</a>';
+				}
+			}
+			
+		
+		
+		$profileStuff='<td>'.join($elementRow,'</td><td>').'</td>';
+		
+		
+		
 		if($userfullname=="") $userfullname="Anonymous";
-		$userListHtml .= "<tr><td>$userfullname</td><td>{$markRow['email']}</td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks";
+		
+		$userListHtml .= "<tr><td>$userfullname</td><td>{$markRow['email']}</td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks $profileStuff";
+		
+		
 		$userListHtml .= '<td><form name="userclearform" method="POST" action=""><input type="hidden" name="hdnUserId" id="hdnUserId" value="' . $markRow['user_id'] . "\" /><a href=\"./+correct&useremail={$markRow['email']}\">".$ICONS['Correct']['small'].'</a><input type="image" src="'.$ICONS_SRC["Delete"]["small"].'" name="btnDeleteUser" id="btnDeleteUser" value="Reject Submission" title="Reject Submission"/></form></td>';
+		
+		
 		$userListHtml .= "</tr>\n";
 	}
 	$userListHtml .= "</tbody></table>\n";
