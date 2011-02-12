@@ -200,9 +200,12 @@ STUFF;
 HEAD;
 	
 	global $ICONS_SRC,$ICONS;
+	$quizName=$query[0];
 	$userListHtml .= "<h3>User Submissions for Quiz: {$query[0]}</h3>
 		<fieldset><legend>Select Columns</legend><table>$toggleColumns</table></fieldset>" .
-		"<form action='./+correct' method=POST><input type='submit' value='Recalculate Marks' name='btnRecalculateMarks' /></form>
+		"<form action='./+correct' method=POST><input type='submit' value='Recalculate Marks' name='btnRecalculateMarks' />
+		<form action='./+correct' method=POST><input type='submit' value='Save As Excel' name='save_as_excel' /></form>";
+	$userListTable = "
 		<table class=\"userlisttable display\" border=\"1\" id='userstable'>" .
 		"<thead><tr><th>User Full Name</th><th>User Email</th><th>Total Marks</th><th>Time Taken</th><th>Started</th><th>Finished</th>$sectionHead<th>Action</th></tr></thead><tbody>";
 		
@@ -253,17 +256,31 @@ HEAD;
 		
 		if($userfullname=="") $userfullname="Anonymous";
 		
-		$userListHtml .= "<tr><td>$userfullname</td><td>{$markRow['email']}</td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks $profileStuff";
+		$userListTable .= "<tr><td>$userfullname</td><td>{$markRow['email']}</td><td>{$markRow['total']}</td><td>{$markRow['timetaken']}</td><td>{$markRow['starttime']}</td><td>{$markRow['finishtime']}</td>$userMarks $profileStuff";
 		
 		
-		$userListHtml .= '<td><form name="userclearform" method="POST" action=""><input type="hidden" name="hdnUserId" id="hdnUserId" value="' . $markRow['user_id'] . "\" /><a href=\"./+correct&useremail={$markRow['email']}\">".$ICONS['Correct']['small'].'</a><input type="image" src="'.$ICONS_SRC["Delete"]["small"].'" name="btnDeleteUser" id="btnDeleteUser" value="Reject Submission" title="Reject Submission"/></form></td>';
+		$userListTable .= '<td><form name="userclearform" method="POST" action=""><input type="hidden" name="hdnUserId" id="hdnUserId" value="' . $markRow['user_id'] . "\" /><a href=\"./+correct&useremail={$markRow['email']}\">".$ICONS['Correct']['small'].'</a><input type="image" src="'.$ICONS_SRC["Delete"]["small"].'" name="btnDeleteUser" id="btnDeleteUser" value="Reject Submission" title="Reject Submission"/></form></td>';
 		
 		
-		$userListHtml .= "</tr>\n";
+		$userListTable .= "</tr>\n";
 	}
-	$userListHtml .= "</tbody></table>\n";
+	$userListTable .= "</tbody></table>\n";
 
-	return $userListHtml;
+
+	if(isset($_POST['save_as_excel']))
+	{
+		header("Pragma: public");
+		header("Expires: 0");
+		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+		header("Cache-Control: private",false); 
+		header("Content-Type: application/vnd.ms-excel");
+		header("Content-Disposition: attachment; filename=\"$quizName.xls\";" );
+		header("Content-Transfer-Encoding: binary");
+		echo $userListTable;
+		exit(1);
+	}
+
+	return $userListHtml.$userListTable;
 }
 
 function getQuizCorrectForm($quizId, $userId) {
