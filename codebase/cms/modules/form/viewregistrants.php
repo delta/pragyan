@@ -215,19 +215,22 @@ WHERE dat.`form_elementid` = 3 ORDER BY dat.form_elementdata
 function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $action = 'viewregistrants') {
 	global $sourceFolder, $templateFolder, $urlRequestRoot, $cmsFolder, $moduleFolder;
 
-	$formDescQuery = 'SELECT `form_showuseremail`, `form_showuserfullname`, `form_showregistrationdate`, `form_showlastupdatedate`, `form_showuserprofiledata` FROM `form_desc` ' .
+	$formDescQuery = 'SELECT  `form_showuseremail`, `form_showuserfullname`, `form_showregistrationdate`, `form_showlastupdatedate`, `form_showuserprofiledata`,`form_heading` FROM `form_desc` ' .
 					'WHERE `page_modulecomponentid` = ' . $moduleComponentId;
 	$formDescResult = mysql_query($formDescQuery);
+	
 	$showUserEmail = $showUserFullName = false;
 	$showRegistrationDate = $showLastUpdateDate = true;
 	$showUserProfileData = false;
-
+	$formName='';
 	if($formDescRow = mysql_fetch_row($formDescResult)) {
+		
 		$showUserEmail = $formDescRow[0] == 1;
 		$showUserFullName = $formDescRow[1] == 1;
 		$showRegistrationDate = $formDescRow[2] == 1;
 		$showLastUpdateDate = $formDescRow[3] == 1;
 		$showUserProfileData = $formDescRow[4] == 1;
+		$formName = $formDescRow[5];
 	}
 	$showEditButtons = $action == 'editregistrants';
 
@@ -359,7 +362,7 @@ EDITREGISTRANTSVIEW;
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 		header("Cache-Control: private",false); 
 		header("Content-Type: application/vnd.ms-excel");
-		header("Content-Disposition: attachment; filename=\"users.xls\";" );
+		header("Content-Disposition: attachment; filename=\"$formName.xls\";" );
 		header("Content-Transfer-Encoding: binary");
 		echo '<table>' . $tableCaptions . $tableBody . '</table>';
 		exit(1);
