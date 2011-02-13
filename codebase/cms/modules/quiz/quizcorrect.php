@@ -95,7 +95,7 @@ function getQuizUserListHtml($quizId) {
 		return '';
 	}
 
-	if (!isQuizEvaluated($quizId)||isset($_POST['btnRecalculateMarks']))
+	if (isset($_POST['btnCalculateMarks']))
 	{
 		evaluateQuiz($quizId);
 		updateSectionMarks($quizId);
@@ -204,7 +204,7 @@ HEAD;
 	$quizName=$query[0];
 	$userListHtml .= "<h3>User Submissions for Quiz: {$query[0]}</h3>
 		<fieldset><legend>Select Columns</legend><table>$toggleColumns</table></fieldset>" .
-		"<form action='./+correct' method=POST><input type='submit' value='Recalculate Marks' name='btnRecalculateMarks' />
+		"<form action='./+correct' method=POST><input type='submit' value='Calculate Marks' name='btnCalculateMarks' />
 		<form action='./+correct' method=POST><input type='submit' value='Save As Excel' name='save_as_excel' /></form>";
 	$userListTable = "
 		<table class=\"userlisttable display\" border=\"1\" id='userstable'>" .
@@ -256,11 +256,13 @@ HEAD;
 			if(isset($elementRow[$columnNames[$i]])) {
 				$display[] = $elementRow[$columnNames[$i]];
 			}
-			else {
-				$display[] = ' ';
-			}
+//			else {
+	//			$display[] = ' ';
+		//	}
 		}
 		
+		$profileStuff = '';
+		if(count($display))
 		$profileStuff='<td>'.join($display,'</td><td>').'</td>';
 		
 		
