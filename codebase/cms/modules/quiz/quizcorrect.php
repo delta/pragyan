@@ -250,7 +250,7 @@ HEAD;
 			}
 			
 			
-	
+	        $display=array();
 		$columnCount = count($columnNames);
 		for($i = 0; $i < count($columnNames); $i++) {
 			if(isset($elementRow[$columnNames[$i]])) {
