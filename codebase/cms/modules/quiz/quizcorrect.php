@@ -144,7 +144,8 @@ function getQuizUserListHtml($quizId) {
 		$c++;
 	}
 	$toggleColumns.=$secCols;
-		
+	
+	$columnNames=array();	
 	foreach($profilecolumns as $columnName => $columnTitle) 
 	{
 		$sectionHead .= "<th>$columnTitle</th>\n";
@@ -248,9 +249,19 @@ HEAD;
 				}
 			}
 			
+			
+	
+		$columnCount = count($columnNames);
+		for($i = 0; $i < count($columnNames); $i++) {
+			if(isset($elementRow[$columnNames[$i]])) {
+				$display[] = $elementRow[$columnNames[$i]];
+			}
+			else {
+				$display[] = ' ';
+			}
+		}
 		
-		
-		$profileStuff='<td>'.join($elementRow,'</td><td>').'</td>';
+		$profileStuff='<td>'.join($display,'</td><td>').'</td>';
 		
 		
 		
