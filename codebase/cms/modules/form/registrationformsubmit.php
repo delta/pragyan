@@ -349,7 +349,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$textResult = mysql_query($textQuery);
 		if (!$textResult) {	displayerror('E64 : Invalid query: ' . mysql_error()); 	return false; 	}
 		$optionNumber = escape($_POST[$postVarName]);
-		$options = explode("|",$elementTypeOptions);
+		$options = explode("|",escape($elementTypeOptions));
 
 		if(count($options)<($optionNumber+1)){
 			displayerror("$elementName is out of bounds of the available number of options.");
