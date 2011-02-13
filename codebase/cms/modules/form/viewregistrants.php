@@ -61,8 +61,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			$elementRow['elementid_' . $elementDataRow[1]] = '<a href="./'.$elementDataRow[0].'">' . $elementDataRow[0] . '</a>';
 		}
 	}
-
-	if($showProfileData) {
+	
+	if($showProfileData) { 
 		if($userId > 0) {
 			$elementDataQuery = 'SELECT `form_elementdata`, `form_elementdesc`.`form_elementid`, `form_elementdesc`.`form_elementname`, `form_elementdesc`.`form_elementtype` FROM `form_elementdesc`, `form_elementdata` WHERE ' .
 						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = $userId AND " .
@@ -75,6 +75,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 					$elementRow['form0_' . $elementDataRow['form_elementname']] = '<a href="./'.$elementDataRow['form_elementdata'].'">' . $elementDataRow['form_elementdata'] . '</a>';
 				}
 			}
+			
+
 		}
 		else {
 			$elementDataQuery = 'SELECT `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = 0';
@@ -84,6 +86,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			}
 		}
 	}
+
 
 	if(in_array('useremail', $columnList)) {
 		$elementRow['useremail'] = getUserEmail($userId);
@@ -253,6 +256,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	$toggleColumns = "<fieldset><legend>Select Columns</legend><table><tr>";
 	$tableJqueryStuff = "";
 	$c=0;
+	$d=0;
 	if($showEditButtons) {
 		$tableCaptions .= '<th>Actions</th>';
 		$tableJqueryStuff = "null,";
@@ -271,8 +275,9 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 		}
 		else $tableJqueryStuff.="null,";
 		
-		if($c++%5==0)
+		if($d!=0 && $d%5==0)
 		 $toggleColumns.="</tr><tr>";
+		$d=$d+1;
 		$toggleColumns.="<td><input type='checkbox' onclick='fnShowHide($c);' $checked />$columnTitle <br/></td>";
 	}
 	
