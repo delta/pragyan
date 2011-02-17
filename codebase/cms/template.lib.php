@@ -44,6 +44,10 @@ function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$B
 	global $LOGINFORM;
 	global $WIDGETS;
 
+	$SITEDESCRIPTION=safe_html($SITEDESCRIPTION);
+	$SITEKEYWORDS=safe_html($SITEKEYWORDS);
+	$FOOTER=safe_html($FOOTER);
+
 	$TEMPLATEBROWSERPATH = "$urlRequestRoot/$cmsFolder/$templateFolder/".TEMPLATE;
 	$TEMPLATECODEPATH = "$sourceFolder/$templateFolder/".TEMPLATE;
 	include ($TEMPLATECODEPATH."/index.php");
