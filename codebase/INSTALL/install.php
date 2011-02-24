@@ -15,6 +15,7 @@ global $URL_REWRITE;
 $sourceFolder = 'cms';
 $installFolder = '.';
 $URL_REWRITE = 'false';
+$userConfigs=array();
 $cmsFolder = "../$sourceFolder";
 $templateFolder = "$cmsFolder/templates/crystalx";
 $scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
@@ -94,24 +95,24 @@ function installCMS() {
 	$installationSteps = 
 			array(
 
-					array('saveConfigurationSettings', 'Saving Configuration Settings', false),
+					array('loadConfigurationSettings', 'Loading Configuration Settings', false),
 					array('checkDatabaseAccess', 'Checking Database Access', false),
 					array('checkOpenidCurl','Checking if cURL needed and installed',false),
 					array('importDatabase', 'Importing Database', false),
-					array('saveHtaccess', 'Checking .htaccess Settings (for Pretty URLs)', false)
+					array('saveHtaccess', 'Checking .htaccess Settings (for Pretty URLs)', false),
+					array('saveConfigurationFile', 'Saving Configuration Settings to file', false)
 					//array('indexSite', 'Indexing site', false)
 			);
 	
 			
 	
 	
-	
 
-	for ($i = 0; $i < count($installationSteps); ++$i) {
+	for ($i = 0; $i < count($installationSteps); ++$i) { 
 		$installationProcedure = $installationSteps[$i][0];
-	
+
 		$stepResult = $installationProcedure();
-		
+
 		///If OPEN ID not required, skip checkOpenidCurl.
 		if($i==1 && OPENID_ENABLED!='true')
 			unset($installationSteps[2]);
@@ -119,18 +120,20 @@ function installCMS() {
 		///Required for fixing index values after unsettings		
 		$installationSteps=array_values($installationSteps);
 		
-		///If URL Rewrite is disabled, then skip the saveHtaccess installation step. It will be on last.
+		///If URL Rewrite is disabled, then skip the saveHtaccess installation step. It will be on second last.
 		if($i==1 && $URL_REWRITE=='false')
-			unset($installationSteps[count($installationSteps)-1]);
+			unset($installationSteps[count($installationSteps)-2]);
 		
 		///Required for fixing index values after unsettings		
 		$installationSteps=array_values($installationSteps);
-	
+
 		if ($stepResult != '') {
 			$installationSteps[$i][] = $stepResult;
+
 			return $installationSteps;
 		}
 		$installationSteps[$i][2] = true;
+
 	}
 	return $installationSteps;
 }
@@ -161,8 +164,10 @@ function checkOpenidCurl(){
  * Save configuration settings submitted from the form.
  * @return bool Boolean value indicating whether the method was successful.
  */
-function saveConfigurationSettings() {
+function loadConfigurationSettings() {
 	global $URL_REWRITE;
+	global $userConfigs;
+	
 	$configurationMap = array(
 			'txtMySQLServerHost' => 'MYSQL_SERVER',
 			'txtMySQLUsername' => 'MYSQL_USERNAME',
@@ -204,14 +209,34 @@ function saveConfigurationSettings() {
 			${$configVariableName} = (isset($_POST[$postVariableName]) && $_POST[$postVariableName] == "Yes") ? 'true' : 'false';
 		}
 		else {
-			${$configVariableName} = isset($_POST[$postVariableName]) ? $_POST[$postVariableName] : '';
+			${$configVariableName} = isset($_POST[$postVariableName]) ? escape($_POST[$postVariableName]) : '';
 		}
+		$userConfigs[$configVariableName]=${$configVariableName};
 			
 	}
 	if($MYSQL_PORT!="") $MYSQL_SERVER.=":$MYSQL_PORT";
 	
 	global $cmsFolder;
 
+
+	$c = 0;
+	foreach ($configurationMap as $postVariableName => $configVariableName) {
+
+		define ($configVariableName, ${$configVariableName});
+		if (++$c == 16) //this avoids DEFINEing all the config whichh are not to be written in database
+			break;
+	}
+	
+	return '';
+}
+
+function saveConfigurationFile() {
+
+	global $userConfigs;
+	global $cmsFolder;
+	
+	extract($userConfigs);
+	
 	$configFileText = '';
 	require_once('config.inc-dist.php');
 	$writeHandle = @fopen("$cmsFolder/config.inc.php", 'w');
@@ -227,15 +252,6 @@ function saveConfigurationSettings() {
 	
 	fwrite($writeHandle, $searchConfigFileText);
 	fclose($writeHandle);
-
-	$c = 0;
-	foreach ($configurationMap as $postVariableName => $configVariableName) {
-
-		define ($configVariableName, ${$configVariableName});
-		if (++$c == 16) //this avoids DEFINEing all the config whichh are not to be written in database
-			break;
-	}
-	
 	return '';
 }
 
