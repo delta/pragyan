@@ -314,7 +314,7 @@ PREF;
 PREF;
 
 	// TODO: implement getProfileNewsletterList completely. return $profileForm . getProfileGroupsAndFormsList($userId) . getProfileNewsletterList($userId);
-	return  $profileForm . getProfileForms($userId).getProfileGroupsAndFormsList($userId); 
+	return  $profileForm . getProfileForms($userId).getProfileGroupsAndFormsList($userId).getFormDeadlines($userId); 
 }
 
 
@@ -447,6 +447,34 @@ function getProfileForms($userId) {
 	$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms I Have Registered To</legend>";
 	$regforms .= '<ol>';
 	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = $userId";
+	$result2 = mysql_query($query);
+	while($result = mysql_fetch_row($result2)) {
+		if($result[0]!=0){
+		$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
+		$formPathLink = $urlRequestRoot . $formPath;
+		$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` =". $result[0];		
+		$result1 = mysql_query($query1);
+		$result1 = mysql_fetch_row($result1);
+		$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
+		}
+	}
+	$regforms .= '</ol></fieldset> ';
+	return $regforms;
+}
+function getFormDeadlines($userId) {
+	global $ICONS,$urlRequestRoot;
+	$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms Nearing Deadline</legend>";
+	$regforms .= '<ol>';
+	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."global`";
+	$result = mysql_query($query);
+	while($res = mysql_fetch_row($result)) {
+		if($res[0] == 'deadline_notify')
+		{
+			$deadline = $res[1] * 24 * 3600;
+		}
+			
+	}	
+	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_desc` WHERE HOUR(TIMEDIFF(`form_expirydatetime`,NOW( )))*3600+MINUTE(TIMEDIFF(`form_expirydatetime`,NOW( )))*60+SECOND(TIMEDIFF(`form_expirydatetime`,NOW( )))*60 <= ".$deadline;
 	$result2 = mysql_query($query);
 	while($result = mysql_fetch_row($result2)) {
 		if($result[0]!=0){

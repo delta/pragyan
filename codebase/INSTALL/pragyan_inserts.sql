@@ -165,7 +165,8 @@ INSERT IGNORE INTO `pragyanV3_global` (`attribute`, `value`) VALUES
 ('censor_words',''),
 ('recaptcha','0'),
 ('recaptcha_public',''),
-('recaptcha_private','');
+('recaptcha_private',''),
+('deadline_notify','0');
 
 --
 -- Dumping data for table `pragyanV3_groups`

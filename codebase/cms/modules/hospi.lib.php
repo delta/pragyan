@@ -38,34 +38,21 @@ Print the details of the user along with the name of the hospi person manning th
 class hospi implements module {
 	private $userId;
 	private $moduleComponentId;
-	private $action;
 
 	public function getHtml($gotuid, $gotmoduleComponentId, $gotaction) {
 		$this->userId = $gotuid;
 		$this->moduleComponentId = $gotmoduleComponentId;
-		$this->action = $gotaction;
+		
 
 		if ($gotaction == 'view')
 			return $this->actionView();
-//		if ($gotaction == 'post')/// what do post and accomodate do????
-//			return $this->actionPost();
-//		if ($gotaction == 'moderate')
-//			return $this->actionMo$this->viewall()derate();
 		if ($gotaction == 'accomodate')
 			return $this->actionAccomodate();
 		if ($gotaction == 'addroom')
 			return $this->actionAddroom();
 
 	}
-public function actionModerate()
-{
-	return false;
-}
-public function actionPost()
-{
-	return false;
-}
-
+	
 public function viewall()
 {
 	$hospiview=<<<VIEW
@@ -132,23 +119,7 @@ return $userdetail;
 
 
 public function actionAccomodate() {
-	$i=0;
-static $j=0;
-foreach ($_GET as $var => $val) {
-	
 
-if($j<(count($_GET)-1))
-{
-			if ($i == 1)
-				$action .= "&" . $var . "=" . $val;
-			if ($val=='accomodate') {
-				$action = "+" . $val;
-				$i = 1;
-			}
-			$j=$j+1;
-
-}
-			}
 			
 			if(isset($_GET['displayUserDetails']))
 {
@@ -583,7 +554,6 @@ public function actionAddroom() {
 	  		}
 	  		$query="INSERT INTO `hospi_hostel` (`hospi_room_id`,`hospi_hostel_name`,`hospi_room_capacity`,`hospi_room_no`,`hospi_floor`)".
 					"VALUES('$room_id','{$_POST['hostels']}',{$_POST['capacity']},{$_POST['roomNo1']},'{$_POST['floor']}') ";
-					echo $query;
 			$result=mysql_query($query);
 			if(!$result)
 			{
@@ -658,7 +628,7 @@ public function actionAddroom() {
 				displayerror(mysql_error());
 				return $this->viewall();
 			}
-			$action;
+			
 		}
 	 	else if($subaction=='addhostel')
 	 	{
@@ -719,46 +689,9 @@ HOSTEL;
 	 return $hostel.$this->viewall();
 }
 
-
-	public function Uplevelroom()
-	{
-		foreach ($_GET as $var => $val) {
-			$i=0;
-			if ($i == 1)
-				$action .= "&" . $var . "=" . $val;
-			if ($val=='addroom') {
-				$action .= "+" . $val;
-				$i = 1;
-			}}
-			return $action.$this->viewall();
-	}
-	public function actionView() {		
-//		$subaction=$_GET['subaction'];
-	 	$i=0;
-		static $j=0;
-		foreach ($_GET as $var => $val) {
-		if($j<(count($_GET)-1))
-		{
-			if ($i == 1)
-				$action .= "&" . $var . "=" . $val;
-			if ($val=='View') {
-				$action .= "+" . $val;
-			$i = 1;
-		}
-		$j=$j+1;
-	}
-				}
-		if(isset($_GET['subaction']))
-		{
-			 if($_GET['subaction'] == 'getsuggestions' && isset($_GET['forwhat'])) {
-				echo $this->getEmailSuggestions($_GET['forwhat']);
-				exit();
-				}
-			$subaction=$_GET['subaction'];
-			if($subaction=='displayuser')
-			{
-			
-				$search=$_POST['txtUserEmail'];
+public function displayUser()
+{
+			$search=$_POST['txtUserEmail'];
 				$userid=getUserIdFromEmail($search);
 				//if(is_numeric($userid))
 				//$query="SELECT * FROM `hospi_accomodation_status` WHERE `user_id`=$userid";
@@ -828,15 +761,32 @@ USER1;
 					if($row['hospi_actual_checkout']==0)
 					{
 					if($row['user_id']<>0)
-		$details.="<tr><td><input type=\"submit\" value=\"Check Out\" onclick=\"window.location='./+accomodate&hostel=$row1[hospi_hostel_name]&room_id=$row[hospi_room_id]&checkOut=$row[user_id]'\"></td></tr>";
-		else
+						$details.="<tr><td><input type=\"submit\" value=\"Check Out\" onclick=\"window.location='./+accomodate&hostel=$row1[hospi_hostel_name]&room_id=$row[hospi_room_id]&checkOut=$row[user_id]'\"></td></tr>";
+						else
 		
-		$details.="<tr><td><input type=\"submit\" value=\"Check Out\" onclick=\"window.location='./+accomodate&hostel=$row1[hospi_hostel_name]&room_id=$row[hospi_room_id]&checkOut=$row[hospi_guest_name]&checkinTime=$row[hospi_actual_checkin]&by=$row[hospi_checkedin_by]'\"></td></tr>";
-		}
+						$details.="<tr><td><input type=\"submit\" value=\"Check Out\" onclick=\"window.location='./+accomodate&hostel=$row1[hospi_hostel_name]&room_id=$row[hospi_room_id]&checkOut=$row[hospi_guest_name]&checkinTime=$row[hospi_actual_checkin]&by=$row[hospi_checkedin_by]'\"></td></tr>";
+						}
 					$details.='</table>';
 					}
-	return $details.$this->viewall();
+				return $details.$this->viewall();
 				}
+}
+
+public function actionView() {		
+
+		if(isset($_GET['subaction']))
+		{
+			 if($_GET['subaction'] == 'getsuggestions' && isset($_GET['forwhat'])) 
+			 {
+				echo $this->getEmailSuggestions($_GET['forwhat']);
+				exit();
+			 }
+			 
+			$subaction=$_GET['subaction'];
+			if($subaction=='displayuser')
+			{
+			
+		
 			}
 			if($subaction=='finduser')
 			{
@@ -1103,27 +1053,6 @@ ROOM;
 					return $room.$this->viewall();
 				}
 			}
-	/*		if($subaction=='viewvacantrooms')
-			{
-				$query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel`";
-	 			$result=mysql_query($query);
-				$room=<<<ROOM
-				<form method="POST" action="./+view&subaction=displayvacantrooms">
-				Choose hostel:<select name="hostels" id="hostels" >
-ROOM;
-				 while($temp=mysql_fetch_array($result,MYSQL_NUM))
-	 			{
-	 				foreach($temp as $hostelname)
-	 				{
-	 					$room.='<option value='.$hostelname.'>'.$hostelname.'</option>';
-	 				}
-
-	 			}
-	 			$room.='<option value="all">All hostels</option></select><br><br>';
-	 			$room.='<input type="submit" Value="Find Vacant Rooms"/></form>';
-	 			return $room.$this->viewall();
-			}
-			*/
 		}
 		return($this->viewall());
 	}

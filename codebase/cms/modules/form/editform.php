@@ -105,8 +105,9 @@ if(!defined('__PRAGYAN_CMS'))
 
 		/**Form desc : Getting data*/
 		$formQuery = 'SELECT page_modulecomponentid, form_heading, form_loginrequired, form_headertext,	form_footertext, ' .
-				'form_expirydatetime, form_sendconfirmation, form_usecaptcha, form_allowuseredit, form_allowuserunregister, ' .
-				'form_showuseremail, form_showuserfullname, form_showuserprofiledata, form_showregistrationdate, form_showlastupdatedate ' .
+				'form_expirydatetime, form_sendconfirmation, form_usecaptcha, form_allowuseredit, '. 
+				'form_allowuserunregister,form_showuseremail, form_showuserfullname, form_showuserprofiledata, '. 
+				'form_showregistrationdate, form_showlastupdatedate ' .
 				'FROM `form_desc` WHERE `page_modulecomponentid` = ' . $moduleCompId;
 		$formResult = mysql_query($formQuery);
 
@@ -160,7 +161,19 @@ if(!defined('__PRAGYAN_CMS'))
 		<form id="formdetails" action="./+$action" method="post">
 			<table width="100%" cellpadding="1" cellspacing="1" border="1">
 				<tr>
-					<td width="20%">Form Heading:</td><td><input type="text" name="txtFormHeading" value="$formHeading" /></td>
+					<td width="20%">Form Heading:</td><td><input type="text" name="txtFormHeading" value="$formHeading" onblur=check(this); /></td>
+					
+					<script type=text/javascript>
+							function check(field) {
+								val = field.value;
+								if(field.value.length == 0) {
+								
+									alert("Enter a Form name");
+									field.focus();
+								
+								}
+							}
+						</script>
 				</tr>
 				<tr>
 					<td>Require Login?</td>
