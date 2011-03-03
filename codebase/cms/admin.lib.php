@@ -209,6 +209,10 @@ $globalform=<<<globalform
 	<td>Allow Users to Login/Register ?</td>
 	<td><input name='allow_login' type='checkbox' $allow_login></td>
 	</tr>
+	<tr>
+	<td>Notify Users about Form Deadline before (in days) ?</td>
+	<td><input type="text" name='deadline_notify' value='$deadline_notify'></td>
+	</tr>
 	</table>
 globalform;
 return $globalform;
@@ -568,6 +572,7 @@ function updateGlobalSettings()
 	$global['breadcrumb_submenu']=isset($_POST['breadcrumb_submenu'])?1:0;
 
 	$global['allow_login']=isset($_POST['allow_login'])?1:0;
+	$global['deadline_notify']=$_POST['deadline_notify'];
 	$global['cms_title']=escape($_POST['cms_title']);
 	$global['default_template']=escape($_POST['default_template']);
 	$global['cms_email']=escape($_POST['cms_email']);
