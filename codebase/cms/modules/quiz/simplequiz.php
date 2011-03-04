@@ -30,7 +30,11 @@ class SimpleQuiz implements IQuiz {
 		$this->quizId = $quizId;
 		$this->quizRow = getQuizRow($quizId);
 	}
-
+	
+	/**
+	 * function getPropertiesForm:
+	 * will be called from quiz edit, here no quiz specific properties
+	 */
 	public function getPropertiesForm($dataSource) {
 		return 'No quiz specific properties.';
 	}
@@ -38,7 +42,12 @@ class SimpleQuiz implements IQuiz {
 	public function submitPropertiesForm() {
 		return true;
 	}
-
+	
+	/**
+	 * function getSectionStartForm:
+	 * return HTML Section start form
+	 * form with a button and a hidden field specifying section id
+	 */
 	private function getSectionStartForm($sectionId) {
 		return <<<SECTIONSTARTFORM
 			<form name="sectionstartform" method="POST" action="./+view" style="padding:0;margin:0;display:inline">
@@ -47,7 +56,11 @@ class SimpleQuiz implements IQuiz {
 			</form>
 SECTIONSTARTFORM;
 	}
-
+	
+	/**
+	 * function getFrontPage:
+	 * if random access is set, front page displays list of available sections and lets user select section
+	 */
 	public function getFrontPage($userId) {
 		$frontPage = "<h2>{$this->quizRow['quiz_title']}</h2>\n";
 		$frontPage .= "<div class=\"quiz_headertext\">{$this->quizRow['quiz_headertext']}</div><br /><br />\n";
@@ -83,6 +96,7 @@ QUIZSTARTFORM;
 	}
 
 	/**
+	 * function getQuizPage:
 	 * Retrieves the next page for the user.
 	 * Use this function from outside the class.
 	 * @param Integer $userId User ID.
@@ -198,6 +212,7 @@ QUIZSTARTFORM;
 	}
 
 	/**
+	 * function submitQuizPage:
 	 * Submits a page worth of questions.
 	 * @param Integer $userId User ID of the user taking the quiz.
 	 * @return Boolean True indicating successful submission, and false indicating errors.
@@ -302,6 +317,7 @@ QUIZSTARTFORM;
 	}
 
 	/**
+	 * function checkQuizInitialized:
 	 * Checks if a quiz has been initialized.
 	 * @param Integer $userId User ID of the user.
 	 * @return Boolean True or false to indicate whether the quiz has been initialized.
@@ -316,6 +332,7 @@ QUIZSTARTFORM;
 	}
 
 	/**
+	 * function initQuiz:
 	 * Performs necessary operations before a user starts a quiz.
 	 * @param Integer $userId User ID.
 	 * @return Boolean True indicating success, false indicating errors.
@@ -353,6 +370,7 @@ QUIZSTARTFORM;
 	}
 
 	/**
+	 * function deleteEntries:
 	 * Deletes all entries for a particular user.
 	 */
 	public function deleteEntries($userId) {
@@ -361,7 +379,10 @@ QUIZSTARTFORM;
 		return deleteItem($tableNames, "`page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId", $affectedRows);
 	}
 
-	// Utility Functions
+	/**
+	 * function getPageQuestions:
+	 * returns questions to be displayed in this page, ie questions for which answer has not been submitted yet
+	 */
 	private function getPageQuestions($userId, $sectionId = -1) {
 		$questionsPerPage = $this->quizRow['quiz_questionsperpage'];
 		$questionQuery = "SELECT `quiz_sectionid`, `quiz_questionid` FROM `quiz_answersubmissions` WHERE `user_id` = $userId AND `page_modulecomponentid` = {$this->quizId} AND `quiz_answersubmittime` IS NULL ";
@@ -378,7 +399,12 @@ QUIZSTARTFORM;
 			$questionIds[] = $questionRow;
 		return $questionIds;
 	}
-
+	
+	/**
+	 * function getTimerHtml:
+	 * returns HTML timer code and invokes JSTimer to take care of running timer in browser
+	 * @see ./timer.js
+	 */
 	private function getTimerHtml($userId, $sectionId = -1) {
 		$testElapsedTime = $this->getElapsedTime($userId);
 		$testElapsedTime = explode(':', $testElapsedTime);
@@ -452,6 +478,7 @@ TIMERSCRIPT;
 	}
 
 	/**
+	 * function formatQuestion:
 	 * Given a question row, return HTML for the question.
 	 * @param $questionRow
 	 * @return string Question in HTML.
@@ -508,6 +535,7 @@ QUESTIONFORM;
 	}
 
 	/**
+	 * function formatNextPage:
 	 * Returns an HTML page containing the next set of questions for the user.
 	 */
 	private function formatNextPage($userId, $sectionId = -1) {
@@ -567,6 +595,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function countAttemptedQuestions:
 	 * Counts the number of questions a user has submitted in a given section.
 	 * @param Integer $userId User ID of the user.
 	 * @param Integer $sectionId Section ID of the user. If omitted, total number of questions attempted in the quiz are counted.
@@ -585,7 +614,11 @@ QUESTIONPAGESCRIPT;
 		$countRow = mysql_fetch_row($countResult);
 		return $countRow[0];
 	}
-
+	
+	/**
+	 * function getSectionQuestions:
+	 * gets list of questionId in this section considering, whether quiz is randomized and number of questions per section
+	 */
 	private function getSectionQuestions($sectionRow) {
 		$questionTypes = array_keys(getQuestionTypes());
 		$sectionId = $sectionRow['quiz_sectionid'];
@@ -617,6 +650,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function checkQuizCompleted:
 	 * Checks whether a user has completed a quiz, by checking whether the user has completed
 	 * all sections under that quiz.
 	 * @param Integer $userId User ID.
@@ -643,6 +677,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function isValidId:
 	 * Checks whether an ID is valid.
 	 * @param Integer $id The ID to test.
 	 * @return Boolean Whether the ID is valid or not.
@@ -652,6 +687,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function markSectionCompleted:
 	 * Marks a section as completed.
 	 * @return Boolean True if the section is (or was) completed. False if the section is not complete.
 	 */
@@ -688,6 +724,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function markQuizCompleted:
 	 * Mark a Quiz as completed. Fill all unsubmitted answers with '', and set quiz as completed.
 	 * To be used only when a user's quiz times out.
 	 * @param Integer $userId User ID.
@@ -707,6 +744,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function getElapsedTime:
 	 * Returns the time a user has spent on a section or a quiz.
 	 * @param Integer $userId User ID.
 	 * @param Integer $sectionId Section ID. Optional. 
@@ -742,6 +780,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function checkUserTimedOut:
 	 * Returns a string denoting the amount of time the user has to complete the section or quiz.
 	 * @param Integer $userId User ID of the user.
 	 * @param Integer $sectionId Section ID. If omitted, the time remaining for the entire quiz is shown.
@@ -783,6 +822,7 @@ QUESTIONPAGESCRIPT;
 	}
 
 	/**
+	 * function forceQuizCompleted:
 	 * Forcefully marks a quiz or a section as completed.
 	 * @param Integer $userId User ID.
 	 * @param Integer $sectionId Section ID.
