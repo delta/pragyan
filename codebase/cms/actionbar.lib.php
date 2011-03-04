@@ -17,6 +17,11 @@ if(!defined('__PRAGYAN_CMS'))
  * Generates page level actions
  * Admin(+admin), Settings(+settings), Permissions(+grant), 
  * Login(+login), Profile(+profile), and Logout(+logout)
+ *
+ * @param $userId The user for whom the list of permitted actions must be computed.
+ * @param $pageId The page on which the permissible action for the user is computed
+ *
+ * @return $actionbar The list of permitted actions for the 'user' of 'page'. 
  */
 function getActionbarPage($userId, $pageId) {
 
@@ -58,8 +63,14 @@ function getActionbarPage($userId, $pageId) {
 	$actionbar.="</div>";
 	return $actionbar;
 }
+
 /**
  * Generates module specific actions 
+ * 
+ * @param $userId The user for whom the list of permitted actions must be computed.
+ * @param $pageId The page on which the permissible action for the user is computed
+ *
+ * @return $actionbar The list of permitted module specific actions for the 'user' of 'page'.
  */
 function getActionbarModule($userId, $pageId) {
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE perm_action != 'create' AND page_module = '".getEffectivePageModule($pageId)."'";
