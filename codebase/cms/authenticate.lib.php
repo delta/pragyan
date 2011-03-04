@@ -14,7 +14,15 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
-
+/**
+ *
+ * Returns the encrypted session data of the user
+ *
+ * @param $user_id The user whose session data is required
+ *
+ * @return @sessionData The required session data, but in an encrypted form.
+ *
+ */
 function getSessionData($user_id) {
 	$user_id=escape($user_id);
 	$query = "SELECT `user_name`,`user_email`,`user_lastlogin` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id`=$user_id";
@@ -29,7 +37,15 @@ function getSessionData($user_id) {
 	return $sessionData;
 }
 
-/**Sets the cookie and overwrites browser's cache of login information*/
+/**
+ *
+ * Sets the cookie and overwrites browser's cache of login information
+ *
+ * @param $user_id The user whose session is being set.
+ *
+ * @return $user_id 
+ *
+ */
 function setAuth($user_id) {
 	global $userId;
 	$userId = $user_id;
@@ -39,6 +55,13 @@ function setAuth($user_id) {
 	return $user_id;
 }
 
+/**
+ *
+ * Check if the browser offers support for the server to set cookie.
+ *
+ * @return true is the server is able to set a cookie and false otherwise. 
+ *
+ */
 function checkCookieSupport() {
 	if(isset($_COOKIE['PHPSESSID']) || (isset($_COOKIE['cookie_support']) && $_COOKIE['cookie_support']=="enabled") ) {
 		return true;
@@ -46,6 +69,13 @@ function checkCookieSupport() {
 		return false;
 }
 
+/**
+ *
+ * Display warning and help regarding cookies as cookie is required for the proper working of the site.
+ *
+ * @return true if displayis successful and false otherwise.
+ *
+ */
 function showCookieWarning() {
 	global $cookieSupported;
 	if($cookieSupported==false) {
@@ -92,9 +122,12 @@ function firstTimeGetUserId() {
 }
 
 /** To get the groups a user belongs to
-* If not logged in, group id = 0
-* If logged in, one definite group id = 1
-*/
+ * If not logged in, group id = 0
+ * If logged in, one definite group id = 1
+ *
+ *
+ *
+ */
 function getGroupIds($userId) {
 	$groups = array (
 		0

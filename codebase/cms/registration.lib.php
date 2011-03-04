@@ -13,6 +13,13 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
  
+/** 
+ *
+ * Return the registration form for registering in the site
+ *
+ * @return $body A variale that containes the registration Form with all the validation constraints.
+ *
+ */
 function getRegistrationForm() {
 	global $urlRequestRoot, $moduleFolder, $cmsFolder,$sourceFolder, $templateFolder;
 	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
@@ -24,10 +31,11 @@ function getRegistrationForm() {
 	$body = '<script language="javascript" type="text/javascript" src="'.$jsPath2.'"></script>';
 	$body .= '<link rel="stylesheet" type="text/css" media="all" href="'.$calpath.'/form/calendar/calendar.css" title="Aqua" />' .
 						 '<script type="text/javascript" src="'.$calpath.'/form/calendar/calendar.js"></script>';
-
+        /// Get the CAPTCHA that is used at the end of the form.
 	$captchaHtml = getCaptchaHtml();
 	$jsValidationFunctions = array();
 	$containsFileUploadFields = false;
+        /// Get the dynamic fields that has been added to the registration form in the profile form fields.
 	$dynamicFields = getFormElementsHtmlAsArray(0, 0, $jsValidationFunctions, $containsFileUploadFields);
 	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
 	if($dynamicFields != '') {
