@@ -13,9 +13,20 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
+/**
+ *
+ * Gets the file that has been requested by mapping it to the proper location
+ *
+ * @param $pageId The page where the file is present in
+ * @param $userId The user who has requested the file.
+ * @param $fileName The name of the file that is required.
+ *
+ * @return mixed: nothing if there is an error and the file otherwise.
+ */
+
 function download($pageId, $userId, $fileName,$action="") {
 	
-
+        /// If page not found display error  
 	if($pageId===false) {
 		header("http/1.0 404 Not Found" );
 		echo "<html><head><title>404 Not Found</title></head><body><h1>Not Found</h1>" .

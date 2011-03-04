@@ -40,8 +40,7 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
 		}
 		$uploadFileTypesRegexp = '/\.('.join($uploadableFileTypesArray,"|").')$/i';
 	}
-
-	/// Checking for existing directory named as the module and creating it if doesn't exist
+	/// Checking if the upload folder exists and creating it if doesn't exist
 	if (!file_exists($uploadDir)) {
 		displaywarning("The folder $uploadDir does not exist. Trying to creating it.");
 		mkdir($uploadDir, 0755);
@@ -52,6 +51,7 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
 		else
 			displayinfo("Created $uploadDir.");
 	}
+	/// Checking for existing directory named as the module and creating it if doesn't exist
 	if (!file_exists($uploadDir . '/' . $moduleName)) {
 		displaywarning("The folder ".$uploadDir.'/'.$moduleName." does not exist. Trying to create it");
 		mkdir($uploadDir . '/' . $moduleName, 0755);
@@ -100,10 +100,12 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
 		else {
 			$uploadTrue = true;
 			$upload_filename = $_FILES[$uploadFormName]['name'];
+			/// Checking if the uploaded file is of the permssible file types.
 			if(preg_match($uploadFileTypesRegexp , $upload_filename , $matches) == 0) {
 				displayerror("Error while uploading file $upload_filename. Upload of files of this type not allowed.");
 				$uploadTrue = false;
 			}
+			/// Checking if the uploaded file is below the maximum upload size.
 			if($uploadTrue && $_FILES[$uploadFormName]['size']>$maxFileSizeInBytes) {
 				displayerror("Error while uploading file $upload_filename. Max file size of $maxFileSizeInBytes bytes exceeded.");
 				$uploadTrue = false;
@@ -120,21 +122,32 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
 		}
 	}
 	else {
-		echo "Sorry, there was a problem uploading your file. UPLOAD L:63 $uploadFormName";
+		echo "Sorry, there was a problem uploading your file. UPLOAD L:123 $uploadFormName";
 	}
 
 	return $uploadedFiles;
 }
-
+/**
+ * Saves the uploaded file.
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @param $userId The user uploading the file.
+ * @param $uploadFileName The name of the uploaded file.
+ * @param $tempFileName The temporary file name of the uploaded file.
+ * @param $uploadFileType The file type of the uploaded file.
+ * @return $uploadFilaName The name of the file uploaded.
+ *
+ */
 function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileName, $tempFileName, $uploadFileType, $uploadDir) {
 	$query = 'SELECT MAX(`upload_fileid`) FROM `' . MYSQL_DATABASE_PREFIX . 'uploads`';
-	$result = mysql_query($query) or die(mysql_error() . 'upload.lib L:43');
+	$result = mysql_query($query) or die(mysql_error() . 'upload.lib L:131');
 	$row = mysql_fetch_row($result);
 	$upload_fileid = 1;
 	if(!is_null($row[0])) {
 		$upload_fileid = $row[0] + 1;
 	}
 	$finalName = str_pad($upload_fileid, 10, '0', STR_PAD_LEFT) . '_' . $uploadFileName;
+	///Checking for inconsistency in the uploaded file names.
 	if(strpbrk($uploadFileName, '%#&')) {
 		displayerror("(\") , ( % ) and ( & ) are not allowed in the file name.");
 		return false;
@@ -143,7 +156,8 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 				"WHERE `page_modulecomponentid` = $moduleComponentId AND `page_module` = '$moduleName'" .
 				" AND upload_filename = '$uploadFileName'";
 		$duplicateCheckResult = mysql_query($duplicateCheckQuery);
-		if(mysql_num_rows($duplicateCheckResult) >= 1) {
+			/// Checking for duplicate entry of the file.		
+			if(mysql_num_rows($duplicateCheckResult) >= 1) {
 			displayerror("A file with the name $uploadFileName already exists. Please use a different filename.");
 			return false;
 			}
@@ -151,7 +165,8 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
 				"VALUES ($moduleComponentId, '$moduleName', $upload_fileid, " .
 				"'" . mysql_escape_string($uploadFileName) . "', '$uploadFileType', $userId)";
-		mysql_query($query) or die(mysql_error() . "upload.lib L:148<br />");
+		mysql_query($query) or die(mysql_error() . "upload.lib L:158<br />");
+		/// If galery create thumbnail and store in the database.
 		if($moduleName=="gallery")
 		{
 		$thumb_upload_fileid = $upload_fileid + 1;
@@ -173,11 +188,15 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 		return $uploadFileName;
 }
 
-
 /**
  * Return the files uploaded for this module with this module component id.
  * Return an array of file names
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @return $fileArray An array of the names of the files that were uploaded into the page.
+ *
  */
+
 function getUploadedFiles($moduleComponentId, $moduleName) {
 	$query = "SELECT `upload_filename`, `upload_filetype`, `upload_time`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` =" . $moduleComponentId . " AND `page_module` = '" . $moduleName . "'";
 	$result = mysql_query($query);
@@ -188,10 +207,20 @@ function getUploadedFiles($moduleComponentId, $moduleName) {
 	return $fileArray;
 }
 
-
 /**
- * @return $copied true if copied, false if not copied successfully
+ * Copies the files uploaded in one page to another.
+ * 
+ * @param $sourcePage_modulecomponentid page_modulecomponentid of the page from which the file must be copied.
+ * @param $sourcePage_module The module from which the files should be copied.
+ * @param $sourceFile_name The name of the file that should be copied.
+ * @param $destinationPage_modulecomponentid page_modulecomponentid of the page to which the file must be copied.
+ * @param $destinationPage_module The module to which the files should be copied.
+ * @param $destinationFile_name The name to which the file that should be copied.
+ * @param $user_id The user who is performing the copy operation.
+ * @return $copied true if copied, false if not copied successfully.
+ *
  */
+
 function fileCopy($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_name,
 					$destinationPage_modulecomponentid,$destinationPage_module,$destinationFile_name,$user_id) {
 
@@ -217,6 +246,18 @@ function fileCopy($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
 
 }
 
+/**
+ * Moves the files uploaded in one page to another.
+ * 
+ * @param $sourcePage_modulecomponentid page_modulecomponentid of the page from which the file must be moved.
+ * @param $sourcePage_module The module from which the files should be moved.
+ * @param $sourceFile_name The name of the file that should be moved.
+ * @param $destinationPage_modulecomponentid page_modulecomponentid of the page to which the file must be moved.
+ * @param $destinationPage_module The module to which the files should be moved.
+ * @param $destinationFile_name The name to which the file that should be moved.
+ * @param $user_id The user who is performing the move operation.
+ *
+ */
 function fileMove($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_name,
 					$destinationPage_modulecomponentid,$destinationPage_module,$destinationFile_name,$user_id) {
 	global $sourceFolder, $uploadFolder;
@@ -237,7 +278,12 @@ function fileMove($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
 
 /**
  * Return file name, given a file id ---- will never get used --- a module is supposed to have no knowledge of the file id.
- * also check if the particular file id exists for that particular module and component id
+ * 
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @param $upload_fileid The file id of the file whose name is begin requested.
+ * @return mixed: The name of the file if it exists and false if not.
+ *
  */
 function getFileName($moduleComponentId, $page_module, $upload_fileid) {
 	$query = " SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` =$moduleComponentId AND `page_module` =$page_module AND `upload_fileid` =$upload_fileid";
@@ -249,8 +295,14 @@ function getFileName($moduleComponentId, $page_module, $upload_fileid) {
 		return false;
 }
 
+
 /**
- * Deletes the file
+ * Deletes the file 
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @param $upload_filename The name of the file which has to be deleted.
+ * @return mixed: true if the file has been deleted and false if not.
+ *
  */
 function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	global $uploadFolder;
@@ -283,6 +335,14 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	}
 
 }
+/**
+ * Returns a form which displays the list of files uploaded in that page and if the user has sufficient permissions option to delete files.  
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @param $deleteFormAction The page or action that must be taken on clicking the delete option in the final form,
+ * @return A variable that has the required form.
+ *
+ */
 
 function getUploadedFilePreviewDeleteForm($moduleComponentId, $moduleName, $deleteFormAction = './+edit') {
 	global $uploadedFormNumber;
@@ -396,8 +456,17 @@ UPLOADEDFILESSTRING;
 }
 
 /**
- * @return mixed :  false if failed, true if no file found/ nothing to upload, otherwise array of filenames uploaded
+ * Submits the file upload from 
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @param $userId The user who is uploading the files.
+ * @param $maxFileSizeInBytes the maximum permissible size of the files that can be uploaded.
+ * @param $uploadableFileTypesArray An array that contains the file types that has been permitted to be uploaded on that page.
+ * @param $uploadableFieldName The name of the variable used in forms to upload the file
+ *
+ * @return mixed : true if any error is found in the upload otherwise array of filenames uploaded
  */
+
 	function submitFileUploadForm($moduleComponentId, $moduleName, $userId, $maxFileSizeInBytes = false, $uploadableFileTypesArray = false, $uploadFieldName = 'fileUploadField') {
 		if($maxFileSizeInBytes===false) $maxFileSizeInBytes = 2*1024*1024;
 		if(isset($_FILES[$uploadFieldName]['error'][0])) {
@@ -415,6 +484,18 @@ UPLOADEDFILESSTRING;
 		else
 			return true;
 	}
+
+/**
+ * Formulates a file upload form which can be used in modules. 
+ * @param $moduleComponentId page_modulecomponentid.
+ * @param $moduleName The module which is calling this function.
+ * @param $uploadFormAction The action that must be processed in submitting the form.
+ * @param $maxFileSizeInBytes the maximum permissible size of the files that can be uploaded.
+ * @param $uploadFieldCount The maximum number of that that can be submitted in one form.
+ * @param $uploadFieldName The name of the variable used in forms to upload the file
+ *
+ * @return $uploadFormString The file upload form HTML in a string
+ */
 
 	function getFileUploadForm($moduleComponentId, $moduleName, $uploadFormAction = './+edit', $maxFileSizeInBytes = false, $uploadFieldCount = 5, $uploadFieldName = 'fileUploadField' ) {
 		$uploadFormString = <<<UPLOAD
@@ -454,9 +535,13 @@ UPLOAD;
 	}
 
 /**
- * Gets a only the text box for upload
+ * Gets a only text box for file upload
+ * @param $uploadFieldName The name of the variable used in forms to upload the file
+ * @param $moduleName The module which is calling this function.
+ * @param $maxFileSizeInBytes the maximum permissible size of the files that can be uploaded.
+ * @param $validCheck Constratins that must be applied to the upload field.
  *
- * @param string $validCheck used by form for field required javascript
+ * @return $uploadFormString The file upload field HTML in a string
  */
 	function getFileUploadField($uploadFieldName,$moduleName, $maxFileSizeInBytes = false, $validCheck = "") {
 		if($maxFileSizeInBytes===false) $maxFileSizeInBytes = 2*1024*1024;
@@ -469,10 +554,13 @@ UPLOAD;
 
 /**
 * HTML 5 MULTIPLE UPLOAD FILE
-*
-* @param same as others.
-* @usage just include this field once.
-*/
+ * @param $uploadFieldName The name of the variable used in forms to upload the file
+ * @param $moduleName The module which is calling this function.
+ * @param $maxFileSizeInBytes the maximum permissible size of the files that can be uploaded.
+ * @param $validCheck Constratins that must be applied to the upload field.
+ *
+ * @return $uploadFormString The file upload field HTML in a string
+ */
 	function getMultipleFileUploadField($uploadFieldName, $moduleName, $maxFileSizeInBytes = false, $validCheck = "") {
 		if($maxFileSizeInBytes===false) $maxFileSizeInBytes = 2*1024*1024;
 		$uploadFormString ='<input type="hidden" name="MAX_FILE_SIZE" value="'.$maxFileSizeInBytes.'" />' .
@@ -480,7 +568,12 @@ UPLOAD;
 	      	<input type="hidden" name="FileUploadForm" value="'.$uploadFieldName.'" />';
 	    return $uploadFormString;
 	}
-
+/**
+ * @param $i The error number as issued by the $FILES
+ *
+ * return $errorcodes The error that must be thrown for the specified error number
+ *
+ */
 	function getFileUploadError($i) {
 		$errorcodes = array(UPLOAD_ERR_OK => "There is no error, the file uploaded with success.",
 							 UPLOAD_ERR_INI_SIZE=> "The uploaded file exceeds the upload_max_filesize directive in php.ini.",
@@ -493,6 +586,13 @@ UPLOAD;
 		//if($i!="" && $i != "")
 		return($errorcodes[$i]);
 	}
+
+/**
+ *
+ * @param $file The file that has to be opened to be used by createThumbs
+ *
+ * @return $im The opened image 
+ */
 function open_image ($file) {
     //detect type and process accordinally
     $size=getimagesize($file);
@@ -512,6 +612,14 @@ function open_image ($file) {
     }
     return $im;
 }
+/**
+ * Create thumbnail for an image if the module is gallery
+ *
+ * @param $pathToImages The path where the image that has to be converted is stored.
+ * @param $pathToThumbs The path where the thumbnail that is created must be saved.
+ *
+ * @return true if the thumbnail creation is successful and false otherwise
+ */
 function createThumbs( $pathToImages, $pathToThumbs, $thumbWidth ) 
 {
       // load image and get image size
