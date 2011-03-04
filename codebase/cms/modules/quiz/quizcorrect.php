@@ -76,6 +76,10 @@ function updateSectionMarks($quizId) {
 	return true;
 }
 
+/**
+ * function getWeights:
+ * returns all weights which has not be assigned marks, in weightmarks
+ */
 function getWeights($quizId) {
 	$weighs = array();
 	$result = mysql_query("SELECT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId AND `quiz_questionweight` NOT IN (SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId)");
@@ -84,6 +88,10 @@ function getWeights($quizId) {
 	return $weighs;
 }
 
+/**
+ * function getQuizUserListHtml:
+ * Generates the User list with their total, section specific marks
+ */
 function getQuizUserListHtml($quizId) {
 	// Evaluate the quiz,
 	// retrieve list of users and their total marks, and display
@@ -296,6 +304,10 @@ HEAD;
 	return $userListHtml.$userListTable;
 }
 
+/**
+ * fuction getQuizCorrectForm:
+ * returns form where user answers submissions will be displayed, marks can be alloted for subjective answers
+ */
 function getQuizCorrectForm($quizId, $userId) {
 	$marks = mysql_fetch_array(mysql_query("SELECT SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `quiz_userattempts` WHERE `user_id` = {$userId} AND `page_modulecomponentid` = $quizId"));
 	$title = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = '$quizId'"));

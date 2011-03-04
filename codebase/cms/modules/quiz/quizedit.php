@@ -15,13 +15,16 @@ if(!defined('__PRAGYAN_CMS'))
 function getQuizTypes() {
 	return array('simple');
 }
-
+/// returns types of questions
 function getQuestionTypes() {
 	return array('sso' => 'Single Select Objective', 'mso' => 'Multiselect Objective', 'subjective' => 'Subjective');
 }
 
 
-/** get*TypeBox() series of functions */
+/**
+ * function get*TypeBox
+ * returns select box listing the type
+ */
 function getQuizTypeBox($quizType) {
 	$quizTypes = getQuizTypes();
 	$quizTypeBox = '<select name="selQuizType" id="selQuizType">';
@@ -48,7 +51,10 @@ function getQuestionTypeBox($questionType) {
 }
 
 
-/** get*Row() series of functions */
+/**
+ * function get*Row:
+ * gets rows from database
+ */
 function getTableRow($tableName, $condition) {
 	$query = "SELECT * FROM `$tableName` WHERE $condition";
 	$result = mysql_query($query);
@@ -72,7 +78,10 @@ function getQuestionRow($quizId, $sectionId, $questionId) {
 }
 
 
-/** get*FormFieldMap() series of functions */
+/**
+ * function get*FormFieldMap:
+ * returns form fieldmap
+ */
 function getQuizEditFormFieldMap() {
 	return array(
 		array('txtTitle', 'quiz_title', 'quiz_quiztitle', 'text'),
@@ -112,7 +121,10 @@ function getQuestionEditFormFieldMap() {
 }
 
 
-/** add*() series of functions */
+/**
+ * function add*:
+ * adding quiz elements to database, which can be section, question, etc
+ */
 function addItems($insertQuery, $count) {
 	$idArray = array();
 	for ($i = 0; $i < $count; ++$i) {
@@ -138,7 +150,10 @@ function addQuestions($quizId, $sectionId, $count) {
 	return addItems($questionQuery, $count);
 }
 
-/** delete*() series of functions */
+/**
+ * function delete*:
+ * deleting quiz elements from database, which can be section, question, etc
+ */
 function deleteItem($tableNames, $conditions, &$affectedRows) {
 	if (!is_array($tableNames))
 		$tableNames = array($tableNames);
@@ -176,7 +191,10 @@ function deleteQuestionOptions($quizId, $sectionId, $questionId) {
 	return deleteItem($tableNames, "`page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId AND `quiz_questionid` = $questionId", $affectedRows);
 }
 
-/** move*() series of functions */
+/**
+ * function move*:
+ * moves section, question etc
+ */
 function moveItem($itemId, $itemRank, $tableName, $idFieldName, $rankFieldName, $conditions, $direction) {
 	$function = $direction == 'up' ? 'DESC' : 'ASC';
 	$operator = $direction == 'up' ? '<' : '>';
@@ -226,7 +244,10 @@ function moveQuestion($quizId, $sectionId, $questionId, $direction) {
 }
 
 
-/** a few miscellaneously named functions! */
+/**
+ * function get*List:
+ * returns list from the specified tablename
+ */
 function getItemList($tableName, $conditions = '1') {
 	$itemQuery = "SELECT * FROM `$tableName` WHERE $conditions";
 	$itemResult = mysql_query($itemQuery);
@@ -242,6 +263,11 @@ function getSectionList($quizId) {
 	return getItemList('quiz_sections', "`page_modulecomponentid` = $quizId ORDER BY `quiz_sectionrank`");
 }
 
+/**
+ * function getQuestionTableHtml:
+ * displays all the questions in a given section, quiz
+ * with proper formatting
+ */
 function getQuestionTableHtml($quizId, $sectionId) {
 	global $urlRequestRoot, $sourceFolder, $templateFolder,$cmsFolder;
 	$editImage = "<img style=\"padding:0px\" src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/apps/accessories-text-editor.png\" alt=\"Edit\" />";
@@ -300,10 +326,18 @@ QUESTIONROW;
 	return $questionListHtml . '</table>';
 }
 
+/**
+ * function getQuestionOptionList:
+ * Returns the list of options for the given question
+ */
 function getQuestionOptionList($quizId, $sectionId, $questionId) {
 	return getItemList('quiz_objectiveoptions', "`page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId AND `quiz_questionid` = $questionId ORDER BY `quiz_optionrank`");
 }
 
+/**
+ * function getQuestionOptionListHtml:
+ * returns HTML format list of options with check boxes to check right answer
+ */
 function getQuestionOptionListHtml($quizId, $sectionId, $questionId, $questionType, $rightAnswer, $editable = false) {
 	$optionList = getQuestionOptionList($quizId, $sectionId, $questionId);
 	if ($optionList === false)
@@ -336,6 +370,10 @@ function getQuestionOptionListHtml($quizId, $sectionId, $questionId, $questionTy
 	return $html;
 }
 
+/**
+ * function getSubmittedQuestionOptionListHtml:
+ * returns list of options for a question which is submitted
+ */
 function getSubmittedQuestionOptionListHtml($questionType) {
 	$html = '<table border="0">';
 	$inputType = $questionType == 'sso' ? 'radio' : 'checkbox';
@@ -358,6 +396,11 @@ function getSubmittedQuestionOptionListHtml($questionType) {
 	return $html;
 }
 
+/**
+ * function setWeightMark:
+ * Updates marks for given weight if already some marks are assigned
+ * Otherwise inserts a new record for the current weight with the speicified marks
+ */
 function setWeightMark($quizId, $weight, $positive, $negative) {
 	$result = mysql_query("SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId AND `question_weight` = $weight");
 	if(mysql_fetch_assoc($result))
@@ -367,6 +410,10 @@ function setWeightMark($quizId, $weight, $positive, $negative) {
 	return mysql_affected_rows();
 }
 
+/**
+ * function weightMarksForm:
+ * generates form which is used to set marks for each weight used in this quiz
+ */
 function weightMarksForm($quizId) {
 	$result = mysql_query("SELECT DISTINCT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId");
 	
@@ -393,7 +440,12 @@ function weightMarksForm($quizId) {
 	return $ret . "</table>";
 }
 
-/** get*Form() series of functions */
+/**
+ * function getQuizEditForm:
+ * returns the HTML interface to edit the quiz,
+ * which includes editing quiz properties, setting weight marks, editing sections, and adding questions to sections
+ * and gives link to editing questions
+ */
 function getQuizEditForm($quizId, $dataSource) {
 	$fieldMap = getQuizEditFormFieldMap();
 	if ($dataSource == 'POST') {
@@ -585,6 +637,10 @@ QUIZEDITFORM;
 	return $quizEditForm;
 }
 
+/**
+ * function getSectionEditForm:
+ * this function returns HTML edit form for a section, where section specific properties can be edited
+ */
 function getSectionEditForm($quizId, $sectionId, $dataSource) {
 	$fieldMap = getSectionEditFormFieldMap();
 
@@ -635,6 +691,10 @@ SECTIONEDITFORM;
 	return $sectionEditForm;
 }
 
+/**
+ * function getQuestionEditForm:
+ * this function returns HTML form to edit question
+ */
 function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 	$fieldMap = getQuestionEditFormFieldMap();
 	$question_type = 'subjective';
@@ -794,7 +854,10 @@ QUESTIONEDITFORM;
 }
 
 
-/** submit*Form() series of functions */
+/**
+ * function submitQuizEditForm:
+ * this function updates quiz properties in database when a quizedit form is submitted
+ */
 function submitQuizEditForm($quizId) {
 	$fieldMap = getQuizEditFormFieldMap();
 	$updates = array();
@@ -824,6 +887,10 @@ function submitQuizEditForm($quizId) {
 	return true;
 }
 
+/**
+ * function submitSectionEditForm:
+ * updates section properties in database when a sectionedit form is submitted
+ */
 function submitSectionEditForm($quizId, $sectionId) {
 	$fieldMap = getSectionEditFormFieldMap();
 	$updates = array();
@@ -852,6 +919,11 @@ function submitSectionEditForm($quizId, $sectionId) {
 	return true;
 }
 
+/**
+ * function submitQuestionEditForm:
+ * updates question properties in database when a question edit form is submitted.
+ * for objective answers also the options are updated
+ */
 function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 	$updates = array();
 	if (isset($_POST['txtQuestion']))
