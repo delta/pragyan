@@ -6,6 +6,64 @@ if(!defined('__PRAGYAN_CMS'))
 	echo '<hr/>'.$_SERVER['SERVER_SIGNATURE'];
 	exit(1);
 }
+
+/**
+ * @package pragyan
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ *
+ * Quiz Module in Pragyan CMS makes quiz setup easier
+ * This module generates the user-friendly edit and correct interface for quiz
+ * 
+ * Quiz Module corrects objective answers submitted by users,
+ * and lets quiz admin set mark for subjective answers, and ranks users based on their marks.
+ * 
+ * Edit interface lets user to edit the quiz,
+ * by editing its properties, adding sections, adding questions, etc.
+ * Important Quiz Properties include:
+ *     quiz opening time - Time after which users will be able to view the quiz
+ *     quiz closing time - Time after which users wont be able to view or submit quiz answers
+ *     quiz duration - Time duration of the quiz, within which user has to submit his/her answers
+ * 
+ * Quiz is organised as Sections and each section can contain any number of questions.
+ * 
+ * Book module uses seven table to stores its data:
+ * quiz_descriptions: Every quiz page has a record in this table and it stored the quiz's properties
+ *     page_modulecomponentid, quiz_title, quiz_headertext, quiz_submittext, quiz_quiztype, quiz_testduration,
+ *     quiz_questionspertest, quiz_questionsperpage, quiz_timeperpage, quiz_,quiz_enddatetime,
+ *     quiz_allowsectionrandomaccess, quiz_mixsections, quiz_showquiztimer, quiz_showpagetimer
+ * 
+ * quiz_sections: Every section has a row in this table, each record is uniquely identified with page_modulecomponentid, quiz_sectionid
+ *     page_modulecomponentid, quiz_sectionid, quiz_sectiontitle, quiz_sectionssocount, quiz_sectionmsocount,
+ *     quiz_sectionsubjectivecount, quiz_sectiontimelimit, quiz_sectionquestionshuffled, quiz_sectionrank, quiz_sectionshowlimit
+ * 
+ * quiz_questions: Every question is a record in this table, each record is identified with
+ *                 (page_modulecomponentid, quiz_sectionid, quiz_questionid)
+ *     page_modulecomponentid, quiz_sectionid, quiz_questionid, quiz_question, quiz_questiontype, quiz_questionrank
+ *     quiz_questionweight, quiz_answermaxlength, quiz_rightanswer
+ * 
+ * quiz_objectiveoptions: Options for objective questions are stored here, identified by
+ *                        (page_modulecomponentid, quiz_sectionid, quiz_questionid, quiz_optionid)
+ *     page_modulecomponentid, quiz_sectionid, quiz_questionid, quiz_optionid, quiz_optiontext, quiz_optionrank
+ * 
+ * quiz_weightmarks: Mark for each question is determined from this table, weight-mark association is specific to a quiz,
+ *                   So uniquely identified by (page_modulecomponentid, question_weight)
+ *     page_modulecomponentid, question_weight, question_positivemarks, question_negativemarks
+ * 
+ * quiz_userattempts: Record of each user attempting each section, identified by
+ *                    (page_modulecomponentid, quiz_sectionid, quiz_userid)
+ *     page_modulecomponentid, quiz_sectionid, user_id, quiz_attemptstarttime, quiz_submissiontime, quiz_marksallotted
+ * 
+ * quiz_answersubmissions: A Record of each question submitted for each quiz for each user, identified by
+ *                         (page_modulecomponentid, quiz_section, quiz_questionid, quiz_userid)
+ *     page_modulecomponentid, quiz_sectionid, quiz_questionid, user_id, quiz_questionrank, quiz_submittedanswer,
+ *     quiz_questionviewtime, quiz_answersubmittime, quiz_marksallotted
+ */
+
+
+/**
+ * Including parts of quiz module
+ */
 require_once('quiz/quizedit.php');
 require_once('quiz/quizview.php');
 require_once('quiz/quizcorrect.php');
@@ -20,6 +78,11 @@ class quiz implements module {
 	private $userId;
 	private $action;
 
+	/**
+	 * function getHtml:
+	 * Gateway through which CMS interacts with module
+	 * This function will be called from getContent function of cms/content.lib.php
+	 */
 	public function getHtml($userId, $moduleComponentId, $action) {
 		$this->userId = $userId;
 		$this->moduleComponentId = $moduleComponentId;
@@ -34,11 +97,20 @@ class quiz implements module {
 				return $this->actionCorrect();
 		}
 	}
-
+	
+	/**
+	 * function isValidId:
+	 * Checks if input parameter is a positive integer
+	 */
 	private function isValidId($id) {
 		return isset($id) && is_numeric($id) && $id > 0;
 	}
-
+	
+	/**
+	 * function actionView:
+	 * Takes care of rendering quiz to users
+	 * Makes preliminary checks and calls getQuizPage function in ./quiz/iquiz.php
+	 */
 	public function actionView() {
 		$quizOpen = checkQuizOpen($this->moduleComponentId);
 		if ($quizOpen != 0) {
@@ -73,7 +145,11 @@ class quiz implements module {
 		// Quiz is initialized. Call getQuizPage.
 		return $quizObject->getQuizPage($this->userId);
 	}
-
+	
+	/**
+	 * function actionEdit:
+	 * processes subaction and calls getQuizEditForm function which renders edit interface
+	 */
 	public function actionEdit() {
 		// dataSource: the $dataSource argument to get*Form() functions specifies where to persist data for the form from.
 		// if a submit was in progress, and the submit was successful, we set dataSource to db.
@@ -201,7 +277,12 @@ class quiz implements module {
 
 		return getQuizEditForm($this->moduleComponentId, $dataSource);
 	}
-
+	
+	/**
+	 * function actionCorrect:
+	 * handles all actions in Correct
+	 * Corrects user submission and displays userList with their Marks
+	 */
 	public function actionCorrect() {
 
 		if (isset($_POST['btnSetMark'])) {
@@ -242,7 +323,11 @@ class quiz implements module {
 		return getQuizUserListHtml($this->moduleComponentId);
 	}
 
-
+	/**
+	 * function createModule:
+	 * will be called when quiz module instance is created.
+	 * A row will be inserted into quiz_descriptions
+	 */
 	public function createModule(&$moduleComponentId) {
 		$insertQuery = "INSERT INTO `quiz_descriptions`(`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" .
 					"('New Quiz', 'Quiz under construction', 'Quiz under construction', 'simple', '00:30', '20', '10', 0, 1, 0, 1, 0)";
@@ -257,9 +342,19 @@ class quiz implements module {
 		return count($insertIds) == 1;
 	}
 
+	/**
+	 * function copyModule:
+	 * to be implemented
+	 * has to copy everything related to this quiz instance to another instance
+	 */
 	public function copyModule($moduleComponentId) {
 	}
 
+	/**
+	 * function deleteModule:
+	 * delete all quiz data related to this quiz instance
+	 * will be called when safedit module instance is getting deleted.
+	 */
 	public function deleteModule($moduleComponentId) {
 		$tableNames = array('quiz_descriptions', 'quiz_sections', 'quiz_questions', 'quiz_objectiveoptions', 'quiz_userattempts', 'quiz_answersubmissions', 'quiz_weightmarks');
 		$allOk = true;
@@ -272,6 +367,10 @@ class quiz implements module {
 		return $allOk;
 	}
 
+	/**
+	 * function getNewQuizObject:
+	 * returns a object of this quiztype
+	 */
 	private function getNewQuizObject() {
 		$quizRow = getQuizRow($this->moduleComponentId);
 		$quizType = $quizRow['quiz_quiztype'];

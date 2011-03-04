@@ -49,6 +49,10 @@ function checkQuizSetup($quizId) {
 	return true;
 }
 
+/**
+ * function checkQuizOpen:
+ * returns if the quiz is open or not
+ */
 function checkQuizOpen($quizId) {
 	$quizQuery = "SELECT IF(NOW() < `quiz_startdatetime`, -1, IF(NOW() > `quiz_enddatetime`, 1, 0)) FROM `quiz_descriptions` WHERE `page_modulecomponentid` = $quizId";
 	$quizResult = mysql_query($quizQuery);
@@ -60,6 +64,10 @@ function checkQuizOpen($quizId) {
 	return $quizRow[0];
 }
 
+/**
+ * function checkUserFirstAttempt:
+ * returns if the user is attempting the quiz for first time
+ */
 function checkUserFirstAttempt($quizId, $userId) {
 	$attemptQuery = "SELECT COUNT(*) FROM `quiz_userattempts` WHERE `page_modulecomponentid` = $quizId AND `user_id` = $userId";
 	$attemptResult = mysql_query($attemptQuery);
@@ -67,6 +75,10 @@ function checkUserFirstAttempt($quizId, $userId) {
 	return $attemptRow[0] == 0;
 }
 
+/**
+ * function sectionBelongsToQuiz:
+ * returns if the given quiz has a section with given sectionId
+ */
 function sectionBelongsToQuiz($quizId, $sectionId) {
 	$sectionQuery = "SELECT COUNT(*) FROM `quiz_sections` WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId";
 	$sectionResult = mysql_query($sectionQuery);
@@ -74,6 +86,10 @@ function sectionBelongsToQuiz($quizId, $sectionId) {
 	return $sectionRow[0] == 1;
 }
 
+/**
+ * function startSection:
+ * Marks the section attempted by the user
+ */
 function startSection($quizId, $sectionId, $userId) {
 	$attemptQuery = "INSERT INTO `quiz_userattempts`(`page_modulecomponentid`, `quiz_sectionid`, `user_id`, `quiz_attemptstarttime`) VALUES " .
 			"($quizId, $sectionId, $userId, NOW())";
@@ -84,6 +100,10 @@ function startSection($quizId, $sectionId, $userId) {
 	return true;
 }
 
+/**
+ * function getFirstSectionId:
+ * returns Lowest sectionid in the given quizid
+ */
 function getFirstSectionId($quizId) {
 	$sectionQuery = "SELECT MIN(`quiz_sectionid`) FROM `quiz_sections` WHERE `page_modulecomponentid` = $quizId";
 	$sectionResult = mysql_query($sectionQuery);
@@ -93,6 +113,10 @@ function getFirstSectionId($quizId) {
 	return $sectionRow[0];
 }
 
+/**
+ * function getAttemptRow:
+ * returns userattempts row for given quiz, section, user
+ */
 function getAttemptRow($quizId, $sectionId, $userId) {
 	$attemptQuery = "SELECT * FROM `quiz_userattempts` WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId AND `user_id` = $userId";
 	$attemptResult = mysql_query($attemptQuery);
