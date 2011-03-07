@@ -15,6 +15,12 @@ if(!defined('__PRAGYAN_CMS'))
  */
  
 
+/**
+ * Function handleIconManagement 
+ * @description Returns the Icon Admin page html and handles AJAX requests for page /+admin$subaction=i
+ * 
+ * @return HTML of the FORM
+ */
 function handleIconManagement() {
 
 	/*
@@ -40,8 +46,10 @@ function handleIconManagement() {
 	{
 		$rootUri = hostURL();	
 		global $cmsFolder,$templateFolder;
+		
 		if(isset($_GET["iconURL"]) && isset($_GET['targetId'])) {
-			//Security checks
+		
+			///Security checks
 			$iconURL = $_GET["iconURL"];
 			$iconURL = str_replace($rootUri, "", $iconURL);
 			$parse = strstr($iconURL, "$cmsFolder/$templateFolder/common/icons/");
@@ -50,7 +58,11 @@ function handleIconManagement() {
 			$iconURL = $parse;
 			$iconURL = escape($iconURL);
 			$target = escape($_GET["targetId"]);
-	
+			
+			/**
+			 * Save the Icon in Database - The following entries are saved
+			 * icon URL - path relative to the website installation folder on the server
+			 */
 			mysql_query("UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_image`='$iconURL' WHERE `page_id`='$target'");
 			$pageDetails = getPageInfo($target);
 			if($pageDetails['page_image'] != NULL)
@@ -60,10 +72,16 @@ function handleIconManagement() {
 			echo $pageDetails["page_name"];
 	
 		}
+		
+		/**
+		 * Handler for icon subaction.
+		 * TODO: implement icon size variations, icon resize Options, 
+		 */
 		else if(isset($_GET['iconAction'])) {
 			$action = $_GET['iconAction'];
 			
 		}
+		///Security Check
 		else
 		{
 			die("Restricted access");
@@ -72,7 +90,9 @@ function handleIconManagement() {
 	}
 
 
-
+	/**
+	 * @description Icon Management Form Generation Code Starts here
+	 */
 	$iconForm = "";
 	$iconForm .= <<<ICONFORM
 		<style type="text/css">
@@ -85,13 +105,16 @@ function handleIconManagement() {
 		</style>
 		
 ICONFORM;
-	//Get data from Database
+
 	global $cmsFolder;
 	global $sourceFolder;
 	global $templateFolder;
 	global $userId;
 	$myhostURL = hostURL();
+	
+	///Ajax handler functions, drag and drop handlers defined in icon.event.handler.js
 	$iconForm .= "<script type=\"text/javascript\" src=\"$myhostURL/$cmsFolder/$templateFolder/common/scripts/icon.event.handler.js\"></script>";
+	
 	$iconForm .= <<<STYLES
 		<style type="text/css">
 		.myIconForm {
@@ -119,9 +142,13 @@ ICONFORM;
 		</style>
 STYLES;
 	
+	///This contains file upload functions of CMS. Look into upload.lib.php documentation for more
 	require_once("$sourceFolder/upload.lib.php");
+	
+	///Just a duplicate copy for sending it to the upload functions.
 	$fakeid = $userId;
-
+	
+	///get the html for upload - input tag
 	$imageUploadField = getMultipleFileUploadField('iconUpload','iconman',512*1024);
 	
 	//$iconForm .= $imageUploadField;
@@ -133,12 +160,19 @@ STYLES;
 	
 FORM;
 	
+	///Display Icons
 	$iconForm .= "<table class=\"myIconForm\"><tr><td id=\"iconTreeMenu\">";
+	
+	///Fetch the site's complete tree structure of pages. 
+	///The elements here are the ones on which icons are dropped.
 	$iconForm .= getTreeView(0,-1,$myhostURL,$userId,1);
 	$iconForm .= "</td>";
 	$iconForm .="<td>";
+	
+	///Fetch Icon file list and get as html
 	$selectionList = getIconList();
 
+	///Gather the html and append the iconform html
 	$iconForm .= <<<SELECTION
 		<div class="selection" id="targetIcon">
 			<h3>Upload new icons</h3>
@@ -166,6 +200,20 @@ SELECTION;
 
 	return $iconForm;
 }
+
+/**
+ * Function getTreeView
+ * 
+ * @description Similar to menu generation code. It recursively fetches pages according to the sitemap, and generates a ul list with drop handlers defined.
+ *
+ * @param pageId The current Page the function is operation on
+ * @param depth depth of the child list to be fetched at each level. Here it is always -1 to fetch till the last element is reached
+ * @param rootUri here it is /. Look into Menu documentation for implementation of the same elsewhere.
+ * @param userId This is just to check the permission.
+ * @param curdepth Current Depth of the recursion
+ *
+ * @return HTML - UL list of the tree structure of pages
+ */
 function getTreeView($pageId,$depth,$rootUri,$userId,$curdepth) {
 	global $cmsFolder;
 	global $templateFolder;
@@ -195,6 +243,11 @@ DROPZONE;
   }
 }
 
+/**
+ * Function getIconList
+ * @description Get the complete list of icons using getListOfFiles - integrate it with HTML and assign drag handlers, and click handlers
+ * @return html of the icon list categorized
+ */
 function getIconList() {
 	$iconList = "";
 	$rootUri = hostURL();
@@ -263,12 +316,12 @@ HTMl;
 	return $iconList;
 }
 
-/*
-* @function "To generate File list given a folder"
-* @param $dir Name of the directory : Relative path
-* @param $isTopLevel This is to ensure that the $iconList doesnt get emptied when recursion occurs.
-*	@usage Always call the function as getListOfFiles(<Directory>, true)
-* @author boopathi
+/**
+* Function getListOfFiles
+* @description "To generate File list given a folder"
+* @param dir Name of the directory : Relative path
+* @param isTopLevel This is to ensure that the $iconList doesnt get emptied when recursion occurs.
+* @usage Always call the function as getListOfFiles(<Directory>, true)
 */
 function getListOfFiles($dir, $isTopLevel=false) {
 	global $iconList;
@@ -297,6 +350,11 @@ function getListOfFiles($dir, $isTopLevel=false) {
 	}
 	return $iconList;
 }
+
+/**
+ * Function mime_content_type
+ * @description This is depricated in the latest PHP version. So redefining the same.
+ */
 if(!function_exists('mime_content_type')) {
 
     function mime_content_type($filename) {
