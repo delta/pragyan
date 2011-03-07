@@ -28,10 +28,17 @@ function findMenuIndex($menuArray, $pageId) {
 	return -1;
 }
 
-/*
-*	Now $COMPLETEMENU AND $MENUBAR mean the same in /index.php
-* 3rd type of menu added in database - completemenu
-*/
+/**
+ * Now $COMPLETEMENU AND $MENUBAR mean the same in /index.php
+ * 3rd type of menu added in database - completemenu
+ */
+
+/**
+ * Function getMenu
+ * @param userId user Id of the current user logged in.
+ * @param pageIdArray generate menu for the request page.
+ * @return HTML element of the menu. An unordered list.
+ **/
 function getMenu($userId, $pageIdArray) {
 
 
@@ -42,31 +49,42 @@ function getMenu($userId, $pageIdArray) {
 	$hostURL = ".";
 	$pageId = $pageIdArray[count($pageIdArray) - 1];
 	$hostURL = hostURL();
+	
+	/// A duplicate entry just a fix for changing $hostURL.
 	$MYHOST = hostURL();
+	
+	/// Returns an array
 	$pageRow = getPageInfo($pageId);
 	$depth = $pageRow['page_menudepth'];
+	
+	/// Default depth is 1 - Should always show atleast one level of sub menu to enable navigation within site.
 	if ($depth == 0) $depth=1;
+
 	if ($pageRow['page_displaymenu'] == 0)
 		return '';
 	$menutype=$pageRow['page_menutype'];
 	
 	$menuHtml = "";
 	
+	/// Classic Menu type - No branches are displayed in this type
 	if($menutype=="classic")
 	{
 		$pageId = $pageIdArray[count($pageIdArray) - 1];
 		$depth = 1;
 		$hostURL = strstr(selfURI(), '+', true);
 		
+		/// Get parent page details
 		$parentPage = getParentPage($pageId);
 		$parentPageRow = getPageInfo($parentPage);
 		
 		$childListGenerated = getChildList($pageId, $depth, hostURL(), $userId, 1);
-					
+		
+		/// Display the sibling menu of the same depth
 		if($pageRow['page_displaysiblingmenu']) {
 			if($pageId != 0) {
 				$imageTag = "";
 				if($parentPageRow['page_displayicon'] == 1 && $parentPageRow['page_image'] != NULL) {
+					/// Icon for the menu if present
 					$imageTag = "<img width=32 height=32 src=\"{$MYHOST}/{$parentPageRow['page_image']}\" alt=\"{$parentPageRow['page_image']}\" />";
 	  		}
 				$menuHtml .= '<a href="'.$hostURL.'../"><div class="cms-menuhead">'.$imageTag.$parentPageRow["page_title"].'</div></a>';
@@ -75,6 +93,7 @@ function getMenu($userId, $pageIdArray) {
 			}
 		}
 		
+		/// If nothing is generated, then display atleast one item - the current Menu
 		if($pageRow['page_displaysiblingmenu']==0 && $childListGenerated == null) {
 			$imageTag = "";
 			$pageR = getPageInfo($pageId);
@@ -91,6 +110,7 @@ function getMenu($userId, $pageIdArray) {
 MENU;
 		}
 		
+		///If the childList is generated, then display the child items
 		if($childListGenerated != "") {
 			$imageTag = "";
 				if($pageRow['page_displayicon'] == 1 && $pageRow['page_image'] != NULL) {
@@ -99,46 +119,10 @@ MENU;
 			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">'.$imageTag.$pageRow["page_title"].'</div></a>';
 			$menuHtml .= $childListGenerated;
 		}
-			
-		/*
-		@TO BE REMOVED 
-		@author Boopathi
-		
-		JUST FOR A BACKUP THIS IS PRESERVED
-		
-		Test the code with different possibilities of menu structures and COMMENT.
-		
-		$menuHtml =<<<MENUHTML
-		<div id="menubar">
-			<div id="menubarcontent">
-MENUHTML;
-		$childMenu = getChildren($pageId, $userId);
-
-		///@note Not sure why $pageId = 0 ? Is this even correct ? $pageId is 0 when $complete=true, but then its only for drop-down style menu and not for classic style. But this code is within the classic section.
-		///@reply This is because $COMPLETEMENU is called in the index.php. So the pageid is set to 0. Just check the lines of code above. I ll change this soon and delete this note. @author: BOOPATHI
-		if ($pageId == 0) { 
-			$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' .  $pageRow['page_title'] . '</div></a>';
-			$menuHtml .= htmlMenuRenderer($childMenu,-1,'');
-		}
-		else  {
-			if ($pageRow['page_displaysiblingmenu']) {
-				$siblingMenu = getChildren($pageIdArray[count($pageIdArray) - 2], $userId);
-				$parentPageRow = getPageInfo($pageIdArray[count($pageIdArray) - 2]);
-				$menuHtml .= '<a href="'.$hostURL.'../"><div class="cms-menuhead">' . $parentPageRow['page_title'] . '</div></a>';
-				$menuHtml .= htmlMenuRenderer($siblingMenu, findMenuIndex($siblingMenu, $pageId), '../');
-			}
-			if (count($childMenu) > 0)
-			{
-				$menuHtml .= '<a href="'.$hostURL.'"><div class="cms-menuhead">' . $pageRow['page_title'] . '</div></a>';
-				$menuHtml .= htmlMenuRenderer($childMenu);
-			}
-		}
-
-		$menuHtml .= '</div></div>';
-		*/
 	}
 	else
 	{
+		///Multi Depth Menu Code starts from here
 		if($menutype == "multidepth") {
 		$pageId = $pageIdArray[count($pageIdArray) - 1];
 		}
@@ -147,12 +131,14 @@ MENUHTML;
 		}
 	
 		$rootUri = hostURL();
-		
+		///Get page information through pageId		
 		$pageRow = getPageInfo($pageId);
 			
+		///Get the Children of the page.
 		$childListGenerated = getChildList($pageId,$depth,$rootUri,$userId,1);
 		if($childListGenerated != "")
 			$menuHtml .= $childListGenerated;
+		///If nothing generated, then display default - The current page name
 		else {
 			$imageTag = "";
 			$pageR = getPageInfo($pageId);
@@ -170,10 +156,18 @@ MENU;
 		}
 	}
 	
-	// return the final HTMl
+	// return the final generated HTML
 	return $menuHtml;
 
 }
+
+/**
+ * Get the ChildList for the current item in menu.
+ * @param $pageId the page Id of the current Page
+ * @param $depth The number of levels of menu that should be generated
+ * @param $userId The viewers id - To check for permissions.
+ * @return Associative Array containing the child pages informaion.;
+*/
 
 function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   if($depth>0 || $depth==-1) {
@@ -270,7 +264,7 @@ function imageMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 }
 
 /**
- * @return array Array of arrays of page id, page name, page title, large image and small image
+ * @return Array of arrays of page id, page name, page title, large image and small image
  */
 function getChildren($pageId, $userId) {
 	$pageId=escape($pageId);
