@@ -56,10 +56,11 @@ if(!defined('__PRAGYAN_CMS'))
 		</div>
 	<div class="contentcontainer">
 		<div id="actionbar" class="cont">
-			<?php echo $ACTIONBARPAGE ."<div>&nbsp; </div>". $ACTIONBARMODULE; ?>
+			<?php echo $ACTIONBARPAGE ."&nbsp; ". $ACTIONBARMODULE; ?>
 		</div>
 		<div class="clearer"></div>
 		<div class="contentinnertube">
+			<?php /*
 			<div id="leftContent">
 				<div id="quicklinks">
 				<table border="1" cellspacing="0" cellpadding="7.5">
@@ -70,43 +71,10 @@ if(!defined('__PRAGYAN_CMS'))
 				</table>
 				</div>
 			</div>
+			
 			<div id="rightContent">
 				<div id="right1" class="cont">
-					<!-- Countdown dashboard start -->
-					<div id="countdown_dashboard">
-						<div class="dash weeks_dash">
-							<span class="dash_title">weeks</span>
-							<div class="digit">0</div>
-							<div class="digit">0</div>
-						</div>
-
-						<div class="dash days_dash">
-							<span class="dash_title">days</span>
-							<div class="digit">0</div>
-							<div class="digit">0</div>
-						</div>
-
-						<div class="dash hours_dash">
-							<span class="dash_title">hours</span>
-							<div class="digit">0</div>
-							<div class="digit">0</div>
-						</div>
-
-						<div class="dash minutes_dash">
-							<span class="dash_title">minutes</span>
-							<div class="digit">0</div>
-							<div class="digit">0</div>
-						</div>
-
-						<div class="dash seconds_dash">
-						<span class="dash_title">seconds</span>
-							<div class="digit">0</div>
-							<div class="digit">0</div>
-						</div>
-
-					</div>
-					<!-- Countdown dashboard end -->
-					<h4 id='countdown'>... before Pragyan 2011</h1>
+					
 				</div>
 				 <script language="javascript" type="text/javascript">
 					jQuery(document).ready(function() {
@@ -132,6 +100,7 @@ if(!defined('__PRAGYAN_CMS'))
 					Twitter
 				</div> -->
 			</div>
+			*/ ?>
 			<div id="centerContent" class="cont">
 				<div id="content">
 					<?php echo $INFOSTRING; ?>
