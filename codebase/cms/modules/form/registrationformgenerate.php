@@ -81,10 +81,12 @@ if(!defined('__PRAGYAN_CMS'))
 
 		if(!$disableCaptcha && $formRow['form_usecaptcha'] == 1)
 			$body .= getCaptchaHtml();
-
-		$body .= '<tr>'.
-				'<td colspan="2">* - Required Fields&nbsp;</td>'.
-			'</tr></table></fieldset>' .
+		$req_query = "SELECT count(*) FROM `form_elementdesc` WHERE `form_elementisrequired`=1 AND `page_modulecomponentid`=$moduleCompId";
+		$res_req = mysql_fetch_array(mysql_query($req_query)) or displayerror("Error at registrationformgenerate.lib.php Line 85 ".mysql_error());
+		if($res_req[0]>0)
+			$body .= '<tr>'.
+				'<td colspan="2">* - Required Fields&nbsp;</td></tr>';
+		$body .= '</table></fieldset>' .
 							'<br /><div style="text-align:center"><input type="submit" name="submitreg_form_'.$moduleCompId.'" value="Submit" />' .
 							'<br /><br />' . $formRow['form_footertext'] .
 							'</div></form></div>';
@@ -272,7 +274,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			if($isRequired)
 			$validCheck=" class=\"required\"";
 			else $validCheck="";
-			$options = split('\|', $elementTypeOptions);
+			$options = explode('|', $elementTypeOptions);
 			$optionsHtml = '';
 			if(isset($_POST[$elementName]))
 				$value = $options[$value];
