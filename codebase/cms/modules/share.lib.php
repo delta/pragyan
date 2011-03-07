@@ -100,7 +100,7 @@ RET;
 	function renderField($row,$action="view")
 	{
 		$username = getUserFullName($row['upload_userid']);
-		$content = "<fieldset><div id='file'><b>{$row['file_name']}</b><br />Uploaded by: {$username} <br /> {$row['file_desc']}<br /><a href=\"./+$action&file={$row['file_id']}\"><input type='submit' value='Discussion'></a><a href=\"./{$row['file_name']}\" target='_blank'><input type='submit' value='Download'></a>";
+		$content = "<fieldset><div id='file'><b>{$row['file_name']}</b><br />Uploaded by: {$username} <br /> {$row['file_desc']}<br /><a href=\"./+$action&file={$row['file_id']}\"><input type='submit' value='Discussion'></a><a href=\"./{$row['upload_filename']}\" target='_blank'><input type='submit' value='Download'></a>";
 		if($action=="moderate")
 			$content .="<a href=\"./+moderate&delfile={$row['file_id']}\"><input type='submit' value='Delete'></a>";
 		$content .="</div></fieldset>";

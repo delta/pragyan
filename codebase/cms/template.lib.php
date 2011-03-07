@@ -13,6 +13,16 @@ if(!defined('__PRAGYAN_CMS'))
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
+
+/**
+ * Returns the template specific to the page
+ * 
+ * @param $pageId The page id for the page whose template is needed
+ * 
+ * @return The template that has been assigned to the page, If no template has been assigned then return the default
+ * template
+ *
+ */
 function getPageTemplate($pageId)
 {
  	
@@ -30,6 +40,19 @@ function getPageTemplate($pageId)
  	return $row[0];
 }
 
+/**
+ * Replaces the CMS variables in the template with the proper values and returns the page. 
+ * 
+ * @param $TITLE The title for the page
+ * @param $MENUBAR The menubar according to the page settings, either the complete, classic or multi-depth.
+ * @param $ACTIONBARMODULE Contains the actions that are specific to the module of page that is currently being viewed
+ * @param $ACTIONBARPAGE Has the actions that are specif to a page like page-settings, permissions, login etc.
+ * @param $CONTENT The content of the page that the user has requested.
+ * @param $FOOTER  
+ * @return The template that has been assigned to the page, If no template has been assigned then return the default
+ * template
+ *
+ */
 function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$BREADCRUMB,&$INHERITEDINFO,&$CONTENT,&$FOOTER,&$DEBUGINFO,&$ERRORSTRING,&$WARNINGSTRING,&$INFOSTRING,&$STARTSCRIPTS,&$LOGINFORM) {
 	global $cmsFolder;
 	global $sourceFolder;
