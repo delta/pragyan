@@ -127,8 +127,16 @@ require_once($sourceFolder."/authenticate.lib.php");
 $cookieSupported = checkCookieSupport();
 if($cookieSupported==true)	session_start();
 $userId=firstTimeGetUserId();
+///Case 1 : request a page
 if(isset($_GET['page']))
 	$pageFullPath = strtolower($_GET['page']);
+///Case 2 : request for a user profile page
+else if(isset($_GET['user'])) {
+	$publicPageRequest = true;
+	$userProfileName = $_GET['user'];
+	///This is just to prevent parsing a NULL url when someone misplaces the code for User profile parser
+	$pageFullPath = "home";
+}
 else $pageFullPath = "home";
 
 ///Retrieve the action, default is "view"
@@ -192,7 +200,19 @@ require_once($sourceFolder."/widget.lib.php");
 require_once($sourceFolder."/login.lib.php");
 
 
+///If requesting for a userpage donot goto parse. Note that this code is before the URL parse
 
+///Check if request is made
+if($publicPageRequest) {
+	//require_once($sourceFolder."/profile.lib.php");
+	define("TEMPLATE", getPageTemplate(0));
+	$TITLE = $userProfileName;
+	//$CONTENT = profile($userId);
+	$CONTENT = "You are currently viewing a Public Profile of ". htmlentities($userProfileName);
+	$MENUBAR = '';
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
+	exit();
+}
 
 ///Parse the URL and retrieve the PageID of the request page if its valid
 $pageId = parseUrlReal($pageFullPath, $pageIdArray);

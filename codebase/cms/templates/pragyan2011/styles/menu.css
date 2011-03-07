@@ -15,7 +15,11 @@
 	margin: 0 auto;
 	position: relative;
 }
-
+.menucontainer img {
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
+}
 
 .menucontainer ul.topnav {
 	list-style: none;

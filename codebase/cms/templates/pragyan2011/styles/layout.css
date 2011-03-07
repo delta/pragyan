@@ -1,13 +1,16 @@
 
 body{
 	min-width: 960px;
-	margin: 0 20px;
+	margin: 0 auto;
 	padding: 0;
 }
 .clearer{
 clear:both;
 }
-.outercontainer, .innercontainer{width: 100%;margin: 0;padding: 0;}
+.outercontainer {
+	width: 960px;
+}
+.outercontainer, .innercontainer{margin: 0 auto;padding: 0;}
 
 /*MENU*/
 .menucontainer{

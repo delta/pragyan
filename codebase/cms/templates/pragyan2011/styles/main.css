@@ -21,13 +21,8 @@ body {
 
 }
 
-#header {
-	background: #EAEAEA;
-	position:relative;
-}
 #header img {
 	border:0;
-	text-align:center;
 }
 /*ACTION BAR */
 #actionbar {height: 16px;}
@@ -38,6 +33,7 @@ body {
 	font-size: 12px; 
 	font-family:normal Arial,Helvetica,sans-serif;
 	border: solid 1px white;
+	vertical-align: middle;
 }
 /*MENUBAR */
 #menubar cms-menuhead {
