@@ -1,3 +1,9 @@
+/**
+ * @package pragyan
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * @author Jack<chakradarraju@gmail.com>
+ */
 var xmlhttp;
 var xmlhttp2;
 var changes = {'group' : {}, 'user' : {}};
@@ -111,7 +117,7 @@ function generateTable() {
 	}
 	table += "</tbody></table>";
 	document.getElementById('permTable').innerHTML = table;
-	selected = backup; // i found the selected object getting deleted lost inside the loop, when someone finds how to fix it, this backup can be avoided.
+	selected = backup; // i found the selected object getting lost after the loop, when someone finds how to fix it, this backup can be avoided.
 }
 
 function cmsShow(type,message) {
@@ -179,7 +185,7 @@ function render(arr,class) {
 		isChecked = '';
 		if(inArray(selected[class],key))
 			isChecked = ' checked';
-		ret += "<tr><td><INPUT type=checkbox class='check_" + class + "' value='" + key + "' onChange='checkClick(this)'" + isChecked + ">&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
+		ret += "<tr><td><INPUT type=checkbox class='check_" + class + "' value='" + key + "' name='" + class + "_" + key + "' onChange='checkClick(this)'" + isChecked + ">&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
 	}
 	return ret;
 }
@@ -189,7 +195,8 @@ function populateList() {
 	document.getElementById('usersList').innerHTML = render(groups,'groups');
 	document.getElementById('usersList').innerHTML += render(users,'users');
 	initSmartTable();
-	cmsShow('info','select the permissions and users/groups to change the permission for the user/group');
+	showPermissions();
+//	cmsShow('info','select the permissions and users/groups to change the permission for the user/group');
 }
 
 function selectAll1() {
@@ -268,4 +275,12 @@ function toggle2() {
 		savelist(checks[i]);
 	}
 	showPermissions();
+}
+
+function getuserperm() {
+	document.forms['getuserperm'].submit();
+}
+
+function getpermuser() {
+	document.forms['getpermuser'].submit();
 }
