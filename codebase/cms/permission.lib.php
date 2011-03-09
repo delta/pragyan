@@ -50,7 +50,7 @@ function customjson($objDesc) {
 }
 
 /**
- * Generates a table showing the permissions of all users and visible groups on a particular page
+ * Returns permissions of all users and visible groups on a particular page
  * @param $pagepath Array containing the path to the current page
  * @param $modifiableGroups Array containing the groups for which permissions are to be viewed
  * @param $grantableActions Array containing the module => actions for which permissions must be shown
@@ -281,6 +281,13 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 		}
 	}
 	
+	return array($sortedGroupPerms,$sortedUserPerms);
+}
+
+function formattedPermissions($pagepath, $modifiableGroups, $grantableActions) {
+
+	list($sortedGroupPerms,$sortedUserPerms) = getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions);
+	
 	$groupReturnText = customjson($sortedGroupPerms);
 	$userReturnText = customjson($sortedUserPerms);
 	
@@ -290,7 +297,6 @@ permUsers = {$userReturnText};
 RET;
 	return $ret;
 }
-
 
 function getPermissionId($module, $action) {
 	$permQuery = "SELECT `perm_id` FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE " .
@@ -538,7 +544,7 @@ function grantPermissions($userid, $pageid) {
 		for($i = 0; $i < count($modifiableGroups); $i++) {
 			$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
 		}
-		$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+		$permissions = formattedPermissions($pagepath, $modifiableGroupIds, $grantableActions);
 			$ret =<<<RET
 pageid = {$pageid};
 {$permissions}
@@ -596,15 +602,13 @@ RET;
 	for($i = 0; $i < count($modifiableGroups); $i++) {
 		$modifiableGroupIds[] = $modifiableGroups[$i]['group_id'];
 	}
-	$perms = getAllPermissions();
-	$permissions = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+	$perms = json_encode(formatPermissions($grantableActions));
+	$permissions = formattedPermissions($pagepath, $modifiableGroupIds, $grantableActions);
 	$groups = customGetGroups($maxPriorityGroup);
 	$users = customGetAllUsers();
 	global $templateFolder;
 	$smarttableconfig = array (
-			
 			'permtable' => array(
-				
 				'sPaginationType' => 'two_button',
 				'bAutoWidth' => 'false',
 				'aoColumns' => '{ "sWidth": "100px" }'
@@ -620,6 +624,81 @@ RET;
 	$baseURL = "./+grant&doaction=changePerm";
 	if($globals['url_rewrite']=='false')
 		$baseURL = prettyurl($baseURL);
+	$selected = "var selected = {'permissions' : [], 'users' : [], 'groups' : []};";
+	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getUserPerm') {
+		$get_selectedPerms = array();
+		$get_selectedGroups = array();
+		$get_selectedUsers = array();
+		foreach($_POST as $key => $var)
+			if(substr($key,0,12)=="permissions_")
+				$get_selectedPerms[] = (int)substr($key,12);
+		list($get_sortedGroupPerms,$get_sortedUserPerms) = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+		$save = 0;
+		foreach($get_sortedGroupPerms['Y'] as $get_groupId => $get_data) {
+			$found = false;
+			foreach($get_sortedGroupPerms['Y'][$get_groupId] as $get_permId) {
+				foreach($get_selectedPerms as $selected_perm)
+					if($selected_perm == $get_permId) {
+						$get_selectedGroups[] = (int)$get_groupId;
+						$found = true;
+					}
+				if($found)
+					break;
+			}
+			if($get_groupId==0&&$found)
+				$save += 1;
+			if($get_groupId==1&&$found)
+				$save += 2;
+		}
+		foreach($get_sortedUserPerms['Y'] as $get_userId => $get_data) {
+			$found = false;
+			foreach($get_sortedUserPerms['Y'][$get_userId] as $get_permId) {
+				foreach($get_selectedPerms as $selected_perm)
+					if($selected_perm == $get_permId) {
+						$get_selectedUsers[] = (int)$get_userId;
+						$found = true;
+					}
+				if($found)
+					break;
+			}
+		}
+		$get_selectedGroups = filterByPriority($maxPriorityGroup,$get_selectedGroups);
+		if($save%2==1)
+			$get_selectedGroups[] = 0;
+		if($save/2==1)
+			$get_selectedGroups[] = 1;
+		$selected = "var selected = {'permissions' : " . json_encode($get_selectedPerms) . ", 'users' : " . json_encode($get_selectedUsers) . ", 'groups' : " . json_encode($get_selectedGroups) . "};";
+	}
+	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getPermUser') {
+		
+		$get_selectedPerms = array();
+		$get_selectedGroups = array();
+		$get_selectedUsers = array();
+		foreach($_POST as $key => $var)
+			if(substr($key,0,6)=="users_")
+				$get_selectedUsers[] = (int)substr($key,6);
+			else if(substr($key,0,7)=="groups_")
+				$get_selectedGroups[] = (int)substr($key,7);
+		list($get_sortedGroupPerms,$get_sortedUserPerms) = getAllPermissionsOnPage($pagepath, $modifiableGroupIds, $grantableActions);
+		$save = 0;
+		foreach($get_sortedGroupPerms['Y'] as $get_groupId => $get_data) {
+			if(isPresent($get_groupId,$get_selectedGroups)) {
+				foreach($get_sortedGroupPerms['Y'][$get_groupId] as $get_permId) {
+					if(!isPresent($get_permId,$get_selectedPerms))
+						$get_selectedPerms[] = $get_permId;
+				}
+			}
+		}
+		foreach($get_sortedUserPerms['Y'] as $get_userId => $get_data) {
+			if(isPresent($get_userId,$get_selectedUsers)) {
+				foreach($get_sortedUserPerms['Y'][$get_userId] as $get_permId) {
+					if(!isPresent($get_permId,$get_selectedPerms))
+						$get_selectedPerms[] = $get_permId;
+				}
+			}
+		}
+		$selected = "var selected = {'permissions' : " . json_encode($get_selectedPerms) . ", 'users' : " . json_encode($get_selectedUsers) . ", 'groups' : " . json_encode($get_selectedGroups) . "};";
+	}
 	$ret .= <<<RET
 <style type="text/css" title="currentStyle">
 	div#permtable_filter input { width: 90px; }
@@ -629,13 +708,13 @@ RET;
 <script type="text/javascript">
 var baseURL = "$baseURL";
 var pageid = {$pageid};
-var permissions = {{$perms}};
+var permissions = {$perms};
 var permGroups;
 var permUsers;
 var groups = {{$groups}};
 var users = {{$users}};
 {$permissions}
-var selected = {'permissions' : [], 'users' : [], 'groups' : []};
+{$selected}
 </script>
 <div id='info'></div>
 <INPUT type=checkbox id='skipAlerts'> Skip Alerts <br>
@@ -645,16 +724,20 @@ var selected = {'permissions' : [], 'users' : [], 'groups' : []};
 <table width=100%>
 <tr>
 <td width=50%>
-<a href='javascript:selectAll1()'>Select All</a> <a href='javascript:clearAll1()'>Clear All</a> <a href='javascript:toggle1()'>Toggle</a><br>
+<a href='javascript:selectAll1()'>Select All</a> <a href='javascript:clearAll1()'>Clear All</a> <a href='javascript:toggle1()'>Toggle</a> <a href='javascript:getuserperm()'>Check Users having selected Permission</a><br>
+<form action='./+grant&doaction=getUserPerm' method="POST" id='getuserperm'>
 <table class="userlisttable display" id='permtable' name='permtable'><thead><tr><th>Permissions</th></thead><tbody id='actionsList'>
 
 </tbody></table>
+</form>
 </td>
 <td width=50%>
-<a href='javascript:selectAll2()'>Select All</a> <a href='javascript:clearAll2()'>Clear All</a> <a href='javascript:toggle2()'>Toggle</a><br>
+<a href='javascript:selectAll2()'>Select All</a> <a href='javascript:clearAll2()'>Clear All</a> <a href='javascript:toggle2()'>Toggle</a> <a href='javascript:getpermuser()'>Check Permissions selected User is having</a><br>
+<form action='./+grant&doaction=getPermUser' method="POST" id='getpermuser'>
 <table class="userlisttable display" id='permtable2' name='permtable2'><thead><tr><th>Users</th></thead><tbody id='usersList'>
 
 </tbody></table>
+</form>
 </td>
 </tr>
 </table>
@@ -685,9 +768,9 @@ function getPerms($pageId, $groupuser, $yesno) {
 
 function customGetAllUsers() {
 	$ret = "";
-	$result = mysql_query("SELECT `user_email`,`user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+	$result = mysql_query("SELECT `user_email`, `user_name`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
 	while($row = mysql_fetch_array($result))
-		$ret .= "'{$row['user_id']}' : '{$row['user_email']}', ";
+		$ret .= "'{$row['user_id']}' : '{$row['user_name']} &lt;{$row['user_email']}&gt;', ";
 	$ret = rtrim($ret,", ");
 	return $ret;	
 }
@@ -701,6 +784,16 @@ function customGetGroups($priority) {
 	return $ret;
 }
 
+function filterByPriority($priority,$groups) {
+	$return = array();
+	$result = mysql_query("SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < {$priority}");
+	while($row = mysql_fetch_assoc($result))
+		foreach($groups as $group)
+			if($group == $row['group_id'])
+				$return[] = $group;
+	return $return;
+}
+
 function getAllPermissions() {
 	$ret = "";
 	$result = mysql_query("SELECT `perm_id`,`page_module`,`perm_action` FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist`");
@@ -708,6 +801,14 @@ function getAllPermissions() {
 		$ret .= "'{$row['perm_id']}' : '{$row['page_module']} - {$row['perm_action']}', ";
 	$ret = rtrim($ret,", ");
 	return $ret;
+}
+
+function formatPermissions($perms) {
+	$return = array();
+	foreach($perms as $modulename => $array)
+		foreach($array as $row)
+			$return[$row[0]] = "{$modulename} - {$row[1]}";
+	return $return;
 }
 
 
@@ -896,6 +997,14 @@ function getGroupPermissions($groupids, $pagepath, $userid = -1) {
 	}
 
 	return $permList;
+}
+
+function isPresent($needle,$haystack) {
+	foreach($haystack as $hay) {
+		if($hay==$needle)
+			return true;
+	}
+	return false;
 }
 
 /**
