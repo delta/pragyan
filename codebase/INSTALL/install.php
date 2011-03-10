@@ -494,11 +494,29 @@ function CheckPrerequisites() {
 				if($trycreate)
 					$checklist2[$path]=$type;
 				else
-					$prereq.="<li><p>The following $type is missing : <b>$path</b> and Pragyan CMS was not able to create it. Please create the $type manually and make sure Pragyan CMS has write permissions over it.</p></li>"; 
+					$prereq.="<li><p>The following $type is missing : <b>$path</b> and Pragyan CMS was not able to create it. Please create the $type manually and make sure Pragyan CMS has write permissions over it.</p></li>";
 				break;
 		}
 	}
+	$http_htaccess= getenv('HTTP_HTACCESS')=='On' ? true : false ;
 	
+	if(!$http_htaccess)
+	{
+	    $prereq.="<li><p>.htaccess not enabled </p></li>";
+	    $prereq .= <<<HTTPMSG
+	    For Pragyan CMS to work, .htaccess needs to be supported your webserver. <br />
+			For this, the <b>AllowOverride</b> setting in the httpd.conf has to be made <i>Options FileInfo Limit</i> under the relevant <mono>&lt;Directory&gt;</mono> section.<br />
+			The default location of httpd.conf is <mono>/etc/httpd/conf/httpd.conf</mono>, but may be different for you according to your installation.
+			<br /><br />
+			Add the following lines in the httpd.conf of your webserver :
+			<pre><xmp>
+				<Directory "$scriptPath">
+					AllowOverride All
+				</Directory>
+			</xmp></pre>
+			<p>If you have done this, <a href="../">click here</a> to go to the CMS.</p>
+HTTPMSG;
+	}
 	
 	if ($prereq != '') {
 		$prereq = "<p>The following prerequisite(s) need to be resolved before Pragyan CMS can continue installation.</p>\n<ul>\n$prereq\n</ul>";
