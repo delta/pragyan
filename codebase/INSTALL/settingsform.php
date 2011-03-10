@@ -14,7 +14,7 @@ if(!defined('__PRAGYAN_CMS'))
  */
 
 
-$settingsForm = <<<SETTINGSFORM
+$settingsForm = <<<SETTINGSFORM1
 <script type="text/javascript" language="javascript">
 	function toggleImap(b) {
 		document.getElementById('txtIMAPServerAddress').disabled =
@@ -422,11 +422,35 @@ $settingsForm = <<<SETTINGSFORM
 				</select>
 			</td>
 		</tr>
+SETTINGSFORM1;
+
+//Todo: Check if .htaccess is enabled in the webserver if enabled than check for rewrite_module else disable rewrite_module permenantly or ask user to enable .htaccess
+
+//Checks whether rewrite module is enabled or not if it is enabled than makes pretty url on by default otherwise asks user to enable mjod_rewrite before using pretty urls
+
+if (function_exists('apache_get_modules')) {
+    $modules = apache_get_modules();
+    $mod_rewrite = in_array('mod_rewrite', $modules);
+} else {
+    $mod_rewrite =  getenv('HTTP_MOD_REWRITE')=='On' ? true : false ;
+}
+
+if($mod_rewrite)
+{
+    $valueRewrite='checked="checked" />Yes (Recommended)';
+    $valueNoRewrite=' />No';
+}else {
+    $valueNoRewrite='checked="checked"  />No (Recommended)';
+    $valueRewrite=' onclick="alert(\'mod_rewrite module is not enabled.\nPlease enable mod_rewrite module to enable Pretty URLs .\');" 
+ /> Yes';
+}
+
+$settingsForm .= <<<SETTINGSFORM
 		<tr>
 			<td><label for="optURLRewrite">Enable Pretty URLs (requires .htaccess and rewrite module enabled in webserver):</label></td>
 			<td>
-			<labe><input type="radio" name="optURLRewrite" id="optURLRewriteNo" value="No" checked="checked"/>No</label>
-			<label><input type="radio" name="optURLRewrite" id="optURLRewriteYes" value="Yes" />Yes</label>
+			<label><input type="radio" name="optURLRewrite" id="optURLRewriteNo" value="No" $valueNoRewrite </label>
+			<label><input type="radio" name="optURLRewrite" id="optURLRewriteYes" value="Yes" $valueRewrite </label>
 			</td>
 		</tr>
 		<tr>
