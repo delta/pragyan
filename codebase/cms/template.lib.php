@@ -312,23 +312,59 @@ function handleTemplateManagement()
 	}
 	else if(isset($_POST['btn_uninstall']))		
 	{
+		$query = "SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE attribute= 'default_template'";
+			$res   = mysql_query($query);
+			$row1   = array();
+			$row1   = mysql_fetch_row($res);
+		
 		if(!isset($_POST['Template']) || $_POST['Template']=="") return "";
 		
 		$toDelete = escape($_POST['Template']);
 		$query="SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . $toDelete . "'";
+		$query2 = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_template` = '{$toDelete}' LIMIT 10";
+		$result2 = mysql_query($query2) or displayerror(mysql_error());
 		
-		if($row = mysql_fetch_array(mysql_query($query)))
-		{
+			if($row1[0] == $toDelete)
+			{
+				displayerror("The default template cannot be deleted! If you want to delete this template, first change the default template from 'Global Settings'.");
+			return "";
+			}
+		if(mysql_num_rows($result2)==0||isset($_POST['confirm'])) {
+			if($row = mysql_fetch_array(mysql_query($query)))
+			{
 			$query="DELETE FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . $toDelete . "'";
 			mysql_query($query);
+			$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_template` = '".$row1[0]."' WHERE `page_template` = '".$toDelete."'";
+			mysql_query($query) or displayerror(mysql_error());
 			$templateDir = $sourceFolder . "/templates/" . $toDelete . "/";
 			if(file_exists($templateDir))
 				delDir($templateDir);
 			displayinfo("Template ".safe_html($_POST['Template'])." uninstalled!");
 			return "";
-		}
-		displayerror("Template uninstallation failed!");
-		return "";
+			} else {
+				displayerror("Template uninstallation failed!");
+				return "";
+		}}
+		$pageList = "";
+		while($row = mysql_fetch_assoc($result2))
+			$pageList .= "/home" . getPagePath($row['page_id']) . "<br>";
+		
+		$templatename = safe_html($_POST['Template']);
+		$ret=<<<RET
+<fieldset>
+<legend>{$ICONS['Templates Management']['small']}Template Management</legend>
+Some of the page with {$templatename} template are:<br>
+{$pageList}
+<div class='cms-error'>The templates of these pages will be reset to default template if you proceed deleting the template.</div>
+<form method=POST action='./+admin&subaction=template&subsubaction=uninstall'>
+<input type=hidden value='{$templatename}' name='Template' />
+<input type=submit value='Delete template' name='btn_uninstall' />
+<input type=hidden value='confirm' name='confirm' />
+</form>
+</fieldset>
+RET;
+		return $ret;
+		
 	} 
 	/*
 	this finalize and cancel subsubactions are vulnerabilities, any one can vary $_POST['path'] and make cms to delete itself.

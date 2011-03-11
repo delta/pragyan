@@ -177,19 +177,9 @@ RET;
 	 * safedit module pages needs no initialization.
 	 * will be called when safedit module instance is created.
 	 */	
-	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `book_desc` ";
-		$result = mysql_query($query) or die(mysql_error() . "book.lib L:1");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-		
+	public function createModule($compId) {
 		$query = "INSERT INTO `book_desc` (`page_modulecomponentid` , `initial`, `list`,`menu_hide`)VALUES ('$compId','','','')";
 		$result = mysql_query($query) or die(mysql_error()."book.lib L:187");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
 	}
 	
 	/**
@@ -198,23 +188,16 @@ RET;
 	 * will be called when safedit module instance is getting deleted.
 	 */
 	public function deleteModule($moduleComponentId) {
-		$result = mysql_query("DELETE FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'") or die(mysql_error());
-		if(mysql_affected_rows())
-			return true;
-		else
-			return false;
+		return true;
 	}
 	
 	/**
 	 * function copyModule:
 	 * duplicates book with a new moduleComponentId
 	 */
-	public function copyModule($moduleComponentId) {
-		$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"));
-		$max = mysql_fetch_row(mysql_query("SELECT MAX(`page_modulecomponentid`) AS 'max' FROM `book_desc`"));
-		$compId = $max[0] + 1;
-		$query = mysql_query("INSERT INTO `book_desc`(`page_modulecomponentid` , `initial`, `list`)VALUES ('$compId','','')");
-		return $compId;
+	public function copyModule($moduleComponentId,$newId) {
+		displayinfo('The new copy of book module has to be configured manually');
+		return true;
 	}
 	
 	/**

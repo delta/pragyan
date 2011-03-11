@@ -310,8 +310,8 @@ function child($pageId, $userId,$depth) {
 interface module {
 	public function getHtml($userId, $moduleComponentId, $action);
 	public function deleteModule($moduleComponentId);
-	public function copyModule($moduleComponentId);
-	public function createModule(&$moduleComponentId);
+	public function copyModule($moduleComponentId,$newModuleComponentId);
+	public function createModule($moduleComponentId);
 }
 
 interface fileuploadable {

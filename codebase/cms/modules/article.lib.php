@@ -508,32 +508,11 @@ Ck1;
 		return  $CkForm . $Ckbody . $CkFooter.$draftTable.$top.$revisionTable.$top;
 	}
 
-	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `article_content` ";
-		$result = mysql_query($query) or die(mysql_error() . "article.lib L:73");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-
+	public function createModule($compId) {
 		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`, `allowComments`)VALUES ('$compId', 'Coming up Soon!!!','0')";
 		$result = mysql_query($query) or die(mysql_error()."article.lib L:76");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
 	}
 	public function deleteModule($moduleComponentId) {
-		$query = "DELETE FROM `article_content` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		if ((mysql_affected_rows()) >= 1)
-		{
-			$query = "DELETE FROM `article_comments` WHERE `page_modulecomponentid`=$moduleComponentId";
-			$result = mysql_query($query);
-			
-		}
-		else
-			return false;
-		
 		/* Remove the indexing from sphider // Abhishek */
 		$pageId=getPageIdFromModuleComponentId("article",$moduleComponentId);
 		$path=getPagePath($pageId);
@@ -564,22 +543,8 @@ Ck1;
 		
 
 	}
-	public function copyModule($moduleComponentId) {
-		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$content = mysql_fetch_assoc($result);
-		
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `article_content` ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "article.lib L:98");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-
-		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$compId', '".mysql_escape_string($content['article_content'])."')";
-		mysql_query($query) or displayerror(mysql_error()."article.lib L:104");
-		if (mysql_affected_rows()) {
-			return $compId;
-		} else
-			return false;
+	public function copyModule($moduleComponentId, $newId) {
+		return true;
 	}
 
 }

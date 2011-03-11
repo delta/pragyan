@@ -254,39 +254,18 @@ END;
 
 
 
-	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(`page_modulecomponentid`) as MAX FROM `news_data` ";
-		$result = mysql_query($query) or die(mysql_error() . "news.lib L:73");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
+	public function createModule($moduleComponentId) {
 		$globalSettings = getGlobalSettings();
-		if (mysql_query("INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_copyright`)VALUES ('$compId', '{$globalSettings['cms_footer']}')")) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
-
+		mysql_query("INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_copyright`)VALUES ('$compId', '{$globalSettings['cms_footer']}')");
 	}
 	public function deleteModule($moduleComponentId){
-		if(mysql_query("DELETE FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'") AND mysql_query("DELETE FROM `news_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"))
-			return true;
-		return false;
+		return true;
 	}
 
 
 
-	public function copyModule($moduleComponentId){
-		$result = mysql_query("SELECT MAX(page_modulecomponentid) as MAX FROM `news_data`") or die(mysql_error() . " news.lib L:74");
-		$row = mysql_fetch_array($result);
-		$compId = $row['MAX'] + 1;
-		
-		$result = mysql_query("SELECT * FROM `news_data` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
-		while($row = mysql_fetch_array($result))
-			mysql_query("INSERT INTO `news_data` (`page_modulecomponentid` ,`news_title`,`news_feed`,`news_rank`,`news_date`,`news_link`)VALUES ('$compId', '{$row['news_title']}', '{$row['news_feed']}', '{$row['news_rank']}', '{$row['news_date']}', '{$row['news_link']}')");
-		$result = mysql_query("SELECT * FROM `news_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'");
-		while($row = mysql_fetch_array($result))
-			mysql_query("INSERT INTO `news_desc` (`page_modulecomponentid` ,`news_title`,`news_description`)VALUES ('$compId', '{$row['news_title']}', '{$row['news_description']}')");
-		return $compId;
+	public function copyModule($moduleComponentId,$newId){
+		return true;
 	}
 
 	public function actionView()

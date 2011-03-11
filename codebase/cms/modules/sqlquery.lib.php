@@ -239,86 +239,17 @@ QUERYEDITFORM;
 	}
 
 	public function deleteModule($moduleComponentId) {
-		$deleteQuery = "DELETE FROM `sqlquery_desc` WHERE `page_modulecomponentid` = $moduleComponentId";
-		$deleteResult = mysql_query($deleteQuery);
-		if(mysql_affected_rows() > 0)
-			return true;
-		displayerror('An unknown error was encountered while trying to delete the module.');
-		return false;		
-	}
-
-	public function copyModule($moduleComponentId) {
-		$newComponentId = 0;
-		$attempts = 0;
-
-		while($attempts < 10 && $newComponentId == 0) {
-			$newComponentId = $this->getNextModuleComponentId();
-			if($newComponentId) {
-				$insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, sqlquery_query) SELECT $newComponentId, `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = $moduleComponentId";
-				$insertResult = mysql_query($insertQuery);
-				if(!$insertResult) {
-					if(mysql_errno() != 1062) {
-						displayerror('An unknown error was encountered while trying to copy the module.');
-						return false;
-					}
-					$newComponentId = 0;
-				}
-			}
-			else {
-				displayerror('An unknown error was encountered while trying to copy the module.');
-				return false;				
-			}
-			$attempts++;
-		}
-
-		if($newComponentId != 0)
-			return $newComponentId;
-		return false;
-	}
-
-	private function getNextModuleComponentId() {
-		$moduleComponentIdQuery = 'SELECT MAX(`page_modulecomponentid`) FROM `sqlquery_desc`';
-		$moduleComponentIdResult = mysql_query($moduleComponentIdQuery);
-		if(!$moduleComponentIdResult)
-			return 0;
-		$moduleComponentIdRow = mysql_fetch_row($moduleComponentIdResult);
-		if(!is_null($moduleComponentIdRow[0]))
-			return $moduleComponentIdRow[0] + 1;
-		return 1;
-	}
-
-	public function createModule(&$moduleComponentId) {
-		$attemptNumber = 0;
-		$newComponentId = 0;
-
-		while($attemptNumber < 10 && $newComponentId == 0) {
-			$newComponentId = $this->getNextModuleComponentId();
-			if($newComponentId) {
-				$insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, `sqlquery_query`) VALUES($newComponentId, 'New Query', 'SELECT * FROM `mytable` WHERE 1')";
-				$insertResult = mysql_query($insertQuery);
-				if(!$insertResult) {
-					if(mysql_errno() != 1062) {
-						displayerror('An unknown error was encountered while trying to create a new page.');
-						return false;
-					}
-					$newComponentId = 0;
-				}
-			}
-			else if($attemptNumber == 0) {
-				displayerror('Error while trying to fetch new module component id.');
-				return false;
-			}
-			$attemptNumber++;
-		}
-
-		if($newComponentId == 0) {
-			displayerror('Could not create new page.');
-			return false;
-		}
-
-		$moduleComponentId = $newComponentId;
-
 		return true;
+	}
+
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
+	}
+
+	public function createModule($compId) {
+
+		$insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, `sqlquery_query`) VALUES($compId, 'New Query', 'SELECT * FROM `mytable` WHERE 1')";
+		$insertResult = mysql_query($insertQuery);
 	}
 }
 

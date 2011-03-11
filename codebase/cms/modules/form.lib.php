@@ -408,41 +408,20 @@ CSS;
 		return join($suggestions, ',');
 	}
 
-	public function createModule(&$moduleComponentId) {
+	public function createModule($compId) {
 		global $sourceFolder, $moduleFolder;
-		$query = 'SELECT MAX(`page_modulecomponentid`) FROM `form_desc`';
-		$result = mysql_query($query) or die(mysql_error() . 'form.lib L:149');
-		$row = mysql_fetch_row($result);
-		$compId = $row[0] + 1;
 		$query = "INSERT INTO `form_desc` (`page_modulecomponentid`, `form_heading`,`form_loginrequired`,`form_headertext`)
 					VALUES ('".$compId."', '',1,'Coming up Soon');";
 		$result = mysql_query($query) or die(mysql_error()."form.lib L:157");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			addDefaultFormElement($moduleComponentId);
-			return true;
-		} else
-			return false;
+		addDefaultFormElement($moduleComponentId);
 	}
 
 	public function deleteModule($moduleComponentId){
-		$query = "DELETE FROM `form_elementdata` WHERE `form_elementdata`.`page_modulecomponentid` =$moduleComponentId";
-		$result = mysql_query($query);
-		$query = "DELETE FROM `form_regdata` WHERE `form_regdata`.`page_modulecomponentid` =$moduleComponentId";
-		$result = mysql_query($query);
-		$query = "DELETE FROM `form_elementdesc` WHERE `form_elementdesc`.`page_modulecomponentid` =$moduleComponentId";
-		$result = mysql_query($query);
-		$query = "DELETE FROM `form_desc` WHERE `form_desc`.`page_modulecomponentid` =$moduleComponentId";
-		$result = mysql_query($query);
-		if ((mysql_affected_rows()) >= 1)
-			return true;
-		else{
-			displayerror("There was some error in deleting the module");
-			return false;
-		}
+		return true;
 	}
 
-	public function copyModule($moduleComponentId){
+	public function copyModule($moduleComponentId,$newId){
+		return true;
 		// Select the new module component id
 		$query = "SELECT MAX(`page_modulecomponentid`) as MAX FROM `form_desc` ";
 		$result = mysql_query($query) or displayerror(mysql_error() . "form.lib L:181");

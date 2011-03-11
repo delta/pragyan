@@ -1057,24 +1057,15 @@ ROOM;
 		return($this->viewall());
 	}
 	public function deleteModule($moduleComponentId) {
-	
 		return true;
-
 	}
-	public function createModule(&$moduleComponentId) {
-		
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `hospi_hostel` ";
-		$result = mysql_query($query) or die(mysql_error() . "hospi.lib L:1150");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-		$moduleComponentId=$compId;
-		return true;
+	public function createModule($moduleComponentId) {
+		// No initialization
 	}
 
 
-	public function copyModule($moduleComponentId)
-	{
-
+	public function copyModule($moduleComponentId, $newId) {
+		return true;
 	}
 
 	}

@@ -148,14 +148,16 @@ REGISTRATIONFORM;
 	}
 
 
-	public function createModule(&$moduleComponentId) {
-		$moduleComponentId = 1;
+	public function createModule($moduleComponentId) {
+		//No Initialization
 	}
 
 	public function deleteModule($moduleComponentId){
+		return true;
 	}
 
-	public function copyModule($moduleComponentId){
+	public function copyModule($moduleComponentId,$newId){
+		return true;
 	}
 }
 

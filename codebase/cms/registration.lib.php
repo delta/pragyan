@@ -227,7 +227,7 @@ FORM;
 			return getRegistrationForm();
 		}
 
-		if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $_POST['user_email'])) {
+		if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $_POST['user_email'])) {
 			displayerror("Invalid Email Id");
 			return getRegistrationForm();
 		}
@@ -242,7 +242,12 @@ FORM;
 
 		$umail = escape($_POST['user_email']);
 		$umail = trim($umail);
-
+		$isValid = check_email($umail);
+		if(!$isValid)
+			{
+			displayerror("Your E-Mail Provoider has been blackilisted. Please Use another email id or contact the website administrator");
+			return getRegistrationForm();
+			}
 		$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . $umail . "'";
 		$result = mysql_query($query) or displayerror(mysql_error() . "in registration L:115");
 		if (mysql_num_rows($result)) {

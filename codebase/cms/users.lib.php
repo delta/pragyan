@@ -124,6 +124,56 @@ function handleUserMgmt()
 	if(isset($_GET['userid']))
 	 $_GET['userid']=escape($_GET['userid']);
 	if(isset($_POST['editusertype'])) $_POST['editusertype']=escape($_POST['editusertype']);
+	if(isset($_POST['user_selected_activate'])) {
+		foreach($_POST as $key => $var)
+			if(substr($key,0,9)=="selected_") {
+				if(!mysql_query("UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id='".substr($key,9)."'")) {
+					$result = mysql_query("SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='".substr($key,9)."'");
+					if($result) {
+						$row = mysql_fetch_assoc($result);
+						displayerror("Couldn't activate user, {$row['user_fullname']}");
+					}
+				}
+			}
+		return registeredUsersList($_POST['editusertype'],"edit",false);
+	}
+	if(isset($_POST['user_selected_deactivate'])) {
+		foreach($_POST as $key => $var)
+			if(substr($key,0,9)=="selected_") {
+				if((int)substr($key,9)==ADMIN_USERID) {
+					displayerror("You cannot deactivate administrator!");
+					continue;
+				}
+				if(!mysql_query("UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id='".substr($key,9)."'")) {
+					$result = mysql_query("SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='".substr($key,9)."'");
+					if($result) {
+						$row = mysql_fetch_assoc($result);
+						displayerror("Couldn't deactivate user, {$row['user_fullname']}");
+					}
+				}
+			}
+		return registeredUsersList($_POST['editusertype'],"edit",false);
+	}
+	if(isset($_POST['user_selected_delete'])) {
+		$done = true;
+		foreach($_POST as $key => $var)
+			if(substr($key,0,9)=="selected_") {
+				if((int)substr($key,9)==ADMIN_USERID) {
+					displayerror("You cannot delete administrator!");
+					continue;
+				}
+				$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".substr($key,9)."'";
+				if(mysql_query($query)) {
+					$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."openid_users` WHERE `user_id` = '".substr($key,9)."'";
+					if(!mysql_query($query))
+						$done = false;
+				} else
+					$done = false;
+			}
+		if(!$done)
+			displayerror("Some problem in deleting selected users");
+		return registeredUsersList($_POST['editusertype'],"edit",false);
+	}
 	if(isset($_POST['user_activate']))
 	{
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id={$_GET['userid']}";
@@ -592,10 +642,25 @@ function registeredUsersList($type,$act,$allfields,$userInfo=NULL)
 		}
 		else return false;
 	}
+	function checkDeleteAll(butt) {
+		if(!confirm('Are you sure you want to delete all selected users?')) {
+			return false;
+		}
+		butt.form.action+='-1';
+		return true;
+	}
 	</script>
 	<a name='userlist'></a>
 USERLIST;
-	$userlisttable=<<<TABLE
+	global $ICONS_SRC;
+	$userlisttable = "";
+	if($act=="edit")
+		$userlisttable =<<<TABLE
+	<input title='Activate Selected Users' type='image' src='{$ICONS_SRC['Activate']['small']}' onclick=\"this.form.action+='-1'\" name='user_selected_activate' value='Activate'>\n
+	<input  title='Deactivate Selected Users' type='image' src='{$ICONS_SRC['Deactivate']['small']}' onclick=\"this.form.action+='-1'\" name='user_selected_deactivate' value='Deactivate'>\n
+	<input  title='Delete Selected Users' type='image' src='{$ICONS_SRC['Delete']['small']}' onclick=\"return checkDeleteAll(this)\" name='user_selected_delete' value='Delete'>\n
+TABLE;
+	$userlisttable.=<<<TABLE
 	<table class="userlisttable display" border="1" id='userstable'>
 	<thead>
 	<tr><th colspan="$columns">Users Registered on the Website</th></tr>
@@ -631,7 +696,6 @@ TABLE;
 	$rowclass="oddrow";
 	$flag=false;
 	$usercount=0;
-	global $ICONS_SRC;
 	for($i=0; $i<count($userId); $i++)
 	{
 		if($type=="activated" && $userActivated[$i]=="No")
@@ -650,6 +714,7 @@ TABLE;
 		if($act=="edit")
 		{
 			$userlisttable.="<td id='user_editactions'>";
+			$userlisttable.="<input type='checkbox' name='selected_{$userId[$i]}' />";
 			if($userActivated[$i]=="No")
 				$userlisttable.="<input title='Activate User' type='image' src='{$ICONS_SRC['Activate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_activate' value='Activate'>\n";
 			else $userlisttable.="<input  title='Deactivate User' type='image' src='{$ICONS_SRC['Deactivate']['small']}' onclick=\"this.form.action+='{$userId[$i]}'\" name='user_deactivate' value='Deactivate'>\n";

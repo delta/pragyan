@@ -337,11 +337,8 @@ RET;
 	 * safedit module pages needs no initialization.
 	 * will be called when safedit module instance is created.
 	 */
-	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = 'safedit'";
-		$result = mysql_query($query) or die(mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$moduleComponentId = $row['MAX'] + 1;
+	public function createModule($moduleComponentId) {
+		//No initialization
 	}
 	
 	/**
@@ -350,7 +347,6 @@ RET;
 	 * will be called when safedit module instance is getting deleted.
 	 */
 	public function deleteModule($moduleComponentId) {
-		mysql_query("DELETE FROM `safedit_sections` WHERE `page_modulecomponentid` = '{$moduleComponentId}'") or die(mysql_error());
 		return true;
 	}
 	
@@ -358,13 +354,8 @@ RET;
 	 * function copyModule:
 	 * duplicates all sections with a new page_modulecomponentid
 	 */
-	public function copyModule($moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = 'safedit'";
-		$result = mysql_query($query) or die(mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$newId = $row['MAX'] + 1;
-		mysql_query("INSERT INTO `safedit_sections`(`page_modulecomponentid`,`section_id`,`section_heading`,`section_type`,`section_show`,`section_priority`,`section_content`) VALUES (SELECT '$newId' as `page_modulecomponentid`,`section_id`,`section_heading`,`section_type`,`section_show`,`section_priority`,`section_content` FROM `safedit_contents` WHERE `page_modulecomponentid` = '{$moduleComponentId})") or die(mysql_error());
-		return $newId;
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
 	}
 }
 ?>

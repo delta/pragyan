@@ -172,20 +172,11 @@ class pagelist implements module {
 		return $ret;
 	}
 	 	
-	public function createModule(&$moduleComponentId) {
+	public function createModule($compId) {
 		
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `list_prop` ";
-		$result = mysql_query($query) or die(mysql_error() . "list.lib.php L:1");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
 		$defaultdepth=3;
 		$query = "INSERT INTO `list_prop` (`page_modulecomponentid`, `depth`) VALUES ('$compId', '$defaultdepth')";
 		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
 	}
 	
 	
@@ -199,7 +190,7 @@ class pagelist implements module {
 		 return true;
 	}
 	
-	public function copyModule($moduleComponentId) {
+	public function copyModule($moduleComponentId,$newId) {
 		/*
 		 * This is also a necessary function
 		 * it'll be called when a module is to be copied

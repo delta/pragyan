@@ -97,6 +97,8 @@ $ICONS_SRC = "";
 ///Variables for storing widgets.
 $WIDGETS = array();
 
+$publicPageRequest = false;
+
 ///For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
 $onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
 

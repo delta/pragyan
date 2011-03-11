@@ -218,13 +218,49 @@ globalform;
 return $globalform;
 }
 
-
+function getBlacklistTable()
+{
+	$black = "Blacklist<table><tr><td style='width:35%'>Domains</td><td style='width:65%'>IPs</td><td>Actions</td></tr>";	
+	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist`";
+	$result = mysql_query($query) or displayerror("Unable to load Blaclisted Information".mysql_error());
+	while($row=mysql_fetch_array($result))
+		$black .="<tr><td>$row[1]</td><td>$row[2]</td><td><a href='./+admin&subaction=global&del_black=$row[0]'>Delete</a></td></tr>";	
+	$black .="<tr><td><input type='text' name='blacklist_domain'></td><td><input type='text' name='blacklist_ip'></td><td></td></tr>";
+	$black.="</table>";
+	return $black;
+}
+function setblacklist($domain="",$ip="")
+{
+	$www = strstr($domain,'.',1);
+	if($www=="www")
+		$domain = substr($domain,4);
+	if($ip=="")
+		$ip=gethostbyname($domain);
+	$chk_query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `domain` = '$domain' AND `ip`= '$ip'";
+	$chk_result = mysql_num_rows(mysql_query($chk_query));
+	if($chk_result<1)
+	{
+		$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."blacklist` (`domain`,`ip`) VALUES ('$domain','$ip')";
+		$result =mysql_query($query) or displayerror("Unable to update blackilist".mysql_error());
+	}	
+	return 1;
+}
+function delete_blacklist()
+{
+	$id = safe_html($_GET['del_black']);
+	$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `id` = '$id'";
+	$result =mysql_query($query) or displayerror("Unable to Delete blacklist". mysql_error());
+	if(mysql_affected_rows()>0)	
+			displayinfo("Blackilist Deleted Successfully");
+	return 1;
+}
 function securitySettingsForm()
 {
 global $pageFullPath;
 	global $CMSTEMPLATE;
 	global $urlRequestRoot,$templateFolder,$cmsFolder;
 	$globals=getGlobalSettings();
+	$blacklist = getBlacklistTable();
 	foreach($globals as $var=>$val) 
 		$$var=$val;
 	$openidno_ischecked=($openid_enabled=='false')?'checked':'';
@@ -266,6 +302,7 @@ global $pageFullPath;
 			<td><input type="text" id="private_key" name="private_key" value='$recaptcha_private' /></td>
 		</tr>
 	</table>
+$blacklist
 globalform;
 return $globalform;
 }
@@ -418,7 +455,8 @@ ADMINPAGE;
 	
 		if (isset($_GET['subaction']) && $_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) 
 			updateGlobalSettings();
-		
+		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'global' && isset($_GET['del_black']))
+			delete_blacklist(); 
 		else if (isset($_GET['subaction']) && $_GET['subaction'] == 'useradmin')
 		{ 
 			$op .= handleUserMgmt();
@@ -581,7 +619,13 @@ function updateGlobalSettings()
 	$global['cms_desc']=escape($_POST['cms_desc']);
 	$global['cms_keywords']=escape($_POST['cms_keywords']);
 	$global['cms_footer']=escape($_POST['cms_footer']);
+	$global['blacklist_domain']=escape($_POST['blacklist_domain']);
+	$global['blacklist_ip']=escape($_POST['blacklist_ip']);
 	$global['censor_words']=safe_html($_POST['censor_words']);
+	$blacklist_domain = safe_html($_POST['blacklist_domain']);
+	$blacklist_ip = safe_html($_POST['blacklist_ip']);
+	if(!(($blacklist_domain=="")&&($blacklist_ip=="")))
+		setblacklist($blacklist_domain,$blacklist_ip);
 	if(isset($_POST['openid_enabled']) && escape($_POST['openid_enabled']=='true')) //if user submitted true
 	  { 
 	    if (iscurlinstalled()) //check if curl is enabled
