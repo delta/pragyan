@@ -35,9 +35,13 @@ function disconnect() {
 }
 function prettyurl($str) {
 	global $urlRequestRoot;
+	if(strpos("a".$str,"http")==1)	if(!strpos("a".$str,hostURL())) return $str;
+	if(strpos("a".$str,$urlRequestRoot."/cms")) return $str;
+	
 	$page = (isset($_GET['page']))?$_GET['page']:"/";
 	$file="";
-	if(strripos($str,"./")!=strripos($str,"../")) {
+	$ch = (strpos("a".$str,hostURL())==1)?strlen(hostURL()):2;
+	if(strripos("a".$str,".")>$ch&&($ch==2||strpos("a".$str,hostURL()."/home/")==1)) {
 		$file= substr($str,strripos($str,"/")+1);
 		$str = substr($str,0,strripos($str,"/")+1);
 	}
@@ -50,13 +54,13 @@ function prettyurl($str) {
 		$page = substr($page,0,strripos($page,"/")-1);
 		$page = substr($page,0,strripos($page,"/")+1);
 		$str = substr($str,0,$pos) . substr($str,$pos+3);
-		//echo $page." -<br>";
+		
 	}
-	$str = ereg_replace("^./",$urlRequestRoot."/?page=".$page,$str);
-	$str = ereg_replace("^../",$urlRequestRoot."/?page=".$page,$str);
-	$str = ereg_replace("\+","&action=",$str);
-	$str = ereg_replace("^".hostURL()."/home",hostURL()."/?page=",$str);
-	$str = ereg_replace("^".$urlRequestRoot."/home","./?page=",$str);
+	$str = preg_replace("/^.\//",$urlRequestRoot."/?page=".$page,$str);
+	$str = preg_replace("/^..\//",$urlRequestRoot."/?page=".$page,$str);
+	$str = preg_replace("/\+/","&action=",$str);
+	$str = preg_replace("/^".str_replace("/","\/",hostURL())."\/home/",hostURL()."/?page=",$str);
+	$str = preg_replace("/^".str_replace("/","\/",$urlRequestRoot)."\/home/","./?page=",$str);
 	if($file!="")
 		$str .= "&fileget=".$file;
 	return $str;
@@ -76,7 +80,12 @@ function convertUrif($x,$attr) {
 			$y .= substr($x,$count);
 		$count=strpos($x,$attr)+$len+2;
 		if($count==$len+2) break;
-		$x = substr($x,$count);
+		$x = substr($x,$count-1);
+		if($x[0]!='"'&&$x[0]!="'") {
+			$x = substr($x,1);
+			continue;
+		}
+		$x = substr($x,1);
 		//echo "<br>" . substr($x,0,strpos($x,"\"")) . " => " . prettyurl(substr($x,0,strpos($x,"\"")));
 		$count1=(strpos($x,"\"")==-1||!strpos($x,"\""))?10000:strpos($x,"\"");
 		$count2=(strpos($x,"'")==-1||!strpos($x,"'"))?10000:strpos($x,"'");
@@ -90,7 +99,7 @@ function convertUrif($x,$attr) {
 function convertUri($x) {
 	$y="";
 	$z = $x;
-	$hsref=array("href","action","src");
+	$hsref=array(" href"," action"," src");
 	foreach($hsref as $href) {
 	$len=strlen($href);
 	if($len!=0)
