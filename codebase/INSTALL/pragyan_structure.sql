@@ -590,6 +590,18 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_templates` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
+--
+-- Table structure for table `pragyanV3_blacklist`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_blacklist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `domain` varchar(50) DEFAULT NULL,
+  `ip` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `pragyanV3_tempuploads`

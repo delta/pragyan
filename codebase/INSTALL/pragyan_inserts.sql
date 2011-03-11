@@ -267,7 +267,12 @@ INSERT IGNORE INTO `pragyanV3_templates` (`template_name`) VALUES
 --
 -- Dumping data for table `pragyanV3_uploads`
 --
-
+INSERT INTO `pragyanV3_blacklist` (`id`, `domain`, `ip`) VALUES
+(1, 'mailinator.com', '66.135.37.96'),
+(2, 'tempmail.net', '63.223.120.144'),
+(3, 'mytrashmail.com', '75.126.181.138'),
+(4, 'anonymbox.com','204.197.242.56'),
+(2, 'mailexpire', '66.199.224.85');
 
 --
 -- Dumping data for table `pragyanV3_usergroup`

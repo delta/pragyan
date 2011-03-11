@@ -226,6 +226,18 @@ function setGlobalSettings($globals)
 	}
 }
 
+/** To Check if the email provider is not blacklisted */
+function check_email($mail)
+{
+	$domain = substr(strstr($mail,'@'),1);
+	$ip = gethostbyname($domain);
+	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `domain` = '$domain' OR `ip`= '$ip'";
+	$result = mysql_query($query);
+	$num_rows = mysql_num_rows($result);
+	if($num_rows)
+		return 0;
+	return 1;
+}
 /** To set Global Settings by attribute in Database */
 
 function setGlobalSettingByAttribute($attribute,$value)
@@ -769,3 +781,4 @@ function censor_words($text)
 		$res = preg_replace("/$words[0]/i",$replace,$text);
 	return $res;
 }
+
