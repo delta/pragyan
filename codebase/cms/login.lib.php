@@ -691,7 +691,11 @@ function login() {
 	$user_email = escape($_POST['user_email']);
 	$user_passwd = escape($_POST['user_password']);
 	$login_method = '';
-					
+	if(!check_email($user_email))
+		{
+		displayerror("Your E-Mail Provoider has been blackilisted. Please contact the website administrator");
+		return loginForm($allow_login_result[0]);
+		}				
 	if($temp = getUserInfo($user_email)) { 
 	  // check if exists in DB
 	  $login_status = checkLogin($temp['user_loginmethod'],$temp['user_name'],$user_email,$user_passwd);
