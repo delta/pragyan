@@ -964,17 +964,13 @@ function pagesettings($pageId, $userId) {
 					global $moduleFolder;
 					require_once($sourceFolder."/".$moduleFolder."/".$moduleType.".lib.php");
 					$page = new $moduleType();
-					$newModuleComponentId=-1;
-					$page->createModule($newModuleComponentId);
-					if($newModuleComponentId==-1)
-						displayerror("Unable to create a new page of type $moduleType");
-					else {
-						$createquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$newModuleComponentId', '$page_template', '$maxpageid')";
-						mysql_query($createquery);
-							if (mysql_affected_rows() != 1)
-								displayerror( 'Unable to create a new page.');
-					}
+					$newId=createInstance($moduleType);
+					$page->createModule($newId);
+					$createquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$newId', '$page_template', '$maxpageid')";
+					mysql_query($createquery);
+						if (mysql_affected_rows() != 1)
+							displayerror( 'Unable to create a new page.');
 				}
 			}
 			else
@@ -992,7 +988,86 @@ function pagesettings($pageId, $userId) {
 	}
 }
 
+/**
+ * function copyInstance:
+ * @moduleType - type of the module
+ * @fromId - page_modulecomponentid of the instance to copy from
+ * @toId - page_modulecomponentid of the instance to copy to
+ */
+function copyInstance($moduleType,$fromId,$toId) {
+	$error = false;
+	if($result = mysql_query("SELECT `module_tables` FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` = '{$moduleType}'")) {
+		$row = mysql_fetch_assoc($result);
+		$tables = explode(";",$row['module_tables']);
+		foreach($tables as $table) {
+			$result = mysql_query("SELECT * FROM `{$table}` WHERE `page_modulecomponentid` = '{$fromId}'");
+			$row = mysql_fetch_assoc($result);
+			if($row) {
+				$prefix = "INSERT INTO `{$table}`";
+				$cols = array(); $vals = array();
+				foreach($row as $key => $val) {
+					$cols[] = $key;
+					if($key!='page_modulecomponentid')
+						$vals[] = $val;
+					else
+						$vals[] = $toId;
+				}
+				$prefix .= "(`".implode("`,`",$cols)."`)";
+				$query = $prefix." VALUES ('".implode("','",$vals)."')";
+				if(!mysql_query($query))
+					$error = true;
+				while($row = mysql_fetch_assoc($result)) {
+					$vals = array();
+					foreach($row as $key => $val) {
+						if($key!='page_modulecomponentid')
+							$vals[] = $val;
+						else
+							$vals[] = $toId;
+					}
+					$query = $prefix." VALUES ('".implode("','",$vals)."')";
+					if(!mysql_query($query))
+						$error = true;
+				}
+			}
+		}
+	} else
+		$error = true;
+	if($error)
+		return false;
+	return true;
+}
 
+/**
+ * function deleteInstance:
+ * @param module - module name
+ * @param page_modulecomponentid - module instance id
+ * @returns boolean indicating deletion status
+ */
+function deleteInstance($moduleType,$page_modulecomponentid) {
+	if($result = mysql_query("SELECT `module_tables` FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` = '{$moduleType}'")) {
+		$row = mysql_fetch_assoc($result);
+		$tables = explode(";",$row['module_tables']);
+		foreach($tables as $table) {
+			if(!mysql_query("DELETE FROM `{$table}` WHERE `page_modulecomponentid` = '{$page_modulecomponentid}'"))
+				return false;
+		}
+	} else
+		return false;
+	return true;
+}
+
+/**
+ * function createInstance:
+ * @param moduleType - specifies module type
+ * @returns a new module component id for the given module type
+ */
+function createInstance($moduleType) {
+	$result = mysql_query("SELECT MAX(page_modulecomponentid) as MAX FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module` = '{$moduleType}'");
+	if(!$result)
+		return 0;
+	$row = mysql_fetch_assoc($result);
+	return (int)$row['MAX']+1;
+}
 
 /**
  * Generates HTML (and javascript, and some CSS) code for a foldable tree representation of the given node
@@ -1028,7 +1103,10 @@ function deletePage($pageId,$userId){
 				require_once($sourceFolder."/".$moduleFolder."/".$moduleType.".lib.php");
 				$page = new $moduleType();
 				$deleted = $page->deleteModule($pageInfo['page_modulecomponentid']);
-				if(!$deleted)
+				if($deleted) {
+					if(!deleteInstance($moduleType,$pageInfo['page_modulecomponentid']))
+						displayerror("There was an error in deleting the page at module level.");
+				} else
 					displayerror("There was an error in deleting the page at module level.");
 			}
 			else {
@@ -1132,11 +1210,9 @@ function copyPage($userId,$pageId,$parentId, $pagetitle,$pagename,$recursive) {
 		global $moduleFolder;
 		require_once($sourceFolder."/".$moduleFolder."/".$moduleType.".lib.php");
 		$page = new $moduleType();
-		$newmodulecomponentid=$page->copyModule($pageInfo['page_modulecomponentid']);
-		if($newmodulecomponentid===false) {
-			displayerror("Unable to copy the page ".$pageId);
-			return false;
-		}
+		$newmodulecomponentid = createInstance($moduleType);
+		copyInstance($moduleType,$pageInfo['page_modulecomponentid'],$newmodulecomponentid);
+		$page->copyModule($pageInfo['page_modulecomponentid'],$newId);
 	}
 	if($moduleType=="external"){
 		$extquery="SELECT MAX( page_modulecomponentid ) AS MAX FROM ".MYSQL_DATABASE_PREFIX."external";

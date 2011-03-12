@@ -530,71 +530,16 @@ class poll implements module {
 			return $display;
 		}
 	
-	public function createModule(&$moduleComponentId) {
-	
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `poll_content` ";
-		$result = mysql_query($query) or die(mysql_error());
-		$row = mysql_fetch_assoc($result) or die(mysql_error());
-		$compId = $row['MAX'] + 1;
-		$moduleComponentId = $compId;
+	public function createModule($compId) {
+		//No initialization
 	}
 
 	public function deleteModule($moduleComponentId) {
-
-		$query = "DELETE FROM `poll_content` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		
-		if ((mysql_affected_rows()) >= 1)
-		{
-			$query = "DELETE FROM `poll_log` WHERE `page_modulecomponentid`=$moduleComponentId";
-			$result = mysql_query($query);
-			$query = "DELETE FROM `poll_users` WHERE `page_modulecomponentid`=$moduleComponentId";
-			$result = mysql_query($query);
-			return true;
-		}
-		else
-			return false;
+		return true;
 	}
 	
-	public function copyModule($moduleComponentId) {
-
-		$query = "SELECT * FROM `poll_content` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		
-		$query2 = "SELECT MAX(page_modulecomponentid) as MAX FROM `poll_content` ";
-		$result2 = mysql_query($query2) or displayerror(mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		$compId = $row2['MAX'] + 1;
-
-		while($content = mysql_fetch_assoc($result))
-		{
-		   $ques=mysql_escape_string($content['ques']);
-		   $o1=mysql_escape_string($content['o1']);
-		   $o2=mysql_escape_string($content['o2']);
-		   $o3=mysql_escape_string($content['o3']);
-		   $o4=mysql_escape_string($content['o4']);
-		   $o5=mysql_escape_string($content['o5']);
-		   $o6=mysql_escape_string($content['o6']);
-		   $mo=mysql_escape_string($content['multiple_opt']);
-		   $v=mysql_escape_string($content['visibility']);
-		   
-		   $query = "INSERT INTO `poll_content` (`page_modulecomponentid` ,`ques`,`o1`,`o2`,`o3`,`o4`,`o5`,`o6`,`multiple_opt`,`visibility`)
-		             VALUES ('$compId', '$ques','$o1','$o2','$o3','$o4','$o5','$o6','$mo','$v')";
-		   mysql_query($query) or die(mysql_error());
-		   
-		   if(mysql_affected_rows())
-		   {
-				$query3 = "SELECT MAX(pid) as MAXP FROM `poll_content` ";
-				$result3 = mysql_query($query3) or die(mysql_error());
-				$row3 = mysql_fetch_assoc($result3);
-				$pid = $row3['MAXP'];
-				
-				$query4 = "INSERT INTO `poll_log` (`pid`,`page_modulecomponentid`) VALUES ('$pid','$compId')";
-				$result4 = mysql_query($query4) or die(mysql_error());
-		   }
-		   
-	    }
-		return $compId;
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
 	}
 }
 ?>

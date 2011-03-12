@@ -328,18 +328,12 @@ class quiz implements module {
 	 * will be called when quiz module instance is created.
 	 * A row will be inserted into quiz_descriptions
 	 */
-	public function createModule(&$moduleComponentId) {
-		$insertQuery = "INSERT INTO `quiz_descriptions`(`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" .
-					"('New Quiz', 'Quiz under construction', 'Quiz under construction', 'simple', '00:30', '20', '10', 0, 1, 0, 1, 0)";
+	public function createModule($moduleComponentId) {
+		$insertQuery = "INSERT INTO `quiz_descriptions`(`page_modulecomponentid`,`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" .
+					"('{$moduleComponentId}','New Quiz', 'Quiz under construction', 'Quiz under construction', 'simple', '00:30', '20', '10', 0, 1, 0, 1, 0)";
 		if (!mysql_query($insertQuery)) {
 			displayerror('Database Error. Could not create quiz. ' . $insertQuery . ' ' . mysql_error());
-			return false;
 		}
-
-		$moduleComponentId = mysql_insert_id();
-
-		$insertIds = addSections($moduleComponentId, 1);
-		return count($insertIds) == 1;
 	}
 
 	/**
@@ -347,7 +341,8 @@ class quiz implements module {
 	 * to be implemented
 	 * has to copy everything related to this quiz instance to another instance
 	 */
-	public function copyModule($moduleComponentId) {
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
 	}
 
 	/**
@@ -356,15 +351,7 @@ class quiz implements module {
 	 * will be called when safedit module instance is getting deleted.
 	 */
 	public function deleteModule($moduleComponentId) {
-		$tableNames = array('quiz_descriptions', 'quiz_sections', 'quiz_questions', 'quiz_objectiveoptions', 'quiz_userattempts', 'quiz_answersubmissions', 'quiz_weightmarks');
-		$allOk = true;
-		for ($i = 0; $i < count($tableNames); ++$i) {
-			$deleteQuery = "DELETE FROM `{$tableNames[$i]}` WHERE `page_modulecomponentid` = $moduleComponentId";
-			$allOk = (mysql_query($deleteQuery) ? true : false) && $allOk;
-		}
-		if (!$allOk)
-			displayerror('Database Error. Could not remove all entries related to the module.');
-		return $allOk;
+		return true;
 	}
 
 	/**

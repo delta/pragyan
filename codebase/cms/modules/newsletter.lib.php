@@ -158,26 +158,16 @@ class newsletter implements module {
 		
 	}
 
-	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `newsletter_desc` ";
-		$result = mysql_query($query) or die(mysql_error() . "article.lib L:73");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-
+	public function createModule($compId) {
 		$query = "INSERT INTO `newsletter_desc` (`page_modulecomponentid` ,`newsletter_name`)VALUES ('$compId', 'New Newsletter')";
 		$result = mysql_query($query) or die(mysql_error()."newsletter.lib L:188");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
 	}
 
 	public function deleteModule($moduleComponentId) {
-		
+		return true;
 	}
 
-	public function copyModule($moduleComponentId) {
-		
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
 	}
 }
