@@ -367,35 +367,17 @@ function checkForm()
 EDIT;
 	return $edit_form;
 	}
-	public function createModule(&$moduleComponentId) {
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `share` ";
-		$result = mysql_query($query) or die(mysql_error() . " share.lib.php L:1108");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
+	public function createModule($compId) {
 		$query = "INSERT INTO `share` (`page_modulecomponentid`,`page_desc`,`file_type`,`maxfile_size` )VALUES ('$compId','Coming Soon!!!','doc|docx','2000000')";
-		$result = mysql_query($query) or die(mysql_error() . " share.lib.php L:");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
+		$result = mysql_query($query) or die(mysql_error() . " share.lib.php L:372");
 	}
 
 	public function deleteModule($moduleComponentId) {
-		$query = "DELETE FROM `share` WHERE `page_modulecomponentid` = '{$moduleComponentId}'";
-		$result = mysql_query($query);
-		$file_query = "DELETE FROM `share_files` WHERE `page_modulecomponentid` = '{$moduleComponentId}'";
-		$file_result = mysql_query($file_query);
-		$comment_query = "DELETE FROM `share_comments` WHERE `page_modulecomponentid` = '{$moduleComponentId}'";
-		$comment_result = mysql_query($comment_query);
-		if($result&&$file_result&&$comment_result)		
-			return true;
-		return false;
-		 
+		return true;
 	}
 	
-	public function copyModule($moduleComponentId) {
-		
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
 	}
 }
 

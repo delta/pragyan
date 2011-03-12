@@ -96,17 +96,14 @@ TREEDATA;
 	}
 
 
-	public function createModule(&$moduleComponentId) {
-		$idQuery = 'SELECT MAX(`page_modulecomponentid`) FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_module` = \'sitemap\'';
-		$idResult = mysql_query($idQuery);
-		$idRow = mysql_fetch_row($idResult);
-		$moduleComponentId = 1;
-		if($idRow && !is_null($idRow[0])) {
-			$moduleComponentId = $idRow[0] + 1;
-		}
+	public function createModule($nextId) {
+		//No initialization
+	}
+	public function deleteModule($moduleComponentId) {
 		return true;
 	}
-	public function deleteModule($moduleComponentId) {}
-	public function copyModule($moduleComponentId) {}
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
+	}
 }
 

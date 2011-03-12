@@ -970,21 +970,12 @@ USERNAME;
 		return $htmlOut;
 	*/
 	}
-
-	public function createModule(& $moduleComponentId){
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `qaos_version` ";
-		$result = mysql_query($query) or die(mysql_error() . "qaos.lib L:31");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-
-		$query = "INSERT INTO `qaos_version` (`page_modulecomponentid`) VALUES ('$compId')";
-		$result = mysql_query($query) or die(mysql_error()."article.lib L:76");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
-	}/*createModule just creates an empty qaos module*/
+	
+	/*createModule just creates an empty qaos module*/
+	public function createModule($newId){
+		$query = "INSERT INTO `qaos_version` (`page_modulecomponentid`) VALUES ('$newId')";
+		$result = mysql_query($query) or die(mysql_error()."qaos.lib L:76");
+	}
 	
 	public function actionScore($moduleComponentId){
 		$moduleComponentId = $this->moduleComponentId;
@@ -1333,7 +1324,9 @@ SCOREUSER;
 		return $htmlOut;
 	}
 	public function deleteModule($moduleComponentId){
+		return true;
 	}
-	public function copyModule($moduleComponentId){
+	public function copyModule($moduleComponentId,$newId){
+		return true;
 	}
 }

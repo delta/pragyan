@@ -1108,101 +1108,17 @@ PRE;
 		return $forum_lastViewed;
 		
 	}
-public function createModule(& $moduleComponentId) {
-
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
-		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1108");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
+public function createModule($compId) {
 		$query = "INSERT INTO `forum_module` (`page_modulecomponentid`,`forum_description`,`last_post_userid` )VALUES ('$compId','Forum Description Here!!!','1')";
 		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1112");
-		if (mysql_affected_rows()) {
-			$moduleComponentId = $compId;
-			return true;
-		} else
-			return false;
-
 	}
 
 	public function deleteModule($moduleComponentId) {
-		$query = "DELETE FROM `forum_posts` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$query1 = "DELETE FROM `forum_threads` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result1 = mysql_query($query1);
-		$query2 = "DELETE FROM `forum_module` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$resul2 = mysql_query($query2);
-		if ((mysql_affected_rows()) >= 1)
-			return true;
-		else
-			return false;
+		return true;
 	}
 
-	public function copyModule($moduleComponentId) {
-$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `forum_module` ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "Copy for forum failed L:1136");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-		//insert a new row in forum_module
-		$query = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$rows = mysql_num_rows($result);
-		while($forummodule_content = mysql_fetch_assoc($result)){
-			$forummodule_query="INSERT INTO `forum_module` (`page_modulecomponentid` ,`forum_description` ,`forum_moderated` ," .
-					"`total_thread_count` ,`last_post_userid` ,`last_post_datetime` )" .
-					" VALUES ($compId," .
-							"'".mysql_escape_string($forummodule_content['forum_description'])."'," .
-									" '".mysql_escape_string($forummodule_content['forum_moderated'])."'," .
-											" '".mysql_escape_string($forummodule_content['total_thread_count'])."' , " .
-//													"'".mysql_escape_string($forummodule_content['total_reply_count'])."' ," .
-															" '".mysql_escape_string($forummodule_content['last_post_userid'])."', " .
-																	"'".mysql_escape_string($forummodule_content['last_post_datetime'])."')";
-			mysql_query($forummodule_query) or displayerror(mysql_error()."Copy for forum failed L:1153");
-			$rows -= mysql_affected_rows();
-		}
-		if($rows!=0)
-			return false;
-		//insert a new row in forum_posts
-		$query = "SELECT * FROM `forum_posts` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$rows = mysql_num_rows($result);
-
-		while($forumanswer_content = mysql_fetch_assoc($result)){
-			$forumanswer_query="INSERT INTO `forum_posts` (`page_modulecomponentid` ,`forum_thread_id` ,`forum_post_id` ,`forum_post_user_id` ,`forum_post_title` ," .
-					"`forum_post_content` ,`forum_post_datetime` ,`forum_post_approve`) VALUES ($compId, '".mysql_escape_string($forumanswer_content['forum_thread_id'])."'," .
-							" '".mysql_escape_string($forumanswer_content['forum_post_id'])."', '".mysql_escape_string($forumanswer_content['forum_post_user_id']).
-"', '".mysql_escape_string($forumanswer_content['forum_post_title'])."' , '".mysql_escape_string($forumanswer_content['forum_post_content'])."" .
-		"' , '".mysql_escape_string($forumanswer_content['forum_post_datetime'])."', '".mysql_escape_string($forumanswer_content['forum_post_approve'])."')";
-			mysql_query($forumanswer_query) or displayerror(mysql_error()."Copy for forum failed L:1169");
-			$rows -= mysql_affected_rows();
-		}
-		if($rows!=0)
-			return false;
-		//insert a new row in forum_threads
-		$query = "SELECT * FROM `forum_threads` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$rows = mysql_num_rows($result);
-		while($forumquestion_content = mysql_fetch_assoc($result)){
-			$forumquestion_query="INSERT INTO `forum_threads` (`page_modulecomponentid` ,`forum_thread_id` ,`forum_thread_category` ," .
-					"`forum_access_status` ,`forum_thread_topic` ,`forum_detail` ,`forum_thread_user_id` ,`forum_thread_datetime` ,`forum_post_approve` ,`forum_thread_viewcount` ," .
-					"`forum_thread_last_post_userid` ,`forum_thread_lastpost_date`) VALUES ($compId," .
-					" '".mysql_escape_string($forumquestion_content['forum_thread_id'])."', " .
-							"'".mysql_escape_string($forumquestion_content['forum_thread_category'])."'," .
-									" '".mysql_escape_string($forumquestion_content['forum_access_status'])."'," .
-											" '".mysql_escape_string($forumquestion_content['forum_thread_topic'])."' ," .
-													" '".mysql_escape_string($forumquestion_content['forum_detail'])."' , " .
-	"'".mysql_escape_string($forumquestion_content['forum_detail'])."', " .
-			"'".mysql_escape_string($forumquestion_content['forum_thread_datetime'])."'," .
-					" '".mysql_escape_string($forumquestion_content['forum_post_approve'])."', " .
-							"'".mysql_escape_string($forumquestion_content['forum_thread_viewcount'])."'," .
-//									" '".mysql_escape_string($forumquestion_content['reply_count'])."'," .
-											" '".mysql_escape_string($forumquestion_content['forum_thread_last_post_userid'])."', " .
-													"'".mysql_escape_string($forumquestion_content['forum_thread_lastpost_date'])."')";
-			mysql_query($forumquestion_query) or displayerror(mysql_error()."Copy for forum failed L:1194");
-			$rows -= mysql_affected_rows();
-		}
-		if($rows!=0)
-			return false;
-		return $compId;
+	public function copyModule($moduleComponentId,$newId) {
+		return true;
 	}
 }
 

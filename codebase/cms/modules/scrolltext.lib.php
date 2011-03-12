@@ -76,34 +76,18 @@ public function actionView(){
 			return $this->scrollarticle->getHtml($this->userId,$articleId,"view");
 }
 
-public function createModule(&$moduleComponentId) {
+public function createModule($scrollId) {
 		include "article.lib.php";
 		$article = new article();
-		$newModuleComponentId=-1;
-		$article->createModule($newModuleComponentId);
-		if($newModuleComponentId==-1)
-			displayerror("Unable to create a new page of type $moduleType");
-		else { 
-			$articleId = $newModuleComponentId;
-			$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `scrolltext` ";
-			$result = mysql_query($query) or die(mysql_error());
-			$row = mysql_fetch_assoc($result);
-			$scrollId = $row['MAX'] + 1;
-
-			$query=  "INSERT INTO `scrolltext` (`page_modulecomponentid` ,`article_modulecomponentid`)VALUES ('$scrollId','$articleId')";
-			$result = mysql_query($query) or die(mysql_error());
-			if (mysql_affected_rows()) {
-				$moduleComponentId = $scrollId;
-				return true;
-			} else
-				return false;
-		}
+		$articleId = createInstance('article');
+		$article->createModule($articleId);
+		$query=  "INSERT INTO `scrolltext` (`page_modulecomponentid` ,`article_modulecomponentid`)VALUES ('$scrollId','$articleId')";
+		$result = mysql_query($query) or die(mysql_error());
+		return true;
 	}
 
 public function deleteModule($moduleComponentId) {
-		echo $this->moduleComponentId;
 		$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid=". $moduleComponentId;
-		echo $query;
 		$result = mysql_query($query);
 		$row = mysql_fetch_assoc($result);
 		$articleId=$row['article_modulecomponentid'];
@@ -116,36 +100,31 @@ public function deleteModule($moduleComponentId) {
 			return false;
 
 	}
-	public function copyModule($moduleComponentId) {
-		$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid=". $this->moduleComponentId;
+	public function copyModule($moduleComponentId,$newId) {
+		include "article.lib.php";
+		$article = new article();
+		$articleId = createInstance('article');
+		$article->createModule($articleId);
+		$query=  "INSERT INTO `scrolltext` (`page_modulecomponentid` ,`article_modulecomponentid`)VALUES ('$newId','$articleId')";
+		$result = mysql_query($query) or die(mysql_error());
+		
+		$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid='{$moduleComponentId}'";
 		$result = mysql_query($query);
-		$row = mysql_fetch_assoc($result);
-		$articleId=$row['article_modulecomponentid'];
-
-		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`=$articleId";
-		$result = mysql_query($query);
-		$content = mysql_fetch_assoc($result);
-		//['article_content']
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `article_content` ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "article.lib L:98");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-
-		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$compId', '".mysql_escape_string($content['article_content'])."')";
-		mysql_query($query) or displayerror(mysql_error()."article.lib L:104");
-
-		$query = "SELECT MAX(page_modulecomponentid) as MAX FROM `scrolltext` ";
-		$result = mysql_query($query) or displayerror(mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$scrollId = $row['MAX'] + 1;
-
-		$query = "INSERT INTO `scrolltext` (`page_modulecomponentid` ,`article_modulecomponentid`)VALUES ('$scrollId', '$compId')";
-		mysql_query($query) or displayerror(mysql_error());
-
-		if (mysql_affected_rows()) {
-			return $scrollId;
-		} else
+		if(!$result)
 			return false;
+		$row = mysql_fetch_assoc($result);
+		$fromId=$row['article_modulecomponentid'];
+
+		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`=$fromId";
+		$result = mysql_query($query);
+		if(!$result)
+			return false;
+		$content = mysql_fetch_assoc($result);
+		
+		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$articleId', '".mysql_escape_string($content['article_content'])."')";
+		mysql_query($query) or displayerror(mysql_error()."scrolltext.lib L:104");
+
+		return true;
 	}
 
 

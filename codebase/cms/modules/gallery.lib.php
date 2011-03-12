@@ -181,18 +181,9 @@ JS;
 		$content .= "<p>" . $prevButton . $pages . $nextButton . "</p>";
 		return $content;
 	}
-	public function createModule(& $moduleComponentId) {
-		$gallQuery = "SELECT MAX(`page_modulecomponentid`) AS max FROM `gallery_name`";
-		$gallResult = mysql_query($gallQuery);
-		$nextId = 1;
-		if ($gallResultRow = mysql_fetch_row($gallResult)) {
-			$nextId = $gallResultRow[0] + 1;
-		}
+	public function createModule($nextId) {
 		$gallQuery = "INSERT INTO `gallery_name` (`page_modulecomponentid`, `gallery_name`, `gallery_desc`) VALUES($nextId, 'New Gallery', 'Edit your new gallery')";
 		$gallResult = mysql_query($gallQuery);
-		if ($gallResult) {
-			$moduleComponentId = $nextId;
-		}
 	}
 	public function actionEdit($moduleComponentId) {
 		global $sourceFolder;
@@ -326,23 +317,18 @@ IMGFORM;
 		for ($c = 0; $c < count($arr); $c++) {
 			$content = deleteFile($moduleComponentId, 'gallery', $arr[$c]['upload_filename']) && $content;
 		}
-		$gallQuery = "DELETE FROM `gall_name` where `page_modulecomponentid`=$moduleComponentId";
-		$gallResult = mysql_query($gallQuery);
-		$gallQuery2 = "DELETE FROM `gall_pics` where `page_modulecomponentid`=$moduleComponentId";
-		$gallResult2 = mysql_query($gallQuery2);
 		return $content;
 	}
-	public function copyModule($moduleComponentId) {
+	public function copyModule($moduleComponentId,$newId) {
 		$gallQuery = "SELECT * FROM `gallery_pics` WHERE page_modulecomponentid = " . $moduleComponentId;
 		$gallResult = mysql_query($gallQuery);
 		$gallRow = mysql_fetch_assoc($gallResult);
-		$gallQuery2 = "SELECT MAX(`page_modulecomponentid`) AS 'max' from `gallery_name`";
-		$gallResult2 = mysql_query($gallQuery2);
-		$destinationPage_moduleComponentId = $gallResult2['max'] + 1;
+		$destinationPage_moduleComponentId = $newId;
 		while ($gallRow) {
 			fileCopy($moduleComponentId, 'gallery', $gallRow['upload_filename'], $destinationPage_moduleComponentId, 'gallery', $gallRow['upload_filename'], $this->userId);
 			$thumb ="thumb_".$gallRow['upload_filename'];
 			fileCopy($moduleComponentId, 'gallery', $thumb, $destinationPage_moduleComponentId, 'gallery', $gallRow['upload_filename'], $this->userId);
 		}
+		return true;
 	}
 }
