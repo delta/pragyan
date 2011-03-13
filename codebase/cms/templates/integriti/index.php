@@ -23,6 +23,7 @@ if(!defined('__PRAGYAN_CMS'))
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/other.css" />
 
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/header.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/content.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/footer.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/error.css" />
@@ -44,10 +45,16 @@ if(!defined('__PRAGYAN_CMS'))
 <div class="outercontainer">
 	<div class="clearer"></div>
 	<div class="innercontainer">
-		<div class="menucontainer">
-			<?php echo $MENUBAR; ?>
-		</div>
+		
 		<div class="clearer"></div>
+		<div class="header">
+		<img style="padding-top:6px; padding-left:10px" src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/pragyancmslogo.png"/>
+		<div id='header_text'>PRAGYAN CMS</div>
+		<ul>
+		<li><a href=""><div>TOPIC 1</a></div>
+		<li><a href=""><div>TOPIC 2</a></div>
+		</ul>
+		</div>
 		
 		<div class="breadcrumb">
 			<div id="breadcrumb">
@@ -65,6 +72,12 @@ if(!defined('__PRAGYAN_CMS'))
 		</div>
 		<div class="contentcontainer">
 			<div class="topcontentbar"></div>
+			<div id="cms-leftcontent">
+				<div class="menucontainer">
+					<?php echo $MENUBAR; ?>
+				</div>
+				
+			</div>
 			<div id="cms-content">
 				<?php echo $INFOSTRING; ?>
 				<?php echo $WARNINGSTRING;?>
