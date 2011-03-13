@@ -1,7 +1,7 @@
 #cms-breadcrumb {
  background-color : white;
 }
-#cms-breadcrumb ul, li {
+#cms-breadcrumb ul, #cms-breadcrumb li {
  list-style-type:none;
  padding:0;
  margin:0;
