@@ -176,7 +176,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   $MYHOST = hostURL();
   $pageRow = getChildren($pageId,$userId);
 
-  $var = "<ul class='{$classname} depth{$curdepth}'>";
+  $var = "<div class='div_{$classname}'><ul class='{$classname} depth{$curdepth}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
   	$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$pageRow[$i][0]}'";
 		$result = mysql_query($query);
@@ -203,7 +203,7 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
 	  $var .= getChildList($pageRow[$i][0],($depth==-1)?$depth:($depth-1),$rootUri,$userId,$newdepth,true);
 	  $var .= "</li>";
 	}
-  $var .= "</ul>";
+  $var .= "</ul></div>";
   if(count($pageRow)==0) return "";
   return $var;
   }
