@@ -1,37 +1,32 @@
-div#breadcrumb{
-	background: url(../images/brd12.jpg);
-	height: 42px;
-	margin: 0;
+#cms-breadcrumb {
+ background-color : white;
 }
-div#breadcrumb a, div#breadcrumb img {
-	border: 0;
-	padding: 0;
-	margin: 0;
+#cms-breadcrumb ul, li {
+ list-style-type:none;
+ padding:0;
+ margin:0;
 }
-div#breadcrumb ul {
-	list-style:none;
-	margin: 0;
-	margin-left: 22px;
-	padding: 0;
+#cms-breadcrumb ul {
+ border:1px solid #dedede;
+ height:2.3em;
 }
-div#breadcrumb ul > li {
-	float: left;
-	margin: 0;
-	margin-left: -22px;
-	padding: 0;
-	/*background: url(../images/bread.png) top left no-repeat;*/
+#cms-breadcrumb ul li {
+ float:left;
+ line-height:2.3em;
+ padding-left:.75em;
+ color:#777;
 }
-div#breadcrumb ul > li a{
-	text-decoration: none;
+#cms-breadcrumb ul li span a div{
+ display:block;
+ padding:0 15px 0 0;
+ background:url(../images/crumbs.gif) no-repeat right center;
 }
-div#breadcrumb ul > li a >div {
-	padding: 13px 25px;
-	margin: 0px;
-	color: #555;
-	font-size: smaller;
-	background: url(../images/bread.png) top right no-repeat;
+
+#cms-breadcrumb ul li span a:link div, #cms-breadcrumb ul li span a:visited div {
+ text-decoration:none;
+ color:#777;
 }
-div#breadcrumb ul > li.selected {
-	color: black;
+#cms-breadcrumb ul li span a:hover div, #cms-breadcrumb ul li span a:focus div{
+ color:#1d7ccc;
 }
 

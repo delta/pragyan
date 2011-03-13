@@ -1,4 +1,36 @@
-.actionbarcontainer {
+div.actionbarcontainer div {
+float :right;
+}
+div.actionbar div {
+	float: left;
+	padding: 0;
+	list-style: none;
+	background-color: #f2f2f2;
+	border-bottom: 1px solid #ccc; 
+	border-top: 1px solid #ccc; 
+}
+div.actionbar div  span {
+	float: left; 
+}
+	
+div.actionbar div  span a {
+	display: block;
+	padding: 8px 15px;
+	text-decoration: none;
+	font-weight: bold;
+	color: #069;
+	border-right: 1px solid #ccc; 
+}
+div.actionbar div  span a:hover {
+	color: #c00;
+	background-color: #fff; 
+}
+div.actionbar div span a img {
+	float: left;
+	position: relative;
+	top : -2px;
+}
+/*.actionbarcontainer {
 	
 }
 .actionbar {
@@ -35,4 +67,4 @@
 .cms-actionbarPageItem:hover {
 	background: #000;
 }
-
+*/

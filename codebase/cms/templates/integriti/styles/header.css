@@ -1,7 +1,7 @@
 /*Header - Menu*/
 div.menucontainer {
 	height: 148px;
-	background: url(../images/header.png) no-repeat center 1px;
+	background: #f8f8f8 url(../images/header.png)  no-repeat center 1px;
 	z-index: 5;
 }
 /*
@@ -77,6 +77,7 @@ ul.topnav > li div.cms-menuitem > img {
 
 div.div_subnav {
 	width:  300px; 
+	padding-top : 10px;
 }
 
 ul.subnav {
@@ -86,6 +87,7 @@ ul.subnav {
 	margin: 0;
 	overflow: hidden;
 	border : 2px green;
+	
 }
 
 ul.subnav > li {

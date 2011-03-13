@@ -2,6 +2,7 @@
 
 .footer {
 	height: 135px;
+	color : white;
 	background: url(../images/footer.png) no-repeat;
 	line-height: 135px;
 	text-align: center;

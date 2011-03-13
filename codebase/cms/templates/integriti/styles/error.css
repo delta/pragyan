@@ -17,6 +17,11 @@ div.cms-info { background-image: url('../images/cms_info.png'); background-color
 div.cms-info a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
 div.cms-info a:hover {background: #44F; color: #FFF!important; }
 
+div.cms-error { background-image: url('../images/cms_error.png'); background-color: #aab; border-color: #aaf; color: black;}
+div.cms-error a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
+div.cms-error a:hover {background: #44F; color: #FFF!important; }
+
+
 /**
  * For the trees
  */
