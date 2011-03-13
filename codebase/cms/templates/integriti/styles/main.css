@@ -14,20 +14,19 @@ ul, li{
 
 a {
 	text-decoration: none;
-	color: white;
+	color: blue;
 }
 
 
-.contentcontainer a {
-	text-shadow:0 0 0.2em #8877FF, 0 0 0.2em #8877FF, 0 0 0.2em #8877FF;
-}
+
 body {
 	background-color: #333;
 	padding:0;
 	width: 1000px;
 	margin: auto;
-	color: white;
-	font-family: sans-serif;
+	color: black;
+	font-family: arial, sans-serif;
+	font-size : 12px;
 	text-align: center;
 	
 	border-left: solid 1px #666;
@@ -44,7 +43,7 @@ body {
 }
 
 .outercontainer {
-	background: #111;
+	background: #cdcdcd;
 }
 
 /**
