@@ -1,0 +1,38 @@
+.actionbarcontainer {
+	
+}
+.actionbar {
+	width: 920px;
+	margin: 0 auto;
+}
+.actionbar a {
+	color: #aaa;
+	font-size: 12px;
+	font-family: sans-serif;
+	padding: 5px;
+}
+.actionbar > div {
+	float: left;
+	padding: 0px 2px;
+	line-height: 30px;
+}
+
+#cms-actionbarmodule {
+	width: 120px;
+}
+.cms-actionbarModuleItem {
+	padding: 5px;
+}
+.cms-actionbarModuleItem:hover {
+	background: #000;
+}
+#cms-actionbarPage {
+	width: 800px;
+}
+.cms-actionbarPageItem {
+	padding: 5px;
+}
+.cms-actionbarPageItem:hover {
+	background: #000;
+}
+

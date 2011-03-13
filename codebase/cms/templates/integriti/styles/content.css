@@ -1,0 +1,23 @@
+/* Content Styling */
+
+.contentcontainer {
+	margin: 0 40px;
+}	
+
+.contentcontainer .topcontentbar {
+	background: url(../images/content1.png);
+	height:14px;
+}
+
+.contentcontainer .bottomcontentbar {
+	background: url(../images/content2.png);
+	height: 14px;
+}
+.contentcontainer #cms-content {
+	margin: 0;
+	background: black;
+	padding: 10px;
+	border-left: solid 1px #222;
+	border-right: solid 1px #222;
+}
+

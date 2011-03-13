@@ -1,0 +1,59 @@
+/*CSS Document*/
+/* Contains Layout and global styling*/
+
+/**
+ * Cancel Some Annoying Stylings SHOULD BE THE FIRST
+ */
+div {
+	margin: 0;
+	padding: 0;
+}
+ul, li{
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+}
+
+
+.contentcontainer a {
+	text-shadow:0 0 0.2em #8877FF, 0 0 0.2em #8877FF, 0 0 0.2em #8877FF;
+}
+body {
+	background-color: #333;
+	padding:0;
+	width: 1000px;
+	margin: auto;
+	color: white;
+	font-family: sans-serif;
+	text-align: center;
+	
+	border-left: solid 1px #666;
+	border-right: solid 1px #666;
+}
+
+body img 
+{
+	border : none;
+}
+
+body {
+	text-align: left;
+}
+
+.outercontainer {
+	background: #111;
+}
+
+/**
+ * Common styling
+ */
+.clearer{
+	clear: both;
+	padding: 0;
+	margin: 0;
+}
+
+
