@@ -222,7 +222,7 @@ function getBlacklistTable()
 {
 	$black = "Blacklist<table><tr><td style='width:35%'>Domains</td><td style='width:65%'>IPs</td><td>Actions</td></tr>";	
 	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist`";
-	$result = mysql_query($query) or displayerror("Unable to load Blaclisted Information".mysql_error());
+	$result = mysql_query($query) or displayerror("Unable to load Blacklisted Information".mysql_error());
 	while($row=mysql_fetch_array($result))
 		$black .="<tr><td>$row[1]</td><td>$row[2]</td><td><a href='./+admin&subaction=global&del_black=$row[0]'>Delete</a></td></tr>";	
 	$black .="<tr><td><input type='text' name='blacklist_domain'></td><td><input type='text' name='blacklist_ip'></td><td></td></tr>";

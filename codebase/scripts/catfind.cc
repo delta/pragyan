@@ -12,7 +12,7 @@
 #include <string>
 #include <cstdlib>
 using namespace std;
-string SEARCHKEY="ereg_";
+string SEARCHKEY="class module";
 string DIRECTORY="/var/www/workspace/pragyan/codebase";
 char VALIDEXT[][10]={".php"};
 int VALIDEXTCOUNT=1;

@@ -199,7 +199,7 @@ function checkLogin($login_method,$user_name,$user_email,$user_passwd) {
 /***FUNCTIONS FOR IMAP AUTH: ***/
 function quoteIMAP($str)
 {
-  return ereg_replace("([\"\\])", "\\1", $str);
+  return preg_replace('/'.addcslashes("([\"\\])",'/').'/', "\\1", $str);
 }
 
 function my_imap_auth ($username, $password)

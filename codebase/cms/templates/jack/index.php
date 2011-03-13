@@ -12,19 +12,19 @@ if(!defined('__PRAGYAN_CMS'))
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description" content="<? echo $SITEDESCRIPTION ?>" />
-<meta name="keywords" content="<? echo $SITEKEYWORDS ?>" /> 
+<meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
+<meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
 <title><?php echo $TITLE; ?></title>
-<link rel="stylesheet" type="text/css" href="<? echo $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
-<link rel="stylesheet" type="text/css" href="<? echo $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
-<link rel="stylesheet" type="text/css" href="<? echo $TEMPLATEBROWSERPATH; ?>/index.css" media="all" />
+<link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/../common/error.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/../common/adminui.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/index.css" media="all" />
 <script language="javascript" type="text/javascript" src="<?php echo  $TEMPLATEBROWSERPATH; ?>/../common/scripts/jquery-latest.js" ></script>
-<?global $urlRequestRoot;	global $PAGELASTUPDATED;
+<?phpglobal $urlRequestRoot;	global $PAGELASTUPDATED;
 if($PAGELASTUPDATED!="")
 	echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
 ?>
 </head>
-<body onload="<? echo $STARTSCRIPTS;?>">
+<body onload="<?php echo $STARTSCRIPTS;?>">
 
     <div id="framecontent">
       <div class="innertube">
@@ -36,23 +36,23 @@ if($PAGELASTUPDATED!="")
     <div id="hframecontent">
       <div class="innertube"></div>
         <div id="hmenu">
-				<? echo $ACTIONBARMODULE;?>
-				<? echo $ACTIONBARPAGE;?>
+				<?php echo $ACTIONBARMODULE;?>
+				<?php echo $ACTIONBARPAGE;?>
         </div>
     </div>
   
     <div id="maincontent">
       <div class="bcenvelope">
-              <? echo $BREADCRUMB; ?>
+              <?php echo $BREADCRUMB; ?>
       </div>
       <div class="innertube">
-              <? echo $INFOSTRING;?>
-	          <? echo $WARNINGSTRING;?>
-	          <? echo $ERRORSTRING;?>
-	          <? echo $CONTENT; ?>
+              <?php echo $INFOSTRING;?>
+	          <?php echo $WARNINGSTRING;?>
+	          <?php echo $ERRORSTRING;?>
+	          <?php echo $CONTENT; ?>
 	        <br class="clearFloat" />
 			<div id="footer">
-				<? echo $FOOTER; ?>
+				<?php echo $FOOTER; ?>
 			</div>
       </div>
     </div>

@@ -47,7 +47,7 @@ if(!defined('__PRAGYAN_CMS'))
 		<div class="menucontainer">
 			<?php echo $MENUBAR; ?>
 		</div>
-		<div class="clearer" ></div>
+		<div class="clearer"></div>
 		
 		<div class="breadcrumb">
 			<div id="breadcrumb">
