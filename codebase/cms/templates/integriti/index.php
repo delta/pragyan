@@ -51,8 +51,14 @@ if(!defined('__PRAGYAN_CMS'))
 		<img style="padding-top:6px; padding-left:10px" src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/pragyancmslogo.png"/>
 		<div id='header_text'>PRAGYAN CMS</div>
 		<ul>
-		<li><a href=""><div>TOPIC 1</a></div>
-		<li><a href=""><div>TOPIC 2</a></div>
+		<li><a href="http://pragyan.integriti.org.in/home/demo/"><div>DEMO</div></a>
+		<li><a href="http://pragyan.integriti.org.in/home/gsoc_ideas/"><div>GSoC</div></a>
+
+ <li><a href="http://pragyan.integriti.org.in/home/downloads/"><div>Downloads</div></a></li>
+<li><a href="http://pragyan.integriti.org.in/home/support/"><div>Support</div></li>
+<li><a href="http://pragyan.integriti.org.in/home/develop/"><div>Develop</div></li>
+<li><a href="http://pragyan.integriti.org.in/home/credits/"><div>Credits</div></a></li>
+
 		</ul>
 		</div>
 		

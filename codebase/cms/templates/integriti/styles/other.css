@@ -1,4 +1,23 @@
-
+/** 
+ * Extras 
+ */
+div.download_button {
+	height : 69px;
+	width : 252px;
+	background : transparent url('../images/downloads_button3.png') no-repeat;
+	font-size : 21px;
+	color : #1d7ccc;
+	font-weight  : bold;
+	text-decoration : none;
+	padding-left : 0px;
+	line-height : 56px;
+	cursor : pointer; 
+}
+div.download_button:hover {
+	height : 69px;
+	width : 252px;
+	background : transparent url('../images/downloads_button_sel.png') no-repeat;
+}
 /**
  *Book Module
  */
@@ -11,7 +30,6 @@
 .tabContent {
 	display: none;
 	padding: 13px;
-	clear: both;
 }
 .tabElement {
 	border: 1px solid black;
