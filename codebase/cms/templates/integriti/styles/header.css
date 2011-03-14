@@ -24,6 +24,9 @@ div#header_text {
 	font-weight: bold;
 }
 
+div.header ul {
+	float: right;
+}
 
 div.header ul > li{
 	width: 100px;
@@ -33,7 +36,7 @@ div.header ul > li{
 	list-style: none;
 }
 div.header ul > li:hover {
-	background: url(../images/glow.jpg) no-repeat top center;
+	background: url(../images/glow.jpg) repeat-x top center;
 }
 
 div.header li:hover > a > div {
