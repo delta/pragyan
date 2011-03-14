@@ -21,8 +21,8 @@
  * 
  * @section For License, Credits and other details
  * Please see README.html in docs folder.
+ * For more details, contact Abhishek Shrivastava abhishekdelta [at] integriti.org.in .
  * 
- * For more details, contact Abhishek Shrivastava abhishek [at] teamdeltaforce.org
  */
 
 ///Very important variable for detecting direct script access to any other .php file
@@ -136,7 +136,7 @@ if(isset($_GET['page']))
 else if(isset($_GET['user'])) {
 	$publicPageRequest = true;
 	$userProfileName = $_GET['user'];
-	///This is just to prevent parsing a NULL url when someone misplaces the code for User profile parser
+	//This is just to prevent parsing a NULL url when someone misplaces the code for User profile parser
 	$pageFullPath = "home";
 }
 else $pageFullPath = "home";
