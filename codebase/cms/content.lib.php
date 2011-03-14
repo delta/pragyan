@@ -275,7 +275,10 @@ function getTitle($pageId,$action, &$heading) {
 	//if($pagetitle_values['page_module']=="link")	return getTitle($pagetitle_values['page_modulecomponentid'],$action);
 	//A link has its own page title, page menurank, display menubar property
 	if ($action=="grant")	$heading = $pagetitle_values['page_title']." - Grant Permissions";
-	if ($action=="settings")	$heading = $pagetitle_values['page_title']." - Page Settings";
+	else if ($action=="settings")	$heading = $pagetitle_values['page_title']." - Page Settings";
+	else if ($action=="admin")	$heading = $pagetitle_values['page_title']." - Website Administration";
+	else if ($action=="widget")	$heading = $pagetitle_values['page_title']." - Page Widgets";
+	else if ($action=="profile")	$heading = $pagetitle_values['page_title']." - User Profile";
 	else $heading = $pagetitle_values['page_title'];
 	return true;
 }
