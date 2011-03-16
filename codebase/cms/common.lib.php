@@ -115,7 +115,25 @@ function convertUri($x) {
 function escape($query)
 {
 	if (!get_magic_quotes_gpc()) {
-	    $query = mysql_real_escape_string($query);
+	    $xquery = mysql_real_escape_string($query);
+	    /// If there's no mysql connection, then the xquery will be false
+	    if($xquery===false)
+	    {
+	     connect();
+	     return escape($query);
+	    }
+	}
+	return $query;
+}
+
+/** Another escape, which is not so secure as previous one, but it should only be used in install script.
+    Reason being this doesn't require to establish a mysql connection unlike previous one. Can be hacked if 
+    multibyte character set is used (e.g. GBK), highly unlikely though coz I trust the admin! -Abhishek
+*/
+function nomysql_escape($query)
+{
+	if (!get_magic_quotes_gpc()) {
+		$query=addslashes($query);
 	}
 	return $query;
 }

@@ -69,7 +69,6 @@ function templateReplace(&$TITLE,&$MENUBAR,&$ACTIONBARMODULE,&$ACTIONBARPAGE,&$B
 
 	$SITEDESCRIPTION=safe_html($SITEDESCRIPTION);
 	$SITEKEYWORDS=safe_html($SITEKEYWORDS);
-	$FOOTER=safe_html($FOOTER);
 
 	$TEMPLATEBROWSERPATH = "$urlRequestRoot/$cmsFolder/$templateFolder/".TEMPLATE;
 	$TEMPLATECODEPATH = "$sourceFolder/$templateFolder/".TEMPLATE;
