@@ -796,7 +796,7 @@ function admin_checkAdminUser() {
 		$uid = $row['MAX'] + 1;
 		$passwd = rand();
 		$adminPasswd = md5($passwd);
-		$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users`( `user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password`  ,`user_activated`)VALUES ( $uid , 'admin', 'admin@cms.org', 'Administrator', '$adminPasswd', '1')";
+		$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users`( `user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password`  ,`user_activated`)VALUES ( '$uid' , 'admin', 'admin@cms.org', 'Administrator', '$adminPasswd', '1')";
 		
 		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_affected_rows() > 0) {
@@ -825,7 +825,7 @@ function admin_checkAdminPerms()
 		while ($temp1 = mysql_fetch_assoc($result1)) {
 			foreach ($temp1 as $var => $val) {
 				if ($var == 'perm_id') {
-					$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type`='user' AND `usergroup_id`=$user_Id AND `page_id`=0 AND `perm_id`=$val AND `perm_permission`='Y'";
+					$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type`='user' AND `usergroup_id`='$user_Id' AND `page_id`=0 AND `perm_id`='$val' AND `perm_permission`='Y'";
 					$result = mysql_query($query) or die(mysql_error());
 					if (!mysql_num_rows($result)) {
 						$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "userpageperm` (`perm_type`,`page_id`,`usergroup_id`,`perm_id`,`perm_permission`) VALUES ('user','0','$user_Id','$val','Y')";
@@ -930,7 +930,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 				displayerror('Unknown E-mail. Could not find a registered user with the given E-mail Id');
 			}
 			else {
-				$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = ' . $userId . ' AND `group_id` = ' . $groupId;
+				$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . $userId . '\' AND `group_id` = ' . $groupId;
 				$deleteResult = mysql_query($deleteQuery);
 				if(!$deleteResult || mysql_affected_rows() != 1) {
 					displayerror('Could not delete user with the given E-mail from the given group.');
@@ -947,7 +947,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 			}
 		}
 		elseif ($subAction == 'savegroupproperties' && isset($_POST['txtGroupDescription'])) {
-			$updateQuery = "UPDATE `" . MYSQL_DATABASE_PREFIX . "groups` SET `group_description` = '".escape($_POST['txtGroupDescription'])."' WHERE `group_id` = $groupId";
+			$updateQuery = "UPDATE `" . MYSQL_DATABASE_PREFIX . "groups` SET `group_description` = '".escape($_POST['txtGroupDescription'])."' WHERE `group_id` = '$groupId'";
 			$updateResult = mysql_query($updateQuery);
 			if (!$updateResult) {
 				displayerror('Could not update database.');
@@ -1032,7 +1032,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 
 		$usersTable = '`' . MYSQL_DATABASE_PREFIX . 'users`';
 		$usergroupTable = '`' . MYSQL_DATABASE_PREFIX . 'usergroup`';
-		$userQuery = "SELECT `user_email`, `user_fullname` FROM $usergroupTable, $usersTable WHERE `group_id` =  $groupId AND $usersTable.`user_id` = $usergroupTable.`user_id` ORDER BY `user_email`";
+		$userQuery = "SELECT `user_email`, `user_fullname` FROM $usergroupTable, $usersTable WHERE `group_id` =  '$groupId' AND $usersTable.`user_id` = $usergroupTable.`user_id` ORDER BY `user_email`";
 		$userResult = mysql_query($userQuery);
 		if(!$userResult) {
 			displayerror('Error! Could not fetch group information.');
@@ -1182,13 +1182,13 @@ GROUPEDITFORM;
 					}
 
 					$addGroupQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'groups` (`group_id`, `group_name`, `group_description`, `group_priority`) ' .
-							"VALUES($newGroupId, '".escape($_POST['txtGroupName'])."', '".escape($_POST['txtGroupDescription'])."', $newGroupPriority)";
+							"VALUES($newGroupId, '".escape($_POST['txtGroupName'])."', '".escape($_POST['txtGroupDescription'])."', '$newGroupPriority')";
 					$addGroupResult = mysql_query($addGroupQuery);
 					if($addGroupResult) {
 						displayinfo('New group added successfully.');
 
 						if(isset($_POST['chkAddMe'])) {
-							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ($currentUserId, $newGroupId)";
+							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ('$currentUserId', '$newGroupId')";
 							if(!mysql_query($insertQuery)) {
 								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysql_query());
 							}

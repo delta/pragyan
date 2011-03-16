@@ -115,19 +115,18 @@ public function deleteModule($moduleComponentId) {
 		$row = mysql_fetch_assoc($result);
 		$fromId=$row['article_modulecomponentid'];
 
-		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`=$fromId";
+		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`='$fromId'";
 		$result = mysql_query($query);
 		if(!$result)
-			return false;
+			return false
+		
 		$content = mysql_fetch_assoc($result);
 		
 		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$articleId', '".mysql_escape_string($content['article_content'])."')";
 		mysql_query($query) or displayerror(mysql_error()."scrolltext.lib L:104");
-
 		return true;
 	}
 
 
 
 }
-

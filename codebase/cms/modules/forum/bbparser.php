@@ -22,7 +22,7 @@ function phpentities($text) {
 }
 // Parse smiley bbcode into HTML images
 global $urlRequestRoot,$sourceFolder,$moduleFolder,$cmsFolder;
-$imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/smileys";
+$imgpath=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/forum/images/smileys/";
 define("IMAGES","$imgpath");
 function parsesmileys($message) {
 	global $IMAGES;

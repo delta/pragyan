@@ -115,14 +115,14 @@ class gallery implements module, fileuploadable {
 				});
 			</script>
 JS;
-		$gallQuery = "SELECT * from `gallery_name` where `page_modulecomponentid`=$this->moduleComponentId";
+		$gallQuery = "SELECT * from `gallery_name` where `page_modulecomponentid`='$this->moduleComponentId'";
 		$gallResult = mysql_query($gallQuery);
 		$row = mysql_fetch_assoc($gallResult);
 		$content .= "<h2><center>{$row['gallery_name']}</center></h2><br/><center><h3>{$row['gallery_desc']}</center></h3>";
 		$perPage = $row['imagesPerPage'];
 		$viewCheck = $row['allowViews'];
 		include_once ("$sourceFolder/" . 'upload.lib.php');
-		$query = "SELECT `upload_filename` FROM `gallery_pics` WHERE `page_modulecomponentid` =". $this->moduleComponentId;
+		$query = "SELECT `upload_filename` FROM `gallery_pics` WHERE `page_modulecomponentid` ='". $this->moduleComponentId."'";
 		$pic_result = mysql_query($query) or die(mysql_error());
 		$arr = array ();
 		while ($row = mysql_fetch_assoc($pic_result))
@@ -142,7 +142,7 @@ JS;
 			$end = $numPic;
 		$content .= '<div class="highslide-gallery" style="width: 100%; margin: auto">';
 		for ($i = $start; $i < $end; $i++) {
-			$gallQuery2 = "SELECT * FROM `gallery_pics` where `upload_filename`='{$arr[$i]['upload_filename']}' AND `page_modulecomponentid`= $this->moduleComponentId";
+			$gallQuery2 = "SELECT * FROM `gallery_pics` where `upload_filename`='{$arr[$i]['upload_filename']}' AND `page_modulecomponentid`= '$this->moduleComponentId'";
 			$gallResult2 = mysql_query($gallQuery2);
 			$row2 = mysql_fetch_assoc($gallResult2);
 			if ($row2) {
@@ -182,7 +182,7 @@ JS;
 		return $content;
 	}
 	public function createModule($nextId) {
-		$gallQuery = "INSERT INTO `gallery_name` (`page_modulecomponentid`, `gallery_name`, `gallery_desc`) VALUES($nextId, 'New Gallery', 'Edit your new gallery')";
+		$gallQuery = "INSERT INTO `gallery_name` (`page_modulecomponentid`, `gallery_name`, `gallery_desc`) VALUES('$nextId', 'New Gallery', 'Edit your new gallery')";
 		$gallResult = mysql_query($gallQuery);
 	}
 	public function actionEdit($moduleComponentId) {
@@ -207,7 +207,7 @@ JS;
 			if(is_numeric($_POST['imagesPerPage']))
 				$perPage = (int)escape($_POST['imagesPerPage']);
 				$viewCount = ( $_POST['allowViews'] ? 1 : 0 );
-			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."',`allowViews`=".$viewCount." WHERE `page_modulecomponentid`=$moduleComponentId";
+			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."',`allowViews`='".$viewCount."' WHERE `page_modulecomponentid`='$moduleComponentId'";
 			$gallResult = mysql_query($gallQuery);
 		}
 
@@ -222,7 +222,7 @@ JS;
 		$uploadSuccess = submitFileUploadForm($this->moduleComponentId, "gallery", $this->userId, false, $allowableTypes);
 		if (is_array($uploadSuccess) && isset ($uploadSuccess[0])) {
 			for($i=0;$i<count($uploadSuccess);$i++){
-				$gallQuery3 = "INSERT INTO `gallery_pics` (`upload_filename`, `page_modulecomponentid`, `gallery_filecomment`) VALUES('$uploadSuccess[$i]', $this->moduleComponentId, 'No Comment')";
+				$gallQuery3 = "INSERT INTO `gallery_pics` (`upload_filename`, `page_modulecomponentid`, `gallery_filecomment`) VALUES('$uploadSuccess[$i]', '$this->moduleComponentId', 'No Comment')";
 				$gallResult3 = mysql_query($gallQuery3);
 			}
 		}
@@ -280,7 +280,7 @@ JS;
 					</form>
 					<br /><br />
 GALFORM;
-		$gallQuery2 = "SELECT * FROM `gallery_pics` where `page_modulecomponentid`= $this->moduleComponentId";
+		$gallQuery2 = "SELECT * FROM `gallery_pics` where `page_modulecomponentid`= '$this->moduleComponentId'";
 		$gallResult2 = mysql_query($gallQuery2);
 		$fileArray = array ();
 		while ($row2 = mysql_fetch_assoc($gallResult2))
@@ -320,7 +320,7 @@ IMGFORM;
 		return $content;
 	}
 	public function copyModule($moduleComponentId,$newId) {
-		$gallQuery = "SELECT * FROM `gallery_pics` WHERE page_modulecomponentid = " . $moduleComponentId;
+		$gallQuery = "SELECT * FROM `gallery_pics` WHERE page_modulecomponentid = '" . $moduleComponentId."'";
 		$gallResult = mysql_query($gallQuery);
 		$gallRow = mysql_fetch_assoc($gallResult);
 		$destinationPage_moduleComponentId = $newId;

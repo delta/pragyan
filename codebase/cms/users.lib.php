@@ -176,7 +176,7 @@ function handleUserMgmt()
 	}
 	if(isset($_POST['user_activate']))
 	{
-		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id={$_GET['userid']}";
+		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id='{$_GET['userid']}'";
 		if(mysql_query($query))
 			displayInfo("User Successfully Activated!");
 		else displayerror("User Not Activated!");
@@ -199,7 +199,7 @@ function handleUserMgmt()
 			displayError("You cannot deactivate administrator!");
 			return registeredUsersList($_POST['editusertype'],"edit",false);
 		}
-		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id={$_GET['userid']}";
+		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id='{$_GET['userid']}'";
 		if(mysql_query($query))
 			displayInfo("User Successfully Deactivated!");
 		else displayerror("User Not Deactivated!");
@@ -224,10 +224,10 @@ function handleUserMgmt()
 			displayError("You cannot delete administrator!");
 			return registeredUsersList($_POST['editusertype'],"edit",false);
 		}
-		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = $userId";
+		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '$userId'";
 		if(mysql_query($query))
 		{
-			$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."openid_users` WHERE `user_id` = $userId";
+			$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."openid_users` WHERE `user_id` = '$userId'";
 			if(mysql_query($query))
 			{
 				displayinfo("User Successfully Deleted!");
@@ -246,7 +246,7 @@ function handleUserMgmt()
 		{
 			$updates = array();
 			$userId=$_GET['userid'];
-			$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`={$userId}";
+			$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$userId}'";
 			$row=mysql_fetch_assoc(mysql_query($query));
 			$errors = false;
 			
@@ -308,7 +308,7 @@ function handleUserMgmt()
 			if(!$errors) {
 				if(count($updates) > 0)
 				{
-					$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = {$_GET['userid']}";
+					$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = ".escape($_GET['userid'])."'";
 					$profileResult = mysql_query($profileQuery);
 					if(!$profileResult) {
 					displayerror('An error was encountered while attempting to process your request.'.$profileQuery);
@@ -487,7 +487,7 @@ function handleUserMgmt()
 			if(!$incomplete)
 			{
 				$user_id=$_GET['userid'];
-				$chkquery="SELECT COUNT(user_id) FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`=$user_id OR `user_name`='$user_name' OR `user_email`='$user_email'";
+				$chkquery="SELECT COUNT(user_id) FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='$user_id' OR `user_name`='$user_name' OR `user_email`='$user_email'";
 			
 				$result=mysql_query($chkquery);
 				$row=mysql_fetch_row($result);

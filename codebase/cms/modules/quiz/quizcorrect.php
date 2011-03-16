@@ -11,7 +11,7 @@ if(!defined('__PRAGYAN_CMS'))
  */
 
 function isQuizEvaluated($quizId) {
-	$countQuery = "SELECT COUNT(*) FROM `quiz_userattempts` WHERE `quiz_marksallotted` IS NULL AND `page_modulecomponentid` = $quizId";
+	$countQuery = "SELECT COUNT(*) FROM `quiz_userattempts` WHERE `quiz_marksallotted` IS NULL AND `page_modulecomponentid` = '$quizId'";
 	$countResult = mysql_query($countQuery);
 	$countRow = mysql_fetch_row($countResult);
 	return $countRow[0] == 0;
@@ -64,8 +64,8 @@ function updateSectionMarks($quizId) {
 			"SELECT SUM(`quiz_marksallotted`) FROM `quiz_answersubmissions` WHERE " .
 			"`quiz_answersubmissions`.`user_id` = `quiz_userattempts`.`user_id` AND " .
 			"`quiz_answersubmissions`.`quiz_sectionid` = `quiz_userattempts`.`quiz_sectionid` AND " .
-			"`quiz_answersubmissions`.`page_modulecomponentid` = $quizId" .
-			") WHERE `page_modulecomponentid` = $quizId";
+			"`quiz_answersubmissions`.`page_modulecomponentid` = '$quizId'" .
+			") WHERE `page_modulecomponentid` = '$quizId'";
 	$updateResult = mysql_query($updateQuery);
 
 	if (!$updateResult) {
@@ -82,7 +82,7 @@ function updateSectionMarks($quizId) {
  */
 function getWeights($quizId) {
 	$weighs = array();
-	$result = mysql_query("SELECT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId AND `quiz_questionweight` NOT IN (SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = $quizId)");
+	$result = mysql_query("SELECT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_questionweight` NOT IN (SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizId')");
 	while($row = mysql_fetch_assoc($result))
 		$weighs[] = $row['quiz_questionweight'];
 	return $weighs;
@@ -115,7 +115,7 @@ function getQuizUserListHtml($quizId) {
 	$userTable = MYSQL_DATABASE_PREFIX . 'users';
 	$markQuery = "SELECT `$userTable`.`user_email` AS `email`, `$userTable`.`user_id` AS `user_id`, SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `$userTable`, `quiz_userattempts` WHERE " .
 			"`$userTable`.`user_id` = `quiz_userattempts`.`user_id` AND " .
-			"`quiz_userattempts`.`page_modulecomponentid` = $quizId " .
+			"`quiz_userattempts`.`page_modulecomponentid` = '$quizId' " .
 			"GROUP BY `quiz_userattempts`.`user_id` ORDER BY `total` DESC, `timetaken`, `starttime`, `finishtime`, `email`";
 	
 	$profileQuery = 'SELECT `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = 0 ORDER BY `form_elementrank`';
@@ -130,7 +130,7 @@ function getQuizUserListHtml($quizId) {
 	if (!$markResult) {
 		displayerror($markQuery . '  ' . mysql_error());
 	}
-	$query = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = $quizId"));
+	$query = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = '$quizId'"));
 	$result = mysql_query("SELECT `quiz_sectiontitle` FROM `quiz_sections` WHERE `page_modulecomponentid` = '$quizId' ORDER BY `quiz_sectionid`");
 	$sectionHead = "";
 	$secCols="";
@@ -221,7 +221,7 @@ HEAD;
 		
 	while ($markRow = mysql_fetch_assoc($markResult)) {
 		$userMarks = "";
-		$marksResult = mysql_query("SELECT `quiz_marksallotted`,`quiz_sectionid` FROM `quiz_userattempts` WHERE `user_id` = {$markRow['user_id']} AND `page_modulecomponentid` = $quizId ORDER BY `quiz_sectionid`");
+		$marksResult = mysql_query("SELECT `quiz_marksallotted`,`quiz_sectionid` FROM `quiz_userattempts` WHERE `user_id` = '{$markRow['user_id']}' AND `page_modulecomponentid` = '$quizId' ORDER BY `quiz_sectionid`");
 		$cc=1;
 		
 		while($row = mysql_fetch_array($marksResult))
@@ -245,7 +245,7 @@ HEAD;
 		$userfullname=getUserFullNameFromEmail($markRow['email']);
 		
 		$elementDataQuery = 'SELECT `form_elementdata`, `form_elementdesc`.`form_elementid`, `form_elementdesc`.`form_elementname`, `form_elementdesc`.`form_elementtype` FROM `form_elementdesc`, `form_elementdata` WHERE ' .
-						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = {$markRow['user_id']} AND " .
+						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = '{$markRow['user_id']}' AND " .
 						"`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND " .
 						"`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ORDER BY `form_elementrank`";
 			$elementDataResult = mysql_query($elementDataQuery) or die($elementDataQuery . '<br />' . mysql_error());
@@ -309,13 +309,13 @@ HEAD;
  * returns form where user answers submissions will be displayed, marks can be alloted for subjective answers
  */
 function getQuizCorrectForm($quizId, $userId) {
-	$marks = mysql_fetch_array(mysql_query("SELECT SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `quiz_userattempts` WHERE `user_id` = {$userId} AND `page_modulecomponentid` = $quizId"));
+	$marks = mysql_fetch_array(mysql_query("SELECT SUM(`quiz_marksallotted`) AS `total`, MIN(`quiz_attemptstarttime`) AS `starttime`, MAX(`quiz_submissiontime`) AS `finishtime`, TIMEDIFF(MAX(`quiz_submissiontime`), MIN(`quiz_attemptstarttime`)) AS `timetaken` FROM `quiz_userattempts` WHERE `user_id` = '{$userId}' AND `page_modulecomponentid` = '$quizId'"));
 	$title = mysql_fetch_array(mysql_query("SELECT `quiz_title` FROM `quiz_descriptions` WHERE `page_modulecomponentid` = '$quizId'"));
 
 	$correctFormHtml = "";
 	$sectionHead="";
 
-	$sections = mysql_query("SELECT `quiz_sections`.`quiz_sectiontitle` AS `quiz_sectiontitle`, `quiz_sections`.`quiz_sectionid` AS `quiz_sectionid`, `quiz_marksallotted` FROM `quiz_userattempts` JOIN `quiz_sections` ON `quiz_userattempts`.`quiz_sectionid` = `quiz_sections`.`quiz_sectionid` WHERE `user_id` = $userId AND `quiz_userattempts`.`page_modulecomponentid` = $quizId AND `quiz_sections`.`page_modulecomponentid` = $quizId");
+	$sections = mysql_query("SELECT `quiz_sections`.`quiz_sectiontitle` AS `quiz_sectiontitle`, `quiz_sections`.`quiz_sectionid` AS `quiz_sectionid`, `quiz_marksallotted` FROM `quiz_userattempts` JOIN `quiz_sections` ON `quiz_userattempts`.`quiz_sectionid` = `quiz_sections`.`quiz_sectionid` WHERE `user_id` = '$userId' AND `quiz_userattempts`.`page_modulecomponentid` = '$quizId' AND `quiz_sections`.`page_modulecomponentid` = '$quizId'");
 	
 	while($sectionsRow = mysql_fetch_array($sections)) {
 	$correctFormHtml .= "<h4>{$sectionsRow['quiz_sectiontitle']}(Marks: {$sectionsRow['quiz_marksallotted']})</h4>";
@@ -326,12 +326,12 @@ function getQuizCorrectForm($quizId, $userId) {
 			"`quiz_questions`.`quiz_question` AS `quiz_question`, `quiz_questiontype`, " .
 			"`quiz_rightanswer`, `quiz_submittedanswer`, `quiz_marksallotted`,`quiz_questions`.`quiz_sectionid` " .
 			"FROM `quiz_questions`, `quiz_answersubmissions` WHERE " .
-			"`quiz_questions`.`page_modulecomponentid` = $quizId AND " .
+			"`quiz_questions`.`page_modulecomponentid` = '$quizId' AND " .
 			"`quiz_questions`.`page_modulecomponentid` = `quiz_answersubmissions`.`page_modulecomponentid` AND " .
 			"`quiz_questions`.`quiz_sectionid` = `quiz_answersubmissions`.`quiz_sectionid` AND " .
 			"`quiz_questions`.`quiz_questionid` = `quiz_answersubmissions`.`quiz_questionid` AND " .
-			"`quiz_questions`.`quiz_sectionid` = {$sectionsRow['quiz_sectionid']} AND " .
-			"`user_id` = $userId ORDER BY `quiz_answersubmissions`.`quiz_questionrank`";
+			"`quiz_questions`.`quiz_sectionid` = '{$sectionsRow['quiz_sectionid']}' AND " .
+			"`user_id` = '$userId' ORDER BY `quiz_answersubmissions`.`quiz_questionrank`";
 
 
 	$questionResult = mysql_query($questionQuery);

@@ -40,7 +40,7 @@ class sitemap implements module {
 			$treeData .= $this->getNodeHtml($pageId, $userId, '', $action, $urlRequestRoot . '/');
 		}
 		else {
-			$permQuery = 'SELECT `page_module`, `perm_action` FROM `' . MYSQL_DATABASE_PREFIX . 'permissionlist` WHERE `perm_id` = ' . $permId;
+			$permQuery = 'SELECT `page_module`, `perm_action` FROM `' . MYSQL_DATABASE_PREFIX . 'permissionlist` WHERE `perm_id` = \'' . $permId."'";
 			$permResult = mysql_query($permQuery);
 			$permRow = mysql_fetch_row($permResult);
 			$module = $permRow[0];
@@ -79,7 +79,7 @@ TREEDATA;
 
 			$htmlOut .= "<li><a href=\"$pagePath\">" . getPageTitle($pageId) . "</a>\n";
 
-			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = ' . $pageId . ' AND `page_displayinsitemap` = 1';
+			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = \'' . $pageId . '\' AND `page_displayinsitemap` = 1';
 			$childrenResult = mysql_query($childrenQuery);
 
 			$childrenHtml = '';
@@ -96,11 +96,11 @@ TREEDATA;
 	}
 
 
-	public function createModule($nextId) {
-		//No initialization
+	public function createModule($nexttId) {
+		///No initialization
 	}
 	public function deleteModule($moduleComponentId) {
-		return true;
+		return true
 	}
 	public function copyModule($moduleComponentId,$newId) {
 		return true;

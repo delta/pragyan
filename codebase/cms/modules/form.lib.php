@@ -90,7 +90,7 @@ require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
 FROM `form_elementdata` d
 	JOIN `form_elementdesc` e ON (`d.page_modulecomponentid` = `e.page_modulecomponentid`
 		AND d.form_elementid = e.form_elementid )
-WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId AND `d.form_elementdata` = \"$fileName\"";
+WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$userId' AND `d.form_elementdata` = \"$fileName\"";
 		$uploadedResult = mysql_query($uploadedQuery) or displayerror(mysql_error() . "form.lib L:181");
 		if(mysql_num_rows($uploadedResult)>0 && getPermissions($userId, $pageId, "view"))
 			return true;
@@ -115,7 +115,7 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 
 		$formDescQuery='SELECT `form_loginrequired`, `form_expirydatetime`, (NOW() >= `form_expirydatetime`) AS `form_expired`, `form_sendconfirmation`, ' .
 				'`form_usecaptcha`, `form_allowuseredit`, `form_allowuserunregister` ' .
-				'FROM `form_desc` WHERE `page_modulecomponentid`='.$this->moduleComponentId;
+				'FROM `form_desc` WHERE `page_modulecomponentid`='."'".$this->moduleComponentId."'";
 		$formDescResult=mysql_query($formDescQuery);
 		if (!$formDescResult) {
 			displayerror('E69 : Invalid query: ' . mysql_error());
@@ -168,7 +168,7 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 	 * @return Array of User Ids of all the users registered to the form with the given Module Component Id
 	 */
 	public static function getRegisteredUserArray($moduleComponentId) {
-		$userQuery = "SELECT `user_id` FROM `form_regdata` WHERE `page_modulecomponentid` = $moduleComponentId";
+		$userQuery = "SELECT `user_id` FROM `form_regdata` WHERE `page_modulecomponentid` = '$moduleComponentId'";
 		$userResult = mysql_query($userQuery);
 		$registeredUsers = array();
 		while($userRow = mysql_fetch_row($userResult))
@@ -177,14 +177,14 @@ WHERE `d.page_modulecomponentid` = $moduleComponentId AND `d.user_id` = $userId 
 	}
 
 	public static function getRegisteredUserCount($moduleComponentId) {
-		$userQuery = "SELECT COUNT(`user_id`) FROM `form_regdata` WHERE `page_modulecomponentid` = $moduleComponentId";
+		$userQuery = "SELECT COUNT(`user_id`) FROM `form_regdata` WHERE `page_modulecomponentid` = '$moduleComponentId'";
 		$userResult = mysql_query($userQuery);
 		$userRow = mysql_fetch_row($userResult);
 		return $userRow[0];
 	}
 
 	public static function isGroupAssociable($moduleComponentId) {
-		$validQuery = 'SELECT `form_loginrequired`, `form_allowuserunregister` FROM `form_desc` WHERE `page_modulecomponentid` = ' . $moduleComponentId;
+		$validQuery = 'SELECT `form_loginrequired`, `form_allowuserunregister` FROM `form_desc` WHERE `page_modulecomponentid` = ' ."'". $moduleComponentId."'";
 		$validResult = mysql_query($validQuery);
 		$validRow = mysql_fetch_row($validResult);
 
@@ -360,7 +360,7 @@ CSS;
 				$formTitle = getPageTitle($pageId);
 				$formInfo = $parentTitle.'_'.$formTitle;
 				$formPath = getPagePath($pageId);
-				$query = "SELECT count(distinct(`user_id`)) FROM `form_regdata` WHERE `page_modulecomponentid`=$result[page_modulecomponentid]";
+				$query = "SELECT count(distinct(`user_id`)) FROM `form_regdata` WHERE `page_modulecomponentid`='$result[page_modulecomponentid]'";
 				$resource2 = mysql_query($query) ;//or die(mysql_error());
 				$result2 = mysql_fetch_row($resource2);
 				
@@ -422,61 +422,6 @@ CSS;
 
 	public function copyModule($moduleComponentId,$newId){
 		return true;
-		// Select the new module component id
-		$query = "SELECT MAX(`page_modulecomponentid`) as MAX FROM `form_desc` ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "form.lib L:181");
-		$row = mysql_fetch_assoc($result);
-		$compId = $row['MAX'] + 1;
-//changing
-		//insert a new row in form_desc
-		$query = "SELECT * FROM `form_desc` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		while($formdesc_content = mysql_fetch_assoc($result)){
-			$formdesc_query="INSERT INTO `form_desc` (`page_modulecomponentid` ,`form_heading` ,`form_loginrequired` ,`form_headertext` ,`form_footertext` ,`form_expirydatetime` ,`form_sendconfirmation` ,`form_usecaptcha` ,`form_allowuseredit` ,`form_allowuserunregister` ,`form_showuseremail` ,`form_showuserfullname` ,`form_showuserprofiledata`,`form_showregistrationdate` ,`form_showlastupdatedate`) VALUES ($compId, '".mysql_escape_string($formdesc_content['form_heading'])."', '".mysql_escape_string($formdesc_content['form_loginrequired'])."', '".mysql_escape_string($formdesc_content['form_headertext'])."', '".mysql_escape_string($formdesc_content['form_footertext'])."' , '".mysql_escape_string($formdesc_content['form_expirydatetime'])."' , '".mysql_escape_string($formdesc_content['form_sendconfirmation'])."', '".mysql_escape_string($formdesc_content['form_usecaptcha'])."', '".mysql_escape_string($formdesc_content['form_allowuseredit'])."', '".mysql_escape_string($formdesc_content['form_allowuserunregister'])."', '".mysql_escape_string($formdesc_content['form_showuseremail'])."', '".mysql_escape_string($formdesc_content['form_showuserfullname'])."', '".mysql_escape_string($formdesc_content['form_showuserprofiledata'])."', '".mysql_escape_string($formdesc_content['form_showregistrationdate'])."', '".mysql_escape_string($formdesc_content['form_showlastupdatedate'])."')";
-			mysql_query($formdesc_query) or displayerror(mysql_error()."form.lib L:183");
-		}
-
-		//insert all new elementdesc rows for the new module
-		$query = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$rows = mysql_num_rows($result);
-
-		while($formelementdesc_content = mysql_fetch_assoc($result)){
-			$elementdesc_query = "INSERT INTO `form_elementdesc` (`page_modulecomponentid` ,`form_elementid` ,`form_elementname` ,`form_elementdisplaytext` ,`form_elementtype` ,`form_elementsize` ,`form_elementtypeoptions` ,`form_elementdefaultvalue` ,`form_elementmorethan` ,`form_elementlessthan` ,`form_elementcheckint` ,`form_elementtooltiptext` ,`form_elementisrequired` ,`form_elementrank`)VALUES ('$compId', '".mysql_escape_string($formelementdesc_content['form_elementid'])."', '".mysql_escape_string($formelementdesc_content['form_elementname'])."', '".mysql_escape_string($formelementdesc_content['form_elementdisplaytext'])."', '".mysql_escape_string($formelementdesc_content['form_elementtype'])."', '".mysql_escape_string($formelementdesc_content['form_elementsize'])."', '".mysql_escape_string($formelementdesc_content['form_elementtypeoptions'])."' , '".mysql_escape_string($formelementdesc_content['form_elementdefaultvalue'])."' , '".mysql_escape_string($formelementdesc_content['form_elementmorethan'])."' , '".mysql_escape_string($formelementdesc_content['form_elementlessthan'])."' , '".mysql_escape_string($formelementdesc_content['form_elementcheckint'])."', '".mysql_escape_string($formelementdesc_content['form_elementtooltiptext'])."', '".mysql_escape_string($formelementdesc_content['form_elementisrequired'])."', '".mysql_escape_string($formelementdesc_content['form_elementrank'])."')";
-			mysql_query($elementdesc_query) or displayerror(mysql_error()."form.lib L:196");
-			$rows -= mysql_affected_rows();
-		}
-		if($rows!=0)
-			return false;
-
-		/// insert all new elementdata in the element data table
-		/// Right now commented coz don't want to copy data
-/*		$query = "SELECT * FROM `form_elementdata` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$rows = mysql_num_rows($result);
-		while($formelementdata_content = mysql_fetch_assoc($result)){
-			$elementdata_query = "INSERT INTO `pragyan_v2`.`form_elementdata` (`user_id` ,`page_modulecomponentid` ,`form_elementid` ,`form_elementdata`) VALUES ('".mysql_escape_string($formelementdata_content['user_id'])."', '$compId', '".mysql_escape_string($formelementdata_content['form_elementid'])."', '".mysql_escape_string($formelementdata_content['form_elementdata'])."')";
-			mysql_query($elementdata_query) or displayerror(mysql_error()."form.lib L:207");
-			$rows -= mysql_affected_rows();
-		}
-		if($rows!=0)
-			return false;
-
-		$query = "SELECT * FROM `form_regdata` WHERE `page_modulecomponentid`=$moduleComponentId";
-		$result = mysql_query($query);
-		$rows = mysql_num_rows($result);
-		while($formregdata_content = mysql_fetch_assoc($result)){
-			$formregdata_query =
-					"INSERT INTO `form_regdata` " .
-					"(`user_id` ,`page_modulecomponentid` ,`form_firstupdated` ,`form_lastupdated` ,`form_verified`) " .
-					"VALUES ('".mysql_escape_string($formregdata_content['user_id'])."', $compId, '".$formregdata_content['form_firstupdated']."', '".$formregdata_content['form_lastupdated']."' , '".$formregdata_content['form_verified']."')";
-			mysql_query($formregdata_query) or displayerror(mysql_error()."form.lib L:215");
-			$rows -= mysql_affected_rows();
-		}
-		if($rows!=0)
-			return false;
-*/
-		return $compId;
 	}
  }
 

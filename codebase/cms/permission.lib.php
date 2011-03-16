@@ -777,7 +777,7 @@ function customGetAllUsers() {
 
 function customGetGroups($priority) {
 	$ret = "'0' : 'Everyone', '1' : 'Logged in Users', ";
-	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < {$priority}");
+	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
 	while($row = mysql_fetch_array($result))
 		$ret .= "'{$row['group_id']}' : '{$row['group_name']}', ";
 	$ret = rtrim($ret,", ");
@@ -786,7 +786,7 @@ function customGetGroups($priority) {
 
 function filterByPriority($priority,$groups) {
 	$return = array();
-	$result = mysql_query("SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < {$priority}");
+	$result = mysql_query("SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
 	while($row = mysql_fetch_assoc($result))
 		foreach($groups as $group)
 			if($group == $row['group_id'])
@@ -833,7 +833,7 @@ function unsetPagePermission($usergroupid, $pageid, $action, $module, $permtype 
 	$permid = $permQueryResultRow['perm_id'];
 
 	$removeQuery = "DELETE FROM `".MYSQL_DATABASE_PREFIX."userpageperm` " .
-								 "WHERE `usergroup_id` = $usergroupid AND `page_id` = $pageid AND `perm_id` = $permid AND " .
+								 "WHERE `usergroup_id` = '$usergroupid' AND `page_id` = '$pageid' AND `perm_id` = '$permid' AND " .
 								 "`perm_type` = '$permtype' LIMIT 1";
 	if(mysql_query($removeQuery)) {
 		return true;
@@ -869,20 +869,20 @@ function setPagePermission($usergroupid, $pageid, $action, $module, $permission,
 	$updateQuery = '';
 	$permission = ($permission === true ? 'Y' : 'N');
 	$permQuery = "SELECT `perm_permission` FROM `".MYSQL_DATABASE_PREFIX."userpageperm` WHERE " .
-							 "`usergroup_id` = $usergroupid AND `page_id` = $pageid AND `perm_id` = $permid AND " .
+							 "`usergroup_id` = '$usergroupid' AND `page_id` = '$pageid' AND `perm_id` = '$permid' AND " .
 							 "`perm_type` = '$permtype'";
 	$permQueryResult = mysql_query($permQuery);
 
 	if($permQueryResultRow = mysql_fetch_assoc($permQueryResult)) {
 		if($permission != $permQueryResultRow['perm_permission']) {
 			$updateQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `perm_permission` = '$permission' " .
-										 "WHERE `usergroup_id` = $usergroupid AND `page_id` = $pageid AND `perm_id` = $permid AND " .
+										 "WHERE `usergroup_id` = '$usergroupid' AND `page_id` = '$pageid' AND `perm_id` = '$permid' AND " .
 							 			 "`perm_type` = '$permtype' LIMIT 1";
 		}
 	}
 	else {
 		$updateQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."userpageperm` (`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) " .
-									 "VALUES('$permtype', $pageid, $usergroupid, $permid, '$permission')";
+									 "VALUES('$permtype', '$pageid', '$usergroupid', '$permid', '$permission')";
 	}
 
 	if($updateQuery != '') {
@@ -935,7 +935,7 @@ function getModifiableGroups($userId, $maxPriorityGroup, $ordering = 'asc') {
 	/// "SELECT `$groupsTable`.`group_id`, `$groupsTable`.`group_name`, `$groupsTable`.`group_description`, `$groupsTable`.`group_priority` " .
 	///		"FROM `$groupsTable` WHERE `group_priority <= (SELECT `group_priority` FROM `$groupsTable` WHERE `group_id` = $maxPriorityGroup)
 
-	$groupPriority = "(SELECT `group_priority` FROM `$groupsTable` WHERE `group_id` = $maxPriorityGroup)";
+	$groupPriority = "(SELECT `group_priority` FROM `$groupsTable` WHERE `group_id` = '$maxPriorityGroup')";
 	if($maxPriorityGroup == 1) $groupPriority = 1;
 	$groupsQuery = "SELECT `$groupsTable`.`group_id`, `$groupsTable`.`group_name`, `$groupsTable`.`group_description`, `$groupsTable`.`group_priority` " .
 			"FROM `$groupsTable` WHERE `group_priority` <= $groupPriority ORDER BY `group_priority` $ordering";

@@ -134,7 +134,7 @@ class poll implements module {
 		$query="INSERT INTO `poll_users`(`pid`,`userID`,`page_modulecomponentid`) VALUES('$pid','$user','$this->moduleComponentId')";
 		mysql_query($query);
 		
-		$query2="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId' AND `pid`=".$pid;
+		$query2="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId' AND `pid`='".$pid."'";
 		$r1=mysql_query($query2);
 		$row=mysql_fetch_array($r1);
 		$m=$row['multiple_opt'];
@@ -163,7 +163,7 @@ class poll implements module {
 			$val=mysql_fetch_array($res1);
 			$value=$val["$o"];
 			$value+=1;
-			$query2="UPDATE `poll_log` SET `$o` = $value WHERE `pid` = $pid AND `page_modulecomponentid`=$this->moduleComponentId";
+			$query2="UPDATE `poll_log` SET `$o` = '$value' WHERE `pid` = '$pid' AND `page_modulecomponentid`='$this->moduleComponentId'";
 			mysql_query($query2);
 		}
 		return $this->actionView();
@@ -238,12 +238,12 @@ class poll implements module {
 				{
 					
 					$pollid=escape($_POST['ques1']);
-					$query3="SELECT * FROM `poll_content` WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$query3="SELECT * FROM `poll_content` WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
 					$result3=mysql_query($query3);
 					$nop=mysql_num_rows($result3);
 					if($nop==1)
 					{
-						$query4="UPDATE `poll_content` SET `visibility`='0' WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$query4="UPDATE `poll_content` SET `visibility`='0' WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
 						$result4=mysql_query($query4);
 					}
 					displayinfo("Poll Question Disabled");
@@ -253,7 +253,7 @@ class poll implements module {
 				if(isset($_POST['edit']))
 				{
 					$pollid=escape($_POST['ques0']);
-					$query="SELECT * FROM `poll_content` WHERE `pid` = $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$query="SELECT * FROM `poll_content` WHERE `pid` = '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
 					$row=mysql_fetch_array(mysql_query($query));
 					$ques=$row['ques'];
 					$o1=$row['o1'];
@@ -296,12 +296,12 @@ class poll implements module {
 				{
 					
 					$pollid=escape($_POST['ques2']);
-					$query3="SELECT * FROM `poll_content` WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$query3="SELECT * FROM `poll_content` WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
 					$result3=mysql_query($query3);
 					$nop=mysql_num_rows($result3);
 					if($nop==1)
 					{
-						$query4="UPDATE `poll_content` SET `visibility`='1' WHERE `pid`= $pollid AND `page_modulecomponentid`='$this->moduleComponentId'";
+						$query4="UPDATE `poll_content` SET `visibility`='1' WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
 						$result4=mysql_query($query4);
 					}
 					displayinfo("Poll Question Enabled");
@@ -311,9 +311,9 @@ class poll implements module {
 				{
 					
 					$pollid=escape($_POST['ques3']);
-					$query4="DELETE FROM `poll_log` WHERE `pid`=$pollid";
+					$query4="DELETE FROM `poll_log` WHERE `pid`='$pollid'";
 					$result4=mysql_query($query4);
-					$query5="DELETE FROM `poll_content` WHERE `pid`=$pollid";
+					$query5="DELETE FROM `poll_content` WHERE `pid`='$pollid'";
 					$result5=mysql_query($query5);
 					displayinfo("Poll Question Deleted");
 			
@@ -531,7 +531,7 @@ class poll implements module {
 		}
 	
 	public function createModule($compId) {
-		//No initialization
+		///No Initialization
 	}
 
 	public function deleteModule($moduleComponentId) {

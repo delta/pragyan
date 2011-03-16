@@ -99,7 +99,7 @@ public function getUserDetails($email)
 	$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_guest_email`='$email' ORDER BY `hospi_actual_checkin` DESC  LIMIT 0,1";
 	$result=mysql_query($query) or die (mysql_error()."in function getUserDetails in hospi") ;
 	$temp=mysql_fetch_array($result,MYSQL_ASSOC);
-	$query="SELECT `hospi_hostel_name`,`hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_id`=$temp[hospi_room_id]";
+	$query="SELECT `hospi_hostel_name`,`hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_id`='$temp[hospi_room_id]'";
 	$result=mysql_query($query) or die (mysql_error()."in function getUserDetails in hospi") ;
 	$temp1=mysql_fetch_array($result,MYSQL_ASSOC);
 	$userdetail=<<<UD
@@ -123,7 +123,7 @@ public function actionAccomodate() {
 			
 			if(isset($_GET['displayUserDetails']))
 {
-	return $this->getUserDetails($_GET['displayUserDetails']);
+	return $this->getUserDetails(escape($_GET['displayUserDetails']));
 }
 
 if(isset($_GET['quick'])){
@@ -162,7 +162,7 @@ global $sourceFolder,$cmsFolder;
 
 		$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
 		$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
-$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_guest_email`='".$_POST['guest_email']."'";
+$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_guest_email`='".escape($_POST['guest_email'])."'";
 $result1=mysql_query($query1);
 if(mysql_num_rows($result1))
 {
@@ -175,7 +175,7 @@ if(mysql_num_rows($result1))
 	displayerror('Already registered for accomodation');
 	return $this->viewall();
 }
-$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . $_POST['guest_email'] . "'";
+$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . escape($_POST['guest_email']) . "'";
 		$result = mysql_query($query) or displayerror(mysql_error() . "in registration L:115");
 		if (mysql_num_rows($result)) {
 $profileRow = mysql_fetch_row($result);
@@ -232,10 +232,10 @@ $query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel` ";
 
 			{
 
-				$query3="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='$hostel' AND `hospi_room_no`=$room";
+				$query3="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='$hostel' AND `hospi_room_no`='$room'";
 				$result3=mysql_query($query3);
 				$temp3=mysql_fetch_array($result3, MYSQL_ASSOC);
-				$query4="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`=$temp3[hospi_room_id] AND `hospi_actual_checkout` IS NULL";
+				$query4="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp3[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
 				$result4=mysql_query($query4);
 				$num=mysql_num_rows($result4);
 
@@ -294,12 +294,12 @@ if(isset($_POST['guest_name']))
 					return $this->viewall();
 
 				}
-				$room_no=$_POST[''.$hostel_name.''];
+				$room_no=escape($_POST[''.$hostel_name.'']);
 				$hostel=$temp['hospi_hostel_name'];
 			}
 		}
 
-		$query="SELECT `hospi_room_id` FROM `hospi_hostel` WHERE `hospi_hostel_name`='$hostel' AND `hospi_room_no`=$room_no";
+		$query="SELECT `hospi_room_id` FROM `hospi_hostel` WHERE `hospi_hostel_name`='$hostel' AND `hospi_room_no`='$room_no'";
 		$result1=mysql_query($query);
 		$temp=mysql_fetch_assoc($result1);
 		$room_Id=$temp['hospi_room_id'];
@@ -311,7 +311,7 @@ if(isset($_POST['guest_name']))
 
 		if(isset($_POST['cash_paid']))$paid=1;else $paid=0;
 
-	$query="INSERT INTO `hospi_accomodation_status` (`hospi_room_id`,`user_id`,`hospi_actual_checkin`,`hospi_checkedin_by`,`hospi_cash_collected`,`hospi_guest_name`,`hospi_guest_college`,`hospi_guest_phone`,`hospi_guest_email`) VALUES ('$room_Id','$_POST[user_id]',NOW(),'$this->userId','$paid','$_POST[guest_name]','$_POST[guest_college]','$_POST[guest_phone]','$_POST[guest_email]')";
+	$query="INSERT INTO `hospi_accomodation_status` (`hospi_room_id`,`user_id`,`hospi_actual_checkin`,`hospi_checkedin_by`,`hospi_cash_collected`,`hospi_guest_name`,`hospi_guest_college`,`hospi_guest_phone`,`hospi_guest_email`) VALUES ('$room_Id','".escape($_POST[user_id])."',NOW(),'$this->userId','$paid','".escape($_POST[guest_name])."','".escape($_POST[guest_college])."','".escape($_POST[guest_phone])."','".escape($_POST[guest_email])."')";
 	$result=mysql_query($query) or displayerror(mysql_error());
 
 	if(!(mysql_error()))
@@ -330,7 +330,7 @@ ROOM;
 $room.='<table border="1"><tr>';
 
 if(isset($_GET['subaction']) && $_GET['subaction'] == 'getsuggestions' && isset($_GET['forwhat'])) {
-	echo $this->getEmailSuggestions($_GET['forwhat']);
+	echo $this->getEmailSuggestions(escape($_GET['forwhat']));
 	disconnect();
 	exit();
 
@@ -347,13 +347,13 @@ $room.="</tr></table>";
 }
 elseif(!isset($_GET['room_id']))
 {
-	$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='$_GET[hostel]' AND `hospi_room_id`!=0";
+	$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='".escape($_GET[hostel])."' AND `hospi_room_id`!=0";
 		$result=mysql_query($query);
 	$room.='</tr><tr ><td >'.$_GET['hostel'].'</td>';
 		while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
 		{
 			$status="Vacant";
-			$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`=$temp[hospi_room_id] AND `hospi_actual_checkout` IS NULL";
+			$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
 			$result1=mysql_query($query1);
 			$temp1=mysql_fetch_array($result1, MYSQL_ASSOC);
 			if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
@@ -370,9 +370,9 @@ else{
 	if(isset($_GET['checkIn']))
 {
 	if(isset($_POST['cash_paid']))$paid=1;else $paid=0;
-	$userId=getUserIdFromEmail($_POST['txtUserEmail']);
+	$userId=getUserIdFromEmail(escape($_POST['txtUserEmail']));
 	if($userId!=0){
-	$query1="SELECT * FROM `hospi_accomodation_status` WHERE `user_id`=$userId AND `hospi_actual_checkout` IS NULL ";
+	$query1="SELECT * FROM `hospi_accomodation_status` WHERE `user_id`='$userId' AND `hospi_actual_checkout` IS NULL ";
 	$result1=mysql_query($query1);
 	$room1=mysql_fetch_assoc($result1);
 	if(!(mysql_num_rows($result1))){
@@ -380,7 +380,7 @@ else{
 		$email=getUserEmail($userId);
 
 
-	$query="INSERT INTO `hospi_accomodation_status` (`hospi_room_id`,`user_id`,`hospi_actual_checkin`,`hospi_checkedin_by`,`hospi_cash_collected`,`hospi_guest_name`,`hospi_guest_email`) VALUES ('$_GET[room_id]','$userId',NOW(),'$this->userId','$paid','$name','$email')";
+	$query="INSERT INTO `hospi_accomodation_status` (`hospi_room_id`,`user_id`,`hospi_actual_checkin`,`hospi_checkedin_by`,`hospi_cash_collected`,`hospi_guest_name`,`hospi_guest_email`) VALUES ('".escape($_GET[room_id])."','$userId',NOW(),'$this->userId','$paid','$name','$email')";
 	$result=mysql_query($query) or displayerror(mysql_error());
 	if(!(mysql_error()))
 	displayinfo("$_POST[txtUserEmail] checked in successfully");
@@ -400,9 +400,9 @@ else{
 if((isset($_GET['checkOut'])))
 {
 	if(is_numeric($_GET['checkOut']))
-	$cond='`user_id`='.$_GET['checkOut'].'';
-	else $cond='`hospi_guest_name`=\''.$_GET['checkOut'].'\' AND `hospi_actual_checkin`=\''.$_GET['checkinTime'].'\' AND `hospi_checkedin_by`='.$_GET['by'].'';
-	$query="UPDATE `hospi_accomodation_status` SET `hospi_actual_checkout`=NOW(),`hospi_checkedout_by`= '$this->userId' WHERE `hospi_room_id`='$_GET[room_id]' AND $cond AND `hospi_actual_checkout` IS NULL ";
+	$cond='`user_id`='.escape($_GET['checkOut']).'';
+	else $cond='`hospi_guest_name`=\''.escape($_GET['checkOut']).'\' AND `hospi_actual_checkin`=\''.escape($_GET['checkinTime']).'\' AND `hospi_checkedin_by`='.escape($_GET['by']).'';
+	$query="UPDATE `hospi_accomodation_status` SET `hospi_actual_checkout`=NOW(),`hospi_checkedout_by`= '$this->userId' WHERE `hospi_room_id`='".escape($_GET[room_id])."' AND '$cond' AND `hospi_actual_checkout` IS NULL ";
 	$result=mysql_query($query);
 	if(mysql_error())displayerror(mysql_error());
 
@@ -413,10 +413,10 @@ if((isset($_GET['checkOut'])))
 	global $templateFolder;
 	$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
 	$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
-	$query1="SELECT * FROM `hospi_hostel` WHERE `hospi_room_id`=$_GET[room_id]";
+	$query1="SELECT * FROM `hospi_hostel` WHERE `hospi_room_id`='".escape($_GET[room_id])."'";
 	$result1=mysql_query($query1);
 	$temp1= mysql_fetch_array($result1,MYSQL_ASSOC);
-	$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`=$_GET[room_id] AND `hospi_actual_checkout` IS NULL ";
+	$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='".escape($_GET[room_id])."' AND `hospi_actual_checkout` IS NULL ";
 	$result=mysql_query($query);
 	$room.='</tr><tr ><td >Hostel:'.$_GET['hostel'].'<br>Room Number:'.$temp1['hospi_room_no'].'</td></tr>';
 	while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
@@ -516,7 +516,7 @@ public function actionAddroom() {
 	 if(isset($_GET['subaction']))
 	 {
 
-		$subaction=$_GET['subaction'];
+		$subaction=escape($_GET['subaction']);
 	 	if($subaction=='submitaddroom')
 	 	{
 			if(($_POST['capacity']=='') or ($_POST['floor']==''))
@@ -538,7 +538,7 @@ public function actionAddroom() {
 					
 				}
 				
-			$query="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_no`='{$_POST['roomNo1']}' AND `hospi_hostel_name`='{$_POST['hostels']}'";
+			$query="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_no`='".escape($_POST['roomNo1'])."' AND `hospi_hostel_name`='".escape($_POST['hostels'])."'";
 			$result=mysql_query($query);	
 			if(mysql_num_rows($result))
 			{
@@ -553,7 +553,7 @@ public function actionAddroom() {
 	  			$room_id = $row[0] + 1;
 	  		}
 	  		$query="INSERT INTO `hospi_hostel` (`hospi_room_id`,`hospi_hostel_name`,`hospi_room_capacity`,`hospi_room_no`,`hospi_floor`)".
-					"VALUES('$room_id','{$_POST['hostels']}',{$_POST['capacity']},{$_POST['roomNo1']},'{$_POST['floor']}') ";
+					"VALUES('$room_id','".escape($_POST['hostels'])."','".escape($_POST['capacity'])."','".escape($_POST['roomNo1'])."','".escape($_POST['floor'])."') ";
 			$result=mysql_query($query);
 			if(!$result)
 			{
@@ -572,7 +572,7 @@ public function actionAddroom() {
 				}
 				for($room=$_POST['roomNo1'];$room<=$_POST['roomNo2'];$room++)
 				{
-			$query="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_no`='$room ' AND `hospi_hostel_name`='{$_POST['hostels']}'";
+			$query="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_no`='$room ' AND `hospi_hostel_name`='".escape($_POST['hostels'])."'";
 			$result=mysql_query($query);	
 			if(mysql_num_rows($result))
 			{
@@ -587,7 +587,7 @@ public function actionAddroom() {
 	  			$room_id = $row[0] + 1;
 	  		}
 	  		$query="INSERT INTO `hospi_hostel` (`hospi_room_id`,`hospi_hostel_name`,`hospi_room_capacity`,`hospi_room_no`,`hospi_floor`)".
-					"VALUES('$room_id','{$_POST['hostels']}',{$_POST['capacity']},'$room','{$_POST['floor']}') ";
+					"VALUES('$room_id','".escape($_POST['hostels'])."','".escape($_POST['capacity'])."','$room','".escape($_POST['floor'])."') ";
 			$result=mysql_query($query);
 			if(!$result)
 			{
@@ -621,7 +621,7 @@ public function actionAddroom() {
 	  			$room_id = $row[0] + 1;
 	  		}
 
-			$query="INSERT INTO `hospi_hostel` (`hospi_hostel_name`,`hospi_room_id`) VALUES ('{$_POST['hostel']}','$room_id')";
+			$query="INSERT INTO `hospi_hostel` (`hospi_hostel_name`,`hospi_room_id`) VALUES ('".escape($_POST['hostel'])."','$room_id')";
 			$result=mysql_query($query);
 			if(!$result)
 			{
@@ -691,7 +691,7 @@ HOSTEL;
 
 public function displayUser()
 {
-			$search=$_POST['txtUserEmail'];
+			$search=escape($_POST['txtUserEmail']);
 				$userid=getUserIdFromEmail($search);
 				//if(is_numeric($userid))
 				//$query="SELECT * FROM `hospi_accomodation_status` WHERE `user_id`=$userid";
@@ -716,7 +716,7 @@ public function displayUser()
 USER;
 					while($row=mysql_fetch_array($result))
 					{
-					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_room_id`={$row['hospi_room_id']}";
+					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_room_id`='{$row['hospi_room_id']}'";
 					$result1=mysql_query($query);
 					$row1=mysql_fetch_array($result1);
 					$details.=<<<USER1
@@ -778,11 +778,11 @@ public function actionView() {
 		{
 			 if($_GET['subaction'] == 'getsuggestions' && isset($_GET['forwhat'])) 
 			 {
-				echo $this->getEmailSuggestions($_GET['forwhat']);
+				echo $this->getEmailSuggestions(escape($_GET['forwhat']));
 				exit();
 			 }
 			 
-			$subaction=$_GET['subaction'];
+			$subaction=escape($_GET['subaction']);
 			if($subaction=='displayuser')
 			{
 			
@@ -849,7 +849,7 @@ ROOM;
 							//	$statusall.="</tr>";
 
 							$status="<br>Vacant";
-							$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`=$temp[hospi_room_id] AND `hospi_actual_checkout` IS NULL";
+							$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
 							$result1=mysql_query($query1);
 
 							if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
@@ -910,8 +910,8 @@ $j++;
 			}
 			if($subaction=='displayroom')
 			{
-				if($_POST['roomno']<>'')$cond="`hospi_room_no`={$_POST['roomno']} AND";
-				$query="SELECT * FROM `hospi_hostel` WHERE $cond `hospi_hostel_name`='{$_POST['hostels']}'";
+				if($_POST['roomno']<>'')$cond="`hospi_room_no`='".escape($_POST['roomno'])."' AND";
+				$query="SELECT * FROM `hospi_hostel` WHERE $cond `hospi_hostel_name`='".escape($_POST['hostels'])."'";
 				$result=mysql_query($query);
 				if(!mysql_num_rows($result))
 				{
@@ -1016,7 +1016,7 @@ ROOM;
 						while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
 						{
 						$status="Vacant";
-						$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`=$temp[hospi_room_id] AND `hospi_actual_checkout` IS NULL";
+						$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
 						$result1=mysql_query($query1);
 						$temp1=mysql_fetch_array($result1, MYSQL_ASSOC);
 						if(mysql_num_rows($result1)<$temp['hospi_room_capacity'])
@@ -1032,14 +1032,14 @@ ROOM;
 	 			}
 				else
 				{
-					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='$_POST[hostels]'  ";
+					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='".escape($_POST[hostels])."'  ";
 					$result=mysql_query($query);
 					$room.='<table border="1"><tr>';
 					$room.='</tr><tr ><td >'.$_POST['hostels'].'</td>';
 					while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
 					{
 						$status="Vacant";
-						$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`=$temp[hospi_room_id] AND `hospi_actual_checkout` IS NULL";
+						$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
 						$result1=mysql_query($query1);
 						$temp1=mysql_fetch_array($result1, MYSQL_ASSOC);
 						if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
@@ -1060,7 +1060,7 @@ ROOM;
 		return true;
 	}
 	public function createModule($moduleComponentId) {
-		// No initialization
+		///No initialization
 	}
 
 
