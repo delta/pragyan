@@ -122,6 +122,7 @@ function escape($query)
 	     connect();
 	     return escape($query);
 	    }
+	    else return $xquery;
 	}
 	return $query;
 }
