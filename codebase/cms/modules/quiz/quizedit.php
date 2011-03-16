@@ -375,12 +375,12 @@ function getQuestionOptionListHtml($quizId, $sectionId, $questionId, $questionTy
  * returns list of options for a question which is submitted
  */
 function getSubmittedQuestionOptionListHtml($questionType) {
-	$html = '<table border="0">';
+	$html = '<table border="0" id="optionsTable" border="0" width="100%">';
 	$inputType = $questionType == 'sso' ? 'radio' : 'checkbox';
 	$prefix = ($questionType == 'sso' ? 'opt' : 'chk') . 'Option';
 	$i = 0;
 	while (true) {
-		if (!isset($_POST['txtOption' . $i]))
+		if (!isset($_POST['txtOptionText' . $i]))
 			break;
 		$elementName = $prefix;
 		$elementId = $prefix . $i;
@@ -390,9 +390,10 @@ function getSubmittedQuestionOptionListHtml($questionType) {
 		$html .= '<tr><td><input type="' . $inputType . '" name="' . $elementName . '" id="' . $elementName . '" value="' . $i . '" ';
 		if (($questionType == 'sso' && $_POST['optOption'] == $i) || isset($_POST[$elementName]))
 			$html .= 'checked="checked" ';
-		$html .= '/></td><td><input type="text" name="txtOption' . $i . '" id="txtOption' . $i . '" value="' . safe_html($_POST["txtOption$i"]) . '" /></td></tr>';
+		$html .= '/></td><td><input type="text" name="txtOptionText' . $i . '" id="txtOptionText' . $i . '" value="' . safe_html($_POST["txtOptionText$i"]) . '" /></td></tr>';
+		$i++;
 	}
-	$html .= "</table>\n";
+	$html .= "</table> <input type='button' name='btnAddOption' onclick='addOption()' value='Add Option' />\n";
 	return $html;
 }
 
@@ -698,7 +699,6 @@ SECTIONEDITFORM;
 function getQuestionEditForm($quizId, $sectionId, $questionId, $dataSource) {
 	$fieldMap = getQuestionEditFormFieldMap();
 	$question_type = 'subjective';
-
 	if ($dataSource == 'POST') {
 		for ($i = 0; $i < count($fieldMap); ++$i) {
 			if ($fieldMap[$i][3] == 'chk')
@@ -926,6 +926,7 @@ function submitSectionEditForm($quizId, $sectionId) {
  */
 function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 	$updates = array();
+	$done = true;
 	if (isset($_POST['txtQuestion']))
 		$updates[] = "`quiz_question` = '" . escape($_POST['txtQuestion']) . "'";
 	if (isset($_POST['selQuestionType']) && in_array($_POST['selQuestionType'], array_keys(getQuestionTypes())))
@@ -965,7 +966,7 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 		}
 		if(!isset($rightAnswer[0])) {
 			displayerror('No options specified for objective answer');
-			return false;
+			$done = false;
 		}
 		$rightAnswer = implode('|', $rightAnswer);
 	}
@@ -980,5 +981,5 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 		return false;
 	}
 
-	return true;
+	return $done;
 }
