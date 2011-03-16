@@ -92,6 +92,7 @@ include_once('template.php');
  */
 function installCMS() {
 	global $URL_REWRITE;
+
 	$installationSteps = 
 			array(
 
@@ -137,7 +138,8 @@ function installCMS() {
 	}
 	return $installationSteps;
 }
-/** 
+/** 	print_r($_POST);
+	exit(1);
  * Checks if Curl is enabled. This is needed for OpenID
  * @return string Empty value if successful. If fails, returns with the error message string
  */
@@ -203,13 +205,14 @@ function loadConfigurationSettings() {
 			'optURLRewrite' => 'URL_REWRITE'
 			
 	);
-	
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
+		
 		if (substr($postVariableName, 0, 3) == "opt") {
 			${$configVariableName} = (isset($_POST[$postVariableName]) && $_POST[$postVariableName] == "Yes") ? 'true' : 'false';
 		}
 		else {
-			${$configVariableName} = isset($_POST[$postVariableName]) ? escape($_POST[$postVariableName]) : '';
+			${$configVariableName} = isset($_POST[$postVariableName]) ? nomysql_escape($_POST[$postVariableName]) : '';
+
 		}
 		$userConfigs[$configVariableName]=${$configVariableName};
 			
@@ -218,10 +221,11 @@ function loadConfigurationSettings() {
 	
 	global $cmsFolder;
 
-
+	
+	
 	$c = 0;
 	foreach ($configurationMap as $postVariableName => $configVariableName) {
-
+		
 		define ($configVariableName, ${$configVariableName});
 		if (++$c == 16) //this avoids DEFINEing all the config whichh are not to be written in database
 			break;
@@ -270,6 +274,7 @@ WHATEVER;
 
 	$dbuser=MYSQL_USERNAME;
 	$dbpasswd=MYSQL_PASSWORD;
+	
 	$dblink=mysql_connect($dbhost,$dbuser,$dbpasswd);
 	if($dblink==false)
 	{
