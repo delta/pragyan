@@ -90,7 +90,7 @@ if(!defined('__PRAGYAN_CMS'))
 			}
 			if(count($updates) > 0) {
 				$updateQuery = 'UPDATE `form_desc` SET ' . join($updates, ', ') .
-				               ' WHERE `page_modulecomponentid` = ' . $moduleCompId;
+				               ' WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
 				if(mysql_query($updateQuery)) {
 					displayinfo("All changes in the form have been successfully saved!");
 
@@ -108,7 +108,7 @@ if(!defined('__PRAGYAN_CMS'))
 				'form_expirydatetime, form_sendconfirmation, form_usecaptcha, form_allowuseredit, '. 
 				'form_allowuserunregister,form_showuseremail, form_showuserfullname, form_showuserprofiledata, '. 
 				'form_showregistrationdate, form_showlastupdatedate ' .
-				'FROM `form_desc` WHERE `page_modulecomponentid` = ' . $moduleCompId;
+				'FROM `form_desc` WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
 		$formResult = mysql_query($formQuery);
 
 		$userEdit = $formHeading = $headerText = $expiryDate = $requireLogin =
@@ -279,7 +279,7 @@ BODY;
 		global $urlRequestRoot;
 		$imagePath = "$urlRequestRoot/$cmsFolder/$templateFolder";$calpath="$urlRequestRoot/$cmsFolder/$moduleFolder";
 
-		$elementsQuery = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid` =  $moduleCompId ORDER BY `form_elementrank` ASC";
+		$elementsQuery = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid` =  '$moduleCompId' ORDER BY `form_elementrank` ASC";
 		$elementsResult = mysql_query($elementsQuery) or die(mysql_error());
 		$elementData = '';
 		while($elementsRow = mysql_fetch_assoc($elementsResult)) {
@@ -327,14 +327,14 @@ BODY;
 
 
 
-		$query = "SELECT * FROM `form_elementdesc` WHERE `form_elementrank` $compare(SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`=$moduleCompId AND `form_elementid`=$elementId) AND `page_modulecomponentid`=$moduleCompId AND `form_elementid`!='$elementId' ORDER BY `form_elementrank` $order LIMIT 0,1";
+		$query = "SELECT * FROM `form_elementdesc` WHERE `form_elementrank` $compare(SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId') AND `page_modulecomponentid`='$moduleCompId' AND `form_elementid`!='$elementId' ORDER BY `form_elementrank` $order LIMIT 0,1";
 		$result = mysql_query($query) or die(mysql_query());
 		if (mysql_num_rows($result) == 0) {
 			displayerror("You cannot move up/down the first/last element in form");
 
 		} else {
 			$tempTarg = mysql_fetch_assoc($result);
-			$query = "SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`=$moduleCompId AND `form_elementid`=$elementId";
+			$query = "SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
 			$result = mysql_query($query) or die(mysql_query());
 			$tempSrc = mysql_fetch_assoc($result);
 
@@ -346,9 +346,9 @@ BODY;
 				else
 					displayerror("Failed to correct error in form element ranks!");
 			} else {
-				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempSrc[form_elementrank]' WHERE `page_modulecomponentid`='$tempTarg[page_modulecomponentid]' AND `form_elementid`=$tempTarg[form_elementid]";
+				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempSrc[form_elementrank]' WHERE `page_modulecomponentid`='$tempTarg[page_modulecomponentid]' AND `form_elementid`='$tempTarg[form_elementid]'";
 				$result = mysql_query($query) or die(mysql_error());
-				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempTarg[form_elementrank]' WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`=$elementId";
+				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempTarg[form_elementrank]' WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
 				$result = mysql_query($query) or die(mysql_error());
 			}
 		}
@@ -360,12 +360,12 @@ BODY;
 	 * Make sure alert box warning is given on clicking delete button
 	 */
 	function deleteFormElement($moduleCompId,$elementId) {
-		$query="DELETE FROM `form_elementdesc` WHERE `page_modulecomponentid` = $moduleCompId AND `form_elementid`=$elementId";
+		$query="DELETE FROM `form_elementdesc` WHERE `page_modulecomponentid` = '$moduleCompId' AND `form_elementid`='$elementId'";
 		$resultDel=mysql_query($query);
 		if(mysql_affected_rows()>0)
 		$query1=1;
 		else $query1=0;
-		$queryDelData="DELETE FROM `form_elementdata` WHERE `page_modulecomponentid` = $moduleCompId AND `form_elementid`=$elementId";
+		$queryDelData="DELETE FROM `form_elementdata` WHERE `page_modulecomponentid` = '$moduleCompId' AND `form_elementid`='$elementId'";
 		$resultDelData=mysql_query($queryDelData);
 		if(!$resultDelData)	{ displayerror('Invalid query: ' . mysql_error()); 	return false; }
 		$queryAffectedRows=mysql_affected_rows();
@@ -380,7 +380,7 @@ BODY;
 
 	/**Adds an empty form element */
 	function addDefaultFormElement($moduleCompId) {
-		$query="SELECT MAX(`form_elementid`) FROM `form_elementdesc` WHERE `page_modulecomponentid`=$moduleCompId";
+		$query="SELECT MAX(`form_elementid`) FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId'";
 		$result=mysql_query($query);
 		$row = mysql_fetch_row($result);
 
@@ -394,7 +394,7 @@ BODY;
 				"`form_elementtype`, `form_elementsize`, `form_elementtypeoptions`, `form_elementdefaultvalue`, " .
 				"`form_elementmorethan`, `form_elementlessthan`, `form_elementcheckint`, `form_elementtooltiptext`," .
 				"`form_elementisrequired` ,`form_elementrank`) VALUES " .
-				"($moduleCompId, $elementId, 'register', 'Are you sure you want to register ?', 'radio', 100, 'Yes|No' , NULL , NULL , NULL , 0, '', 0, $elementId)";
+				"('$moduleCompId', '$elementId', 'register', 'Are you sure you want to register ?', 'radio', 100, 'Yes|No' , NULL , NULL , NULL , 0, '', 0, '$elementId')";
 		$resultAdd=mysql_query($queryInsert);
 
 

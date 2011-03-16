@@ -43,7 +43,7 @@ function getCreatablePageTypes($userid, $pageid) {
 function getSettingsForm($pageId, $userId) {
 	$pageId=escape($pageId);
 	$page_query = "SELECT `page_name`, `page_title`, `page_displaymenu`, `page_displayinmenu`, `page_displaysiblingmenu` , `page_module`, `page_displaypageheading`,`page_template`,`page_modulecomponentid`, `page_menutype`, `page_menudepth` , `page_displayinsitemap` ,`page_displayicon`" .
-	"FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id`=" . $pageId;
+	"FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id`='" . $pageId."'";
 	$page_result = mysql_query($page_query);
 	$page_values = mysql_fetch_assoc($page_result);
 	
@@ -73,7 +73,7 @@ function getSettingsForm($pageId, $userId) {
 	$modulecomponentid=$page_values['page_modulecomponentid'];
 	$displayicon = ($page_values['page_displayicon'] == 1 ? 'checked="checked" ' : '');
 	$templates = getAvailableTemplates();
-	$page_query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = $pageId AND `page_parentid` != `page_id` ORDER BY `page_menurank` ASC  ";
+	$page_query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = '$pageId' AND `page_parentid` != `page_id` ORDER BY `page_menurank` ASC  ";
 	$page_result = mysql_query($page_query) or die(mysql_error());
 	$childList ="";
 	$isLeaf = false;
@@ -566,8 +566,8 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 
 	if ($pageId != 0 && isset ($pageName) && $pageName!="" && isset ($pageTitle) && $pageTitle!="") {
 		if(preg_match('/^[a-zA-Z][\_a-zA-Z0-9]*$/', $pageName)) {
-			$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_name` = '$pageName' AND `page_id` != $pageId AND `page_parentid` = " .
-								"(SELECT `page_parentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = $pageId)";
+			$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_name` = '$pageName' AND `page_id` != '$pageId' AND `page_parentid` = " .
+								"(SELECT `page_parentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '$pageId')";
 			$result = mysql_query($query);
 			if (mysql_num_rows($result) > 0) {
 				$errors = 'A page with the same name already exists in the folder.<br />';
@@ -611,45 +611,45 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 		}
 	}
 	if (count($updates) > 0) {
-		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = $pageId;";
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET ' . join($updates, ', ') . " WHERE `page_id` = '$pageId';";
 		mysql_query($updateQuery);
 	}
 
 	if (is_array($visibleChildList) && count($visibleChildList) > 0) {
 		$visibleChildList = "'" . join($visibleChildList, "', '") . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 1 WHERE ' .
-		"`page_name` IN ($visibleChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_name` IN ($visibleChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysql_query($updateQuery);
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 0 WHERE ' .
-		"`page_name` NOT IN ($visibleChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_name` NOT IN ($visibleChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 	} else {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinmenu` = 0 WHERE ' .
-		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 	}
 	mysql_query($updateQuery);
 	if (is_array($visiblesChildList) && count($visiblesChildList) > 0) {
 		$visiblesChildList = "'" . join($visiblesChildList, "', '") . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 1 WHERE ' .
-		"`page_name` IN ($visiblesChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_name` IN ($visiblesChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysql_query($updateQuery);
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 0 WHERE ' .
-		"`page_name` NOT IN ($visiblesChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_name` NOT IN ($visiblesChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 	} else {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayinsitemap` = 0 WHERE ' .
-		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 	}
 	if(!$icon_propogate)
 	{
 	if (is_array($visibleiChildList) && count($visibleiChildList) > 0) {
 		$visibleiChildList = "'" . join($visibleiChildList, "', '") . "'";
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 1 WHERE ' .
-		"`page_name` IN ($visibleiChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_name` IN ($visibleiChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 		mysql_query($updateQuery);
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 0 WHERE ' .
-		"`page_name` NOT IN ($visibleiChildList) AND `page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_name` NOT IN ($visibleiChildList) AND `page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 	} else {
 		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_displayicon` = 0 WHERE ' .
-		"`page_parentid` = $pageId AND `page_parentid` != `page_id`";
+		"`page_parentid` = '$pageId' AND `page_parentid` != `page_id`";
 	}
 	}
 	mysql_query($updateQuery);
@@ -659,12 +659,12 @@ function updateSettings($pageId, $userId, $pageName, $pageTitle, $showInMenu, $s
 function setChildTemplateFromParentID($parentId,$page_template)
 {
 	$parentId=escape($parentId);
-	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
+	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='".$parentId."' AND NOT `page_id`=0";
 	$result=mysql_query($query);
 	while($row=mysql_fetch_row($result))
 	{
 		$childPageId=$row[0];
-		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_template`='$page_template' WHERE `page_id`=$childPageId";
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_template`='$page_template' WHERE `page_id`='$childPageId'";
 		mysql_query($query);
 		setChildTemplateFromParentID($childPageId,$page_template);
 	}
@@ -676,20 +676,20 @@ function setChildMenuStyleFromParentID($parentId,$menu_type,$showMenuBar,$showSi
 	$menu_depth=escape($menu_depth);
 	$bshowMenuBar=($showMenuBar==true)?1:0;
 	$bshowSiblingMenu=($showSiblingMenu==true)?1:0;
-	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
+	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='".$parentId."' AND NOT `page_id`=0";
 	$result=mysql_query($query);
 	$menu="";
 	$sibling="";
 	if($menu_depth!=NULL)
-		$menu=", `page_menudepth`=$menu_depth ";
+		$menu=", `page_menudepth`='$menu_depth' ";
 	
 	if(is_bool($showSiblingMenu))
-		$sibling=", `page_displaysiblingmenu`=$bshowSiblingMenu ";
+		$sibling=", `page_displaysiblingmenu`='$bshowSiblingMenu' ";
 	
 	while($row=mysql_fetch_row($result))
 	{
 		$childPageId=$row[0];
-		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_displaymenu`=$bshowMenuBar, `page_menutype`='$menu_type' $sibling  $menu WHERE `page_id`=$childPageId";
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_displaymenu`='$bshowMenuBar', `page_menutype`='$menu_type' $sibling  $menu WHERE `page_id`='$childPageId'";
 		mysql_query($query);
 		
 		setChildMenuStyleFromParentID($childPageId,$menu_type,$showMenuBar,$showSiblingMenu,$menu_depth);
@@ -698,12 +698,12 @@ function setChildMenuStyleFromParentID($parentId,$menu_type,$showMenuBar,$showSi
 function setChildIconFromParentID($parentId,$displayicon)
 {if($displayicon=='')$displayicon=0;
 	$parentId=escape($parentId);
-	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=".$parentId." AND NOT `page_id`=0";
+	$query= "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='".$parentId."' AND NOT `page_id`=0";
 	$result=mysql_query($query);
 	while($row=mysql_fetch_row($result))
 	{
 		$childPageId=$row[0];
-		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_displayicon`=$displayicon WHERE `page_id`=$childPageId";
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_displayicon`='$displayicon' WHERE `page_id`='$childPageId'";
 		mysql_query($query);
 		setChildIconFromParentID($childPageId,$displayicon);
 	}
@@ -799,30 +799,30 @@ function pagesettings($pageId, $userId) {
 					$sortOrder="ASC";
 				}
 				$childPageName=escape($_GET['pageName']);
-				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_name`='$childPageName' AND `page_id` != $pageId ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
+				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName' AND `page_id` != '$pageId' ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
 				$result=mysql_query($query);
 				$temp=mysql_fetch_assoc($result);
 				$childPageId=$temp['page_id'];
-				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_menurank` $comparison(SELECT `page_menurank` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_name`='$childPageName') AND `page_id` != $childPageId  AND `page_parentid` != `page_id` ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
+				$query="SELECT `page_menurank`,`page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_menurank` $comparison(SELECT `page_menurank` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName') AND `page_id` != '$childPageId'  AND `page_parentid` != `page_id` ORDER BY `page_menurank` $sortOrder LIMIT 0,1 ";
 				$result=mysql_query($query) or displayinfo(mysql_error());
 				if(mysql_num_rows($result)==0){
 					displayerror("You cannot move up/down the first/last page in menu");
 
 				}
 				$tempTarg=mysql_fetch_assoc($result);
-				$query="SELECT `page_menurank`,`page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=$childPageId";
+				$query="SELECT `page_menurank`,`page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$childPageId'";
 				$result=mysql_query($query);
 				$tempSrc=mysql_fetch_assoc($result);
 				if(($tempTarg['page_menurank'])==($tempSrc['page_menurank']))
 				{
-					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`=$tempSrc[page_parentid]";
+					$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_menurank` = `page_id` WHERE `page_parentid`='$tempSrc[page_parentid]'";
 		 			mysql_query($query);
 		 			displayinfo("Error in menu rank corrected. Please reorder the pages");
 				}
 				else{
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` =$tempSrc[page_menurank] WHERE `page_id` = $tempTarg[page_id] ";
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='$tempSrc[page_menurank]' WHERE `page_id` = '$tempTarg[page_id]' ";
 				mysql_query($query);
-				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` =$tempTarg[page_menurank] WHERE `page_id` = $childPageId ";
+				$query="UPDATE `".MYSQL_DATABASE_PREFIX."pages`  SET `page_menurank` ='$tempTarg[page_menurank]' WHERE `page_id` = '$childPageId' ";
 				mysql_query($query);
 				}
 			}
@@ -830,7 +830,7 @@ function pagesettings($pageId, $userId) {
 			{
 				if(isset($_GET['pageName']) || $_GET['pageName']=="") {
 					$childPageName=escape($_GET['pageName']);
-					$query="SELECT `page_id` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_name`='$childPageName'";
+					$query="SELECT `page_id` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName'";
 					$result=mysql_query($query);
 					$temp=mysql_fetch_assoc($result);
 					$childPageId=$temp['page_id'];
@@ -1080,7 +1080,7 @@ function createInstance($moduleType) {
 
 
 function deletePage($pageId,$userId){
- 	$query="SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId AND `page_id`!=`page_parentid` ";
+ 	$query="SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_id`!=`page_parentid` ";
  	$result=mysql_query($query);
  	$deleteAll = true;
  	while($temp=mysql_fetch_assoc($result))
@@ -1110,7 +1110,7 @@ function deletePage($pageId,$userId){
 					displayerror("There was an error in deleting the page at module level.");
 			}
 			else {
-				$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."external` WHERE `page_modulecomponentid`=".$pageInfo['page_modulecomponentid'];
+				$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."external` WHERE `page_modulecomponentid`='".$pageInfo['page_modulecomponentid']."'";
 				mysql_query($query);
 				if (mysql_affected_rows()>0) $deleted=true;
 				else {
@@ -1122,7 +1122,7 @@ function deletePage($pageId,$userId){
 		}
 		//query to delete page row itself
 		if($deleted) {
-			$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=$pageId";
+			$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$pageId'";
 			mysql_query($query);
 			if (mysql_affected_rows()>0) return true;
 			else return false;
@@ -1156,7 +1156,7 @@ function move_page($userId,$pageId, $parentId, $pagetitle,$pagename,$deleteorigi
  *
  */
 	//var_dump($str);
-	$query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid` = $parentId AND `page_name` = '$pagename'";
+	$query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid` = '$parentId' AND `page_name` = '$pagename'";
 	$result = mysql_query($query);
 	if(mysql_num_rows($result) > 0)
 		return "Error: There exists a page with the same name in the destination path.";
@@ -1175,7 +1175,7 @@ function move_page($userId,$pageId, $parentId, $pagetitle,$pagename,$deleteorigi
 	//if the deleteoriginal entry is set then the page is MOVED from the original location to the new location.
 	if ($deleteoriginalentry == true) {
 		if ($pageId != 0) {
-			$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_parentid` = '" . $parentId . "' , `page_title` = '" . $pagetitle . "' , `page_name` = '" . $pagename . "' WHERE `page_id` =$pageId ;";
+			$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_parentid` = '" . $parentId . "' , `page_title` = '" . $pagetitle . "' , `page_name` = '" . $pagename . "' WHERE `page_id` ='$pageId' ;";
 			$result = mysql_query($query);
 				if (mysql_affected_rows() != 1)
 					return 'Unable to perform the required action';
@@ -1219,7 +1219,7 @@ function copyPage($userId,$pageId,$parentId, $pagetitle,$pagename,$recursive) {
 		$extqueryresult = mysql_query($extquery);
 		$extqueryrow = mysql_fetch_array($extqueryresult);
 		$extpageid = $extqueryrow[0]+1;
-		$linkquery="SELECT page_extlink FROM ".MYSQL_DATABASE_PREFIX."external WHERE page_modulecomponentid=".$pageInfo['page_modulecomponentid'];
+		$linkquery="SELECT page_extlink FROM ".MYSQL_DATABASE_PREFIX."external WHERE page_modulecomponentid='".$pageInfo['page_modulecomponentid']."'";
 		$linkqueryresult = mysql_query($linkquery);
 		$linkqueryrow = mysql_fetch_array($linkqueryresult);
 		$link = $linkqueryrow[0];
@@ -1244,7 +1244,7 @@ function copyPage($userId,$pageId,$parentId, $pagetitle,$pagename,$recursive) {
 		return false;
 	}
 	if($recursive) {
-		$childrenquery="SELECT `page_id`,`page_name`,`page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`=$pageId ";
+		$childrenquery="SELECT `page_id`,`page_name`,`page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' ";
 		$childrenresult=mysql_query($childrenquery);
 		while($temp=mysql_fetch_assoc($childrenresult))
 		{
@@ -1260,14 +1260,14 @@ function updatePageInheritedInfo($pageId, $inheritedInfo) {
 
 	if($inheritedPageId == $pageId) {
 		if($inheritedInfo == '') {
-			$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo` WHERE `page_inheritedinfoid` = (SELECT `page_inheritedinfoid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` = ' . $pageId . ')';
+			$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo` WHERE `page_inheritedinfoid` = (SELECT `page_inheritedinfoid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` = \'' . $pageId . '\')';
 			mysql_query($deleteQuery);
-			$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_inheritedinfoid` = -1 WHERE `page_id` = ' . $pageId;
+			$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_inheritedinfoid` = -1 WHERE `page_id` = \'' . $pageId."'";
 			if(!mysql_query($updateQuery))
 				displayerror('Could not remove the current page\'s inherited information. Database error.');
 		}
 		else {
-			$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo` SET `page_inheritedinfocontent` = \'' . $inheritedInfo . '\' WHERE `page_inheritedinfoid` = (SELECT `page_inheritedinfoid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` = ' . $pageId . ')';
+			$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo` SET `page_inheritedinfocontent` = \'' . $inheritedInfo . '\' WHERE `page_inheritedinfoid` = (SELECT `page_inheritedinfoid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` = \'' . $pageId . '\')';
 			if(!mysql_query($updateQuery))
 				displayerror('Could not update the current page\'s inherited information. Database error.');
 		}
@@ -1281,10 +1281,10 @@ function updatePageInheritedInfo($pageId, $inheritedInfo) {
 		if(!is_null($newIdRow[0]))
 			$newId = $newIdRow[0] + 1;
 
-		$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo`(`page_inheritedinfoid`, `page_inheritedinfocontent`) VALUES (' . $newId . ', \'' . $inheritedInfo . '\')';
+		$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo`(`page_inheritedinfoid`, `page_inheritedinfocontent`) VALUES (\'' . $newId . '\', \'' . $inheritedInfo . '\')';
 		if(!mysql_query($insertQuery))
 			displayerror('Could not add inherited information to the current page. Database error.');
-		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_inheritedinfoid` = ' . $newId . ' WHERE `page_id` = ' . $pageId;
+		$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'pages` SET `page_inheritedinfoid` = \'' . $newId . '\' WHERE `page_id` = \'' . $pageId."'";
 		if(!mysql_query($updateQuery))
 			displayerror('Could not add inherited information to the current page. Database error.');
 	}
@@ -1297,12 +1297,12 @@ function getPageInheritedInfo($pageId, &$inheritedInfoBuf) {
 	$inheritedInfoBuf = '';
 
 	do {
-		$inheritedInfoIdQuery = 'SELECT `page_inheritedinfoid`, `page_parentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` = ' . $curPageId;
+		$inheritedInfoIdQuery = 'SELECT `page_inheritedinfoid`, `page_parentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` = \'' . $curPageId."'";
 		$inheritedInfoIdResult = mysql_query($inheritedInfoIdQuery);
 		if(!$inheritedInfoIdResult) echo mysql_error() . '<br />' . $inheritedInfoIdQuery . '<br />';
 		$inheritedInfoIdRow = mysql_fetch_row($inheritedInfoIdResult);
 		if(!is_null($inheritedInfoIdRow[0]) && $inheritedInfoIdRow[0] >= 0) {
-			$inheritedInfoQuery = 'SELECT `page_inheritedinfocontent` FROM `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo` WHERE `page_inheritedinfoid` = ' . $inheritedInfoIdRow[0];
+			$inheritedInfoQuery = 'SELECT `page_inheritedinfocontent` FROM `' . MYSQL_DATABASE_PREFIX . 'inheritedinfo` WHERE `page_inheritedinfoid` = \'' . $inheritedInfoIdRow[0]."'";
 			$inheritedInfoResult = mysql_query($inheritedInfoQuery);
 			$inheritedInfoBuf = mysql_fetch_row($inheritedInfoResult);
 			$inheritedInfoBuf = $inheritedInfoBuf[0];

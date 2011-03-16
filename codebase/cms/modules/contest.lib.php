@@ -59,7 +59,7 @@ class contest implements module, fileuploadable {
 	}
 
 	private function getContestPage($contestId) {
-		$problemQuery = "SELECT * FROM `contest_problem` WHERE `cid` = $contestId AND `testable` = 1 ORDER BY `pid`";
+		$problemQuery = "SELECT * FROM `contest_problem` WHERE `cid` = '$contestId' AND `testable` = 1 ORDER BY `pid`";
 		$problemResult = mysql_query($problemQuery);
 
 		$html = '<table border="0">';
@@ -79,7 +79,7 @@ class contest implements module, fileuploadable {
 	}
 
 	private function getProblemId($contestId, $pcode) {
-		$idQuery = "SELECT `pid` FROM `contest_problem` WHERE `cid` = $contestId AND `pcode` = '$pcode'";
+		$idQuery = "SELECT `pid` FROM `contest_problem` WHERE `cid` = '$contestId' AND `pcode` = '$pcode'";
 		$idResult = mysql_query($idQuery);
 		if (!$idResult) {
 			displayerror('MySQL error while attempting to fetch problem id, on line ' . __LINE__ . ', ' . __FILE__);

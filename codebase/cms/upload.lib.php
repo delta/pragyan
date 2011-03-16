@@ -153,7 +153,7 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 		return false;
 	}
 		$duplicateCheckQuery = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` " .
-				"WHERE `page_modulecomponentid` = $moduleComponentId AND `page_module` = '$moduleName'" .
+				"WHERE `page_modulecomponentid` = '$moduleComponentId' AND `page_module` = '$moduleName'" .
 				" AND upload_filename = '$uploadFileName'";
 		$duplicateCheckResult = mysql_query($duplicateCheckQuery);
 			/// Checking for duplicate entry of the file.		
@@ -163,8 +163,8 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 			}
 		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
-				"VALUES ($moduleComponentId, '$moduleName', $upload_fileid, " .
-				"'" . mysql_escape_string($uploadFileName) . "', '$uploadFileType', $userId)";
+				"VALUES ('$moduleComponentId', '$moduleName', '$upload_fileid', " .
+				"'" . mysql_escape_string($uploadFileName) . "', '$uploadFileType', '$userId')";
 		mysql_query($query) or die(mysql_error() . "upload.lib L:158<br />");
 		/// If galery create thumbnail and store in the database.
 		if($moduleName=="gallery")
@@ -180,8 +180,8 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 			}
 		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
-				"VALUES ($moduleComponentId, '$moduleName', $thumb_upload_fileid, " .
-				"'" . mysql_escape_string($thumb_name) . "', '$uploadFileType', $userId)";
+				"VALUES ('$moduleComponentId', '$moduleName', '$thumb_upload_fileid', " .
+				"'" . mysql_escape_string($thumb_name) . "', '$uploadFileType', '$userId')";
 		mysql_query($query) or die(mysql_error() . "upload.lib L:163<br />");
 		}
 		move_uploaded_file($tempFileName, "$uploadDir/$moduleName/$finalName");
@@ -198,7 +198,7 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
  */
 
 function getUploadedFiles($moduleComponentId, $moduleName) {
-	$query = "SELECT `upload_filename`, `upload_filetype`, `upload_time`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` =" . $moduleComponentId . " AND `page_module` = '" . $moduleName . "'";
+	$query = "SELECT `upload_filename`, `upload_filetype`, `upload_time`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='" . $moduleComponentId . "' AND `page_module` = '" . $moduleName . "'";
 	$result = mysql_query($query);
 	$fileArray = array ();
 	while ($row = mysql_fetch_assoc($result))
@@ -227,7 +227,7 @@ function fileCopy($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
 	global $sourceFolder, $uploadFolder;
 	$uploadDir = $sourceFolder . "/" . $uploadFolder;
 
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` =" . $sourcePage_modulecomponentid . " AND `upload_filename` =" . mysql_escape_string($sourceFile_name) . "'";
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='" . $sourcePage_modulecomponentid . "' AND `upload_filename` ='" . mysql_escape_string($sourceFile_name) . "'";
 	$result = mysql_query($query);
 	$array1 = mysql_fetch_assoc($result);
 	$tmp_name = $uploadDir . "/" . $sourcePage_module . "/" . str_repeat("0", (10 - strlen((string) $array1['upload_fileid']))) . $array1['upload_fileid'] . "_" . $sourceFile_name;
@@ -263,7 +263,7 @@ function fileMove($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
 	global $sourceFolder, $uploadFolder;
 	$uploadDir = "$sourceFolder/$uploadFolder";
 
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` = $sourcePage_modulecomponentid AND `upload_filename` ='" . mysql_escape_string($sourceFile_name) . "'";
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` = '$sourcePage_modulecomponentid' AND `upload_filename` ='" . mysql_escape_string($sourceFile_name) . "'";
 	$result = mysql_query($query);
 	$array1 = mysql_fetch_assoc($result);
 	$oldname = "$uploadDir/$sourcePage_module/" . str_repeat('0', (10 - strlen((string) $array1['upload_fileid']))) . $array1['upload_fileid'] . "_$sourceFile_name";
@@ -286,7 +286,7 @@ function fileMove($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
  *
  */
 function getFileName($moduleComponentId, $page_module, $upload_fileid) {
-	$query = " SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` =$moduleComponentId AND `page_module` =$page_module AND `upload_fileid` =$upload_fileid";
+	$query = " SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='$moduleComponentId' AND `page_module` ='$page_module' AND `upload_fileid` ='$upload_fileid'";
 	$result = mysql_query($query);
 	if (mysql_num_rows($result) > 0) {
 		$name = mysql_fetch_assoc($result);
@@ -308,7 +308,7 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	global $uploadFolder;
 	global $sourceFolder;
 	$upload_filename = stripslashes($upload_filename);
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` =$moduleComponentId AND `page_module` = '$page_module' AND `upload_filename`= '" . mysql_escape_string($upload_filename) . "'";
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` ='$moduleComponentId' AND `page_module` = '$page_module' AND `upload_filename`= '" . mysql_escape_string($upload_filename) . "'";
 
 	$result = mysql_query($query) or displayerror(mysql_error() . "upload L:260");
 	if(mysql_num_rows($result)<1) return false;
@@ -319,7 +319,7 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	if (@ unlink($sourceFolder . "/" . $uploadFolder . "/" . $page_module . "/" . $filename)) {
 	} else
 		displayerror("File data has  NOT been deleted from the SERVER");
-	$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `upload_fileid`=$upload_fileid";
+	$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `upload_fileid`='$upload_fileid'";
 	if($page_module=="gallery")
 	{
 		$thumb_name = "thumb_".$upload_filename;

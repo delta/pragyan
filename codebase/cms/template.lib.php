@@ -32,7 +32,7 @@ function getPageTemplate($pageId)
  	if($row[0]==0)
  		return DEF_TEMPLATE;
 
- 	$query="SELECT `page_template` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=$pageId";
+ 	$query="SELECT `page_template` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$pageId'";
 	$result=mysql_query($query);
 	$row=mysql_fetch_row($result);
  	if($row[0]=="")

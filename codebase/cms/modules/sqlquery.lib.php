@@ -33,7 +33,7 @@ class sqlquery implements module {
 	}
 
 	public function actionView() {
-		$sqlQueryQuery = 'SELECT `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = ' . $this->moduleComponentId;
+		$sqlQueryQuery = 'SELECT `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = \'' . $this->moduleComponentId."'";
 		$sqlQueryResult = mysql_query($sqlQueryQuery);
 		if(!$sqlQueryResult) {
 			displayerror('Database error. An unknown error was encountered while trying to load page data.');
@@ -99,7 +99,7 @@ class sqlquery implements module {
 			else if(isset($_GET['tablename'])) $tablename=escape(safe_html($_GET['tablename']));
 			else { displayerror("Table name missing"); return $editPageContent; }
 			
-			$query="SELECT * FROM $tablename";
+			$query="SELECT * FROM '$tablename'";
 			$res=mysql_query($query);
 			$numfields=mysql_num_fields($res);
 			$helptext .="<table id='sqlhelptable' name='sqlhelptable' class='display'><thead><tr><th colspan=".$numfields.">Rows of Table $tablename <br/><a href='./+edit&subaction=tablecols&tablename=$tablename'>View Columns</a>  <a href='./+edit&subaction=listalltables'>View All Tables</a></th></tr>";
@@ -134,7 +134,7 @@ class sqlquery implements module {
 			
 			$helptext .="<table id='sqlhelptable' name='sqlhelptable' class='display'><thead><tr><th colspan=6>Column Information of Table $tablename <br/><a href='./+edit&subaction=tablerows&tablename=$tablename'>View Rows</a>  <a href='./+edit&subaction=listalltables'>View All Tables</a> </th></tr>";
 			$helptext .="<tr><th>Column Name</th><th>Column Type</th><th>Maximum Length</th><th>Default Value</th><th>Not Null</th><th>Primary Key</th></tr></thead><tbody>";
-			$query="SELECT * FROM $tablename LIMIT 1";
+			$query="SELECT * FROM '$tablename' LIMIT 1";
 			$res=mysql_query($query);
 			for($i=0;$i<mysql_num_fields($res);$i++)
 			{
@@ -158,7 +158,7 @@ class sqlquery implements module {
 
 	private function getQueryEditForm($pageTitle = '', $sqlQuery = '', $useParams = false) {
 		if(!$useParams) {
-			$defaultValueQuery = 'SELECT `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = ' . $this->moduleComponentId;
+			$defaultValueQuery = 'SELECT `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = \'' . $this->moduleComponentId."'";
 			$defaultValueResult = mysql_query($defaultValueQuery);
 			if(!$defaultValueResult) {
 				displayerror('Error. Could not retrieve data for the page requested.');
@@ -229,7 +229,7 @@ QUERYEDITFORM;
 	}
 
 	private function saveQueryEditForm($pageTitle, $sqlQuery) {
-		$updateQuery = "UPDATE `sqlquery_desc` SET `sqlquery_title` = '$pageTitle', `sqlquery_query` = '$sqlQuery' WHERE `page_modulecomponentid` = {$this->moduleComponentId}";
+		$updateQuery = "UPDATE `sqlquery_desc` SET `sqlquery_title` = '$pageTitle', `sqlquery_query` = '$sqlQuery' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
 		$updateResult = mysql_query($updateQuery);
 		if(!$updateResult) {
 			displayerror('SQL Error. Could not update database settings.');
@@ -242,14 +242,15 @@ QUERYEDITFORM;
 		return true;
 	}
 
-	public function copyModule($moduleComponentId,$newId) {
-		return true;
-	}
+        public function copyModule($moduleComponentId,$newId) {
+                return true;
+        }
 
-	public function createModule($compId) {
+        public function createModule($compId) {
 
-		$insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, `sqlquery_query`) VALUES($compId, 'New Query', 'SELECT * FROM `mytable` WHERE 1')";
-		$insertResult = mysql_query($insertQuery);
-	}
+                $insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, `sqlquery_query`) VALUES('$compId', 'New Query', 'SELECT * FROM `mytable` WHERE 1')";
+                $insertResult = mysql_query($insertQuery);
+        }
+
 }
 

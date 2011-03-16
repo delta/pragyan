@@ -68,7 +68,7 @@ abstract class widgetFramework
 	{
 	
 		///Loading widget information
-		$query="SELECT `widget_name` AS 'name', `widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`={$this->widgetId}";
+		$query="SELECT `widget_name` AS 'name', `widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='{$this->widgetId}'";
 		$res=mysql_query($query);
 		if($res===false || mysql_num_rows($res)==0)
 		{
@@ -83,7 +83,7 @@ abstract class widgetFramework
 		$this->widgetAuthor=$row['author'];
 		
 		///Loading configuration settings (both instance-specific and global)
-		$query="SELECT `config_name` AS 'key', `config_value` AS 'value' FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`={$this->widgetId} AND `widget_instanceid` IN ({$this->widgetInstanceId},-1) ";
+		$query="SELECT `config_name` AS 'key', `config_value` AS 'value' FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`='{$this->widgetId}' AND `widget_instanceid` IN ({$this->widgetInstanceId},-1) ";
 		$res=mysql_query($query);
 		
 		if($res===false)
@@ -98,7 +98,7 @@ abstract class widgetFramework
 		}
 		
 		///If configurations doesn't exists, then loading default values.
-		$query="SELECT `config_name` AS 'key', `config_default` AS 'value', `is_global` AS 'global' FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`={$this->widgetId}";
+		$query="SELECT `config_name` AS 'key', `config_default` AS 'value', `is_global` AS 'global' FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='{$this->widgetId}'";
 		
 		$res=mysql_query($query);
 		if($res===false)
@@ -116,7 +116,7 @@ abstract class widgetFramework
 				///Only add to database if the current instance type and the configuration type matches i.e. global or instance-specific.
 				if(($row['global']=='1' && $this->widgetInstanceId==-1) || ($row['global']=='0' && $this->widgetInstanceId!=-1))
 				{
-					$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ({$this->widgetId}, {$this->widgetInstanceId}, '{$row['key']}', '{$row['value']}')";
+					$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ('{$this->widgetId}', '{$this->widgetInstanceId}', '{$row['key']}', '{$row['value']}')";
 					$res2=mysql_query($query);
 					if($res2===false)
 					{
@@ -128,7 +128,7 @@ abstract class widgetFramework
 		}
 	
 		///Loading data settigns
-		$query="SELECT `widget_datakey` AS 'key', `widget_datavalue` AS 'value' FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`={$this->widgetId} AND`widget_instanceid` = {$this->widgetInstanceId}";
+		$query="SELECT `widget_datakey` AS 'key', `widget_datavalue` AS 'value' FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`='{$this->widgetId}' AND`widget_instanceid` = '{$this->widgetInstanceId}'";
 		$res=mysql_query($query);
 		if($res===false)
 		{
@@ -166,7 +166,7 @@ abstract class widgetFramework
 	{
 		
 		///If some configuration fields are already there in table, we remove them.
-		$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`={$this->widgetId}";
+		$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='{$this->widgetId}'";
 		mysql_query($query);
 		
 		
@@ -216,7 +216,7 @@ abstract class widgetFramework
 		$value = escape($value);
 		$key = escape($key);
 		
-		$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$value' WHERE `config_name`='$key' AND `widget_id`={$this->widgetId} AND `widget_instanceid`={$this->widgetInstanceId}";
+		$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$value' WHERE `config_name`='$key' AND `widget_id`='{$this->widgetId}' AND `widget_instanceid`='{$this->widgetInstanceId}'";
 
 		if(mysql_query($query)===false) {
 			displayerror("Error in saving setting for the widget {$this->widgetName}.");
@@ -240,7 +240,7 @@ abstract class widgetFramework
 		if(isset($this->data[$key]))
 			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsdata` SET `widget_datavalue`='$value' WHERE `widget_datakey`='$key' AND `widget_id`={$this->widgetId} AND `widget_instanceid`={$this->widgetInstanceId}";
 		else 
-			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsdata` (`widget_id`,`widget_instanceid`,`widget_datakey`,`widget_datavalue`) VALUES ({$this->widgetId},{$this->widgetInstanceId},'$key','$value')";
+			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsdata` (`widget_id`,`widget_instanceid`,`widget_datakey`,`widget_datavalue`) VALUES ('{$this->widgetId}','{$this->widgetInstanceId}','$key','$value')";
 		
 		if(mysql_query($query)===false)
 		{
@@ -264,14 +264,14 @@ abstract class widgetFramework
 		///Default location for the creation of the widget
 		$defaultloc=1;
 		
-		$query="SELECT MAX(`widget_instanceid`) FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id` = {$this->widgetId}";
+		$query="SELECT MAX(`widget_instanceid`) FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id` = '{$this->widgetId}'";
 		$result=mysql_query($query);
 		if($result===false) return false;
 		$row1=mysql_fetch_row($result);
 		if($row1==NULL)
 		 $row1[0]=0;
 		
-		$query="SELECT MAX(`widget_order`) FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `page_id` = $pageId AND `widget_location` = $defaultloc";
+		$query="SELECT MAX(`widget_order`) FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `page_id` = '$pageId' AND `widget_location` = '$defaultloc'";
 		$result=mysql_query($query);
 		if($result===false) return false;
 		$row2=mysql_fetch_array($result);
@@ -282,7 +282,7 @@ abstract class widgetFramework
 		$widgetOrder=$row2[0]+1;
 		$widgetLocation=$defaultloc; 
 		
-		$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgets` (`widget_id`,`widget_instanceid`,`page_id`,`widget_location`,`widget_order`) VALUES ({$this->widgetId},$instanceId,$pageId,$widgetLocation,$widgetOrder)";
+		$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgets` (`widget_id`,`widget_instanceid`,`page_id`,`widget_location`,`widget_order`) VALUES ('{$this->widgetId}','$instanceId','$pageId','$widgetLocation','$widgetOrder')";
 		
 		if(mysql_query($query)==false)
 			return false;

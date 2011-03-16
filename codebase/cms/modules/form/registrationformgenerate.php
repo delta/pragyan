@@ -65,7 +65,7 @@ if(!defined('__PRAGYAN_CMS'))
 
 		/// SELECT form details
 		$formQuery = 'SELECT `form_heading`, `form_headertext`, `form_footertext`, `form_usecaptcha` FROM `form_desc` WHERE ' .
-								 "`page_modulecomponentid` = $moduleCompId";
+								 "`page_modulecomponentid` = '$moduleCompId'";
 		$formResult = mysql_query($formQuery);
 		if(!$formResult)	{ displayerror('E52 : Invalid query: ' . mysql_error()); 	return false; }
 		if($formRow = mysql_fetch_assoc($formResult)) {
@@ -81,7 +81,7 @@ if(!defined('__PRAGYAN_CMS'))
 
 		if(!$disableCaptcha && $formRow['form_usecaptcha'] == 1)
 			$body .= getCaptchaHtml();
-		$req_query = "SELECT count(*) FROM `form_elementdesc` WHERE `form_elementisrequired`=1 AND `page_modulecomponentid`=$moduleCompId";
+		$req_query = "SELECT count(*) FROM `form_elementdesc` WHERE `form_elementisrequired`=1 AND `page_modulecomponentid`='$moduleCompId'";
 		$res_req = mysql_fetch_array(mysql_query($req_query)) or displayerror("Error at registrationformgenerate.lib.php Line 85 ".mysql_error());
 		if($res_req[0]>0)
 			$body .= '<tr>'.
@@ -156,7 +156,7 @@ SCRIPT;
 		$formValues = array();
 		if(verifyUserRegistered($moduleCompId,$userId)) {
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdata` FROM `form_elementdata` WHERE ' .
-									 "`page_modulecomponentid` = $moduleCompId AND `user_id` = $userId";
+									 "`page_modulecomponentid` = '$moduleCompId' AND `user_id` = '$userId'";
 			$dataResult = mysql_query($dataQuery);
 			
 			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . mysql_error()); 	return false; }
@@ -167,7 +167,7 @@ SCRIPT;
 		}
 		else {
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdefaultvalue` FROM `form_elementdesc` WHERE ' .
-									 "`page_modulecomponentid` = $moduleCompId";
+									 "`page_modulecomponentid` = '$moduleCompId'";
 			$dataResult = mysql_query($dataQuery);
 			
 			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . mysql_error()); 	return false; }
@@ -178,7 +178,7 @@ SCRIPT;
 		}
 	
 		$elementQuery = 'SELECT `form_elementid`, `form_elementtype` FROM `form_elementdesc` WHERE ' .
-										"`page_modulecomponentid` = $moduleCompId ORDER BY `form_elementrank`";
+										"`page_modulecomponentid` ='$moduleCompId' ORDER BY `form_elementrank`";
 		$elementResult = mysql_query($elementQuery);
 		$formElements = array();
 		$jsValidationFunctions = array();
@@ -205,7 +205,7 @@ SCRIPT;
 
 function getFormElementInputField($moduleComponentId, $elementId, $value="", &$javascriptCheckFunctions) {
 	$elementQuery = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid` = " .
-	                "$moduleComponentId AND `form_elementid` = $elementId";
+	                "'$moduleComponentId' AND `form_elementid` = '$elementId'";
 	$elementResult = mysql_query($elementQuery);
 
 	if($elementResult && $elementRow = mysql_fetch_assoc($elementResult)) {

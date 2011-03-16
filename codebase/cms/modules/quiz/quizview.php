@@ -17,7 +17,7 @@ if(!defined('__PRAGYAN_CMS'))
  * @return array An array containing question types, and their corresponding counts.
  */
 function getQuestionTypeCounts($quizId, $sectionId) {
-	$countQuery = "SELECT `quiz_questiontype`, COUNT(*) FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId GROUP BY `quiz_questiontype`";
+	$countQuery = "SELECT `quiz_questiontype`, COUNT(*) FROM `quiz_questions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' GROUP BY `quiz_questiontype`";
 	$countResult = mysql_query($countQuery);
 	$result = array();
 	while ($countRow = mysql_fetch_row($countResult))
@@ -54,7 +54,7 @@ function checkQuizSetup($quizId) {
  * returns if the quiz is open or not
  */
 function checkQuizOpen($quizId) {
-	$quizQuery = "SELECT IF(NOW() < `quiz_startdatetime`, -1, IF(NOW() > `quiz_enddatetime`, 1, 0)) FROM `quiz_descriptions` WHERE `page_modulecomponentid` = $quizId";
+	$quizQuery = "SELECT IF(NOW() < `quiz_startdatetime`, -1, IF(NOW() > `quiz_enddatetime`, 1, 0)) FROM `quiz_descriptions` WHERE `page_modulecomponentid` = '$quizId'";
 	$quizResult = mysql_query($quizQuery);
 	$quizRow = mysql_fetch_row($quizResult);
 	if (!$quizRow) {
@@ -69,7 +69,7 @@ function checkQuizOpen($quizId) {
  * returns if the user is attempting the quiz for first time
  */
 function checkUserFirstAttempt($quizId, $userId) {
-	$attemptQuery = "SELECT COUNT(*) FROM `quiz_userattempts` WHERE `page_modulecomponentid` = $quizId AND `user_id` = $userId";
+	$attemptQuery = "SELECT COUNT(*) FROM `quiz_userattempts` WHERE `page_modulecomponentid` = '$quizId' AND `user_id` = '$userId'";
 	$attemptResult = mysql_query($attemptQuery);
 	$attemptRow = mysql_fetch_row($attemptResult);
 	return $attemptRow[0] == 0;
@@ -80,7 +80,7 @@ function checkUserFirstAttempt($quizId, $userId) {
  * returns if the given quiz has a section with given sectionId
  */
 function sectionBelongsToQuiz($quizId, $sectionId) {
-	$sectionQuery = "SELECT COUNT(*) FROM `quiz_sections` WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId";
+	$sectionQuery = "SELECT COUNT(*) FROM `quiz_sections` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId'";
 	$sectionResult = mysql_query($sectionQuery);
 	$sectionRow = mysql_fetch_row($sectionResult);
 	return $sectionRow[0] == 1;
@@ -92,7 +92,7 @@ function sectionBelongsToQuiz($quizId, $sectionId) {
  */
 function startSection($quizId, $sectionId, $userId) {
 	$attemptQuery = "INSERT INTO `quiz_userattempts`(`page_modulecomponentid`, `quiz_sectionid`, `user_id`, `quiz_attemptstarttime`) VALUES " .
-			"($quizId, $sectionId, $userId, NOW())";
+			"('$quizId', '$sectionId', '$userId', NOW())";
 	if (!mysql_query($attemptQuery)) {
 		displayerror('Database Error. Could not mark section as started.');
 		return false;
@@ -105,7 +105,7 @@ function startSection($quizId, $sectionId, $userId) {
  * returns Lowest sectionid in the given quizid
  */
 function getFirstSectionId($quizId) {
-	$sectionQuery = "SELECT MIN(`quiz_sectionid`) FROM `quiz_sections` WHERE `page_modulecomponentid` = $quizId";
+	$sectionQuery = "SELECT MIN(`quiz_sectionid`) FROM `quiz_sections` WHERE `page_modulecomponentid` = '$quizId'";
 	$sectionResult = mysql_query($sectionQuery);
 	if (!$sectionResult)
 		return -1;
@@ -118,7 +118,7 @@ function getFirstSectionId($quizId) {
  * returns userattempts row for given quiz, section, user
  */
 function getAttemptRow($quizId, $sectionId, $userId) {
-	$attemptQuery = "SELECT * FROM `quiz_userattempts` WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId AND `user_id` = $userId";
+	$attemptQuery = "SELECT * FROM `quiz_userattempts` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
 	$attemptResult = mysql_query($attemptQuery);
 	return mysql_fetch_assoc($attemptResult);
 }

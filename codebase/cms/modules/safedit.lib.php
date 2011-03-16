@@ -166,7 +166,7 @@ RET;
 				$compare = $_GET['subaction']=='moveUp'?'<=':'>=';
 				$arrange = $_GET['subaction']=='moveUp'?'DESC':'ASC';
 				$sectionId = escape($_GET['sectionId']);
-				$query = "SELECT `section_id`,`section_priority` FROM `safedit_sections` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' AND `section_priority` {$compare} (SELECT `section_priority` FROM `safedit_sections` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' AND `section_id` = '{$sectionId}') ORDER BY `section_priority` {$arrange} LIMIT 2";
+				$query = "SELECT `section_id`,`section_priority` FROM `safedit_sections` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' AND `section_priority` '{$compare}' (SELECT `section_priority` FROM `safedit_sections` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' AND `section_id` = '{$sectionId}') ORDER BY `section_priority` '{$arrange}' LIMIT 2";
 				$result = mysql_query($query);
 				$row = mysql_fetch_row($result);
 				$sid = $row[0]; $spr = $row[1];
@@ -338,7 +338,7 @@ RET;
 	 * will be called when safedit module instance is created.
 	 */
 	public function createModule($moduleComponentId) {
-		//No initialization
+		///No initialization
 	}
 	
 	/**

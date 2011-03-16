@@ -164,7 +164,7 @@ class newsletter implements module {
 	}
 
 	public function deleteModule($moduleComponentId) {
-		return true;
+		return true;	
 	}
 
 	public function copyModule($moduleComponentId,$newId) {

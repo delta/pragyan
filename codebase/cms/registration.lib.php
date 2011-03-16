@@ -265,7 +265,7 @@ FORM;
 			$form_result = submitRegistrationForm(0, $result1[0], true, true); 
 			if(!$form_result)
 				{
-					$query1 = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` = ".$result1[0];
+					$query1 = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` = '".$result1[0]."'";
 					$result = mysql_query($query1); 
 					return getRegistrationForm();
 				}			

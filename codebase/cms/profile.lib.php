@@ -67,7 +67,7 @@ function profile($userId, $forEditRegistrant = false) {
 	}
 		
 		/// Retrieve existing information
-	$profileQuery = 'SELECT `user_name`, `user_fullname`, `user_password` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = ' . $userId;
+	$profileQuery = 'SELECT `user_name`, `user_fullname`, `user_password` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = \'' . $userId."'";
 	$profileResult = mysql_query($profileQuery);
 	if(!$profileResult) {
 		displayerror('An error occurred while trying to process your request.<br />' . mysql_error() . '<br />' . $profileQuery);
@@ -121,7 +121,7 @@ function profile($userId, $forEditRegistrant = false) {
 			}
 
 			if(count($updates) > 0) {
-				$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = $userId";
+				$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = '$userId'";
 				$profileResult = mysql_query($profileQuery);
 				if(!$profileResult) {
 					displayerror('An error was encountered while attempting to process your request.');
@@ -446,13 +446,13 @@ function getProfileForms($userId) {
 	global $ICONS,$urlRequestRoot;
 	$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms I Have Registered To</legend>";
 	$regforms .= '<ol>';
-	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = $userId";
+	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = '$userId'";
 	$result2 = mysql_query($query);
 	while($result = mysql_fetch_row($result2)) {
 		if($result[0]!=0){
 		$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
 		$formPathLink = $urlRequestRoot . $formPath;
-		$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` =". $result[0];		
+		$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` ='". $result[0]."'";		
 		$result1 = mysql_query($query1);
 		$result1 = mysql_fetch_row($result1);
 		$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
@@ -474,7 +474,7 @@ function getFormDeadlines($userId) {
 		}
 			
 	}	
-	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_desc` WHERE HOUR(TIMEDIFF(`form_expirydatetime`,NOW( )))*3600+MINUTE(TIMEDIFF(`form_expirydatetime`,NOW( )))*60+SECOND(TIMEDIFF(`form_expirydatetime`,NOW( )))*60 <= ".$deadline;
+	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_desc` WHERE HOUR(TIMEDIFF(`form_expirydatetime`,NOW( )))*3600+MINUTE(TIMEDIFF(`form_expirydatetime`,NOW( )))*60+SECOND(TIMEDIFF(`form_expirydatetime`,NOW( )))*60 <= '".$deadline."'";
 	$result2 = mysql_query($query);
 	while($result = mysql_fetch_row($result2)) {
 		if($result[0]!=0){

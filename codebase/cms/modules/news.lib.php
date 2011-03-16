@@ -23,7 +23,7 @@ if(!defined('__PRAGYAN_CMS'))
 
 
 	private function getNews() {
-		$result=mysql_query("SELECT * FROM `news_desc` WHERE `page_modulecomponentid` = $this->moduleComponentId");
+		$result=mysql_query("SELECT * FROM `news_desc` WHERE `page_modulecomponentid` = '$this->moduleComponentId'");
 		$query=mysql_fetch_array($result);
 
 		$rss_output1 ="<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?><rss version=\"2.0\" xmlns:media=\"http://search.yahoo.com/mrss/\">";
@@ -36,7 +36,7 @@ if(!defined('__PRAGYAN_CMS'))
     <copyright> {$query['news_copyright']} </copyright>
 TTT;
 
-		$query1=mysql_query("SELECT * FROM `news_data` WHERE `page_modulecomponentid` = $this->moduleComponentId ORDER BY `news_rank`");
+		$query1=mysql_query("SELECT * FROM `news_data` WHERE `page_modulecomponentid` = '$this->moduleComponentId' ORDER BY `news_rank`");
 		while($myrow=mysql_fetch_array($query1)){
 
 			$rss_output1.=<<<RSSOUTPUT
@@ -80,7 +80,7 @@ RSSOUTPUT;
 	  //changes added to news module by Kulz to fetch news to main menu etc with same function
 	
 		if($moduleCompId<>0)
-		  $query="SELECT * FROM `news_data` WHERE `page_modulecomponentid`=$moduleCompId  ORDER BY `news_rank`,`news_id`";
+		  $query="SELECT * FROM `news_data` WHERE `page_modulecomponentid`='$moduleCompId'  ORDER BY `news_rank`,`news_id`";
 		else
 		  $query="SELECT * FROM `news_data` ORDER BY `news_rank`,`news_id`";
 		$result=mysql_query($query) or die (mysql_error());
@@ -136,16 +136,16 @@ VALSCRIPT;
 			global $ICONS;
 			if(isset($_GET['newsid']) && ctype_digit($_GET['newsid'])) {
 				if($_GET['subaction'] == 'deletenews') {
-					$query1 = "SELECT * FROM `news_data` WHERE `news_id`=".escape($_GET['newsid'])." AND `page_modulecomponentid` = $this->moduleComponentId";
+					$query1 = "SELECT * FROM `news_data` WHERE `news_id`='".escape($_GET['newsid'])."' AND `page_modulecomponentid` = '$this->moduleComponentId'";
 					$result = mysql_query($query1);
 					$row = mysql_fetch_assoc($result);
 	
-					$query = "DELETE FROM `news_data` WHERE `news_id`=".escape($_GET['newsid'])." AND `page_modulecomponentid`='$this->moduleComponentId'";
+					$query = "DELETE FROM `news_data` WHERE `news_id`='".escape($_GET['newsid'])."' AND `page_modulecomponentid`='$this->moduleComponentId'";
 					$result = mysql_query($query);
 					displayinfo('News feed has been successfully deleted.');
 				}
 				elseif($_GET['subaction'] == 'editnews') {
-					$query = "SELECT * FROM `news_data` WHERE `news_id`={$_GET['newsid']} AND `page_modulecomponentid` = $this->moduleComponentId";
+					$query = "SELECT * FROM `news_data` WHERE `news_id`='".escape($_GET['newsid'])."' AND `page_modulecomponentid` = '$this->moduleComponentId'";
 					$result = mysql_query($query);
 					$row = mysql_fetch_assoc($result);
 					$editForm = <<<EDITFORM
@@ -192,7 +192,7 @@ NEWS;
 			}
 		}
 		elseif(isset($_POST['btnSaveChanges']) && isset($_POST['newsid'])) {
-			$query = "UPDATE `news_data` SET `news_title`='".escape($_POST['title'])."',`news_feed`='".escape($_POST['feed'])."',`news_rank`='".escape($_POST['rank'])."',`news_link`='".escape($_POST['link'])."' WHERE `news_id`=".escape($_POST['newsid'])." AND `page_modulecomponentid`=$this->moduleComponentId";
+			$query = "UPDATE `news_data` SET `news_title`='".escape($_POST['title'])."',`news_feed`='".escape($_POST['feed'])."',`news_rank`='".escape($_POST['rank'])."',`news_link`='".escape($_POST['link'])."' WHERE `news_id`='".escape($_POST['newsid'])."' AND `page_modulecomponentid`='$this->moduleComponentId'";
 			$result = mysql_query($query);
 			displayinfo("News feed has been successfully updated.");
 		}
@@ -276,7 +276,7 @@ END;
 		$newsView = "";
 		if($newsId=='')
 		{
-			$query="SELECT * FROM `news_desc` WHERE `page_modulecomponentid`=$moduleCompId";
+			$query="SELECT * FROM `news_desc` WHERE `page_modulecomponentid`='$moduleCompId'";
 			$result=mysql_query($query) or die(mysql_error()."news.lib L247");
 			$temp=mysql_fetch_assoc($result);
 			$newsView.="<h1><a href='{$temp['news_link']}'>{$temp['news_title']}</a></h1><br>";
@@ -285,8 +285,8 @@ END;
 
 		}
 		else
-			$cond="AND `news_id`=$newsId";
-		$query="SELECT * FROM `news_data` WHERE `page_modulecomponentid`=$moduleCompId $cond ORDER BY `news_rank`, `news_id`";
+			$cond="AND `news_id`='$newsId'";
+		$query="SELECT * FROM `news_data` WHERE `page_modulecomponentid`='$moduleCompId' $cond ORDER BY `news_rank`, `news_id`";
 		$result=mysql_query($query);// or die (mysql_error()."news.lib 247");
 		while($newsResult=mysql_fetch_assoc($result))
 		{
