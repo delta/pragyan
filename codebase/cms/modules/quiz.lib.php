@@ -292,7 +292,7 @@ class quiz implements module {
 			$userid = escape($_POST['userid']);
 			$mark = escape($_POST['mark']);
 			$condition = "`page_modulecomponentid` = '$quizid' AND `quiz_sectionid` = '$sectionid' AND `quiz_questionid` = '$questionid' AND `user_id` = '$userid'";
-			$result = mysql_query("SELECT `quiz_submittedanswer` FROM `quiz_answersubmissions` WHERE $condition");
+			$result = mysql_query("SELECT `quiz_submittedanswer` FROM `quiz_answersubmissions` WHERE '$condition'");
 			if($row = mysql_fetch_array($result)) {
 				$result = mysql_fetch_array(mysql_query("SELECT `question_positivemarks`, `question_negativemarks` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizid' AND `question_weight` = (SELECT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = '$quizid' AND `quiz_sectionid` = '$sectionid' AND `quiz_questionid` = '$questionid')"));
 				if($_POST['mark'] > $result['question_positivemarks'] || $_POST['mark'] < -1 * $result['question_negativemarks'])
@@ -330,7 +330,6 @@ class quiz implements module {
 	 */
 	public function createModule($moduleComponentId) {
 		$insertQuery = "INSERT INTO `quiz_descriptions`(`page_modulecomponentid`,`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" .
-					"('{$moduleComponentId}','New Quiz', 'Quiz under construction', 'Quiz under construction', 'simple', '00:30', '20', '10', 0, 1, 0, 1, 0)";
 		if (!mysql_query($insertQuery)) {
 			displayerror('Database Error. Could not create quiz. ' . $insertQuery . ' ' . mysql_error());
 		}

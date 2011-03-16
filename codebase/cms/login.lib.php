@@ -293,13 +293,13 @@ function openid_login($userdata){
 	}
     
       ///Assign the value to $_SESSION['last_to_last_login_datetime']
-      $query = "SELECT `user_lastlogin` FROM `". MYSQL_DATABASE_PREFIX .  "users` WHERE `user_id`=".$openid_row['user_id']. ";";
+      $query = "SELECT `user_lastlogin` FROM `". MYSQL_DATABASE_PREFIX .  "users` WHERE `user_id`='".$openid_row['user_id']. "';";
       $result=mysql_query($query) or die(mysql_error(). " in openid_login() inside login.lib.php while trying to fetch last login");
       $last_login_row=mysql_fetch_array($result);
       $_SESSION['last_to_last_login_datetime']=$last_login_row['user_lastlogin'];
       
       ///update the last login
-      $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` =". $openid_row['user_id']. ";" ;
+      $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='". $openid_row['user_id']. "';" ;
       mysql_query($query) or die(mysql_error() . " in openid_login() inside login.lib.php while trying to update the last login");
       ///logging in the user
       setAuth($openid_row['user_id']);
@@ -742,7 +742,7 @@ function login() {
 	    // then it means that the user has been denied access !!!
 	  }
 	  else {
-	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` =$temp[user_id]";
+	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='$temp[user_id]'";
 	    mysql_query($query) or die(mysql_error() . " in login.lib.L:111");
 	    $_SESSION['last_to_last_login_datetime']=$temp['user_lastlogin'];
 	    setAuth($temp['user_id']);

@@ -42,7 +42,7 @@ class pagelist implements module {
 		require_once("$sourceFolder/common.lib.php");
 		$pageid = getPageIdFromModuleComponentId("pagelist",$this->moduleComponentId);
 		$pageid=getParentPage($pageid);
-		$query = "SELECT `depth` FROM `list_prop` WHERE `page_modulecomponentid`=$this->moduleComponentId";
+		$query = "SELECT `depth` FROM `list_prop` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
 		$result = mysql_query($query) or die(mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$reqdepth=$row['depth'];
@@ -57,7 +57,7 @@ class pagelist implements module {
 		}
 		
 		else {
-			$permQuery = 'SELECT `page_module`, `perm_action` FROM `' . MYSQL_DATABASE_PREFIX . 'permissionlist` WHERE `perm_id` = ' . $permId;
+			$permQuery = 'SELECT `page_module`, `perm_action` FROM `' . MYSQL_DATABASE_PREFIX . 'permissionlist` WHERE `perm_id` = \'' . $permId."'";
 			$permResult = mysql_query($permQuery);
 			$permRow = mysql_fetch_row($permResult);
 			$module = $permRow[0];
@@ -145,14 +145,14 @@ class pagelist implements module {
 	
 		if(isset($_POST['depth'])) 
 		{ 		
-			$query = "UPDATE `list_prop` SET `depth`=".escape($_POST['depth'])." WHERE `page_modulecomponentid`=$this->moduleComponentId";
+			$query = "UPDATE `list_prop` SET `depth`='".escape($_POST['depth'])."' WHERE `page_modulecomponentid`='$this->moduleComponentId'";
 			$result = mysql_query($query);
 			if (mysql_affected_rows()) 	 
 				$ret.="<div class='cms-info'>Depth value updated.</div>";
 			else $ret.="<div class='cms-info'>ok. updated. (Its already set)</div>";	 
 		}	
 
-		$query = "SELECT `depth` FROM `list_prop` WHERE `page_modulecomponentid`=$this->moduleComponentId";
+		$query = "SELECT `depth` FROM `list_prop` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
 		$result = mysql_query($query) or die(mysql_error());
 		$row = mysql_fetch_assoc($result);
 		

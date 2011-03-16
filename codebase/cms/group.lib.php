@@ -61,7 +61,7 @@ function getGroupIdFromName($groupName) {
  	if($formId == 0) {
  	  return false;
  	}
-	$query = "SELECT `group_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `form_id`=".escape($formId);
+	$query = "SELECT `group_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `form_id`='".escape($formId)."'";
 	$result = mysql_query($query);
 	if(mysql_num_rows($result)>0){
 		$array = mysql_fetch_assoc($result);
@@ -76,7 +76,7 @@ function getGroupIdFromName($groupName) {
  * Returns the form id of the given group id
  */
 function getFormIdFromGroupId($groupId){
-	$query = "SELECT `form_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_id`=".escape($groupId);
+	$query = "SELECT `form_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_id`='".escape($groupId)."'";
 	$result = mysql_query($query);
 	if(mysql_num_rows($result)>0){
 		$array = mysql_fetch_assoc($result);
@@ -116,7 +116,7 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 /// Check if the user is shifting a group with priority = maxprioritygroup, and if he belongs to that group, stop him!
 	if($groupRow['group_priority'] == $userMaxPriority) {
 		// SELECT `group_id` FROM .. WHERE `group_priority` = maxPriority AND `user_id` = $userId AND `group_id` = `group_id`
-		$memberQuery = "SELECT `$usergroupTable`.`group_id` FROM `$usergroupTable`, `$groupsTable` WHERE `group_priority` = {$groupRow['group_priority']} AND `user_id` = $userId AND `$usergroupTable`.`group_id` = `$groupsTable`.`group_id`";
+		$memberQuery = "SELECT `$usergroupTable`.`group_id` FROM `$usergroupTable`, `$groupsTable` WHERE `group_priority` = '{$groupRow['group_priority']}' AND `user_id` = '$userId' AND `$usergroupTable`.`group_id` = `$groupsTable`.`group_id`";
 		$memberResult = mysql_query($memberQuery);
 		if(!$memberResult) {
 			displayerror($memberQuery . '<br />' . mysql_error());
@@ -144,7 +144,7 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 	$newPriority = -1;
 
 	if($shiftNeighbours) {
-		$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_priority` = ' . $groupPriority;
+		$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_priority` =\'' . $groupPriority."'";
 		$groupResult = mysql_query($groupQuery);
 		if(mysql_num_rows($groupResult) > 1) {
 			$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_priority` = ' . $groupPriority . " $op 1";
@@ -201,7 +201,7 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 		return false;
 	}
 
-	$groupQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."groups` SET `group_priority` = $newPriority WHERE `group_id` = $groupId";
+	$groupQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."groups` SET `group_priority` = '$newPriority' WHERE `group_id` = '$groupId'";
 	if(mysql_query($groupQuery)) {
 		return true;
 	}
@@ -211,7 +211,7 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 }
 
 function getUsersRegisteredToGroup($groupId) {
-	$userQuery = 'SELECT `user_id` FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = ' . $groupId;
+	$userQuery = 'SELECT `user_id` FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = \'' . $groupId."'";
 	$userResult = mysql_query($userQuery);
 	$registeredUserIds = array();
 	while($userRow = mysql_fetch_row($userResult)) {
@@ -225,7 +225,7 @@ function associateGroupWithForm($groupId, $formId) {
 	global $sourceFolder, $moduleFolder;
 	require_once("$sourceFolder/$moduleFolder/form.lib.php");
 
-	$existsQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `form_id` = ' . $formId;
+	$existsQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `form_id` = \'' . $formId."'";
 	$existsResult = mysql_query($existsQuery);
 	if(!$existsResult) displayerror($existsQuery . ' ' . mysql_error());
 	if(mysql_num_rows($existsResult)) {
@@ -271,7 +271,7 @@ function associateGroupWithForm($groupId, $formId) {
 	}
 
 	/// Update group table, copy all users to group
-	$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . "groups` SET `form_id` = $formId WHERE `group_id` = $groupId";
+	$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . "groups` SET `form_id` = '$formId' WHERE `group_id` = '$groupId'";
 	if(!mysql_query($updateQuery)) {
 		displayerror('Could not associate the given group with the selected form.');
 		return false;
@@ -281,13 +281,13 @@ function associateGroupWithForm($groupId, $formId) {
 }
 
 function unassociateFormFromGroup($groupId) {
-	$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'groups` SET `form_id` = 0 WHERE `group_id` = ' . $groupId;
+	$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'groups` SET `form_id` = 0 WHERE `group_id` = \'' . $groupId."'";
 	$updateResult = mysql_query($updateQuery);
 	if(!$updateResult) {
 		displayerror('MySQL error! Could not unassociate the form from the given group.');
 	}
 
-	$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = ' . $groupId;
+	$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = \'' . $groupId."'";
 	$deleteResult = mysql_query($deleteQuery);
 	if(!$deleteResult) {
 		displayerror('MySQL error! Could not remove users from the given group.');
@@ -333,7 +333,7 @@ function emptyGroup($groupName, $silent = false) {
 	$formId = $groupRow['form_id'];
 
 	if($formId == 0) {
-		$groupQuery = 'DELETE FROM `'.MYSQL_DATABASE_PREFIX.'usergroup` WHERE `group_id` = '.$groupId;
+		$groupQuery = 'DELETE FROM `'.MYSQL_DATABASE_PREFIX.'usergroup` WHERE `group_id` = \''.$groupId."'";
 		if(!mysql_query($groupQuery)) {
 			displayerror('Error running MySQL query. The given group could not be emptied.');
 			return false;
@@ -363,7 +363,7 @@ function deleteGroup($groupName) {
 
 
 function isGroupEmpty($groupId) {
-	$groupQuery = 'SELECT COUNT(`user_id`) FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = ' . $groupId;
+	$groupQuery = 'SELECT COUNT(`user_id`) FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = \'' . $groupId."'";
 	$groupResult = mysql_query($groupQuery);
 	$groupRow = mysql_fetch_row($groupResult);
 	return ($groupRow[0] == 0);
@@ -376,26 +376,26 @@ function addUserToGroupName($groupName, $userId) {
 	}
 	$groupId = $groupRow['group_id'];
 
-	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = $groupId AND `user_id` = $userId";
+	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = '$groupId' AND `user_id` = '$userId'";
 	$groupResult = mysql_query($groupQuery);
 	if($groupRow = mysql_fetch_assoc($groupResult)) {
 		return true;
 	}
 
-	$groupQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."usergroup`(`group_id`, `user_id`) VALUES($groupId, $userId)";
+	$groupQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."usergroup`(`group_id`, `user_id`) VALUES('$groupId', '$userId')";
 	mysql_query($groupQuery);
 	return true;
 }
 
 function addUserToGroupId($groupId, $userId) {
-	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = $groupId AND `user_id` = $userId";
+	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = '$groupId' AND `user_id` = '$userId'";
 	$groupResult = mysql_query($groupQuery);
 	if($groupRow = mysql_fetch_assoc($groupResult)) {
 		displayerror("User already registered to the group.");
 		return false;
 	}
 
-	$groupQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."usergroup`(`group_id`, `user_id`) VALUES($groupId, $userId)";
+	$groupQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."usergroup`(`group_id`, `user_id`) VALUES('$groupId', '$userId')";
 	$groupResult = mysql_query($groupQuery);
 	if(mysql_affected_rows() == 0) {
 		return false;
@@ -403,12 +403,12 @@ function addUserToGroupId($groupId, $userId) {
 	return true;
 }
 function removeUserFromGroupId($groupId, $userId) {
-	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = $groupId AND `user_id` = $userId";
+	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = '$groupId' AND `user_id` = '$userId'";
 	$groupResult = mysql_query($groupQuery);
 	if(mysql_num_fields($groupResult)==0) {
 		return false;
 	}
-	$groupQuery = "DELETE FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `user_id`=$userId and `group_id` = $groupId";
+	$groupQuery = "DELETE FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `user_id`='$userId' and `group_id` = '$groupId'";
 	$groupResult = mysql_query($groupQuery);
 	if(mysql_affected_rows() > 0) {
 		return true;
@@ -437,7 +437,7 @@ function reevaluateGroupPriorities($modifiableGroups) {
 }
 
 function getGroupAssociatedWithForm($formId) {
-	$groupQuery = "SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `form_id` = $formId";
+	$groupQuery = "SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `form_id` = '$formId'";
 	$groupResult = mysql_query($groupQuery);
 	if(mysql_num_rows($groupResult) != 0) {
 		$groupRow = mysql_fetch_row($groupResult);
@@ -450,7 +450,7 @@ function getGroupAssociatedWithForm($formId) {
 
 function getGroupsFromUserId($userId) {
 	$groupQuery = 'SELECT `' . MYSQL_DATABASE_PREFIX . 'groups`.`group_id`, `group_name`, `group_description`, `form_id` FROM `' . MYSQL_DATABASE_PREFIX .
-			'groups`, `'. MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = ' . $userId . ' AND `' .
+			'groups`, `'. MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . $userId . '\' AND `' .
 			MYSQL_DATABASE_PREFIX . 'groups`.`group_id` = `' . MYSQL_DATABASE_PREFIX . 'usergroup`.`group_id`';
 	$groupResult = mysql_query($groupQuery);
 	if(!$groupResult) displayerror($groupQuery . '<br />' . mysql_error());

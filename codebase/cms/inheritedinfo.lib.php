@@ -34,7 +34,7 @@ function inheritedinfo($array) {
 		if ($temp['page_inheritedinfoid'] != -1)
 			$inheritedinfoid = $temp['page_inheritedinfoid'];
 	if ($inheritedinfoid != -1) {
-		$query = "SELECT `page_inheritedinfocontent` FROM `" . MYSQL_DATABASE_PREFIX . "inheritedinfo` WHERE `page_inheritedinfoid` = $inheritedinfoid";
+		$query = "SELECT `page_inheritedinfocontent` FROM `" . MYSQL_DATABASE_PREFIX . "inheritedinfo` WHERE `page_inheritedinfoid` = '$inheritedinfoid'";
 		$data = mysql_query($query);
 		$temp = mysql_fetch_assoc($data);
 	}

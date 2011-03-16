@@ -17,8 +17,8 @@ if(!defined('__PRAGYAN_CMS'))
 		$myElement = new FormElement();
 
 		$elementQuery = 'SELECT * FROM `form_elementdesc` WHERE ' .
-										'`page_modulecomponentid` = ' . $moduleCompId . ' AND ' .
-										'`form_elementid` = ' . $elementId;
+										'`page_modulecomponentid` = \'' . $moduleCompId . '\' AND ' .
+										'`form_elementid` = \'' . $elementId."'";
 
 		if($elementResult = mysql_query($elementQuery)) {
 			if($elementRow = mysql_fetch_assoc($elementResult)) {
@@ -399,7 +399,7 @@ HTMLOUTPUT;
 
 		if(count($updates) > 0) {
 			return 'UPDATE `form_elementdesc` SET ' . join($updates, ', ') . ' WHERE ' .
-			       '`form_elementid` = ' . $this->elementId . ' AND `page_modulecomponentid` = ' . $formId;
+			       '`form_elementid` =\'' . $this->elementId . '\' AND `page_modulecomponentid` = \'' . $formId."'";
 		}
 		return '';
 	}

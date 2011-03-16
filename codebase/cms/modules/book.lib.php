@@ -135,7 +135,7 @@ RET;
 			} else
 				displayerror("You've choosen a hidden sub-page as default which is not possible, so the settings are not saved.");
 		}
-		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_name`, `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` != ' . $this->pageId . ' ORDER BY `page_menurank`';
+		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_name`, `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = '."'" . $this->pageId ."'". ' AND `page_id` != \'' . $this->pageId . '\' ORDER BY `page_menurank`';
 		$result = mysql_query($childrenQuery);
 		$table = "";
 		$hide_list = explode(",",$this->bookProps['menu_hide']);

@@ -182,7 +182,7 @@ QUIZSTARTFORM;
 				// ok, btnStartQuiz was set, and the quiz wasn't started already,
 				// start it by inserting a row for each section in the quiz into quiz_userattempts.
 				$attemptQuery = "INSERT INTO `quiz_userattempts`(`page_modulecomponentid`, `quiz_sectionid`, `user_id`, `quiz_attemptstarttime`) " .
-						"SELECT {$this->quizId}, `quiz_sectionid`, $userId, NOW() FROM `quiz_sections` WHERE `page_modulecomponentid` = {$this->quizId}";
+						"SELECT {$this->quizId}, `quiz_sectionid`, $userId, NOW() FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}'";
 				if (!mysql_query($attemptQuery)) {
 					displayerror('Database Error. Could not update quiz information.');
 					return '';
@@ -228,10 +228,10 @@ QUIZSTARTFORM;
 				"`quiz_questions`.`page_modulecomponentid` = `quiz_answersubmissions`.`page_modulecomponentid` AND " .
 				"`quiz_questions`.`quiz_sectionid` = `quiz_answersubmissions`.`quiz_sectionid` AND " .
 				"`quiz_questions`.`quiz_questionid` = `quiz_answersubmissions`.`quiz_questionid` AND " .
-				"`quiz_questions`.`page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId AND " .
+				"`quiz_questions`.`page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId' AND " .
 				"`quiz_questionviewtime` IS NOT NULL AND `quiz_answersubmittime` IS NULL ";
 		if($this->quizRow['quiz_allowsectionrandomaccess'] == 1)
-			$questionQuery .= "AND `quiz_answersubmissions`.`quiz_sectionid` = {$_GET['sectionid']} ";
+			$questionQuery .= "AND `quiz_answersubmissions`.`quiz_sectionid` = '".escape($_GET['sectionid']) ."'";
 		$questionQuery .= "ORDER BY `quiz_answersubmissions`.`quiz_questionrank` LIMIT {$this->quizRow['quiz_questionsperpage']}";
 		$questionResult = mysql_query($questionQuery);
 		if (!$questionResult) {
@@ -304,8 +304,8 @@ QUIZSTARTFORM;
 		$rollbackQuery = "UPDATE `quiz_answersubmissions` SET `quiz_answersubmittime` = NULL WHERE `page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId AND (" . implode(' OR ', $rollbackQuery) . ")";
 		for ($i = 0; $i < count($submittedAnswers); ++$i) {
 			$updateQuery = "UPDATE `quiz_answersubmissions` SET `quiz_submittedanswer` = '{$submittedAnswers[$i][3]}', `quiz_answersubmittime` = NOW() WHERE " .
-					"`page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = {$submittedAnswers[$i][0]} AND " .
-					"`quiz_questionid` = {$submittedAnswers[$i][1]} AND `user_id` = $userId";
+					"`page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = '{$submittedAnswers[$i][0]}' AND " .
+					"`quiz_questionid` = '{$submittedAnswers[$i][1]}' AND `user_id` = '$userId'";
 			if (!mysql_query($updateQuery)) {
 				displayerror('Invalid Query. Could not save answers.');
 				mysql_query($rollbackQuery);
@@ -323,7 +323,7 @@ QUIZSTARTFORM;
 	 * @return Boolean True or false to indicate whether the quiz has been initialized.
 	 */
 	private function checkQuizInitialized($userId) {
-		$countQuery = "SELECT COUNT(*) FROM `quiz_answersubmissions` WHERE `page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId";
+		$countQuery = "SELECT COUNT(*) FROM `quiz_answersubmissions` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		$countResult = mysql_query($countQuery);
 		
 		$countRow = mysql_fetch_row($countResult);
@@ -385,9 +385,9 @@ QUIZSTARTFORM;
 	 */
 	private function getPageQuestions($userId, $sectionId = -1) {
 		$questionsPerPage = $this->quizRow['quiz_questionsperpage'];
-		$questionQuery = "SELECT `quiz_sectionid`, `quiz_questionid` FROM `quiz_answersubmissions` WHERE `user_id` = $userId AND `page_modulecomponentid` = {$this->quizId} AND `quiz_answersubmittime` IS NULL ";
+		$questionQuery = "SELECT `quiz_sectionid`, `quiz_questionid` FROM `quiz_answersubmissions` WHERE `user_id` = '$userId' AND `page_modulecomponentid` = '{$this->quizId}' AND `quiz_answersubmittime` IS NULL ";
 		if ($this->quizRow['quiz_allowsectionrandomaccess'] == 1)
-			$questionQuery .= " AND `quiz_sectionid` = $sectionId ";
+			$questionQuery .= " AND `quiz_sectionid` = '$sectionId' ";
 		$questionQuery .= " ORDER BY `quiz_questionrank` LIMIT $questionsPerPage";
 		$questionResult = mysql_query($questionQuery);
 		if (!$questionResult) {
@@ -542,14 +542,14 @@ QUESTIONFORM;
 		$questionCount = $this->quizRow['quiz_questionsperpage'];
 		$questionQuery = "SELECT `quiz_questions`.`quiz_sectionid` AS `quiz_sectionid`, `quiz_questions`.`quiz_questionid` AS `quiz_questionid`, `quiz_question`, `quiz_questiontype`, `quiz_questionweight`, `quiz_answermaxlength`, `quiz_rightanswer`, `quiz_questionviewtime`, `quiz_answersubmittime` " .
 				"FROM `quiz_questions`, `quiz_answersubmissions` WHERE " .
-				"`quiz_questions`.`page_modulecomponentid` = {$this->quizId} AND " .
-				"`quiz_answersubmissions`.`user_id` = $userId AND " .
+				"`quiz_questions`.`page_modulecomponentid` = '{$this->quizId}' AND " .
+				"`quiz_answersubmissions`.`user_id` = '$userId' AND " .
 				"`quiz_questions`.`page_modulecomponentid` = `quiz_answersubmissions`.`page_modulecomponentid` AND " .
 				"`quiz_questions`.`quiz_sectionid` = `quiz_answersubmissions`.`quiz_sectionid` AND " .
 				"`quiz_questions`.`quiz_questionid` = `quiz_answersubmissions`.`quiz_questionid` AND " .
 				"`quiz_answersubmissions`.`quiz_answersubmittime` IS NULL ";
 		if ($this->quizRow['quiz_allowsectionrandomaccess'] == 1)
-			$questionQuery .= "AND `quiz_answersubmissions`.`quiz_sectionid` = $sectionId ";
+			$questionQuery .= "AND `quiz_answersubmissions`.`quiz_sectionid` = '$sectionId' ";
 		$questionQuery .= "ORDER BY `quiz_answersubmissions`.`quiz_questionrank` " .
 				"LIMIT $questionCount";
 
@@ -560,7 +560,7 @@ QUESTIONFORM;
 		$questionPage .= '<form name="quizquestions" id="quizForm" method="POST" action="./+view' . ($sectionId == -1 ? '' : '&sectionid=' . $sectionId) . '" onsubmit="return confirm(\'Are you sure you wish to submit this page?\')">';
 		while ($questionRow = mysql_fetch_assoc($questionResult)) {
 			if (is_null($questionRow['quiz_questionviewtime']))
-				mysql_query("UPDATE `quiz_answersubmissions` SET `quiz_questionviewtime` = NOW() WHERE `page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = {$questionRow['quiz_sectionid']} AND `quiz_questionid` = {$questionRow['quiz_questionid']}");
+				mysql_query("UPDATE `quiz_answersubmissions` SET `quiz_questionviewtime` = NOW() WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '{$questionRow['quiz_sectionid']}' AND `quiz_questionid` = '{$questionRow['quiz_questionid']}'");
 			$questionPage .= $this->formatQuestion($questionRow, $questionNumber);
 			++$questionNumber;
 		}
@@ -602,9 +602,9 @@ QUESTIONPAGESCRIPT;
 	 * @return Integer Number of questions attempted. False in case of errors.
 	 */
 	private function countAttemptedQuestions($userId, $sectionId = -1) {
-		$countQuery = "SELECT COUNT(*) FROM `quiz_submittedanswers` WHERE `page_modulecomponentid` = {$this->quizId}";
+		$countQuery = "SELECT COUNT(*) FROM `quiz_submittedanswers` WHERE `page_modulecomponentid` = '{$this->quizId}'";
 		if ($sectionId != -1)
-			$countQuery .= " AND `quiz_sectionid` = $sectionId";
+			$countQuery .= " AND `quiz_sectionid` = '$sectionId'";
 		$countQuery .= " `user_id` = $userId AND `quiz_answersubmittime` IS NOT NULL";
 		$countResult = mysql_query($countQuery);
 		if (!$countResult) {
@@ -627,7 +627,7 @@ QUESTIONPAGESCRIPT;
 			$limit = 0;
 			for ($i = 0; $i < count($questionTypes); ++$i)
 				$limit += $sectionRow["quiz_section{$questionTypes[$i]}count"];
-			$questionQuery = "SELECT `quiz_questionid` FROM `quiz_questions` WHERE `page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = $sectionId ORDER BY `quiz_questionrank` LIMIT $limit";
+			$questionQuery = "SELECT `quiz_questionid` FROM `quiz_questions` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' ORDER BY `quiz_questionrank` LIMIT $limit";
 		}
 		else {
 			$questionIdQueries = array();
@@ -635,7 +635,7 @@ QUESTIONPAGESCRIPT;
 				$limit = $sectionRow["quiz_section{$questionTypes[$i]}count"];
 				if ($limit) {
 					$questionIdQueries[] = 
-						"(SELECT `quiz_questionid` FROM `quiz_questions` WHERE `page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = $sectionId AND `quiz_questiontype` = '{$questionTypes[$i]}' ORDER BY RAND() LIMIT $limit)";
+						"(SELECT `quiz_questionid` FROM `quiz_questions` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `quiz_questiontype` = '{$questionTypes[$i]}' ORDER BY RAND() LIMIT $limit)";
 				}
 			}
 
@@ -660,8 +660,8 @@ QUESTIONPAGESCRIPT;
 		$countQuery = "SELECT COUNT(*) FROM `quiz_userattempts`, `quiz_sections` WHERE " .
 				"`quiz_sections`.`page_modulecomponentid` = `quiz_userattempts`.`page_modulecomponentid` AND " .
 				"`quiz_sections`.`quiz_sectionid` = `quiz_userattempts`.`quiz_sectionid` AND " .
-				"`quiz_sections`.`page_modulecomponentid` = {$this->quizId} AND " .
-				"`quiz_userattempts`.`user_id` = $userId AND " .
+				"`quiz_sections`.`page_modulecomponentid` = '{$this->quizId}' AND " .
+				"`quiz_userattempts`.`user_id` = '$userId' AND " .
 				"`quiz_submissiontime` IS NOT NULL";
 		$countResult = mysql_query($countQuery);
 		if (!$countResult) {
@@ -670,7 +670,7 @@ QUESTIONPAGESCRIPT;
 		}
 		$countRow = mysql_fetch_row($countResult);
 		$completedCount = $countRow[0];
-		$countQuery = "SELECT COUNT(*) FROM `quiz_sections` WHERE `page_modulecomponentid` = {$this->quizId}";
+		$countQuery = "SELECT COUNT(*) FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}'";
 		$countResult = mysql_query($countQuery);
 		$countRow = mysql_fetch_row($countResult);
 		return $countRow[0] == $completedCount;
@@ -704,14 +704,14 @@ QUESTIONPAGESCRIPT;
 		if (is_null($attemptRow['quiz_submissiontime'])) {
 			// Check if all questions for this section have been completed, if yes, set quiz_submissiontime and return true
 			$questionQuery = "SELECT COUNT(*) FROM `quiz_answersubmissions` WHERE " .
-					"`page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = $sectionId AND `user_id` = $userId AND `quiz_answersubmittime` IS NULL";
+					"`page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId' AND `quiz_answersubmittime` IS NULL";
 			$questionResult = mysql_query($questionQuery);
 			$questionRow = mysql_fetch_row($questionResult);
 
 			if ($questionRow[0] != 0)
 				return false;
 
-			$updateQuery = "UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `page_modulecomponentid` = $this->quizId AND `quiz_sectionid` = $sectionId AND `user_id` = $userId";
+			$updateQuery = "UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `page_modulecomponentid` = '$this->quizId' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
 			if (mysql_query($updateQuery))
 				return true;
 			else {
@@ -731,8 +731,8 @@ QUESTIONPAGESCRIPT;
 	 */
 	private function markQuizCompleted($userId) {
 		$updateQueries = array(
-			"UPDATE `quiz_answersubmissions` SET `quiz_submittedanswer` = '', `quiz_answersubmittime` = NOW() WHERE `page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId AND `quiz_answersubmittime` IS NULL",
-			"UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId AND `quiz_submissiontime` IS NULL"
+			"UPDATE `quiz_answersubmissions` SET `quiz_submittedanswer` = '', `quiz_answersubmittime` = NOW() WHERE `page_modulecomponentid` = {$this->quizId} AND `user_id` = '$userId' AND `quiz_answersubmittime` IS NULL",
+			"UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId' AND `quiz_submissiontime` IS NULL"
 		);
 
 		if (!mysql_query($updateQueries[0]) || !mysql_query($updateQueries[1])) {
@@ -752,10 +752,10 @@ QUESTIONPAGESCRIPT;
 	private function getElapsedTime($userId, $sectionId = -1) {
 		if ($sectionId < 0)
 			$elapsedQuery = "SELECT TIMEDIFF(NOW(), MIN(`quiz_attemptstarttime`)) FROM `quiz_userattempts` WHERE " .
-					"`page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId";
+					"`page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		else
 			$elapsedQuery = "SELECT TIMEDIFF(NOW(), `quiz_attemptstarttime`) FROM `quiz_userattempts` WHERE " .
-					"`page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = $sectionId AND `user_id` = $userId";
+					"`page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
 
 		$elapsedResult = mysql_query($elapsedQuery);
 		if (!$elapsedResult)
@@ -767,11 +767,11 @@ QUESTIONPAGESCRIPT;
 	private function getRemainingTime($userId, $sectionId = -1) {
 		if ($sectionId < 0) {
 			$remainingQuery = "SELECT TIMEDIFF(NOW(), ADDTIME(MIN(`quiz_attemptstarttime`), '{$this->quizRow['quiz_testduration']}')) FROM `quiz_userattempts` WHERE " .
-					"`page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId";
+					"`page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		}
 		else {
 			$remainingQuery = "SELECT TIMEDIFF(NOW(), ADDTIME(`quiz_attemptstarttime`, '{$this->quizRow['quiz_testduration']}')) FROM `quiz_userattempts` WHERE " .
-					"`page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId";
+					"`page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		}
 
 		$remainingResult = mysql_query($remainingQuery);
@@ -802,7 +802,7 @@ QUESTIONPAGESCRIPT;
 				return false;
 
 			$timeoutQuery = "SELECT IF(DATE_SUB(NOW(), INTERVAL $offset) > ADDTIME(`quiz_attemptstarttime`, '{$sectionRow['quiz_sectiontimelimit']}'), 1, 0) AS `quiz_expired` FROM " .
-					"`quiz_userattempts` WHERE `page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = $sectionId AND `user_id` = $userId";
+					"`quiz_userattempts` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
 		}
 
 		$timeoutResult = mysql_query($timeoutQuery);
@@ -829,9 +829,9 @@ QUESTIONPAGESCRIPT;
 	 * @return Boolean True indicating success, false indicating failure.
 	 */
 	private function forceQuizCompleted($userId, $sectionId = -1) {
-		$updateQuery = "UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `quiz_submissiontime` IS NULL AND `page_modulecomponentid` = {$this->quizId} AND `user_id` = $userId";
+		$updateQuery = "UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `quiz_submissiontime` IS NULL AND `page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		if ($sectionId >= 0)
-			$updateQuery .= " AND `quiz_sectionid` = $sectionId";
+			$updateQuery .= " AND `quiz_sectionid` = '$sectionId'";
 		if (!mysql_query($updateQuery)) {
 			displayerror('Database Error. Could not mark quiz as completed.');
 			return false;

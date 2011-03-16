@@ -32,14 +32,14 @@ if(!defined('__PRAGYAN_CMS'))
 
 
 function getLastUpdateDate($moduleComponentId, $userId) {
-	$query = 'SELECT `form_lastupdated` FROM `form_regdata` WHERE `page_modulecomponentid` = ' . $moduleComponentId . ' AND `user_id` = ' . $userId;
+	$query = 'SELECT `form_lastupdated` FROM `form_regdata` WHERE `page_modulecomponentid` = \'' . $moduleComponentId . '\' AND `user_id` = \'' . $userId."'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_row($result);
 	return $row[0];
 }
 
 function getRegistrationDate($moduleComponentId, $userId) {
-	$query = 'SELECT `form_firstupdated` FROM `form_regdata` WHERE `page_modulecomponentid` = ' . $moduleComponentId . ' AND `user_id` = ' . $userId;
+	$query = 'SELECT `form_firstupdated` FROM `form_regdata` WHERE `page_modulecomponentid` = \'' . $moduleComponentId . '\' AND `user_id` = \'' . $userId."'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_row($result);
 	return $row[0];
@@ -50,7 +50,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 	$elementRow = array();
 
 	$elementDataQuery = 'SELECT `form_elementdata`, `form_elementdesc`.`form_elementid`, `form_elementdesc`.`form_elementtype` FROM `form_elementdesc`, `form_elementdata` WHERE ' .
-					"`form_elementdata`.`page_modulecomponentid` = $moduleCompId AND `user_id` = $userId AND " .
+					"`form_elementdata`.`page_modulecomponentid` = '$moduleCompId' AND `user_id` = '$userId' AND " .
 					'`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND ' .
 					'`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ' .
 					'ORDER BY `form_elementrank` ASC';
@@ -65,7 +65,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 	if($showProfileData) { 
 		if($userId > 0) {
 			$elementDataQuery = 'SELECT `form_elementdata`, `form_elementdesc`.`form_elementid`, `form_elementdesc`.`form_elementname`, `form_elementdesc`.`form_elementtype` FROM `form_elementdesc`, `form_elementdata` WHERE ' .
-						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = $userId AND " .
+						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = '$userId' AND " .
 						"`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND " .
 						"`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ORDER BY `form_elementrank`";
 			$elementDataResult = mysql_query($elementDataQuery) or die($elementDataQuery . '<br />' . mysql_error());
@@ -139,8 +139,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			}
 		}
 
-		$columnQuery = 'SELECT `form_elementid`, `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = ' .
-									 $moduleCompId . ' ORDER BY `form_elementrank` ASC';
+		$columnQuery = 'SELECT `form_elementid`, `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = \'' .
+									 $moduleCompId . '\' ORDER BY `form_elementrank` ASC';
 		$columnResult = mysql_query($columnQuery);
 
 		while($columnRow = mysql_fetch_assoc($columnResult)) {
@@ -163,7 +163,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			$userTable = MYSQL_DATABASE_PREFIX . 'users';
 
 			$userQuery = "SELECT `form_regdata`.`user_id` FROM `$userTable`, `form_regdata` WHERE " .
-					"`page_modulecomponentid` = $moduleCompId AND `$userTable`.`user_id` = `form_regdata`.`user_id` " .
+					"`page_modulecomponentid` = '$moduleCompId' AND `$userTable`.`user_id` = `form_regdata`.`user_id` " .
 					"ORDER BY `$col` $rowSortOrder";
 
 ///			$userQuery = "SELECT DISTINCT(`form_elementdata`.`user_id`) FROM `$userTable`, `form_elementdata` WHERE " .
@@ -175,7 +175,7 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			if($rowSortField == 'registrationdate') $col = 'form_firstupdated';
 
 			$userQuery = "SELECT `user_id` FROM `form_regdata` WHERE " .
-										"`page_modulecomponentid` = $moduleCompId ORDER BY `$col` $rowSortOrder";
+										"`page_modulecomponentid` = '$moduleCompId' ORDER BY `$col` $rowSortOrder";
 		}
 		elseif(substr($rowSortField, 0, 6) == 'form0_') {
 			/// TODO: Implement the sort here.
@@ -192,9 +192,9 @@ WHERE dat.`form_elementid` = 3 ORDER BY dat.form_elementdata
  *
  */
 
-			$userQuery = "SELECT `reg`.`user_id` FROM `form_elementdesc` des LEFT JOIN (form_regdata reg LEFT JOIN form_elementdata dat ON reg.page_modulecomponentid = dat.page_modulecomponentid AND reg.user_id = dat.user_id AND reg.page_modulecomponentid = $moduleCompId) " .
+			$userQuery = "SELECT `reg`.`user_id` FROM `form_elementdesc` des LEFT JOIN (form_regdata reg LEFT JOIN form_elementdata dat ON reg.page_modulecomponentid = dat.page_modulecomponentid AND reg.user_id = dat.user_id AND reg.page_modulecomponentid = '$moduleCompId') " .
 					"ON des.page_modulecomponentid = dat.page_modulecomponentid AND des.form_elementid = dat.form_elementid " .
-					"WHERE dat.`form_elementid` = $elementId ORDER BY dat.form_elementdata $rowSortOrder";
+					"WHERE dat.`form_elementid` = '$elementId' ORDER BY dat.form_elementdata $rowSortOrder";
 		}
 
 
@@ -219,7 +219,7 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 	global $sourceFolder, $templateFolder, $urlRequestRoot, $cmsFolder, $moduleFolder;
 
 	$formDescQuery = 'SELECT  `form_showuseremail`, `form_showuserfullname`, `form_showregistrationdate`, `form_showlastupdatedate`, `form_showuserprofiledata`,`form_heading` FROM `form_desc` ' .
-					'WHERE `page_modulecomponentid` = ' . $moduleComponentId;
+					'WHERE `page_modulecomponentid` = \'' . $moduleComponentId."'";
 	$formDescResult = mysql_query($formDescQuery);
 	
 	$showUserEmail = $showUserFullName = false;

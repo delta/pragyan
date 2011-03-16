@@ -97,7 +97,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	///default actions also to be defined here (and not outside)
 	/// Coz work to be done after these actions do involve the page
 
-	$pagetype_query = "SELECT page_module, page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id=".escape($pageId);
+	$pagetype_query = "SELECT page_module, page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id='".escape($pageId)."'";
 	$pagetype_result = mysql_query($pagetype_query);
 	$pagetype_values = mysql_fetch_assoc($pagetype_result);
 	if(!$pagetype_values) {
@@ -115,7 +115,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		return handleWidgetPageSettings($pageId);
 	}
 	if($recursed==0) {
-		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id=".escape($pageId);
+		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id='".escape($pageId)."'";
 		$pagetypeupdate_result = mysql_query($pagetypeupdate_query);
 		if(!$pagetypeupdate_result)
 			return '<div class="cms-error">Error No. 563 - An error has occured. Contact the site administators.</div>';
@@ -129,7 +129,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 		return getContent(getParentPage($pageId),$action,$userId,true,1);
 	if($moduleType=="external") {
 		$query = "SELECT `page_extlink` FROM `".MYSQL_DATABASE_PREFIX."external` WHERE `page_modulecomponentid` =
-					(SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`= ".escape($pageId).")";
+					(SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`= '".escape($pageId)."')";
 		$result = mysql_query($query);
 		$values = mysql_fetch_array($result);
 		$link=$values[0];
@@ -264,7 +264,7 @@ function getTitle($pageId,$action, &$heading) {
 		return true;
 	}
 
-	$pagetitle_query = "SELECT `page_title`, `page_module`, `page_modulecomponentid`, `page_displaypageheading` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
+	$pagetitle_query = "SELECT `page_title`, `page_module`, `page_modulecomponentid`, `page_displaypageheading` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
 	$pagetitle_result = mysql_query($pagetitle_query);
 	if (!$pagetitle_result)
 		return false;
@@ -287,12 +287,12 @@ function child($pageId, $userId,$depth) {
 	$pageId=escape($pageId);
 	if($depth < 0)
 	{
-	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` != \'' . $pageId . '\' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 
 	}
 	else
 	{
-	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $pageId . ' AND `page_id` != ' . $pageId . ' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
+	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = \'' . $pageId . '\' AND `page_id` != \'' . $pageId . '\' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 	}
 	
 	

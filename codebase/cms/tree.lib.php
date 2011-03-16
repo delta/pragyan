@@ -49,8 +49,8 @@ class DirectoryTreeNode {
 
 		$permQuery = "SELECT `perm_permission`, `usergroup_id` FROM `$pagepermTable` WHERE " .
 									"((`usergroup_id` IN (" . join($groups, ', ') . ") AND `perm_type` = 'group') OR " .
-									"(`usergroup_id` = $userid AND `perm_type` = 'user')) " .
-									"AND `page_id` = $pid AND `perm_id` = $permId";
+									"(`usergroup_id` = '$userid' AND `perm_type` = 'user')) " .
+									"AND `page_id` = '$pid' AND `perm_id` = '$permId'";
 
 		/// SELECT perm_permission, usergroup_id FROM $pagepermTable WHERE ((usergroup_id IN join() AND perm_type='group')
 		///		OR (usergroup_id = $userid AND perm_type = 'user')) AND page_id = $pid AND perm_id = $permId
@@ -98,7 +98,7 @@ class DirectoryTreeNode {
 	 * @param $retrieveLinks Boolean indicating whether links should be retrieved
 	 */
 	public function __construct(& $pageId, & $userid, & $groups, &$permId, $permSet, $retrieveLinks = false) {
-		$pageNameQuery = "SELECT `page_name`, `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = $pageId";
+		$pageNameQuery = "SELECT `page_name`, `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '$pageId'";
 		$pageNameResult = mysql_query($pageNameQuery);
 		$pageNameResultRow = mysql_fetch_row($pageNameResult);
 
@@ -111,7 +111,7 @@ class DirectoryTreeNode {
 
 		$this->children = array ();
 
-		$childQuery = "SELECT `page_id`, `page_module` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = $pageId and `page_parentid` != `page_id` ORDER BY `page_menurank`";
+		$childQuery = "SELECT `page_id`, `page_module` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = '$pageId' and `page_parentid` != `page_id` ORDER BY `page_menurank`";
 		$childResult = mysql_query($childQuery);
 
 		while ($childResultRow = mysql_fetch_assoc($childResult)) {

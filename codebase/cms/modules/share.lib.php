@@ -117,7 +117,7 @@ RET;
 	if(!isset($_FILES['upload_file']))
 		displayerror("No File Uploaded");
 	else{
-	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = $module_ComponentId";
+	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$result = mysql_query($query) or displayerror("Error in view");
 	$result = mysql_fetch_array($result) or displayerror("Error in view");
 	$maxFileSizeInBytes = $result[3];
@@ -184,7 +184,7 @@ RET;
 			return $content;
 			}	
 	}
-	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = $module_ComponentId";
+	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$result = mysql_query($query) or displayerror(mysql_error()." Error in share.lib.php L:187");
 	$result = mysql_fetch_array($result);
 	$file_types = preg_replace('/\|/',', ',$result['file_type']);
@@ -217,7 +217,7 @@ function checkForm()
 FORM;
 	$content = "<table width=100%><tr><td colspan='2'><b>{$result['page_desc']}</b><br /></td></tr><tr><td width=150px>Uploadable File Typles </td><td>{$file_types}</td></tr><tr><td>Max. file size </td><td> {$result['maxfile_size']} bytes</td></tr></table>";
 	$content .= $upload_form;
-	$content_query = "SELECT * FROM `share_files` WHERE `page_modulecomponentid` = $module_ComponentId";
+	$content_query = "SELECT * FROM `share_files` WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$content_result = mysql_query($content_query) or displayerror("Error is retriving info from database. Please try later..");
 	if(mysql_num_rows($content_result)<=0)
 		$content .= "No Files found..";
@@ -290,12 +290,12 @@ FORM;
 			return $content;
 			}	
 	}
-	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = $module_ComponentId";
+	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$result = mysql_query($query) or displayerror(mysql_error()." Error in share.lib.php L:187");
 	$result = mysql_fetch_array($result);
 	$file_types = preg_replace('/\|/',', ',$result['file_type']);
 	$content = "<table width=100%><tr><td colspan='2'><b>{$result['page_desc']}</b><br /></td></tr><tr><td width=150px>Uploadable File Typles </td><td>{$file_types}</td></tr><tr><td>Max. file size </td><td> {$result['maxfile_size']} bytes</td></tr></table>";
-	$content_query = "SELECT * FROM `share_files` WHERE `page_modulecomponentid` = $module_ComponentId";
+	$content_query = "SELECT * FROM `share_files` WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$content_result = mysql_query($content_query) or displayerror("Error is retriving info from database. Please try later..");
 	if(mysql_num_rows($content_result)<=0)
 		$content .= "No Files found..";
@@ -320,7 +320,7 @@ FORM;
 		displayerror("Could not update the page. Either the share description or file type doesnot meet the requirements!!");
 	else {	
 	$max_size = escape($_POST['file_size']);
-	$query = "UPDATE `share` SET `page_desc` = '$desc', `file_type` = '$ftype', `maxfile_size` = '$max_size' WHERE `page_modulecomponentid` = $module_ComponentId";
+	$query = "UPDATE `share` SET `page_desc` = '$desc', `file_type` = '$ftype', `maxfile_size` = '$max_size' WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$result = mysql_query($query);
 	if(mysql_affected_rows()<0)
 		displayerror("Error in updating the database. Please Try again later");
@@ -328,7 +328,7 @@ FORM;
 		displayinfo("All settings updated successfully");
 		}
 	}
-	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = $module_ComponentId";
+	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
 	$result = mysql_query($query) or displayerror(mysql_error()." Error in share.lib.php L:322");
 	$result = mysql_fetch_array($result) or displayerror(mysql_error()."Error in share.lib.php L:323");
 	$edit_form =<<<EDIT

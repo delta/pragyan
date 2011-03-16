@@ -329,7 +329,7 @@ function getInheritedWidgets($pageId)
 	
 	if($parentId==$pageId) return array();
 	
-	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`=$parentId AND t1.`widget_propagate`=1 AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location` ASC";
+	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`='$parentId' AND t1.`widget_propagate`=1 AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location` ASC";
 	$result=mysql_query($query);
 	$return=array();
 	while($row=mysql_fetch_array($result))
@@ -350,7 +350,7 @@ function getInheritedWidgets($pageId)
  */
 function propagateWidgetInstance($widgetId,$widgetInstanceId)
 {
-	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=1 WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=1 WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
 	mysql_query($query);
 	displayinfo("Widget has been succesfully propagated to all child pages recursively.");
 }
@@ -362,7 +362,7 @@ function propagateWidgetInstance($widgetId,$widgetInstanceId)
  */
 function unpropagateWidgetInstance($widgetId,$widgetInstanceId)
 {
-	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=0 WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=0 WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
 	mysql_query($query);
 	displayinfo("Widget copies has been succesfully removed from all child pages recursively.");
 }
@@ -375,21 +375,21 @@ function unpropagateWidgetInstance($widgetId,$widgetInstanceId)
  */
 function deleteWidgetInstance($widgetId,$widgetInstanceId)
 {
-	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
 	if(mysql_query($query)===FALSE)
 	{
 		displayerror("Could not delete widget. Internal error occurred.");
 		return FALSE;
 	}
 	
-	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
 	if(mysql_query($query)===FALSE)
 	{
 		displayerror("Could not delete widget. Internal error occurred.");
 		return FALSE;
 	}
 	
-	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
 	if(mysql_query($query)===FALSE)
 	{
 		displayerror("Could not delete widget. Internal error occurred.");
@@ -412,7 +412,7 @@ function deleteWidgetInstance($widgetId,$widgetInstanceId)
  */
 function modifyWidgetInstanceLocation($pageId,$widgetId,$widgetInstanceId,$mod)
 {
-	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_location`=`widget_location`$mod WHERE `page_id`=$pageId AND `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId AND `widget_location`$mod >= 0";
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_location`=`widget_location`$mod WHERE `page_id`='$pageId' AND `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId' AND `widget_location`$mod >= 0";
 	$res=mysql_query($query);
 	if(!$res) return false;
 	if(mysql_affected_rows()==0)
@@ -430,7 +430,7 @@ function modifyWidgetInstanceLocation($pageId,$widgetId,$widgetInstanceId,$mod)
  */
 function modifyWidgetInstanceOrder($pageId,$widgetId,$widgetInstanceId,$mod)
 {
-	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_order`=`widget_order`$mod WHERE `page_id`=$pageId AND `widget_id`=$widgetId AND `widget_instanceid`=$widgetInstanceId";
+	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_order`=`widget_order`$mod WHERE `page_id`='$pageId' AND `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
 	$res=mysql_query($query);
 	if(!$res) return false;
 	if(mysql_affected_rows()==0)
@@ -447,7 +447,7 @@ function modifyWidgetInstanceOrder($pageId,$widgetId,$widgetInstanceId,$mod)
  */
 function createWidgetInstance($pageId,$widgetId)
 {
-	$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetId";
+	$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='$widgetId'";
 	$res=mysql_query($query);
 	if(mysql_num_rows($res)==0)
 	{
@@ -499,7 +499,7 @@ function createWidgetInstance($pageId,$widgetId)
  */
 function getEnabledWidgets($pageId)
 {
-	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t1.`widget_order` AS 'order', t1.`widget_propagate` AS 'propagate', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`=$pageId AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location`, t1.`widget_order` ASC";
+	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t1.`widget_order` AS 'order', t1.`widget_propagate` AS 'propagate', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`='$pageId' AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location`, t1.`widget_order` ASC";
 	$result=mysql_query($query);
 	$return=array();
 	while($row=mysql_fetch_array($result))
@@ -614,7 +614,7 @@ function handleWidgetAdmin($pageId)
 	{
 		$widgetid=escape($_GET['widgetid']);		
 		
-		$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetid";
+		$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='$widgetid'";
 		$res=mysql_query($query);
 		if(mysql_num_rows($res)==0)
 		{
@@ -741,7 +741,7 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
 			$formValues[$configentry['confname']]=$configentry['confdefault'];
 		}
 			
-		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`=$widgetinstanceid AND `widget_id`={$widgetconfigs[0]['id']}  AND `config_name` IN ('".join($confnames,"','")."')";
+		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`='$widgetinstanceid' AND `widget_id`='{$widgetconfigs[0]['id']}'  AND `config_name` IN ('".join($confnames,"','")."')";
 
 		$res=mysql_query($query);
 
@@ -1075,7 +1075,7 @@ function renderNoinputTypeField($elementName,$value,$options,&$htmlOutput)
  */
 function getWidgetPageConfigInfo($widgetid)
 {
-	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=0 ORDER BY `config_rank`";
+	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='$widgetid' AND `is_global`=0 ORDER BY `config_rank`";
 	$res=mysql_query($query);
 	$ret=array();
 	while($arr=mysql_fetch_assoc($res))
@@ -1092,7 +1092,7 @@ function getWidgetPageConfigInfo($widgetid)
  */
 function getWidgetGlobalConfigInfo($widgetid)
 {
-	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=1 ORDER BY `config_rank`";
+	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='$widgetid' AND `is_global`=1 ORDER BY `config_rank`";
 	$res=mysql_query($query);
 	$ret=array();
 	while($arr=mysql_fetch_assoc($res))
@@ -1108,7 +1108,7 @@ function getWidgetGlobalConfigInfo($widgetid)
  */
 function getWidgetInfo($widgetid)
 {
-	$query="SELECT `widget_id` AS 'id', `widget_name` AS 'name', `widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`=$widgetid";
+	$query="SELECT `widget_id` AS 'id', `widget_name` AS 'name', `widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='$widgetid'";
 	$res=mysql_query($query);
 	return mysql_fetch_assoc($res);
 }
@@ -1136,7 +1136,7 @@ function getAllWidgetsInfo()
  */
 function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 {
-	$query="SELECT `config_name`,`config_type`,`config_default`,`config_options` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`=$widgetid AND `is_global`=".(int)$isglobal;
+	$query="SELECT `config_name`,`config_type`,`config_default`,`config_options` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='$widgetid' AND `is_global`=".(int)$isglobal;
 	
 	$res=mysql_query($query);
 	
@@ -1155,7 +1155,7 @@ function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 		
 		$confcur=false;
 		
-		$query="SELECT `config_value` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=$widgetinstanceid";
+		$query="SELECT `config_value` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `config_name`='$confname' AND `widget_id`='$widgetid' AND `widget_instanceid`='$widgetinstanceid'";
 	
 		$result=mysql_query($query);
 		
@@ -1176,7 +1176,7 @@ function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 		}	
 		else if($confval!=$confcur)
 		{
-			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$confval' WHERE `config_name`='$confname' AND `widget_id`=$widgetid AND `widget_instanceid`=$widgetinstanceid";
+			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$confval' WHERE `config_name`='$confname' AND `widget_id`='$widgetid' AND `widget_instanceid`='$widgetinstanceid'";
 			mysql_query($query);
 		}
 	

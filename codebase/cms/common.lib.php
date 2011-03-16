@@ -115,7 +115,7 @@ function convertUri($x) {
 function escape($query)
 {
 	if (!get_magic_quotes_gpc()) {
-	    $query = addslashes($query);
+	    $query = mysql_real_escape_string($query);
 	}
 	return $query;
 }
@@ -304,7 +304,7 @@ function displaywarning($error_desc) {
  */
 function getUserName($userId) {
 	if($userId <= 0) return "Anonymous";
-	$query = "SELECT `user_name` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = ".$userId;
+	$query = "SELECT `user_name` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_row($result);
 	return $row[0];
@@ -317,7 +317,7 @@ function getUserName($userId) {
  */
 function getUserFullName($userId) {
 	if($userId <= 0) return "Anonymous";
-	$query = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = ".$userId;
+	$query = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_row($result);
 	return $row[0];
@@ -343,7 +343,7 @@ function getUserFullNameFromEmail($email) {
  */
 function getUserEmail($userId) {
 	if($userId <= 0) return 'Anonymous';
-	$query="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = ".$userId;
+	$query="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
 	$result = mysql_query($query);
 	$row= mysql_fetch_row($result);
 	return $row[0];
@@ -369,7 +369,7 @@ function getUserIdFromEmail($email) {
  * @return String containing the module name of the given page
  */
 function getEffectivePageModule($pageId) {
-	$pagemodule_query = "SELECT `page_module`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
+	$pagemodule_query = "SELECT `page_module`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
 	$pagemodule_result = mysql_query($pagemodule_query);
 	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
 	if($pagemodule_row['page_module']=="link")	return (getEffectivePageModule($pagemodule_row['page_modulecomponentid']));
@@ -399,7 +399,7 @@ function getNextModuleComponentId($modulename) {
  * @return Integer indicating the dereferenced page id
  */
 function getDereferencedPageId($pageId) {
-	$pagemodule_query = "SELECT `page_module`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
+	$pagemodule_query = "SELECT `page_module`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
 	$pagemodule_result = mysql_query($pagemodule_query);
 	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
 	if($pagemodule_row['page_module']=="link") {
@@ -414,7 +414,7 @@ function getPagePath($pageid) {
 	$pagepath = '';
 
 	while($pageid != 0) {
-		$pathQuery = "SELECT `page_parentid`, `page_name` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = ".$pageid;
+		$pathQuery = "SELECT `page_parentid`, `page_name` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '".$pageid."'";
 		$pathResult = mysql_query($pathQuery);
 		$pathResultRow = mysql_fetch_row($pathResult);
 
@@ -432,7 +432,7 @@ function getPageModule($pageId) {
 	return $pagemodule_row['page_module'];
 }
 function getPageTitle($pageId) {
-	$pagemodule_query = "SELECT `page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
+	$pagemodule_query = "SELECT `page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
 	$pagemodule_result = mysql_query($pagemodule_query);
 	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
 	return $pagemodule_row['page_title'];
@@ -446,32 +446,32 @@ function getPageTitle($pageId) {
  * @return Integer indicating the page id of the parent page
  */
 function getParentPage($pageid) {
-	$pageparent_query = "SELECT `page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
+	$pageparent_query = "SELECT `page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
 	$pageparent_result = mysql_query($pageparent_query);
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {
-	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image`, `page_displayicon` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
+	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image`, `page_displayicon` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
 	$pageparent_result = mysql_query($pageparent_query);
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row;
 }
 function getPageModuleComponentId($pageid) {
-	$pageparent_query = "SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageid;
+	$pageparent_query = "SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
 	$pageparent_result = mysql_query($pageparent_query);
 	$pageparent_row = mysql_fetch_assoc($pageparent_result);
 	return $pageparent_row['page_modulecomponentid'];
 }
 function getPageIdFromModuleComponentId($moduleName,$moduleComponentId) {
-	$moduleid_query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module` = '".$moduleName."' AND `page_modulecomponentid` = ".$moduleComponentId;
+	$moduleid_query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module` = '".$moduleName."' AND `page_modulecomponentid` = '".$moduleComponentId."'";
 	$moduleid_result = mysql_query($moduleid_query);
 	$moduleid_row = mysql_fetch_assoc($moduleid_result);
 	return $moduleid_row['page_id'];
 }
 
 function getModuleComponentIdFromPageId($pageId, $moduleName) {
-	$moduleIdQuery = 'SELECT `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '".$moduleName."' AND `page_id` = ".$pageId;
+	$moduleIdQuery = 'SELECT `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '".$moduleName."' AND `page_id` = '".$pageId."'";
 	$moduleIdResult = mysql_query($moduleIdQuery);
 	$moduleIdRow = mysql_fetch_row($moduleIdResult);
 	return $moduleIdRow[0];

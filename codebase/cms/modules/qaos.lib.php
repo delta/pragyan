@@ -104,13 +104,13 @@ class qaos implements module {
 									 			
 USERDATA;
 				}
-				$query = "SELECT count(*) as count FROM `qaos_scoring` WHERE user_id = $userId";
+				$query = "SELECT count(*) as count FROM `qaos_scoring` WHERE user_id = '$userId'";
 				$result = mysql_query($query);
 				$row = mysql_fetch_assoc($result);
 				$htmlOut .= "</table> <br />Total No of persons this guy has rated : ".$row['count'];
 				 
 				$htmlOut .= "<br /><br /><br />People who has rated this person:<br /><br />";
-				$query = "SELECT * FROM `qaos_scoring` WHERE targetuser_id = $userId";
+				$query = "SELECT * FROM `qaos_scoring` WHERE targetuser_id = '$userId'";
 				$result = mysql_query($query);
 				$htmlOut .= "<table border=\"1\">";
 				$htmlOut .= "<tr><th>User Full Name</th><th>User Team</th><th>User Designation</th><th>User Score1</th><th>User Reason1</th><th>User Score2</th><th>User Reason2</th><th>User Score3</th><th>User Reason3</th><th>User Score4</th><th>User Reason4</th><th>User Score5</th><th>User Reason5</th>";
@@ -139,7 +139,7 @@ USERDATA;
 								</tr>
 USERDATA;
 				}
-				$query = "SELECT count(*) as count FROM `qaos_scoring` WHERE targetuser_id = $userId";
+				$query = "SELECT count(*) as count FROM `qaos_scoring` WHERE targetuser_id = '$userId'";
 				$result = mysql_query($query);
 				$row = mysql_fetch_assoc($result);
 				$htmlOut .= "</table><br />Total number of person who have rated this person : ".$row['count']; 
@@ -193,7 +193,7 @@ ADMIN;
 
 			elseif($_GET['subaction']=='changeversion'){
 				if(isset($_POST['btnSubmitVersion'])){
-					$query = "UPDATE `qaos_version` SET `qaos_version` = '$_POST[qaos_version]' WHERE `page_modulecomponentid` = $moduleComponentId";
+					$query = "UPDATE `qaos_version` SET `qaos_version` = '".escape($_POST[qaos_version])."' WHERE `page_modulecomponentid` = '$moduleComponentId'";
 					$result = mysql_query($query);
 					if(mysql_query($query))
 						displayinfo("The version has been successfully updated.");
@@ -223,7 +223,7 @@ ADMIN;
 		}
 
 
-		$queryVersion = "SELECT `qaos_version` FROM `qaos_version` WHERE `page_modulecomponentid` = $moduleComponentId";
+		$queryVersion = "SELECT `qaos_version` FROM `qaos_version` WHERE `page_modulecomponentid` = '$moduleComponentId'";
 		$resultVersion = mysql_query($queryVersion);
 		$row = mysql_fetch_row($resultVersion);
 		$version = $row[0];
@@ -251,7 +251,7 @@ ADMIN;
 EDITQAOS;
 		}
 		$html .= "<br /><h3>Teams in Pragyan 2008: </h3><br />";
-		$queryTeam = "SELECT * FROM `qaos_teams` WHERE `page_modulecomponentid`=$moduleComponentId ORDER BY `qaos_team_name`";
+		$queryTeam = "SELECT * FROM `qaos_teams` WHERE `page_modulecomponentid`='$moduleComponentId' ORDER BY `qaos_team_name`";
 		$resultTeam = mysql_query($queryTeam);
 		$html.= "<table border=\"1\"><tr><td><b>Team Name</b></td><td><b>Team Description</b></td><td><b>Team Representative</b></td></tr>";
 		while($row = mysql_fetch_row($resultTeam)){
@@ -613,21 +613,21 @@ DISABLEPARENTFIELD;
 		return $designationId;
 	}
 	function getDesignationPriority($designationId){
-		$query = "SELECT `qaos_designation_priority` FROM `qaos_designations` WHERE `qaos_designation_id`=$designationId";
+		$query = "SELECT `qaos_designation_priority` FROM `qaos_designations` WHERE `qaos_designation_id`='$designationId'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_assoc($result);
 		$designationPriority = $row['qaos_designation_priority'];
 		return $designationPriority;
 	}
 	function getUnitId($teamId,$designationId){
-		$query = "SELECT `qaos_unit_id` FROM `qaos_units` WHERE `qaos_team_id`=$teamId AND `qaos_designation_id`=$designationId";
+		$query = "SELECT `qaos_unit_id` FROM `qaos_units` WHERE `qaos_team_id`='$teamId' AND `qaos_designation_id`='$designationId'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_assoc($result);
 		$unitId = $row['qaos_unit_id'];
 		return $unitId;
 	}
 	function getUnitIdFromUserId($userId){
-		$query = "SELECT `qaos_unit_id` FROM `qaos_users` WHERE `user_id`=$userId";
+		$query = "SELECT `qaos_unit_id` FROM `qaos_users` WHERE `user_id`='$userId'";
 		$result = mysql_query($query);
 		$row = mysql_fetch_assoc($result);
 		$unitId = $row['qaos_unit_id'];
@@ -675,7 +675,7 @@ DISABLEPARENTFIELD;
 				displayerror("Sorry, this qaos member can not be added to the team. Already two members has been assigned to this team.");
 			}
 			else if(!$userRep11 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = $userId WHERE `qaos_team_name` = '$qaosTeam1'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = '$userId' WHERE `qaos_team_name` = '$qaosTeam1'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam1");
 					$memberadd = true;
@@ -683,7 +683,7 @@ DISABLEPARENTFIELD;
 				
 			}
 			else if(!$userRep12 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = $userId WHERE `qaos_team_name` = '$qaosTeam1'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = '$userId' WHERE `qaos_team_name` = '$qaosTeam1'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam1");
 					$memberadd = true;
@@ -703,7 +703,7 @@ DISABLEPARENTFIELD;
 				displayerror("Sorry, this qaos member can not be added to $qaosTeam2. Already two members has been assigned to this team.");
 			}
 			else if(!$userRep1 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = $userId WHERE `qaos_team_name` = '$qaosTeam2'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = '$userId' WHERE `qaos_team_name` = '$qaosTeam2'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam2");
 					$memberadd = true;
@@ -711,7 +711,7 @@ DISABLEPARENTFIELD;
 				
 			}
 			else if(!$userRep2 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = $userId WHERE `qaos_team_name` = '$qaosTeam2'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = '$userId' WHERE `qaos_team_name` = '$qaosTeam2'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam2");
 					$memberadd = true;
@@ -731,7 +731,7 @@ DISABLEPARENTFIELD;
 				displayerror("Sorry, this qaos member can not be added to $qaosTeam3. Already two members has been assigned to this team.");
 			}
 			else if(!$userRep1 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = $userId WHERE `qaos_team_name` = '$qaosTeam3'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = '$userId' WHERE `qaos_team_name` = '$qaosTeam3'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam3");
 					$memberadd = true;
@@ -739,7 +739,7 @@ DISABLEPARENTFIELD;
 				
 			}
 			else if(!$userRep2 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = $userId WHERE `qaos_team_name` = '$qaosTeam3'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = '$userId' WHERE `qaos_team_name` = '$qaosTeam3'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam3");
 					$memberadd = true;
@@ -759,7 +759,7 @@ DISABLEPARENTFIELD;
 				displayerror("Sorry, this qaos member can not be added to $qaosTeam4. Already two members has been assigned to this team.");
 			}
 			else if(!$userRep1 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = $userId WHERE `qaos_team_name` = '$qaosTeam4'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id1` = '$userId' WHERE `qaos_team_name` = '$qaosTeam4'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam4");
 					$memberadd = true;
@@ -767,7 +767,7 @@ DISABLEPARENTFIELD;
 				
 			}
 			else if(!$userRep2 && !$memberadd){
-				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = $userId WHERE `qaos_team_name` = '$qaosTeam4'";
+				$query = "UPDATE `qaos_teams` SET `qaos_representative_user_id2` = '$userId' WHERE `qaos_team_name` = '$qaosTeam4'";
 				if($result = mysql_query($query)){
 					displayinfo("User Successfully added in $qaosTeam4");
 					$memberadd = true;
@@ -822,11 +822,11 @@ DISABLEPARENTFIELD;
 			$parentUnitId = $this->getUnitId($parentTeamId,$parentDesignationId);
 		}
 // now check if the user exists or not
-		$query = "SELECT `user_id`,`qaos_unit_id` FROM `qaos_users` WHERE `user_id`=$userId";
+		$query = "SELECT `user_id`,`qaos_unit_id` FROM `qaos_users` WHERE `user_id`='$userId'";
 		$result = mysql_query($query);
 		if($row = mysql_fetch_assoc($result)){
 			$unitId = $row['qaos_unit_id'];
-			$queryTeam = "SELECT `qaos_teams`.`qaos_team_name` FROM `qaos_teams`, `qaos_units` WHERE `qaos_teams`.`qaos_team_id`=`qaos_units`.`qaos_team_id` AND `qaos_units`.`qaos_unit_id`=$unitId";
+			$queryTeam = "SELECT `qaos_teams`.`qaos_team_name` FROM `qaos_teams`, `qaos_units` WHERE `qaos_teams`.`qaos_team_id`=`qaos_units`.`qaos_team_id` AND `qaos_units`.`qaos_unit_id`='$unitId'";
 			$resultTeam = mysql_query($queryTeam);
 			$row = mysql_fetch_assoc($resultTeam);
 			var_dump($row);
@@ -835,12 +835,12 @@ DISABLEPARENTFIELD;
 		}
 		else {
 // Check whether the unit already exists in the database or not. If not add a new unit, and then add the user otherwise directly add the user
-			$queryUnits = "SELECT `qaos_unit_id` FROM `qaos_units` WHERE `qaos_team_id`=$teamId AND `qaos_designation_id`=$designationId";
+			$queryUnits = "SELECT `qaos_unit_id` FROM `qaos_units` WHERE `qaos_team_id`='$teamId' AND `qaos_designation_id`='$designationId'";
 			$resultUnits = mysql_query($queryUnits);
 //if the unit exist, just add the user to the qaos_user table.
 			if($rowUnits = mysql_fetch_assoc($resultUnits)){
 				$unitId = $rowUnits['qaos_unit_id'];
-				$queryUsers = "INSERT INTO `qaos_users` (`page_modulecomponentid`,`user_id`,`qaos_unit_id`) VALUES ($this->moduleComponentId,$userId,$unitId)";
+				$queryUsers = "INSERT INTO `qaos_users` (`page_modulecomponentid`,`user_id`,`qaos_unit_id`) VALUES ('$this->moduleComponentId','$userId','$unitId')";
 				$resultUsers = mysql_query($queryUsers);
 				if($resultUsers)
 					displayinfo("The User was successfully added to the team");
@@ -853,13 +853,13 @@ DISABLEPARENTFIELD;
 				$resultMaxUnitid = mysql_query($queryMaxUnitid);
 				$rowMaxUnitid = mysql_fetch_assoc($resultMaxUnitid);
 				$unitId = 1 + $rowMaxUnitid['MAX'];
-				$queryInsertUnit = "INSERT INTO `qaos_units` (`page_modulecomponentid`,`qaos_unit_id`,`qaos_team_id`,`qaos_designation_id`) VALUES ($this->moduleComponentId,$unitId,$teamId,$designationId)";
+				$queryInsertUnit = "INSERT INTO `qaos_units` (`page_modulecomponentid`,`qaos_unit_id`,`qaos_team_id`,`qaos_designation_id`) VALUES ('$this->moduleComponentId','$unitId','$teamId','$designationId')";
 				$resultInsertUnit = mysql_query($queryInsertUnit);
 				//echo $parentUnitId."two";
-				$queryInsertTree = "INSERT INTO `qaos_tree` (`page_modulecomponentid`,`qaos_unit_id`,`qaos_parentunit_id`) VALUES ($this->moduleComponentId,$unitId,$parentUnitId)";
+				$queryInsertTree = "INSERT INTO `qaos_tree` (`page_modulecomponentid`,`qaos_unit_id`,`qaos_parentunit_id`) VALUES ('$this->moduleComponentId','$unitId','$parentUnitId')";
 				$resultInsertTree = mysql_query($queryInsertTree);
 
-				$queryInsertUser = "INSERT INTO `qaos_users` (`page_modulecomponentid`,`user_id`,`qaos_unit_id`) VALUES ($this->moduleComponentId,$userId,$unitId)";
+				$queryInsertUser = "INSERT INTO `qaos_users` (`page_modulecomponentid`,`user_id`,`qaos_unit_id`) VALUES ('$this->moduleComponentId','$userId','$unitId')";
 				$resultInsertUser = mysql_query($queryInsertUser);
 				displayinfo("The User was successfully added to the team.");
 			}
@@ -872,7 +872,7 @@ DISABLEPARENTFIELD;
 		global $templateFolder;
 		$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
 		$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
-		$queryVersion = "SELECT `qaos_version` FROM `qaos_version` WHERE `page_modulecomponentid` = $moduleComponentId";
+		$queryVersion = "SELECT `qaos_version` FROM `qaos_version` WHERE `page_modulecomponentid` = '$moduleComponentId'";
 		$resultVersion = mysql_query($queryVersion);
 		$row = mysql_fetch_row($resultVersion);
 		$version = $row[0];
@@ -905,7 +905,7 @@ TREEDATA;
 	}
 	function getNodeHtml($unitId,$score) {
 		$htmlOut = '';
-		$query = "SELECT `user_id`,us.`qaos_unit_id`,d.`qaos_designation_name`,tm.`qaos_team_name` FROM `qaos_users` us,`qaos_designations` d,`qaos_units` un,`qaos_tree` t,`qaos_teams` tm WHERE t.`qaos_parentunit_id`=$unitId AND us.`qaos_unit_id` = t.`qaos_unit_id` AND un.`qaos_unit_id`=us.`qaos_unit_id` AND d.`qaos_designation_id` = un.`qaos_designation_id` AND tm.`qaos_team_id`=un.`qaos_team_id` ORDER BY d.`qaos_designation_name`,tm.`qaos_team_name`";
+		$query = "SELECT `user_id`,us.`qaos_unit_id`,d.`qaos_designation_name`,tm.`qaos_team_name` FROM `qaos_users` us,`qaos_designations` d,`qaos_units` un,`qaos_tree` t,`qaos_teams` tm WHERE t.`qaos_parentunit_id`='$unitId' AND us.`qaos_unit_id` = t.`qaos_unit_id` AND un.`qaos_unit_id`=us.`qaos_unit_id` AND d.`qaos_designation_id` = un.`qaos_designation_id` AND tm.`qaos_team_id`=un.`qaos_team_id` ORDER BY d.`qaos_designation_name`,tm.`qaos_team_name`";
 		$queryResult = mysql_query($query);
 		$arrayUsers = array();
 		$arrayUnits = array();
@@ -992,7 +992,7 @@ USERNAME;
 					$userEmail = $_GET['userEmail'];
 					$targetUserId = getUserIdFromEmail($targetUserEmail);
 					$userId = getUserIdFromEmail($userEmail);
-					$query = "INSERT INTO `qaos_scoring`(`page_modulecomponentid`,`user_id`,`targetuser_id`,`qaos_score1`,`qaos_score2`,`qaos_score3`,`qaos_score4`,`qaos_score5`,`qaos_reason1`,`qaos_reason2`,`qaos_reason3`,`qaos_reason4`,`qaos_reason5`) VALUES($moduleComponentId,$userId,$targetUserId,{$_POST['qaos_score1']},{$_POST['qaos_score2']},{$_POST['qaos_score3']},{$_POST['qaos_score4']},{$_POST['qaos_score5']},'{$_POST['qaos_reason1']}','{$_POST['qaos_reason2']}','{$_POST['qaos_reason3']}','{$_POST['qaos_reason4']}','{$_POST['qaos_reason5']}')";
+					$query = "INSERT INTO `qaos_scoring`(`page_modulecomponentid`,`user_id`,`targetuser_id`,`qaos_score1`,`qaos_score2`,`qaos_score3`,`qaos_score4`,`qaos_score5`,`qaos_reason1`,`qaos_reason2`,`qaos_reason3`,`qaos_reason4`,`qaos_reason5`) VALUES($moduleComponentId,$userId,$targetUserId,'".escape($_POST['qaos_score1'])."','".escape($_POST['qaos_score2'])."','".escape($_POST['qaos_score3'])."','".escape($_POST['qaos_score4'])."','".escape($_POST['qaos_score5'])."','".escape($_POST['qaos_reason1'])."','".escape($_POST['qaos_reason2'])."','".escape($_POST['qaos_reason3'])."','".escape($_POST['qaos_reason4'])."','".escape($_POST['qaos_reason5'])."')";
 					if(mysql_query($query))
 						displayinfo("Your scores have been stored.");
 					else
@@ -1010,7 +1010,7 @@ USERNAME;
 						return $htmlOut;
 					}
 					
-					$query ="SELECT * FROM `qaos_scoring` WHERE user_id=$userId AND targetuser_id=$targetUserId";
+					$query ="SELECT * FROM `qaos_scoring` WHERE user_id='$userId' AND targetuser_id='$targetUserId'";
 					$result = mysql_query($query);
 					if(mysql_affected_rows()>0){
 						displayerror("You have already scored this person.");
@@ -1226,7 +1226,7 @@ SCOREUSER;
 				}
 			}
 		
-		$query = "SELECT `user_id`,un.`qaos_unit_id`,d.`qaos_designation_name`,t.`qaos_team_name` FROM `qaos_users` u,`qaos_designations` d,`qaos_teams` t,`qaos_units` un WHERE un.`qaos_unit_id` = u.`qaos_unit_id` AND un.`qaos_team_id`=$teamId AND d.`qaos_designation_id` = un.`qaos_designation_id` AND t.`qaos_team_id`=un.`qaos_team_id`" ;
+		$query = "SELECT `user_id`,un.`qaos_unit_id`,d.`qaos_designation_name`,t.`qaos_team_name` FROM `qaos_users` u,`qaos_designations` d,`qaos_teams` t,`qaos_units` un WHERE un.`qaos_unit_id` = u.`qaos_unit_id` AND un.`qaos_team_id`='$teamId' AND d.`qaos_designation_id` = un.`qaos_designation_id` AND t.`qaos_team_id`=un.`qaos_team_id`" ;
 		$queryResult = mysql_query($query);
 		$arrayUsers = array();
 		$arrayUnits = array();
@@ -1258,7 +1258,7 @@ SCOREUSER;
 		$teamName = $this->getTeamNameFromTeamId($teamId);
 		if($teamName=="Core"){
 			$unitId = $this->getUnitIdFromUserId($this->userId);
-			$query = "SELECT us.user_id,tr.qaos_unit_id,d.qaos_designation_name, tm.qaos_team_name FROM `qaos_tree` tr JOIN qaos_units un ON (tr.qaos_unit_id = un.qaos_unit_id) JOIN qaos_teams tm ON (un.qaos_team_id = tm.qaos_team_id) JOIN qaos_designations d ON (un.qaos_designation_id = d.qaos_designation_id) JOIN qaos_users us ON (un.qaos_unit_id = us.qaos_unit_id) WHERE tr.qaos_parentunit_id=$unitId";
+			$query = "SELECT us.user_id,tr.qaos_unit_id,d.qaos_designation_name, tm.qaos_team_name FROM `qaos_tree` tr JOIN qaos_units un ON (tr.qaos_unit_id = un.qaos_unit_id) JOIN qaos_teams tm ON (un.qaos_team_id = tm.qaos_team_id) JOIN qaos_designations d ON (un.qaos_designation_id = d.qaos_designation_id) JOIN qaos_users us ON (un.qaos_unit_id = us.qaos_unit_id) WHERE tr.qaos_parentunit_id='$unitId'";
 			$queryResult = mysql_query($query);
 			$arrayUsers = array();
 			$arrayUnits = array();
@@ -1289,7 +1289,7 @@ SCOREUSER;
 		}
 		if($teamName=="Qaos"){
 			$unitId = $this->getUnitIdFromUserId($this->userId);
-			$query = "SELECT us.`user_id`,u.`qaos_unit_id`,d.`qaos_designation_name`,t.`qaos_team_name` FROM `qaos_units` u,`qaos_designations` d,`qaos_users` us,`qaos_teams` t WHERE u.`qaos_unit_id`= us.`qaos_unit_id` AND u.`qaos_designation_id`= d.`qaos_designation_id` AND u.`qaos_team_id` = t.`qaos_team_id` AND u.`qaos_team_id` IN (SELECT t.`qaos_team_id` FROM `qaos_teams` t WHERE t.`qaos_representative_user_id1` = $this->userId OR t.`qaos_representative_user_id2` = $this->userId)";
+			$query = "SELECT us.`user_id`,u.`qaos_unit_id`,d.`qaos_designation_name`,t.`qaos_team_name` FROM `qaos_units` u,`qaos_designations` d,`qaos_users` us,`qaos_teams` t WHERE u.`qaos_unit_id`= us.`qaos_unit_id` AND u.`qaos_designation_id`= d.`qaos_designation_id` AND u.`qaos_team_id` = t.`qaos_team_id` AND u.`qaos_team_id` IN (SELECT t.`qaos_team_id` FROM `qaos_teams` t WHERE t.`qaos_representative_user_id1` = '$this->userId' OR t.`qaos_representative_user_id2` = '$this->userId')";
 			$result = mysql_query($query);
 			$arrayUsers = array();
 			$arrayUnits = array();

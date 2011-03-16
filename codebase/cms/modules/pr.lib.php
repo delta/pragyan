@@ -149,7 +149,7 @@ REGISTRATIONFORM;
 
 
 	public function createModule($moduleComponentId) {
-		//No Initialization
+		///No Initialization
 	}
 
 	public function deleteModule($moduleComponentId){

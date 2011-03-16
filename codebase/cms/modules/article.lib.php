@@ -47,7 +47,7 @@ class article implements module, fileuploadable {
 	}
 	
 	function setCommentEnable($val) {
-		mysql_query("UPDATE `article_content` SET `allowComments` = $val WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'");
+		mysql_query("UPDATE `article_content` SET `allowComments` ='$val' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'");
 	}
 	
 	function renderComment($id,$user,$timestamp,$comment,$delete=0) {
@@ -96,7 +96,7 @@ RET;
 	if (isset($_GET['draft']) && isset ($_POST['CKEditor1'])){
 				
 				//$query = "UPDATE `article_draft` SET `draft_content` = '" . $_POST["CKEditor1"] . "' WHERE `page_modulecomponentid` =".$this->moduleComponentId;
-				$query="SELECT MAX(draft_number) AS MAX FROM `article_draft` WHERE page_modulecomponentid =" . $this->moduleComponentId;
+				$query="SELECT MAX(draft_number) AS MAX FROM `article_draft` WHERE page_modulecomponentid ='$this->moduleComponentId'";
 			$result = mysql_query($query);
 			if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
 			if(mysql_num_rows($result))
@@ -124,7 +124,7 @@ RET;
 				displayerror("Error in posting comment");
 		}
 		if($text==""){
-			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
+			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
 			$result = mysql_query($query);
 			if($row = mysql_fetch_assoc($result)) {
 				$text = $row['article_content'];
@@ -169,7 +169,7 @@ RET;
 		if (isset($_GET['deldraft']))
 		{
 		$dno = escape($_GET['dno']);
-		$query = "DELETE FROM `article_draft` WHERE `page_modulecomponentid`=". $this->moduleComponentId." AND `draft_number`=".$dno;
+		$query = "DELETE FROM `article_draft` WHERE `page_modulecomponentid`='". $this->moduleComponentId."' AND `draft_number`=".$dno;
 		$result = mysql_query($query) or die(mysql_error());
 		}
 		
@@ -216,11 +216,11 @@ HEADER;
 
 
 			/*Save the diff :-*/
-			$query = "SELECT article_content FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
+			$query = "SELECT article_content FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
 			$result = mysql_query($query);
 			$row = mysql_fetch_assoc($result);
 			$diff = mysql_escape_string($this->diff($_POST['CKEditor1'],$row['article_content']));
-			$query="SELECT MAX(article_revision) AS MAX FROM `article_contentbak` WHERE page_modulecomponentid =" . $this->moduleComponentId;
+			$query="SELECT MAX(article_revision) AS MAX FROM `article_contentbak` WHERE page_modulecomponentid ='" . $this->moduleComponentId."'";
 			$result = mysql_query($query);
 			if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
 			if(mysql_num_rows($result))
@@ -238,7 +238,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 
 		/*Save the diff end.*/
 
-			$query = "UPDATE `article_content` SET `article_content` = '" . $_POST["CKEditor1"] . "' WHERE `page_modulecomponentid` =$this->moduleComponentId ";
+			$query = "UPDATE `article_content` SET `article_content` = '" . $_POST["CKEditor1"] . "' WHERE `page_modulecomponentid` ='$this->moduleComponentId' ";
 			$result = mysql_query($query);
 			if(mysql_affected_rows() < 1)
 				displayerror("Unable to update the article");
@@ -358,11 +358,11 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		return $patch;
 	}
 	public function getRevision($revisionNo) {
-		$currentquery = "SELECT article_content FROM article_content WHERE page_modulecomponentid=" . $this->moduleComponentId;
+		$currentquery = "SELECT article_content FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
 		$currentresult = mysql_query($currentquery);
 		$currentrow = mysql_fetch_assoc($currentresult);
 		$revision = $currentrow['article_content'];
-		$diffquery = "SELECT * FROM `article_contentbak` WHERE `page_modulecomponentid`= $this->moduleComponentId AND article_revision >= '$revisionNo' ORDER BY article_revision DESC";
+		$diffquery = "SELECT * FROM `article_contentbak` WHERE `page_modulecomponentid`='$this->moduleComponentId' AND article_revision >= '$revisionNo' ORDER BY article_revision DESC";
 		$diffresult = mysql_query($diffquery);
 		while($diffrow = mysql_fetch_assoc($diffresult)) {
 			$revision = $this->patch($revision,$diffrow['article_diff']);
@@ -371,11 +371,11 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 	}
 	
 	public function getDraft($draftNo) {
-		$currentquery = "SELECT draft_content FROM article_draft WHERE page_modulecomponentid=" . $this->moduleComponentId;
+		$currentquery = "SELECT draft_content FROM article_draft WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
 		$currentresult = mysql_query($currentquery);
 		$currentrow = mysql_fetch_assoc($currentresult);
 		$draft = $currentrow['draft_content'];
-		$diffquery = "SELECT * FROM `article_draft` WHERE `page_modulecomponentid`= $this->moduleComponentId AND draft_number >= '$draftNo' ORDER BY draft_number DESC";
+		$diffquery = "SELECT * FROM `article_draft` WHERE `page_modulecomponentid`= '$this->moduleComponentId' AND draft_number >= '$draftNo' ORDER BY draft_number DESC";
 		$diffresult = mysql_query($diffquery);
 		while($diffrow = mysql_fetch_assoc($diffresult)) {
 			$draft = $this->patch($draft,$diffrow['draft_content']);
@@ -391,7 +391,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			global $ICONS;
 			require_once ("$sourceFolder/$moduleFolder/article/ckeditor/ckeditor.php");
 			if($content=="") {
-				$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`= $this->moduleComponentId";
+				$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`= '$this->moduleComponentId'";
 				$result = mysql_query($query);
 				$temp = mysql_fetch_assoc($result);
 				$content = $temp['article_content'];
@@ -437,7 +437,7 @@ Ck1;
 		$CkFooter .= '<br />Upload files : <br />'.getFileUploadForm($this->moduleComponentId,"article",'./+edit',UPLOAD_SIZE_LIMIT,5).'</fieldset>';
 
 		/* Revisions available */
-		$revisionquery = "SELECT MAX(article_revision) AS MAX FROM `article_contentbak` where page_modulecomponentid = $this->moduleComponentId";
+		$revisionquery = "SELECT MAX(article_revision) AS MAX FROM `article_contentbak` where page_modulecomponentid = '$this->moduleComponentId'";
 		$revisionresult = mysql_query($revisionquery);
 		$revisionrow = mysql_fetch_assoc($revisionresult);
 		$start = $revisionrow['MAX'] - 10;
@@ -449,7 +449,7 @@ Ck1;
 		if(isset($_GET['count']))
 			$count = escape($_GET['count']);
 		if($count>($revisionrow['MAX']-$start+1)) $count = $revisionrow['MAX']-$start+1;
-		$query = "SELECT article_revision,article_updatetime,user_id FROM `article_contentbak` where page_modulecomponentid = $this->moduleComponentId ORDER BY article_revision LIMIT $start,$count";
+		$query = "SELECT article_revision,article_updatetime,user_id FROM `article_contentbak` where page_modulecomponentid = '$this->moduleComponentId' ORDER BY article_revision LIMIT $start,$count";
 		$result = mysql_query($query);
 		$revisionTable = "<fieldset>
 					        <legend><a name='revisions'>{$ICONS['Page Revisions']['small']}Page Revisions : </a></legend>" .
@@ -465,7 +465,7 @@ Ck1;
 				"</fieldset>";
 				
 			/* Drafts available */
-		$draftquery = "SELECT MAX(draft_number) AS MAX FROM `article_draft` where page_modulecomponentid = $this->moduleComponentId";
+		$draftquery = "SELECT MAX(draft_number) AS MAX FROM `article_draft` where page_modulecomponentid = '$this->moduleComponentId'";
 		$draftresult = mysql_query($draftquery);
 		$draftrow = mysql_fetch_assoc($draftresult);
 		$dstart = $draftrow['MAX'] - 10;
@@ -478,7 +478,7 @@ Ck1;
 			$dcount = escape($_GET['dcount']);
 		if($dcount>($draftrow['MAX']-$dstart+1)) $dcount = $draftrow['MAX']-$dstart+1;
 		
-		$query = "SELECT `draft_lastsaved`,`draft_number`,`user_id` FROM `article_draft` where `page_modulecomponentid` = $this->moduleComponentId ORDER BY `draft_lastsaved` LIMIT $dstart,$dcount";
+		$query = "SELECT `draft_lastsaved`,`draft_number`,`user_id` FROM `article_draft` where `page_modulecomponentid` = '$this->moduleComponentId' ORDER BY `draft_lastsaved` LIMIT $dstart,$dcount";
 		$result = mysql_query($query);
 		$draftTable = "<fieldset>
 					        <legend><a name='drafts'>{$ICONS['Page Revisions']['small']}Drafts Saved : </a></legend>" .
