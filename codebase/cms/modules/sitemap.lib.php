@@ -95,12 +95,12 @@ TREEDATA;
 		return $htmlOut;
 	}
 
-
-	public function createModule($nexttId) {
+ 
+	public function createModule($nexttId) { 
 		///No initialization
 	}
 	public function deleteModule($moduleComponentId) {
-		return true
+		return true;
 	}
 	public function copyModule($moduleComponentId,$newId) {
 		return true;
