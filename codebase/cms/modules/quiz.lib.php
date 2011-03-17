@@ -329,7 +329,7 @@ class quiz implements module {
 	 * A row will be inserted into quiz_descriptions
 	 */
 	public function createModule($moduleComponentId) {
-		$insertQuery = "INSERT INTO `quiz_descriptions`(`page_modulecomponentid`,`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" .
+		$insertQuery = "INSERT INTO `quiz_descriptions`(`page_modulecomponentid`,`quiz_title`, `quiz_headertext`, `quiz_submittext`, `quiz_quiztype`, `quiz_testduration`, `quiz_questionspertest`, `quiz_questionsperpage`, `quiz_timeperpage`, `quiz_allowsectionrandomaccess`, `quiz_mixsections`, `quiz_showquiztimer`, `quiz_showpagetimer`) VALUES" . "('{$moduleComponentId}','New Quiz', 'Quiz under construction', 'Quiz under construction', 'simple', '00:30', '20', '10', 0, 1, 0, 1, 0)"; 
 		if (!mysql_query($insertQuery)) {
 			displayerror('Database Error. Could not create quiz. ' . $insertQuery . ' ' . mysql_error());
 		}
