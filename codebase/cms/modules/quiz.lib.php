@@ -292,7 +292,7 @@ class quiz implements module {
 			$userid = escape($_POST['userid']);
 			$mark = escape($_POST['mark']);
 			$condition = "`page_modulecomponentid` = '$quizid' AND `quiz_sectionid` = '$sectionid' AND `quiz_questionid` = '$questionid' AND `user_id` = '$userid'";
-			$result = mysql_query("SELECT `quiz_submittedanswer` FROM `quiz_answersubmissions` WHERE '$condition'");
+			$result = mysql_query("SELECT `quiz_submittedanswer` FROM `quiz_answersubmissions` WHERE $condition");
 			if($row = mysql_fetch_array($result)) {
 				$result = mysql_fetch_array(mysql_query("SELECT `question_positivemarks`, `question_negativemarks` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizid' AND `question_weight` = (SELECT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = '$quizid' AND `quiz_sectionid` = '$sectionid' AND `quiz_questionid` = '$questionid')"));
 				if($_POST['mark'] > $result['question_positivemarks'] || $_POST['mark'] < -1 * $result['question_negativemarks'])
