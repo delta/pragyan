@@ -400,9 +400,9 @@ else{
 if((isset($_GET['checkOut'])))
 {
 	if(is_numeric($_GET['checkOut']))
-	$cond='`user_id`='.escape($_GET['checkOut']).'';
+	$cond='`user_id`=\''.escape($_GET['checkOut'])."'";
 	else $cond='`hospi_guest_name`=\''.escape($_GET['checkOut']).'\' AND `hospi_actual_checkin`=\''.escape($_GET['checkinTime']).'\' AND `hospi_checkedin_by`='.escape($_GET['by']).'';
-	$query="UPDATE `hospi_accomodation_status` SET `hospi_actual_checkout`=NOW(),`hospi_checkedout_by`= '$this->userId' WHERE `hospi_room_id`='".escape($_GET[room_id])."' AND '$cond' AND `hospi_actual_checkout` IS NULL ";
+	$query="UPDATE `hospi_accomodation_status` SET `hospi_actual_checkout`=NOW(),`hospi_checkedout_by`= '$this->userId' WHERE `hospi_room_id`='".escape($_GET[room_id])."' AND $cond AND `hospi_actual_checkout` IS NULL ";
 	$result=mysql_query($query);
 	if(mysql_error())displayerror(mysql_error());
 
