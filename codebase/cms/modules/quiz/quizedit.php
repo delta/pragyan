@@ -162,7 +162,7 @@ function deleteItem($tableNames, $conditions, &$affectedRows) {
 	$affectedRows = array();
 	$allOk = true;
 	for ($i = 0; $i < count($tableNames); ++$i) {
-		$deleteQuery = "DELETE FROM `{$tableNames[$i]}` WHERE '$conditions'";
+		$deleteQuery = "DELETE FROM `{$tableNames[$i]}` WHERE $conditions";
 		if (!mysql_query($deleteQuery)) {
 			displayerror("Database Error. Could not remove information from table `{$tableNames[$i]}`.");
 			$allOk = false;
@@ -189,7 +189,7 @@ function deleteQuestion($quizId, $sectionId, $questionId) {
 function deleteQuestionOptions($quizId, $sectionId, $questionId) {
 	$tableNames = array('quiz_objectiveoptions');
 	$affectedRows = array();
-	return deleteItem($tableNames, "`page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = $questionId", $affectedRows);
+	return deleteItem($tableNames, "`page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId'", $affectedRows);
 }
 
 /**
@@ -215,8 +215,8 @@ function moveItem($itemId, $itemRank, $tableName, $idFieldName, $rankFieldName, 
 	$itemId2 = $neighbourRow[$idFieldName];
 	$itemRank2 = $neighbourRow[$rankFieldName];
 
-	$updateQuery1 = "UPDATE `$tableName` SET `$rankFieldName` = $itemRank2 WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$idFieldName` = $itemId";
-	$updateQuery2 = "UPDATE `$tableName` SET `$rankFieldName` = $itemRank WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$idFieldName` = $itemId2";
+	$updateQuery1 = "UPDATE `$tableName` SET `$rankFieldName` = $itemRank2 WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$idFieldName` = '$itemId'";
+	$updateQuery2 = "UPDATE `$tableName` SET `$rankFieldName` = $itemRank WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$idFieldName` = '$itemId2'";
 
 	if (!mysql_query($updateQuery1) || !mysql_query($updateQuery2)) {
 		displayerror('Database Error. Could not move the specified item.');
