@@ -56,7 +56,8 @@ function getQuestionTypeBox($questionType) {
  * gets rows from database
  */
 function getTableRow($tableName, $condition) {
-	$query = "SELECT * FROM `$tableName` WHERE '$condition'";
+	$query = "SELECT * FROM `$tableName` WHERE $condition";
+	echo $query;
 	$result = mysql_query($query);
 	if (!$result) {
 		displayerror('Database error. Could not retrieve information from the database.');
@@ -66,15 +67,15 @@ function getTableRow($tableName, $condition) {
 }
 
 function getQuizRow($quizId) {
-	return getTableRow('quiz_descriptions', "`page_modulecomponentid` = $quizId");
+	return getTableRow('quiz_descriptions', "`page_modulecomponentid` = '$quizId'");
 }
 
 function getSectionRow($quizId, $sectionId) {
-	return getTableRow('quiz_sections', "`page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId");
+	return getTableRow('quiz_sections', "`page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId'");
 }
 
 function getQuestionRow($quizId, $sectionId, $questionId) {
-	return getTableRow('quiz_questions', "`page_modulecomponentid` = $quizId AND `quiz_sectionid` = $sectionId AND `quiz_questionid` = $questionId");
+	return getTableRow('quiz_questions', "`page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId'");
 }
 
 
