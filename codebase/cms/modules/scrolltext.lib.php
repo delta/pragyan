@@ -118,7 +118,7 @@ public function deleteModule($moduleComponentId) {
 		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`='$fromId'";
 		$result = mysql_query($query);
 		if(!$result)
-			return false
+			return false;
 		
 		$content = mysql_fetch_assoc($result);
 		
