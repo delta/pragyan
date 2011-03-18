@@ -878,6 +878,9 @@ function pagesettings($pageId, $userId) {
 				$maxqueryrow = mysql_fetch_array($maxqueryresult);
 				$maxpageid = $maxqueryrow[0]+1;
 
+				$menutypequery="SELECT `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu` FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id=".$pageId;
+				$menutyperesult = mysql_query($menutypequery);
+				$menutyperow = mysql_fetch_array($menutyperesult);
 				$alreadyexistquery="SELECT page_name FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_parentid='$pageId' AND page_name='".escape($_POST['childpagename'])."'";
 				$alreadyexistqueryresult = mysql_query($alreadyexistquery);
 				$alreadyexistquerynumrows = mysql_num_rows($alreadyexistqueryresult);
@@ -888,8 +891,8 @@ function pagesettings($pageId, $userId) {
 				elseif($alreadyexistquerynumrows>=1)
 					displayerror("A page with the given name already exists at this location.");
 				elseif($_POST['childpagetype']=="menu") {
-					$menuquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '".$childPageName."', '$pageId', '".$childPageTitle."', '".escape($_POST['childpagetype'])."', '0', '$page_template', '$maxpageid')";
+					$menuquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu`) " .
+							"VALUES ('$maxpageid', '".$childPageName."', '$pageId', '".$childPageTitle."', '".escape($_POST['childpagetype'])."', '0', '$page_template', '$maxpageid', '$menutyperow[0]','$menutyperow[1]','$menutyperow[2]','$menutyperow[3]','$menutyperow[4]')";
 					mysql_query($menuquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
@@ -903,16 +906,16 @@ function pagesettings($pageId, $userId) {
 					if(getPermissions($userId, $parentId, "settings")) {
 					if($_POST['linkselect']=="Same Tab"){
 					$parentId = parseUrlReal(escape($_POST['childpagelink']), $pageIdArray);
-					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_openinnewtab`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid', '0')";
+					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_openinnewtab`, `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu`) " .
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid', '0', '$menutyperow[0]','$menutyperow[1]','$menutyperow[2]','$menutyperow[3]','$menutyperow[4]')";
 					mysql_query($linkquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
 					}
 					if ($_POST['linkselect']=="New Tab"){
 					$parentId = parseUrlReal(escape($_POST['childpagelink']), $pageIdArray);
-					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_openinnewtab`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid', '1')";
+					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_openinnewtab`, `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu`) " .
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$parentId', '$page_template', '$maxpageid', '1', '$menutyperow[0]','$menutyperow[1]','$menutyperow[2]','$menutyperow[3]','$menutyperow[4]')";
 					mysql_query($linkquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page');
@@ -935,8 +938,8 @@ function pagesettings($pageId, $userId) {
 					
 					if($_POST['linkselectex']=="New Tab") 
 					{
-						$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`,`page_openinnewtab`) " .
-							"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid','1')";
+						$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`,`page_openinnewtab`, `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu`) " .
+							"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid','1', '$menutyperow[0]','$menutyperow[1]','$menutyperow[2]','$menutyperow[3]','$menutyperow[4]')";
 						
 						mysql_query($linkquery);
 						if (mysql_affected_rows() != 1)
@@ -947,8 +950,8 @@ function pagesettings($pageId, $userId) {
 					}
 					else {
 						
-					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`,`page_openinnewtab`) " .
-						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid','0')";
+					$linkquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`,`page_openinnewtab`, `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu`) " .
+						"VALUES ('$maxpageid', '".escape($_POST['childpagename'])."', '$pageId', '".escape(ucfirst(escape($_POST['childpagename'])))."', '".escape($_POST['childpagetype'])."', '$extpageid', '$page_template' ,'$maxpageid','0', '$menutyperow[0]','$menutyperow[1]','$menutyperow[2]','$menutyperow[3]','$menutyperow[4]')";
 					mysql_query($linkquery);
 					if (mysql_affected_rows() != 1)
 						{
@@ -966,8 +969,8 @@ function pagesettings($pageId, $userId) {
 					$page = new $moduleType();
 					$newId=createInstance($moduleType);
 					$page->createModule($newId);
-					$createquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`) " .
-							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$newId', '$page_template', '$maxpageid')";
+					$createquery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."pages` (`page_id` ,`page_name` ,`page_parentid` ,`page_title` ,`page_module` ,`page_modulecomponentid` , `page_template`, `page_menurank`, `page_menutype`,`page_menudepth`,`page_displaysiblingmenu`,`page_displayicon`,`page_displayinmenu`) " .
+							"VALUES ('$maxpageid', '$childPageName', '$pageId', '$childPageTitle', '".escape($_POST['childpagetype'])."', '$newId', '$page_template', '$maxpageid', '$menutyperow[0]','$menutyperow[1]','$menutyperow[2]','$menutyperow[3]','$menutyperow[4]')";
 					mysql_query($createquery);
 						if (mysql_affected_rows() != 1)
 							displayerror( 'Unable to create a new page.');
