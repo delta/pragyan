@@ -17,7 +17,7 @@
  * @section Introduction
  * Pragyan CMS is a simple and fast multiuser CMS(Content Management System) to organize collaborative web-content. 
  * This CMS allows very fine user & group permissions and generating pages like articles, forms, quizzes, forums, gallery, etc.
- * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps, Latex, etc.
+ * The internal search engine is powered by Sphider and it comes with many third-party plugins like PDF, Google Maps,  etc.
  * 
  * @section For License, Credits and other details
  * Please see README.html in docs folder.
