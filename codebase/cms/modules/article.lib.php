@@ -136,10 +136,10 @@ RET;
 		}
 		global $sourceFolder;
 		global $moduleFolder;
-		require_once($sourceFolder."/latexRender.class.php");
+		require_once($sourceFolder."/pngRender.class.php");
 		if (get_magic_quotes_gpc())
 			$text = stripslashes($text);
-		$render = new latexrender();
+		$render = new pngrender();
 		$ret = $render->transform($text);
 		
 		require_once($sourceFolder."/googleMaps.class.php");

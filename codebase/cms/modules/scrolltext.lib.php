@@ -50,10 +50,10 @@ class scrolltext implements module{
 	       $content="<HEAD><META HTTP-EQUIV=REFRESH CONTENT=300></HEAD><body><div><div align=\"center\"><fieldset><marquee behavior=scroll scrollAmount=\"1\" scrolldelay=\"0\" onmouseover=\"this.stop()\" direction=\"up\" onmouseout=\"this.start()\" vspce=\"800px\"style=\"height:800px;width:800px;font-size:15px;color:#880000;\">".$text."</div></fieldset></marquee></body>";
 			global $sourceFolder;
 			global $moduleFolder;
-			require_once($sourceFolder."/latexRender.class.php");
+			require_once($sourceFolder."/pngRender.class.php");
 			if (get_magic_quotes_gpc())
 				$content = stripslashes($content);
-			$render = new latexrender();
+			$render = new pngrender();
 			echo $render->transform($content);
 			disconnect();
 			exit();
