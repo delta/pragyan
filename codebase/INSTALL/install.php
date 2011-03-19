@@ -503,6 +503,8 @@ function CheckPrerequisites() {
 				break;
 		}
 	}
+	
+	///To check whether HTACCESS is enabled or not
 	$http_htaccess= getenv('HTTP_HTACCESS')=='On' ? true : false ;
 	
 	if(!$http_htaccess)
@@ -521,6 +523,14 @@ function CheckPrerequisites() {
 			</xmp></pre>
 			<p>If you have done this, <a href="../">click here</a> to go to the CMS.</p>
 HTTPMSG;
+	}
+	
+	///Check whether GD library is installed
+	if (!(extension_loaded('gd') && function_exists('gd_info'))) {
+		$prereq.="<li><p>GD Library is not installed</p></li>";
+		$prereq .= <<<PHPGD
+		For text to image conversion work in PRAGYAN CMS ,PHP-GD library should be installed.For installation of GD Library please refer <a href='http://www.php.net/manual/en/image.setup.php'>http://www.php.net/manual/en/image.setup.php</a>
+PHPGD;
 	}
 	
 	if ($prereq != '') {

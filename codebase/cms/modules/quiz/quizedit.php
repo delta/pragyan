@@ -299,8 +299,8 @@ function getQuestionTableHtml($quizId, $sectionId) {
 		}
 
 		global $sourceFolder, $moduleFolder;
-		require_once($sourceFolder."/latexRender.class.php");
-		$render = new latexrender();
+		require_once($sourceFolder."/pngRender.class.php");
+		$render = new pngrender();
 		$optionsText = $render->transform($optionsText);
 		$questionDesc = $render->transform($questionRow['quiz_question']);
 

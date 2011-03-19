@@ -518,8 +518,8 @@ $fieldName . '" id="' . $fieldName . '"></textarea>';
 		if ($questionNumber > 0) $questionDesc = $questionNumber . ') ' . $questionDesc;
 
 		global $sourceFolder, $moduleFolder;
-		require_once($sourceFolder."/latexRender.class.php");
-		$render = new latexrender();
+		require_once($sourceFolder."/pngRender.class.php");
+		$render = new pngrender();
 		$questionDesc = $render->transform($questionDesc);
 		$answer = $render->transform($answer);
 
