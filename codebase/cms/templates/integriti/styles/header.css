@@ -26,6 +26,7 @@ div#header_text {
 
 div.header ul {
 	float: right;
+	min-width:720px ;
 }
 
 div.header ul > li{
