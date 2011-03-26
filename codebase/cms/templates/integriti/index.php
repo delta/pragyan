@@ -55,8 +55,8 @@ if(!defined('__PRAGYAN_CMS'))
 		<li><a href="http://pragyan.integriti.org.in/home/gsoc_ideas/"><div>GSoC</div></a>
 
  <li><a href="http://pragyan.integriti.org.in/home/downloads/"><div>Downloads</div></a></li>
-<li><a href="http://pragyan.integriti.org.in/home/support/"><div>Support</div></li>
-<li><a href="http://pragyan.integriti.org.in/home/develop/"><div>Develop</div></li>
+<li><a href="http://pragyan.integriti.org.in/home/support/"><div>Support</div></a></li>
+<li><a href="http://pragyan.integriti.org.in/home/develop/"><div>Develop</div></a></li>
 <li><a href="http://pragyan.integriti.org.in/home/credits/"><div>Credits</div></a></li>
 
 		</ul>
@@ -69,6 +69,9 @@ if(!defined('__PRAGYAN_CMS'))
 		</div>
 		<div class="clearer"></div>
 		<div class="actionbarcontainer">
+		<div style="float:left; padding-left:10px; padding-top:10px">
+<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FPragyan-CMS%2F105113256238439&amp;layout=standard&amp;show_faces=false&amp;width=150&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:200px; height:40px;" allowTransparency="true"></iframe>
+</div>
 			<div class="actionbar">
 			<?php echo $ACTIONBARMODULE; ?>
 			<?php echo $ACTIONBARPAGE; ?>
@@ -77,7 +80,6 @@ if(!defined('__PRAGYAN_CMS'))
 		<div class="clearer">
 		</div>
 		<div class="contentcontainer">
-			<div class="topcontentbar"></div>
 			<div id="cms-leftcontent">
 				<div class="menucontainer">
 					<?php echo $MENUBAR; ?>
