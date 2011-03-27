@@ -79,6 +79,32 @@ class gallery implements module, fileuploadable {
 				echo $view;
 			}
 			}
+		else if($_GET['rateIt']){
+			$arr3 = $_GET['rateRef'];
+			$query="SELECT `vote_avg`,`voters` FROM `gallery_pics` WHERE upload_filename='".$arr3."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
+			$result3=mysql_query($query);
+			if($result3){
+				$voteAvg = mysql_result($result3,0,'vote_avg');
+				$voters = mysql_result($result3,0,'voters');
+				$newAvg = (($voters*$voteAvg)+$_GET['rateIt'])/($voters+1);
+				$voters=$voters+1;
+				$query="UPDATE `gallery_pics` SET `vote_avg`='".$newAvg."',`voters`='".$voters."' WHERE upload_filename='".$arr3."' AND page_modulecomponentid='$this->moduleComponentId'";
+				$result = mysql_query($query);
+				if (!$result){echo "a";}
+				else{
+					$query="SELECT* FROM `gallery_pics` WHERE upload_filename='".$arr3."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
+					$result3 = mysql_query($query);
+					if($result3){
+						$rating = mysql_result($result3,0,'vote_avg');
+						$voters = mysql_result($result3,0,'voters');
+						echo $rating."-".$voters;
+					}
+					else{
+						echo "b";
+					}
+				}
+				}
+			}
 			disconnect();
 			exit(0);
 		}
@@ -121,6 +147,7 @@ JS;
 		$content .= "<h2><center>{$row['gallery_name']}</center></h2><br/><center><h3>{$row['gallery_desc']}</center></h3>";
 		$perPage = $row['imagesPerPage'];
 		$viewCheck = $row['allowViews'];
+		$ratingCheck = $row['allowRatings'];
 		include_once ("$sourceFolder/" . 'upload.lib.php');
 		$query = "SELECT `upload_filename` FROM `gallery_pics` WHERE `page_modulecomponentid` ='". $this->moduleComponentId."'";
 		$pic_result = mysql_query($query) or die(mysql_error());
@@ -147,7 +174,10 @@ JS;
 			$row2 = mysql_fetch_assoc($gallResult2);
 			if ($row2) {
 				$content .= "<input type=\"hidden\" id=\""."thumb_"."{$row2['upload_filename']}\" value=\"{$row2['pic_rate']}\" />";
-				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this,0,0,0,document.getElementById(\'thumb_' .$row2['upload_filename'].'\'),'.$viewCheck.')">';
+				$content .= "<input type=\"hidden\" id=\""."thumb1_"."{$row2['upload_filename']}\" value=\"{$row2['vote_avg']}\" />";
+				$content .= "<input type=\"hidden\" id=\""."thumb2_"."{$row2['upload_filename']}\" value=\"{$row2['voters']}\" />";
+				$content .= "<input type=\"hidden\" id=\""."thumb3_"."{$row2['upload_filename']}\" value=\"0\" />";
+				$content .= "<a href=\"./" . $arr[$i]['upload_filename'] . '"  class=\'highslide\' onclick="return hs.expand(this,0,0,0,document.getElementById(\'thumb_' .$row2['upload_filename'].'\'),'.$viewCheck.',document.getElementById(\'thumb1_' .$row2['upload_filename'].'\'),document.getElementById(\'thumb2_' .$row2['upload_filename'].'\'),'.$ratingCheck.',document.getElementById(\'thumb3_' .$row2['upload_filename'].'\'))">';
 				$content .= "<img src=\"./thumb_" . $arr[$i]['upload_filename'] . "\" alt='{$row2['gallery_filecomment']}' title='Click to enlarge' /></a>   &nbsp;";
 			}
 		}
@@ -207,7 +237,8 @@ JS;
 			if(is_numeric($_POST['imagesPerPage']))
 				$perPage = (int)escape($_POST['imagesPerPage']);
 				$viewCount = ( $_POST['allowViews'] ? 1 : 0 );
-			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."',`allowViews`='".$viewCount."' WHERE `page_modulecomponentid`='$moduleComponentId'";
+				$ratingCount = ( $_POST['allowRatings'] ? 1 : 0 );
+			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."',`allowViews`='".$viewCount."',`allowRatings`='".$ratingCount."' WHERE `page_modulecomponentid`='$moduleComponentId'";
 			$gallResult = mysql_query($gallQuery);
 		}
 
@@ -233,6 +264,7 @@ JS;
 		$result = mysql_fetch_array(mysql_query("SELECT * FROM `gallery_name` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		if($result){
 			$checkViews = ($result['allowViews'] == 1 ? 'checked="checked" ': '' );
+			$checkRatings = ($result['allowRatings'] == 1 ? 'checked="checked" ': '' );
 		}
 		$content2 .=<<<GALFORM
 					<br /><br />
@@ -266,8 +298,12 @@ JS;
 							<td><input type='text' name="gallDesc" value='{$result['gallery_desc']}'></td>
 						</tr>
 						<tr>
-							<td>Allow View Count</td>
+							<td>Show Gallery views ?</td>
 							<td><input type="checkbox" name="allowViews" $checkViews></td>
+						</tr>
+						<tr>
+							<td>Show Gallery rating ?</td>
+							<td><input type="checkbox" name="allowRatings" $checkRatings></td>
 						</tr>
 						<tr>
 							<td>Images Per Page</td>
@@ -317,6 +353,10 @@ IMGFORM;
 		for ($c = 0; $c < count($arr); $c++) {
 			$content = deleteFile($moduleComponentId, 'gallery', $arr[$c]['upload_filename']) && $content;
 		}
+		$gallQuery = "DELETE FROM `gall_name` where `page_modulecomponentid`='$moduleComponentId'";
+		$gallResult = mysql_query($gallQuery);
+		$gallQuery2 = "DELETE FROM `gall_pics` where `page_modulecomponentid`='$moduleComponentId'";
+		$gallResult2 = mysql_query($gallQuery2);
 		return $content;
 	}
 	public function copyModule($moduleComponentId,$newId) {
