@@ -26,9 +26,69 @@ Under the following conditions:
 Your fair use and other rights are in no way affected by the above.
 ******************************************************************************/
 //global variables---------
-var ajaxbug,checkViews;
+var ajaxbug,checkViews,voters,checkRatings;
 var views=-1;
+var rates=-1;
+var star1,star2,star3,star4,star5;
+var rc;
+var rateOnce,rateOnceId;
 //-------------
+function glowstar(s,star){
+star1=document.getElementById('star1');
+star2=document.getElementById('star2');
+star3=document.getElementById('star3');
+star4=document.getElementById('star4');
+star5=document.getElementById('star5');
+var rating=document.getElementById('rating');
+if(s){
+	rc=0;
+	switch(star){
+		case 5:star5.src=hs.graphicsDir+"s1.gif";rating.innerHTML=" ( "+(++rc)+".0 / 5.0 ) ";
+		case 4:star4.src=hs.graphicsDir+"s1.gif";rating.innerHTML=" ( "+(++rc)+".0 / 5.0 ) ";
+		case 3:star3.src=hs.graphicsDir+"s1.gif";rating.innerHTML=" ( "+(++rc)+".0 / 5.0 ) ";
+		case 2:star2.src=hs.graphicsDir+"s1.gif";rating.innerHTML=" ( "+(++rc)+".0 / 5.0 ) ";
+		case 1:star1.src=hs.graphicsDir+"s1.gif";rating.innerHTML=" ( "+(++rc)+".0 / 5.0 ) ";break;
+		default:alert("unexpected error");
+	}
+}
+else{
+	switch(star){
+		case 5:star5.src=hs.graphicsDir+"s0.gif";
+		case 4:star4.src=hs.graphicsDir+"s0.gif";
+		case 3:star3.src=hs.graphicsDir+"s0.gif";
+		case 2:star2.src=hs.graphicsDir+"s0.gif";
+		case 1:star1.src=hs.graphicsDir+"s0.gif";rating.innerHTML="";break;
+		default:alert("unexpected error");
+	}
+}
+}
+
+function rateit(star){
+picHref = document.getElementsByClassName('highslide-image');
+picHref = picHref[0].getAttribute('src').split("/");
+picHref = picHref[(picHref.length)-1];
+	if(window.ActiveXObject){
+		var request3 = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	else if(XMLHttpRequest){
+		var request3 = new XMLHttpRequest();
+	}
+	the_url='./+view&subaction=ajax&rateRef='+picHref+'&rateIt='+star;
+	request3.open("GET",the_url);
+	request3.onreadystatechange = function(){
+	if(request3.readyState==4){
+			if((request3.responseText!="a")&&(request3.responseText!="b")){
+				var response = request3.responseText.split("-");
+				document.getElementById('showrates').innerHTML =  '| <font color=\"#500050\">' + response[0] + '</font>' + ' rating of ' + '<font color=\"#500050\">' + response[1] + '</font>' + ' voters | ';
+			}
+			else
+				alert("Ajax Response Text Error");
+			}}
+request3.send(null);
+document.getElementById('ableRating').style.display = 'none';
+document.getElementById('disableRating').style.display = 'inline';
+rateOnce.value = 1;
+}
 if (!hs) { var hs = {
 // Language strings
 lang : {
@@ -294,12 +354,14 @@ getPosition : function(el)	{
 	return p;
 },
 
-expand : function(a, params, custom, type, viewRef, cViews) {
+expand : function(a, params, custom, type, viewRef, cViews,rateRef,voterRef,cRatings,rOnce) {
+//	rateOnce = rOnce;
+	checkRatings = cRatings;
 	checkViews = cViews;
 	if (!a) a = hs.createElement('a', null, { display: 'none' }, hs.container);
 	if (typeof a.getParams == 'function') return params;	
 	try {	
-		new hs.Expander(a, params, custom,0,viewRef);
+		new hs.Expander(a, params, custom,0,viewRef,rateRef,voterRef,rOnce);
 		return false;
 	} catch (e) { return true; }
 },
@@ -1140,12 +1202,18 @@ setPos: function(i) {
 }
 };
 
-hs.Expander = function(a, params, custom, contentType, viewRef) {
+hs.Expander = function(a, params, custom, contentType, viewRef,rateRef,voterRef,rOnce) {
 //--------------------------- inclusion of ajax call code
 	if((views==-1))
 		views=viewRef.value;
 	else if(a!=ajaxbug){
 		views=viewRef.value;
+		}
+	rateOnce = rOnce;
+	if((rates==-1))
+		{rates=rateRef.value;voters=voterRef.value;}
+	else if(a!=ajaxbug){
+		{rates=rateRef.value;voters=voterRef.value;}
 		}
 	ajaxbug = a;
 	if(window.ActiveXObject){
@@ -1878,10 +1946,17 @@ getNumber : function() {
 	if (this[this.numberPosition]) {
 		var arr = hs.anchors.groups[this.slideshowGroup || 'none'];
 		if (arr) {
-			var showView = ((checkViews)?' Views : '+ views + ' ': '');
+			uRate = "<span id=\"ableRating\"><label title=\"Give your rating to view the voters rating of this picture\"> |  Cast your Rate  | </label><img id=\"star1\" onmouseover=\"glowstar(1,1);\" onmouseout=\"glowstar(0,1);\" onclick=\"rateit(1);\" src=\'"+hs.graphicsDir+"s0.gif\'>"+"<img id=\"star2\" onmouseover=\"glowstar(1,2);\" onmouseout=\"glowstar(0,2);\" onclick=\"rateit(2);\" src=\'"+hs.graphicsDir+"s0.gif\'>"+"<img id=\"star3\" onmouseover=\"glowstar(1,3);\" onmouseout=\"glowstar(0,3);\" onclick=\"rateit(3);\" src=\'"+hs.graphicsDir+"s0.gif\'>"+"<img id=\"star4\" onmouseover=\"glowstar(1,4);\" onmouseout=\"glowstar(0,4);\" onclick=\"rateit(4);\" src=\'"+hs.graphicsDir+"s0.gif\'>"+"<img id=\"star5\" onmouseover=\"glowstar(1,5);\" onmouseout=\"glowstar(0,5);\" onclick=\"rateit(5);\" src=\'"+hs.graphicsDir+"s0.gif\'><label id=\"rating\"></label></span><span id=\"disableRating\" > |  Your rating has been accepted  </span>";
+			if(rateOnce.value==1)
+				uRate = "|  You had already rated this picture  ";
+			var showRate = '<span id = \"showrates\"> | <font color=\"#500050\">' + rates + '</font>' + ' rating of ' + '<font color=\"#500050\">' + voters + '</font>' + ' voters | </span>';	
+			var showView = ((checkViews)?' Views : '+ '<font color=\"#500050\">' + views + ' '+ '</font>': '');
+			var showRating = ((checkRatings)? '' + uRate + showRate + '' : '');
 			var s = hs.lang.number.replace('%1', this.getAnchorIndex() + 1).replace('%2', arr.length);
 			this[this.numberPosition].innerHTML = 
-				'<div class="highslide-number">'+ s  + showView +'</div>'+ this[this.numberPosition].innerHTML;
+				'<div class="highslide-number">'+ s  + showView + showRating +'</div>'+ this[this.numberPosition].innerHTML;
+			if((checkRatings)&&(rateOnce.value==0))
+				document.getElementById('disableRating').style.display='none';
 		}
 	}
 },
