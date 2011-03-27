@@ -158,10 +158,12 @@ INHERITEDINFO;
 			$dereferencePagePath .= $info['page_name']."/";
 		}
 		global $urlRequestRoot;
-		$createdPageSettingsText = "Please use the <a href='".$urlRequestRoot."/".$dereferencePagePath."+settings'>linked page settings</a> to create a child page.";
+		$createdPageSettingsText = "<a name=\"childpageform\"></a> <fieldset>
+        <legend>{$ICONS['Create New Page']['small']}Create Child Page</legend>Please use the <a href='".$urlRequestRoot."/".$dereferencePagePath."+settings'>linked page settings</a> to create a child page.</fieldset>";
 	}
 	else if(getPageModule($pageId)=="external") {
-		$createdPageSettingsText = "You cannot create a child page of a page of type \"external link\".";
+		$createdPageSettingsText = "<a name=\"childpageform\"></a> <fieldset>
+        <legend>{$ICONS['Create New Page']['small']}Create Child Page</legend>You cannot create a child page of a page of an \"external link\".</fieldset>";
 	}
 	else {
 		$generatedTree = generateDirectoryTree($userId, "page", "settings", 0)->toHtml('childPageTreeContainer', 'childPageTree', 'childpagelink');

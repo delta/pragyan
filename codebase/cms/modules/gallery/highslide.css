@@ -2,6 +2,18 @@
 * @file: highslide.css 
 * @version: 4.1.8
 */
+.highslide-number > span > img {
+opacity:0.6;
+-moz-opacity:0.6;
+filter: alpha(opacity=60) ;
+height:12px;
+width:12px;
+}
+.highslide-number:hover > span > img {
+opacity:1.0;
+-moz-opacity:1.0;
+filter: alpha(opacity=100) ;
+}
 .highslide-container div {
 	font-family: Verdana, Helvetica;
 	font-size: 10pt;
