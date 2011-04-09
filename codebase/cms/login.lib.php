@@ -50,6 +50,8 @@ RESET;
 							$temp = mysql_fetch_assoc($result);
 							if (mysql_num_rows($result) == 0)
 								displayerror("E-mail not in registered accounts list. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
+							elseif ($temp['user_loginmethod']==='openid')
+		displayerror("This email is registered as an OpenID user. You do not have a permanent account on our server. Hence, we do not keep or maintain your password. Please ask the parent OpenID provider to reset the password for you");
 							elseif ($temp['user_activated'] == 0) {
 								displayerror("Account not yet activated.<b>Please check your email</b> and click on the activation link. <a href=\"./+login&subaction=register&reSendKey=1\">Resend activation mail?</a><br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 							} else {
@@ -693,7 +695,7 @@ function login() {
 	$login_method = '';
 	if(!check_email($user_email))
 		{
-		displayerror("Your E-Mail Provoider has been blackilisted. Please contact the website administrator");
+		displayerror("Your E-Mail Provider has been blackilisted. Please contact the website administrator");
 		return loginForm($allow_login_result[0]);
 		}				
 	if($temp = getUserInfo($user_email)) { 
