@@ -400,7 +400,9 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			$CkForm =<<<Ck
 						<form action="./+edit" method="post">
 						<a name="editor"></a>
-						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
+						<input type="button" id="show_plain" value="Plain Source" onclick="$('#show_plain').hide();$('#show_ckeditor').show();CKEDITOR.instances.CKEditor1.updateElement();CKEDITOR.instances.CKEditor1.destroy();">
+					 	<input type="button" id="show_ckeditor" value="CKEditor" style="display:none" onclick="$('#show_plain').show();$('#show_ckeditor').hide();CKEDITOR.add(CKEDITOR.editor.replace(document.getElementsByName('CKEditor1')[0]))">
+						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);"><br/>
                         To upload files and images, go to the <a href="#files">files section</a>.
 Ck;
 			$top ="<a href='#topquicklinks'>Top</a>";
@@ -412,7 +414,7 @@ Ck;
 			$Ckbody = $oCKEditor->editor('CKEditor1',$content);
 
 			$CkFooter =<<<Ck1
-					      <input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
+					      <br/><input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
 					   		 </form>
 					   	 <script language="javascript">
 					    	function submitarticleformPreview(butt) {
