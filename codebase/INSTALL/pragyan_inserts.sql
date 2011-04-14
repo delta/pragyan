@@ -120,7 +120,7 @@ INSERT IGNORE INTO `article_content` (`page_modulecomponentid`, `article_content
 -- Dumping data for table `pragyanV3_blacklist`
 --
 
-INSERT INTO `pragyanV3_blacklist` (`id`, `domain`, `ip`) VALUES
+INSERT IGNORE INTO `pragyanV3_blacklist` (`id`, `domain`, `ip`) VALUES
 (1, 'mailinator.com', '66.135.37.96'),
 (2, 'tempmail.net', '63.223.120.144'),
 (3, 'mytrashmail.com', '75.126.181.138'),
