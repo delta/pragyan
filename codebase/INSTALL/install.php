@@ -101,14 +101,15 @@ function installCMS() {
 					array('checkOpenidCurl','Checking if cURL needed and installed',false),
 					array('importDatabase', 'Importing Database', false),
 					array('saveHtaccess', 'Checking .htaccess Settings (for Pretty URLs)', false),
-					array('saveConfigurationFile', 'Saving Configuration Settings to file', false)
+					array('saveConfigurationFile', 'Saving Configuration Settings to file', false),
+					array('renameInstallationDirectory', 'Renaming the INSTALL directory to make it inaccessible to exploit', false)
 					//array('indexSite', 'Indexing site', false)
 			);
 	
-			
 	
 	
-
+	
+	
 	for ($i = 0; $i < count($installationSteps); ++$i) { 
 		$installationProcedure = $installationSteps[$i][0];
 
@@ -257,6 +258,20 @@ function saveConfigurationFile() {
 	fwrite($writeHandle, $searchConfigFileText);
 	fclose($writeHandle);
 	return '';
+}
+
+function renameInstallationDirectory() {
+	 $dir = $_SERVER['SCRIPT_FILENAME'];
+	 $pos = strripos($dir,"/");
+	 $dir = substr($dir,0,$pos);
+	 $olddir = $dir;
+	 if(strpos($dir,"INSTALL-")) {
+	 			     $pos = strpos($dir,"-");
+				     $dir = substr($dir,0,$pos);
+	}
+	$newdir = $dir."-".md5(rand());
+	//echo $olddir."<br>".$newdir;
+	rename($olddir,$newdir);
 }
 
 function checkDatabaseAccess() {

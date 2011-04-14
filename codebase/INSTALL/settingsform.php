@@ -417,7 +417,8 @@ $settingsForm = <<<SETTINGSFORM1
 			<td><label for="selTemplate">Template:</label></td>
 			<td>
 				<select name="selTemplate" id="selTemplate">
-					<option selected="selected" value="crystalx">Crystal X</option>
+					<option selected="selected" value="integriti">Integriti</option>
+					<option value="crystalx">Crystal X</option>
 					<option value="blacksilver">Black Silver</option>
 				</select>
 			</td>
