@@ -111,7 +111,7 @@ RET;
 					if(mysql_affected_rows() < 1)
 					displayerror("Unable to draft the article");
 				
-				}
+	}
 		if($this->isCommentsEnabled() && isset($_POST['btnSubmit'])) {
 			$id = mysql_fetch_array(mysql_query("SELECT MAX(`comment_id`) AS MAX FROM `article_comments`"));
 			$id = $id['MAX'] + 1;
@@ -138,7 +138,7 @@ RET;
 		global $moduleFolder;
 		require_once($sourceFolder."/pngRender.class.php");
 		if (get_magic_quotes_gpc())
-			$text = stripslashes($text);
+		  $text = stripslashes($text);
 		$render = new pngrender();
 		$ret = $render->transform($text);
 		
@@ -238,10 +238,10 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 
 		/*Save the diff end.*/
 
-			$query = "UPDATE `article_content` SET `article_content` = '" . $_POST["CKEditor1"] . "' WHERE `page_modulecomponentid` ='$this->moduleComponentId' ";
+			$query = "UPDATE `article_content` SET `article_content` = '" . escape($_POST["CKEditor1"]) . "' WHERE `page_modulecomponentid` ='$this->moduleComponentId' ";
 			$result = mysql_query($query);
-			if(mysql_affected_rows() < 1)
-				displayerror("Unable to update the article");
+			if(mysql_affected_rows() < 0)
+				displayerror("Unable to update the article content");
 			else {
 				
 				/* Index the page by sphider */
@@ -249,6 +249,14 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 				global $sourceFolder,$moduleFolder;
 				require_once("$sourceFolder/$moduleFolder/search/admin/spider.php");
 				index_url($page, 0, 0, '', 0, 0, 1);
+			}
+			/* Update the choice of editor*/
+			if(isset($_POST['editor'])){
+			  $editor=escape($_POST['editor']);
+			  $query = "UPDATE `article_content` SET `default_editor` = '" . $editor . "' WHERE `page_modulecomponentid` ='$this->moduleComponentId' ";
+			  $result = mysql_query($query);
+			  if(mysql_affected_rows() < 0)
+			    displayerror("Unable to update the article Editor");
 			}
 			return $this->actionView();
 		}
@@ -390,31 +398,49 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			global $urlRequestRoot;
 			global $ICONS;
 			require_once ("$sourceFolder/$moduleFolder/article/ckeditor3.5/ckeditor.php");
-			if($content=="") {
-				$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`= '$this->moduleComponentId'";
-				$result = mysql_query($query);
-				$temp = mysql_fetch_assoc($result);
+			$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`= '$this->moduleComponentId'";
+			$result = mysql_query($query);
+			$temp = mysql_fetch_assoc($result);
+			if($content=="") 				
 				$content = $temp['article_content'];
-			}
+			$editor=$temp['default_editor'];
+
 
 			$CkForm =<<<Ck
 						<form action="./+edit" method="post">
 						<a name="editor"></a>
-						<input type="button" id="show_plain" value="Plain Source" onclick="$('#show_plain').hide();$('#show_ckeditor').show();CKEDITOR.instances.CKEditor1.updateElement();CKEDITOR.instances.CKEditor1.destroy();">
-					 	<input type="button" id="show_ckeditor" value="CKEditor" style="display:none" onclick="$('#show_plain').show();$('#show_ckeditor').hide();CKEDITOR.add(CKEDITOR.editor.replace(document.getElementsByName('CKEditor1')[0]))">
-						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);"><br/>
-                        To upload files and images, go to the <a href="#files">files section</a>.
-Ck;
-			$top ="<a href='#topquicklinks'>Top</a>";
-			$oCKEditor = new CKeditor();
-			$oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor3.5/";
-			$oCKEditor->config['width'] = '100%';
-			$oCKEditor->config['height'] = '300';
-			$oCKEditor->returnOutput = true;
-			$Ckbody = $oCKEditor->editor('CKEditor1',$content);
+<input type="button" id="show_plain" value="Plain Source" onclick="$('#show_plain').hide();$('#show_ckeditor').show();CKEDITOR.instances.CKEditor1.updateElement();CKEDITOR.instances.CKEditor1.destroy();document.getElementById('editor').value='plain';">
+<input type="button" id="show_ckeditor" value="CKEditor" style="display:none" onclick="$('#show_plain').show();$('#show_ckeditor').hide();CKEDITOR.add(CKEDITOR.editor.replace(document.getElementsByName('CKEditor1')[0]));document.getElementById('editor').value='ckeditor';">
 
-			$CkFooter =<<<Ck1
-					      <br/><input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
+						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
+                        To upload files and images, go to the <a href="#files">files section</a>.<br/>
+Ck;
+
+
+			$top ="<a href='#topquicklinks'>Top</a>";
+
+
+			  $oCKEditor = new CKeditor();
+			  $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor3.5/";
+			  $oCKEditor->config['width'] = '100%';
+			  $oCKEditor->config['height'] = '300';
+			  $oCKEditor->returnOutput = true;
+	
+			  if($editor=='ckeditor'){
+			    echo "Choosen:ckeditor";
+			  $Ckbody = $oCKEditor->editor('CKEditor1',$content);
+			  }
+			  else{
+			    $Ckbody = $oCKEditor->editor('ne',"");  //make a auxilary Ckeditor
+			    ///following destroys the the ckeditor instance as soon as it is initialized. Also hides the Plain Source button
+			    $Ckbody.="<script>CKEDITOR.instances.ne.on('instanceReady',function(){ CKEDITOR.instances.ne.destroy()});$('#show_plain').hide();$('#show_ckeditor').show();</script>";
+			    $Ckbody.= '<textarea rows="20" cols="60" style="width:100%" name="CKEditor1" style="display: inline;">'.$content.'</textarea>';
+			}  			    
+
+			  $CkFooter =<<<Ck1
+<br/>
+<input type='hidden' name='editor' id='editor' value='$editor'/>
+					      <input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
 					   		 </form>
 					   	 <script language="javascript">
 					    	function submitarticleformPreview(butt) {
