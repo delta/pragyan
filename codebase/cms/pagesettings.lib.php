@@ -60,11 +60,10 @@ function getSettingsForm($pageId, $userId) {
 	$modifiers = '';
 	$showInMenuBox = '';
 	$showInSiteMap = '';
-	if ($pageId == 0) {
+	if ($pageId == 0) 
 		$modifiers = 'disabled="disabled" ';
 		$showInMenuBox = '<tr><td ><label for="showinmenu">Show page in menu bar</td></label><td><input type="checkbox" name="showinmenu" id="showinmenu" ' . ($page_values['page_displayinmenu'] == 1 ? 'checked="checked" ' : '') . '/></td></tr>';
 		$showInSiteMap = '<tr><td ><label for="showinsitemap">Show page in site map</td></label><td><input type="checkbox" name="showinsitemap" id="showinsitemap" ' . ($page_values['page_displayinsitemap'] == 1 ? 'checked="checked" ' : '') . '/></td></tr>';
-	}
 
 	$showmenubar = ($page_values['page_displaymenu'] == 1 ? 'checked="checked" ' : '');
 	$showsiblingmenu = $page_values['page_displaysiblingmenu'] == 1 ? 'checked="checked" ' : '';
