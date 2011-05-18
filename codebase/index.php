@@ -341,7 +341,7 @@ templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INH
 disconnect();
 exit();
 
-/** ALGO:
+/** Additional notes :
 
 authenticate.lib.php -> Find out who requested it
 	output: one int -> uid

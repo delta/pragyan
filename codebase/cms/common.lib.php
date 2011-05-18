@@ -424,6 +424,9 @@ function getDereferencedPageId($pageId) {
 	if($pagemodule_row['page_module']=="link") {
 		return getDereferencedPageId($pagemodule_row['page_modulecomponentid']);
 	}
+	if($pagemodule_row['page_module']=="external") {
+		return $pagemodule_row['page_modulecomponentid'];
+	}
 	return $pageId;
 }
 
