@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `article_content` (
   `article_content` text NOT NULL,
   `article_lastupdated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `allowComments` tinyint(1) NOT NULL,
+  `default_editor` ENUM('ckeditor','plain') NOT NULL DEFAULT 'ckeditor',
   PRIMARY KEY (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
