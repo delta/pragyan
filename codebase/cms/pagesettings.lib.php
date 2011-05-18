@@ -349,6 +349,21 @@ MOVECOPY;
 	$classictype="";
 	$multidepthtype="";
 	$completetype="";
+	$changeLink="";
+	$name="";
+	$generatedTree = "";
+	$linkmcid = getDereferencedPageId($pageId);
+	if($pageType=="Link"){
+	$link = getPagePath($linkmcid);
+	$generatedTree = "<tr><td colspan=2><div>Choose a link:".generateDirectoryTree($userId, "page", "settings", 0)->toHtml('linkTreeContainer', 'linkTree', 'link')."</div></td></tr>";
+	$changeLink = "<tr><td>Internally Linked To:</td><td><input type=text name='link' id='link' value=$link></td></tr>"; 
+	}
+	if($pageType == "External"){
+	$linkquery = "SELECT `page_extlink` FROM `" . MYSQL_DATABASE_PREFIX . "external` WHERE page_modulecomponentid = ".$linkmcid;
+	$linkres = mysql_fetch_row(mysql_query($linkquery));
+	$link = $linkres[0];
+	$changeLink = "<tr><td>Externally Linked To:</td><td><input type=text name='exlink' id='link' value=$link></td></tr>"; 
+	}
 	if($menuType=="classic") $classictype="selected";
 	else if($menuType=="multidepth") $multidepthtype="selected";
 	else $completetype="selected";
@@ -422,6 +437,7 @@ MOVECOPY;
 	        	<tr><td>Page name:</td><td><input type="text" id="pagename" name="pagename" value="{$page_values['page_name']}" $modifiers/></td></tr>
 	  			<tr><td>Page title:</td><td><input type="text" id="pagetitle" name="pagetitle" value="{$page_values['page_title']}" $modifiers/></td></tr>
 	  			<tr><td >Page type: </td><td>$pageType</td></tr>
+	  			$changeLink$generatedTree
 				<tr><td>Allow comments: </td><td><input type='checkbox' id='allowComments' name='allowComments' $allowComments></td></tr>
 				$showInMenuBox
 			<tr><td><label for="showheading">Show page heading</label></td><td><input type="checkbox" id="showheading" name="showheading" $showheading /></td></tr>
@@ -739,6 +755,17 @@ function pagesettings($pageId, $userId) {
 
 			$childPageName=escape($_GET['pageName']);
 			if(isset($_POST['btnSubmit'])) {
+				global $sourceFolder;
+				require_once($sourceFolder."/parseurl.lib.php");
+				if(isset($_POST['link']))
+				{
+					$lpageIdArray = array();
+					$linkpageid = parseUrlReal(escape($_POST['link']), $lpageIdArray);
+				}
+				else if(isset($_POST['exlink']))
+				{
+					$exlink=escape($_POST['exlink']);
+				}
 				$visibleChildList = array();
 				$visibleiChildList = array();
 				$visiblesChildList = array();
@@ -772,6 +799,10 @@ function pagesettings($pageId, $userId) {
 				$modulecomponentid = mysql_fetch_array(mysql_query("SELECT `page_modulecomponentid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageId}'"));
 				$modulecomponentid = $modulecomponentid['page_modulecomponentid'];
 				mysql_query("UPDATE `article_content` SET `allowComments` = $var WHERE `page_modulecomponentid` = '{$modulecomponentid}'");
+				if(isset($_POST['exlink']))
+					mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "external` SET `page_extlink` = '{$exlink}' WHERE `page_modulecomponentid`= '{$modulecomponentid}'");
+				else if(isset($_POST['link']))				
+					mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_modulecomponentid` = '{$linkpageid}' WHERE `page_id`= '$pageId'");
 				$updateErrors = updateSettings($pageId, $userId, escape($_POST['pagename']), escape($_POST['pagetitle']), isset($_POST['showinmenu']), isset($_POST['showheading']), isset($_POST['showmenubar']), isset($_POST['showsiblingmenu']), $visibleChildList,$visiblesChildList,$visibleiChildList, $page_template, $template_propogate, escape($_POST['menutype']),isset($_POST['menudepth'])?escape($_POST['menudepth']):NULL,$menu_propogate,isset($_POST['showinsitemap']),isset($_POST['displayicon']),$icon_propogate);
 
 				

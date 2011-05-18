@@ -344,7 +344,10 @@ $settingsForm = <<<SETTINGSFORM1
 
 
 </script>
-
+ 	<div style="display:none; ">
+	 	<img src="images/insterror.png">
+	 	<img src="images/instsuccess.png">
+	 </div>
 <form name="SettingsForm" method="POST" action="">
 
 
