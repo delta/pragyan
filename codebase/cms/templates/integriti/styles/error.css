@@ -13,11 +13,11 @@ div.cms-error { background-image: url('../images/cms_error.png'); background-col
 .cms-error, .cms-warning, .cms-notice, .cms-info a:link, .cms-info a:visited, .cms-info a{color:#023455;}
 div.cms-warning { background-image: url('../../common/icons/32x32/status/dialog-warning.png'); background-color: #cccccc; border-color: #ffdc79 }
 div.cms-notice { background-image: url('../../common/icons/32x32/status/dialog-information.png'); background-color: #dde4ef; border-color: #6894da }
-div.cms-info { background-image: url('../images/cms_info.png'); background-color: #aab; border-color: #aaf; color: black;}
+div.cms-info { line-height:20px;background-image: url('../images/cms_info.png'); background-color: #b9b4f8; border-radius:	5px;-moz-border-radius:	5px;-webkit-border-radius:	5px;border: 2px #6961d2 solid; color: black;}
 div.cms-info a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
 div.cms-info a:hover {background: #44F; color: #FFF!important; }
 
-div.cms-error { background-image: url('../images/cms_error.png'); background-color: #aab; border-color: #aaf; color: black;}
+div.cms-error { background-image: url('../images/cms_error.png'); background-color: #b9b4f8; border-radius:	5px;-moz-border-radius:	5px;-webkit-border-radius:	5px;border: 2px #6961d2 solid; color: black;}
 div.cms-error a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
 div.cms-error a:hover {background: #44F; color: #FFF!important; }
 

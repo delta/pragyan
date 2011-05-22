@@ -13,15 +13,22 @@
 #cms-breadcrumb ul li {
  float:left;
  line-height:2.3em;
- padding-left:.75em;
+ padding-left:3px;
  color:#777;
 }
-#cms-breadcrumb ul li span a div{
- display:block;
- padding:0 15px 0 0;
- background:url(../images/crumbs.gif) no-repeat right center;
+#cms-breadcrumb ul li:first-child{
+border-left:3px rgba(222,222,222,0.5) solid;
+padding-left:3px;
 }
+#cms-breadcrumb ul li span a div{
+  display:block;
+ padding:0 10px 0 5px;
+ background:url(../images/crumbs.gif) no-repeat center right;
 
+}
+#cms-breadcrumb ul li span {
+
+}
 #cms-breadcrumb ul li span a:link div, #cms-breadcrumb ul li span a:visited div {
  text-decoration:none;
  color:#777;

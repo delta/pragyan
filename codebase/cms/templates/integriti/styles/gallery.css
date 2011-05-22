@@ -1,0 +1,16 @@
+div.galleryimagebox {
+border:#382626 2px solid; float : left; margin : 5px; padding : 10px; width: 200px;
+border-radius:	3px;
+-moz-border-radius:	3px;
+-webkit-border-radius:	3px;
+}
+.highslide > img:hover{
+border:#382626 2px solid;
+}
+.highslide-gallery{
+text-align:center;
+}
+.highslide-gallery > p{
+font-family: arial,sans-serif;
+color: #006699;
+}

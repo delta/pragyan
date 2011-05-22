@@ -13,9 +13,7 @@ table.pragyan_fulltable {
 div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
 span.articlecomment_info { font-size : 90%; font-style : italic; }
 a.commentdelete img { float: right; }
-div.galleryimagebox {
-border : 1px solid #B7CAF6; float : left; margin : 5px; padding : 10px; width: 200px;
-}
+
 span.pragyangallery {margin:10px;}
 
 div.formfieldextrainfo {border : 1px solid #B7CAF6; text-align : center;  }
@@ -26,28 +24,55 @@ div.formfieldinfo { background-color : #9FC5E2;text-align : center; }
 /**
  * For Table
  */
-table {display:table; ; margin:15px 0; padding:0; border:1px solid #777; font-size:100%;}
+table {display:table; ; margin:15px 0; padding:2px; border:1px solid; font-size:100%;}
 tr {display:table-row;}
-th, td {display: table-cell; border:1px solid #777; margin:0; padding:5px; vertical-align:top; text-align:left;}
-th {background:#777; text-align:center; color:#192666; font-weight:bold;}
+th, td {display: table-cell; border:1px solid rgba(77,77,77,0.3); background-color:#f7f5f2;margin:0; padding:5px; vertical-align:top; text-align:left;}
+th {background:#DEDFDA; text-align:center; color:#5F5F5F; font-weight:bold;}
 
 /**
  *For Icons Panel
  */
+fieldset > a:hover{
+border-bottom:1px solid #344547;
+}
+div#tabBar > table > tbody > tr > td {
+border-radius:	5px;
+-moz-border-radius:	5px;
+-webkit-border-radius:	5px;
+vertical-align:middle;
+min-width:150px;
+}
+div#tabBar > table > tbody > tr > td > a{
+
+}
 table.iconspanel {
 width: 100%;
 }
+
+table.iconspanel > tbody > tr > td:hover{
+background-color: #336699;
+border-bottom:1px black solid;
+border-right:1px black solid;
+}
+table.iconspanel > tbody > tr > td:hover > a > div{
+color:white;
+}
+
 table.iconspanel img {
 border : none;
 }
 table.iconspanel td {
+margin:4px;
+border-radius:	5px;
+-moz-border-radius:	5px;
+-webkit-border-radius:	5px;
 text-align : center;
 vertical-align : middle;
+
 }
 table.iconspanel td:hover {
 text-align : center;
 vertical-align : middle;
-background-color : #222;
 cursor : pointer;
 }
 table.iconspanel td a {
