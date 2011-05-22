@@ -256,7 +256,8 @@ CREATE TABLE IF NOT EXISTS `gallery_name` (
   `gallery_name` varchar(50) NOT NULL,
   `gallery_desc` varchar(200) NOT NULL,
   `imagesPerPage` int(11) NOT NULL DEFAULT '6',
-  `allowViews` tinyint(1) NOT NULL DEFAULT '0'
+  `allowViews` tinyint(1) NOT NULL DEFAULT '0',
+  `allowRatings` tinyint(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -269,7 +270,9 @@ CREATE TABLE IF NOT EXISTS `gallery_pics` (
   `upload_filename` varchar(200) NOT NULL,
   `page_modulecomponentid` int(11) NOT NULL,
   `gallery_filecomment` varchar(200) NOT NULL,
-  `pic_rate` int(11) NOT NULL
+  `pic_rate` int(11) NOT NULL,
+  `vote_avg` decimal(10,0) NOT NULL DEFAULT '0',
+  `voters` mediumint(9) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
