@@ -10,7 +10,9 @@ if(!defined('__PRAGYAN_CMS'))
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="cs" lang="cs">
 <head>
-    <title><?php echo $TITLE; ?></title>
+    <title><?php $cmstitle=$TITLE;echo $cmstitle; ?></title>
+    <?php if(isset($WIDGETS[0])) echo $WIDGETS[0]; ?>
+	<link rel="shortcut icon" href="<?php echo $TEMPLATEBROWSERPATH; ?>/images/logo_16.png" >
 	<link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
     <meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
@@ -23,7 +25,8 @@ if(!defined('__PRAGYAN_CMS'))
     <link rel="stylesheet" type="text/css" href="<?php echo  $TEMPLATEBROWSERPATH; ?>/styles/other.css" />
 
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/header.css" />
-        <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/menu.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/content.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/footer.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/error.css" />
@@ -48,30 +51,22 @@ if(!defined('__PRAGYAN_CMS'))
 		
 		<div class="clearer"></div>
 		<div class="header">
-		<img style="padding-top:6px; padding-left:10px" src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/pragyancmslogo.png"/>
-		<div id='header_text'>PRAGYAN CMS</div>
-		<ul>
-		<li><a href="http://pragyan.integriti.org.in/home/demo/"><div>DEMO</div></a>
-		<li><a href="http://pragyan.integriti.org.in/home/gsoc_ideas/"><div>GSoC</div></a>
+		<img src="<?php echo $TEMPLATEBROWSERPATH; ?>/images/pragyancmslogo.png" style="padding-top: 6px; padding-left: 10px;">
+		<div id='header_text'><?php echo $cmstitle;?></div>
 
- <li><a href="http://pragyan.integriti.org.in/home/downloads/"><div>Downloads</div></a></li>
-<li><a href="http://pragyan.integriti.org.in/home/support/"><div>Support</div></a></li>
-<li><a href="http://pragyan.integriti.org.in/home/develop/"><div>Develop</div></a></li>
-<li><a href="http://pragyan.integriti.org.in/home/credits/"><div>Credits</div></a></li>
-
-		</ul>
+		<?php if(isset($WIDGETS[1])) echo $WIDGETS[1]; ?>		
 		</div>
-		
+
+		<!-- breadcrumb starts-->
 		<div class="breadcrumb">
 			<div id="breadcrumb">
 			<?php echo $BREADCRUMB; ?>
 			</div>
 		</div>
+		<!-- breadcrumb ends-->
 		<div class="clearer"></div>
 		<div class="actionbarcontainer">
-		<div style="float:left; padding-left:10px; padding-top:10px">
-<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FPragyan-CMS%2F105113256238439&amp;layout=standard&amp;show_faces=false&amp;width=150&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=35" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:200px; height:40px;" allowTransparency="true"></iframe>
-</div>
+		
 			<div class="actionbar">
 			<?php echo $ACTIONBARMODULE; ?>
 			<?php echo $ACTIONBARPAGE; ?>
@@ -83,6 +78,7 @@ if(!defined('__PRAGYAN_CMS'))
 			<div id="cms-leftcontent">
 				<div class="menucontainer">
 					<?php echo $MENUBAR; ?>
+					<?php if(isset($WIDGETS[4])) echo $WIDGETS[4]; ?>
 				</div>
 				
 			</div>
@@ -92,11 +88,13 @@ if(!defined('__PRAGYAN_CMS'))
 				<?php echo $ERRORSTRING; ?>
 				<?php if(isset($WIDGETS[2])) echo $WIDGETS[2]; ?>
 				<?php echo $CONTENT; ?>
+				<?php if(isset($WIDGETS[3])) echo $WIDGETS[3]; ?>
 			</div>
 			<div class="bottomcontentbar"></div>
 		</div>
 		<div class="clearer"></div>
 		<div class="footer">
+			
 			<?php echo $FOOTER;?>	
 		</div>
 	</div>
