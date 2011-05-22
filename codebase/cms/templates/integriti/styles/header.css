@@ -10,9 +10,10 @@ div.header {
 div.header > img {
 	float : left;
 }
-
 div#header_text {
-	width: 200px;
+	height:64px;
+	padding:0px 20px 0px 20px;
+	width: auto;
 	line-height: 67px;
 	text-align: center;
 	float : left;
@@ -22,29 +23,41 @@ div#header_text {
 	font-family: arial;
 	font-size: 25px;
 	font-weight: bold;
+	margin-left:20px;
 }
 
-div.header ul {
+div.header div div ul{
 	float: right;
-	min-width:720px ;
+	min-width:auto ;
 }
 
-div.header ul > li{
+div.header div div ul li:last-child{
+	margin-right:40px;
+}
+div.header div div ul > li > a{
+color: #1D7CCC;
+font-weight:bold;
+}
+div.header div div ul > li {
+	color: #1D7CCC;
+	font-weight:bold;
 	width: 120px;
 	line-height: 67px;
 	text-align: center;
 	float : left;
 	list-style: none;
 }
-div.header ul > li:hover {
-	background: url(../images/glow.jpg) repeat-x top center;
+div.header div div ul > li:hover{
+	background: url(../images/glow.jpg) repeat-x;
+	background-position:40% 40%;
+	height:65px;
 }
 
-div.header li:hover > a > div {
+div.header div > div > ul > li:hover > a{
 	color: #aaa;
 }
 
-div.header ul > li div {
+div.header div div{
 	
 	vertical-align: middle;
 	color: #1d7ccc;

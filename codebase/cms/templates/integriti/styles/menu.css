@@ -17,7 +17,11 @@ ul.topnav > li > a {
   	height: 24px;
 	text-decoration: none;
 	}	
-	
+.cms-menuitem > img{
+	width:16px;
+	height:16px;
+}
+
 ul.topnav > li > a:link, ul.topnav > li > a:visited {
 	color: #3688BA;
 	display: block;
@@ -28,6 +32,7 @@ ul.topnav > li > a:link, ul.topnav > li > a:visited {
 ul.topnav > li > a:hover {
 	color: #3688BA;
 	background:  url(../images/menu.gif) 0 -32px;
+	border:none;	
 	padding: 8px 0 0 30px;
 	}
 

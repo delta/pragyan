@@ -39,7 +39,18 @@ div.download_button:hover {
 	float : left;
 	
 }
-
+.cms-registrationform > form > fieldset > table {
+text-align :center;
+float:center;
+position:relative;
+left:200px;
+}
+.cms-registrationform > form > fieldset > table > tbody >tr:first-child >td{
+background-color:#DEDFDA;
+}
+.searchBox > tbody > tr > td > table > tbody >  tr > td {
+background-color:#DEDFDA;
+}
 .tabElement a {
 	text-decoration : none;
 }
@@ -52,9 +63,7 @@ div.download_button:hover {
  * Gallery Module
  */
 div.pragyangallery{margin:10px;}
-div.galleryimagebox {
-border : 1px solid #B7CAF6; float : left; 
-}
+
 
 /**
  * Pagelist Module
