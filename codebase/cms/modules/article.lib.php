@@ -152,7 +152,7 @@ RET;
 			if(mysql_num_rows($comments)>0)
 				$ret .= "<fieldset><legend>Comments</legend>";
 			while($row = mysql_fetch_array($comments))
-				$ret .= $this->renderComment($row['comment_id'],$row['user'],$row['timestamp'],$row['comment']);
+				$ret .= $this->renderComment($row['comment_id'],$row['user'],$row['timestamp'],censor_words($row['comment']));
 			if(mysql_num_rows($comments)>0)
 				$ret .= "</fieldset>";
 			$ret .= $this->commentBox();

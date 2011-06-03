@@ -163,7 +163,7 @@ function finalizeInstallation($uploadId,$type) {
 		if(file_exists($moduleActualPath . "moduleNotice.txt"))
 			$notice = ", New module says:<br>" . file_get_contents($moduleActualPath . "moduleNotice.txt");
 	} else if($type=="Widget") {
- 		$content = explode("|",file_get_contents($moduleActualPath . "../WidgetInfo.pgyn"));
+ 		$content = explode("|",file_get_contents($destination . "widget.info"));
  		$widgetName = '';
  		$widgetClassName = '';
  		$widgetDescription = '';

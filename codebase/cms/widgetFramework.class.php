@@ -37,7 +37,7 @@ abstract class widgetFramework
 	/// For retrieving the widget output.
 	abstract public function getHTML();
 	
-	/// For retrieving the widget output which is common for all instances of same widget.
+	/// For retrieving the widget output which is common for all instances of same widget. Not used always but must be defined.
 	abstract public function getCommonHTML();
 	
 	/**

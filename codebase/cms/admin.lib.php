@@ -94,7 +94,7 @@ function globalSettingsForm()
 	</div>
 globalform;
 	return $globalform."<form method='POST' action='./+admin&subaction=global'><div id=\"globaloption1\">".websiteInfoSettingsForm()."</div><div id=\"globaloption2\">".templateSettingsForm()."</div><div id=\"globaloption3\">".registrationsSettingsForm()."</div><div id=\"globaloption4\">".securitySettingsForm()."</div><input type='hidden' name='update_global_settings' /><input type='submit' value='Update' /><input type='button' value='Cancel' onclick=\"window.open('./+view','_top')\" /></form></fieldset>";
-	}
+}
 	
 function websiteInfoSettingsForm()
 {
@@ -134,15 +134,15 @@ global $pageFullPath;
 	$globals=getGlobalSettings();
 	foreach($globals as $var=>$val) 
 		$$var=$val;
-$templates = getAvailableTemplates();
-$allow_pagespecific_header=$allow_pagespecific_header==0?"":"checked";
-$allow_pagespecific_template=$allow_pagespecific_template==0?"":"checked";
+	$templates = getAvailableTemplates();
+	$allow_pagespecific_header=$allow_pagespecific_header==0?"":"checked";
+	$allow_pagespecific_template=$allow_pagespecific_template==0?"":"checked";
 
-$globalform=<<<globalform
-	<table style="width:100%">
-	<tr>
-	<td>Default template :</td>
-	<td><select name='default_template'>
+	$globalform=<<<globalform
+		<table style="width:100%">
+		<tr>
+		<td>Default template :</td>
+		<td><select name='default_template'>
 globalform;
 
 	
@@ -154,7 +154,7 @@ globalform;
 		$globalform.="<option value='".$templates[$i]."' >".ucwords($templates[$i])."</option>";
 	}
 
-$globalform.=<<<globalform
+	$globalform.=<<<globalform
 	</select>
 	</td>
 	</tr>
@@ -220,13 +220,13 @@ return $globalform;
 
 function getBlacklistTable()
 {
-	$black = "Blacklist<table><tr><td style='width:35%'>Domains</td><td style='width:65%'>IPs</td><td>Actions</td></tr>";	
+	$black = "<fieldset><legend>Blacklisted Domains</legend><table><tr><td style='width:35%'>Domains</td><td style='width:65%'>IPs</td><td>Actions</td></tr>";	
 	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist`";
 	$result = mysql_query($query) or displayerror("Unable to load Blacklisted Information".mysql_error());
 	while($row=mysql_fetch_array($result))
 		$black .="<tr><td>$row[1]</td><td>$row[2]</td><td><a href='./+admin&subaction=global&del_black=$row[0]'>Delete</a></td></tr>";	
-	$black .="<tr><td><input type='text' name='blacklist_domain'></td><td><input type='text' name='blacklist_ip'></td><td></td></tr>";
-	$black.="</table>";
+	$black .="</table><fieldset><legend>Add new blacklist</legend><table><tr><td>New Domain :<input type='text' name='blacklist_domain'></td><td>IP (optional) :<input type='text' name='blacklist_ip'></td></tr>";
+	$black.="</table></fieldset></fieldset>";
 	return $black;
 }
 function setblacklist($domain="",$ip="")
@@ -241,7 +241,7 @@ function setblacklist($domain="",$ip="")
 	if($chk_result<1)
 	{
 		$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."blacklist` (`domain`,`ip`) VALUES ('$domain','$ip')";
-		$result =mysql_query($query) or displayerror("Unable to update blackilist".mysql_error());
+		$result =mysql_query($query) or displayerror("Unable to update blacklist".mysql_error());
 	}	
 	return 1;
 }
@@ -256,7 +256,7 @@ function delete_blacklist()
 }
 function securitySettingsForm()
 {
-global $pageFullPath;
+	global $pageFullPath;
 	global $CMSTEMPLATE;
 	global $urlRequestRoot,$templateFolder,$cmsFolder;
 	$globals=getGlobalSettings();
@@ -302,13 +302,10 @@ global $pageFullPath;
 			<td><input type="text" id="private_key" name="private_key" value='$recaptcha_private' /></td>
 		</tr>
 	</table>
-$blacklist
+	$blacklist
 globalform;
-return $globalform;
+	return $globalform;
 }
-
-
-
 
 function extension($file) {
 	$start = strrpos($file,".");
@@ -340,8 +337,7 @@ function getSuggestions($pattern) {
 			"IF(`user_fullname` LIKE \"% $pattern%\", 3, " .
 			"IF(`user_email` LIKE \"%$pattern%\", 4, " .
 			"IF(`user_fullname` LIKE \"%$pattern%\", 5, 6" .
-			"))))) AS `relevance`,	`user_email`, `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE " .
-			"  `user_activated`=1 AND(`user_email` LIKE \"%$pattern%\" OR `user_fullname` LIKE \"%$pattern%\" ) ORDER BY `relevance`";
+			"))))) AS `relevance`,	`user_email`, `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_activated`=1 AND(`user_email` LIKE \"%$pattern%\" OR `user_fullname` LIKE \"%$pattern%\" ) ORDER BY `relevance`";
 //			echo $suggestionsQuery;
 	$suggestionsResult = mysql_query($suggestionsQuery);
 
@@ -444,13 +440,11 @@ ADMINPAGE;
 		return managementForm($type).$quicklinks;
 	}
 	global $sourceFolder;	
-	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) return $quicklinks;
+	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) 
+		return $quicklinks;
 	require_once("users.lib.php");
 	$op="";$ophead=""; $str="";
-	
-	
-	
-	
+
 	if (isset($_GET['subaction'])||isset($_GET['subsubaction'])||isset ($_GET['id'])||isset ($_GET['movePermId'])||isset ($_GET['module'])) {
 	
 		if (isset($_GET['subaction']) && $_GET['subaction'] == 'global' && isset($_POST['update_global_settings'])) 
@@ -561,8 +555,6 @@ ADMINPAGE;
 		$str .= '<a href="./+admin&subaction=reloadtemplates">Reload Templates</a><br />';
 		$str .= '<a href="./+admin&subaction=reloadmodules">Reload Modules</a><br />';
 		$str .= '<a href="./+admin&indexsite=2">Reindex Site for Searching</a></br/></fieldset>';
-		
-		
 	}
 	
 	return $str.$op.$quicklinks;
