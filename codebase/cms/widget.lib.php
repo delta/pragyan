@@ -507,58 +507,7 @@ function getEnabledWidgets($pageId)
 	return $return;
 }
 
-// To be modified for widget
-function checkForWidgetIssues($modulePath,$moduleName,&$issues) {
-	$id = 1;
-	$i = 0;
-	$j = 0;
-/*	if(!file_exists($modulePath . "moduleTables.txt")) {
-		addFatalIssue($issues,"Module Info file is missing",$id++);
-		$i = 1;
-	}
-	if(!file_exists($modulePath . $moduleName . ".lib.php")) {
-		addFatalIssue($issues,"The module file is corrupt, Please download a fresh copy of the module",$id++);
-		$i = 1;
-	} else {
-		$content = file_get_contents($modulePath . $moduleName . ".lib.php");
-		$reqd = array("class ".$moduleName." implements module","public function getHtml","public function createModule","public function deleteModule","public function copyModule");
-		foreach($reqd as $var)
-			switch(mycount($content,$var)) {
-				case 0:
-					addFatalIssue($issues,"$var is missing",$id);
-					$i = 1;
-					$id++;
-					break;
-				case 1:
-					break;
-				default:
-					addFatalIssue($issues,"$var is more than once",$id);
-					$i = 1;
-					$id++;
-			}
-	}
-	if(!file_exists($modulePath . $moduleName . ".sql")) {
-		addIssue($issue,"No sql file found",$id++);
-		$j = 1;
-	}
-*/
-	return array($i,$j);
-}
 
-function actualWidgetPath($modulePath) {
-	$moduleActualPath = $modulePath;
-	$dirHandle = opendir($modulePath);
-	while($file = readdir($dirHandle)) {
-		if($file=="widget.class.php")
-			return $modulePath;
-		elseif(is_dir($modulePath . $file) && $file != '.' && $file != '..') {
-			$return = actualWidgetPath($modulePath . $file . "/");
-			if($return != NULL)
-				return $return;
-		}
-	}
-	return NULL;
-}
 
 function getWidgetName($actualPath) {
 	$actualPath = substr($actualPath,0,-1);
