@@ -161,8 +161,9 @@ function finalizeInstallation($uploadId,$type) {
 		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "modules`(`module_name`,`module_tables`) VALUES('{$moduleName}','" . escape(file_get_contents($moduleActualPath . "moduleTables.txt")) . "')") or displayerror(mysql_error());
 		$notice = "";
 		if(file_exists($moduleActualPath . "moduleNotice.txt"))
-			$notice = ", New module says:<br>" . file_get_contents($moduleActualPath . "moduleNotice.txt");
+			$notice = ", New module samoduleTablesys:<br>" . file_get_contents($moduleActualPath . "moduleNotice.txt");
 	} else if($type=="Widget") {
+	
  		$content = explode("|",file_get_contents($destination . "widget.info"));
  		$widgetName = '';
  		$widgetClassName = '';
@@ -320,7 +321,7 @@ function installModule($uploadId,$type) {
 	<tr><th>S.No.</th><th>Issue Details</th><th>Issue Type</th><th>Ignore ?</th></tr>
 	$issues
 	</table>
-	Installation cannot proceed for the above mentioned issues, fix them and try again.";
+	<b>Installation cannot proceed for the above mentioned issues, fix them and <a href='./+admin&subaction=widgets&subsubaction=installwidget'>try again</a>.</b>";
 	delDir($extractedPath);
 	unlink($zipFile);
 	mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
@@ -363,7 +364,48 @@ function checkForModuleIssues($modulePath,$moduleName,&$issues) {
 
 	return array($i,$j);
 }
-
+// To be modified for widget
+function checkForWidgetIssues($modulePath,$moduleName,&$issues) {
+	$id = 1;
+	$i = 0;
+	$j = 0;
+	if(!file_exists($modulePath . "widget.info")) {
+		addFatalIssue($issues,"'widget.info' file is missing in the archive!",$id++);
+		$i = 1;
+	}
+	if(!file_exists($modulePath . "widget.class.php")) {
+		addFatalIssue($issues,"'widget.class.php' file is missing in the archive!",$id++);
+		$i = 1;
+	}
+	/*
+	if(!file_exists($modulePath . $moduleName . ".lib.php")) {
+		addFatalIssue($issues,"The module file is corrupt, Please download a fresh copy of the module",$id++);
+		$i = 1;
+	} else {
+		$content = file_get_contents($modulePath . $moduleName . ".lib.php");
+		$reqd = array("class ".$moduleName." implements module","public function getHtml","public function createModule","public function deleteModule","public function copyModule");
+		foreach($reqd as $var)
+			switch(mycount($content,$var)) {
+				case 0:
+					addFatalIssue($issues,"$var is missing",$id);
+					$i = 1;
+					$id++;
+					break;
+				case 1:
+					break;
+				default:
+					addFatalIssue($issues,"$var is more than once",$id);
+					$i = 1;
+					$id++;
+			}
+	}
+	if(!file_exists($modulePath . $moduleName . ".sql")) {
+		addIssue($issue,"No sql file found",$id++);
+		$j = 1;
+	}
+*/
+	return array($i,$j);
+}
 function actualModulePath($modulePath) {
 	$moduleActualPath = $modulePath;
 	$dirHandle = opendir($modulePath);
@@ -379,6 +421,21 @@ function actualModulePath($modulePath) {
 	return NULL;
 }
 
+
+function actualWidgetPath($modulePath) {
+	$moduleActualPath = $modulePath;
+	$dirHandle = opendir($modulePath);
+	while($file = readdir($dirHandle)) {
+		if($file=="widget.class.php")
+			return $modulePath;
+		elseif(is_dir($modulePath . $file) && $file != '.' && $file != '..') {
+			$return = actualWidgetPath($modulePath . $file . "/");
+			if($return != NULL)
+				return $return;
+		}
+	}
+	return NULL;
+}
 function getModuleName($moduleActualPath) {
 	$dirHandle = opendir($moduleActualPath);
 	while($file = readdir($dirHandle)) {
