@@ -56,7 +56,7 @@ function getActionbarPage($userId, $pageId) {
 	if($action == "profile")
 		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\"><img src=\"{$hostURLL}/{$cmsFolder}/{$templateFolder}/common/images/usericon.png\" \/> $actionname</a></span>\n";
 	else if($action == "pdf")
-		$actionbar.="<span class=\"cms-actionbarPageItem\"><a id=\"a\" onclick=\"javascript:var x=prompt('Enter Depth (-1 for full depth)');if(x)document.getElementById('a').href = document.getElementById('a').href + '&depth=' + x; else return false;\" class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
+		$actionbar.="<span class=\"cms-actionbarPageItem\"><a id=\"a\" onclick=\"javascript:var x=prompt('Enter Depth (0 for current page only, -1 for all child pages)','0');if(x)document.getElementById('a').href = document.getElementById('a').href + '&depth=' + x; else return false;\" class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	else
 		$actionbar.="<span class=\"cms-actionbarPageItem\"><a class=\"robots-nofollow cms-action{$action}\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}
