@@ -17,6 +17,22 @@ ul.topnav > li > a {
   	height: 24px;
 	text-decoration: none;
 	}	
+	
+
+div.cms-menuhead{
+	font-weight:bold;
+	text-transform:uppercase;
+	color:#787878;
+	border-left: 5px #787878 solid;
+	border-right: 5px #787878 solid;
+	background-color : #cdcdcd;
+	text-align : center;
+	padding:3px 3px 3px 6px;
+	font-size:14px;
+
+	font-family:"trebuchet ms", helvetica;
+}
+
 .cms-menuitem > img{
 	width:16px;
 	height:16px;
