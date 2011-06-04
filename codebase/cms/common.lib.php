@@ -602,7 +602,9 @@ function selfURI() {
 function hostURL() {
     $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
     $protocol = strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s;
-    $location = substr($_SERVER['SCRIPT_NAME'],0,strpos($_SERVER['SCRIPT_NAME'],"/index.php"));
+    
+    $scriptname = isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'];
+    $location = substr($scriptname,0,strpos($scriptname,"/index.php"));
     $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
 	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$location;
 }

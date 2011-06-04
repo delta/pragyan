@@ -64,8 +64,11 @@ $WARNINGSTRING = "";
 ///Will contain a string containing all that has to be executed on window load
 $STARTSCRIPTS = "";
 
+///For Apache + Rewrite Mod + phpSUexec, SCRIPT_NAME is WRONG and ORIG_SCRIPT_NAME is correct. So we prioritise ORIG_SCRIPT_NAME. Its unset for any other environment.
+$scriptname = isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'];
+
 ///Root of the request - that path to cms base
-$urlRequestRoot = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/')); 
+$urlRequestRoot = substr($scriptname, 0, strrpos($scriptname, '/')); 
 
 ///Full path to template folder as seen from the browser (defined in template.lib.php)
 $TEMPLATEBROWSERPATH = ""; 
@@ -100,7 +103,7 @@ $WIDGETS = array();
 $publicPageRequest = false;
 
 ///For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
-$onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($_SERVER['SCRIPT_NAME'],0,stripos($_SERVER['SCRIPT_NAME'],"index.php")) . "home";
+$onlineSiteUrl = "http://" . $_SERVER['HTTP_HOST'] . substr($scriptname,0,stripos($scriptname,"index.php")) . "home";
 
 ///If config.inc.php doesn't exists, assume CMS hasn't been installed.
 @include_once($sourceFolder."/config.inc.php"); 
