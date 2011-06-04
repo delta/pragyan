@@ -576,6 +576,11 @@ function saveHtaccess() {
 HTACCESSERROR;
 
 	$htaccessdist = "../htaccess-dist";
+	
+	/// If PHP is running as a CGI application use another .htaccess
+	if (substr(php_sapi_name(), 0, 3) == 'cgi')
+		$htaccessdist = "../htaccess-dist-cgi";
+	
 	$htaccessFile = "../.htaccess";
 	
 	copy($htaccessdist,$htaccessFile);
