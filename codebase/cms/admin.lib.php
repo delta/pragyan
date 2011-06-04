@@ -364,7 +364,7 @@ function admin($pageid, $userid) {
 		global $sourceFolder;
 		require("$sourceFolder/modules/search/admin/spider.php");
 		if($_GET['indexsite'] == 1) {
-			$serveruri=$_SERVER['SCRIPT_NAME'];
+			$serveruri=isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'];
 			$uri=substr($serveruri,0,stripos($serveruri,"index.php"));
 			$site = "http://" . $_SERVER['HTTP_HOST'] . $uri . "home/";
 			index_site($site, 0, -1, 'full', "", "+\n&", 0);

@@ -163,9 +163,9 @@ if(function_exists('filter_input')) {
     ///since rewriteEngine is poorly coded. It doesn't allow longer GET queries.
     ///if rewriteEngine is off, we can remove the index.php part to make the url look non-php
     if($rewriteEngineEnabled=='true')
-      $returnURL="http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."/index.php?action=login&subaction=openid_verify";
+      $returnURL="http://".$_SERVER['HTTP_HOST'].dirname(isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'])."/index.php?action=login&subaction=openid_verify";
     else
-      $returnURL="http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."/?action=login&subaction=openid_verify";
+      $returnURL="http://".$_SERVER['HTTP_HOST'].dirname(isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'])."/?action=login&subaction=openid_verify";
 
     $openid->setReturnURL($returnURL);
 
@@ -176,7 +176,7 @@ if(function_exists('filter_input')) {
      * to trust when signing in with their OpenID Provider. It could be your base
      * URL or a subdirectory thereof. Up to you.
      */
-    $openid->SetTrustRoot("http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME']));
+    $openid->SetTrustRoot("http://".$_SERVER['HTTP_HOST'].dirname(isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME']));
     
     /**
      * OptionalInfo: The information you  need to fetch form the Provider

@@ -561,7 +561,8 @@ MSG;
  */
 function saveHtaccess() {
 
-	$urlRequestRootWithFolder = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
+	$scriptname = isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'];
+	$urlRequestRootWithFolder = substr($scriptname, 0, strrpos($scriptname, '/'));
 	$urlRequestRoot = substr($urlRequestRootWithFolder , 0, strrpos($urlRequestRootWithFolder , '/'));
 	$urlRequestRoot = ($urlRequestRoot==""?"/":$urlRequestRoot);
 	$scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
