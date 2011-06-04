@@ -20,7 +20,8 @@ $cmsFolder = "../$sourceFolder";
 $templateFolder = "$cmsFolder/templates/crystalx";
 $scriptPathWithFolder = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], '/'));
 $scriptPath = substr($scriptPathWithFolder , 0, strrpos($scriptPathWithFolder , '/'));
-
+/// Will be changed by renameInstallationDirectory() function
+$newInstallFolderName = "INSTALL"; 
 
 
 require_once($cmsFolder."/common.lib.php");
@@ -65,19 +66,8 @@ else if ($installPageNumber == 3) {
 	$installPageContent = "<br /><table width=\"100%\" border=\"0\">\n $installPageContent </table>\n $installationErrors";
 	if ($installationErrors == '') {
 		$installPageContent .= <<<HTTPDCONF
-		<b>Your installation is almost over. As a security measure, either delete the INSTALL folder or remove read permissions from it so that no-one else can access that folder.</b>
-		
-		
-			For Pragyan CMS to work, .htaccess needs to be supported your webserver. <br />
-			For this, the <b>AllowOverride</b> setting in the httpd.conf has to be made <i>Options FileInfo Limit</i> under the relevant <mono>&lt;Directory&gt;</mono> section.<br />
-			The default location of httpd.conf is <mono>/etc/httpd/conf/httpd.conf</mono>, but may be different for you according to your installation.
-			<br /><br />
-			Add the following lines in the httpd.conf of your webserver :
-			<pre><xmp>
-				<Directory "$scriptPath">
-					AllowOverride All
-				</Directory>
-			</xmp></pre>
+		<b>Your installation is almost over. As a security measure, either delete the $newInstallFolderName folder or remove read permissions from it so that no-one else can access that folder.</b>
+
 			<p>If you have done this, <a href="../">click here</a> to go to the CMS.</p>
 HTTPDCONF;
 	}
@@ -272,6 +262,8 @@ function renameInstallationDirectory() {
 	$newdir = $dir."-".md5(rand());
 	//echo $olddir."<br>".$newdir;
 	rename($olddir,$newdir);
+	global $newInstallFolderName;
+	$newInstallFolderName=$newdir;
 }
 
 function checkDatabaseAccess() {
@@ -526,9 +518,8 @@ function CheckPrerequisites() {
 	{
 	    $prereq.="<li><p>.htaccess not enabled </p></li>";
 	    $prereq .= <<<HTTPMSG
-	    For Pragyan CMS to work, .htaccess needs to be supported your webserver. <br />
-			For this, the <b>AllowOverride</b> setting in the httpd.conf has to be made <i>Options FileInfo Limit</i> under the relevant <mono>&lt;Directory&gt;</mono> section.<br />
-			The default location of httpd.conf is <mono>/etc/httpd/conf/httpd.conf</mono>, but may be different for you according to your installation.
+	    For Pragyan CMS to work, .htaccess needs to be supported your webserver. For this, the <b>AllowOverride</b> setting in the httpd.conf needs to be modified.<br/>
+			The default location of httpd.conf is <mono>/etc/httpd/conf/httpd.conf</mono>, but may be different for you according to your webserver's installation.
 			<br /><br />
 			Add the following lines in the httpd.conf of your webserver :
 			<pre><xmp>
@@ -536,7 +527,6 @@ function CheckPrerequisites() {
 					AllowOverride All
 				</Directory>
 			</xmp></pre>
-			<p>If you have done this, <a href="../">click here</a> to go to the CMS.</p>
 HTTPMSG;
 	}
 	
