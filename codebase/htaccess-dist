@@ -1,4 +1,6 @@
 ##########################GENERAL CONFIGURATION###########################
+Options +FollowSymLinks
+
 #REWRITEENGINE
 RewriteEngine Off
 IndexIgnore *
