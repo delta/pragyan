@@ -5,7 +5,7 @@ Options +FollowSymLinks
 RewriteEngine Off
 IndexIgnore *
 
-##Enable magic quotes in PHP, in case it is turned off in php.ini
+##Disable magic quotes in PHP, in case it is turned ON in php.ini
 php_flag magic_quotes_gpc off
 
 #Register Global Must ALWAYS BE TURNED OFF. Else it will pose security risks.

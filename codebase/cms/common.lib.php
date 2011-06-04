@@ -157,6 +157,42 @@ function safe_html($html)
 {
 	return htmlspecialchars(strip_tags($html));
 }
+
+/** Disabling magic quotes gpc on runtime incase .htaccess is disabled and its ON in php.ini */
+
+function disable_magic_quotes()
+{
+	if (get_magic_quotes_gpc()) {
+	    $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+	    while (list($key, $val) = each($process)) {
+		foreach ($val as $k => $v) {
+		    unset($process[$key][$k]);
+		    if (is_array($v)) {
+		        $process[$key][stripslashes($k)] = $v;
+		        $process[] = &$process[$key][stripslashes($k)];
+		    } else {
+		        $process[$key][stripslashes($k)] = stripslashes($v);
+		    }
+		}
+	    }
+	    unset($process);
+	}
+}
+
+/** Unregistering globals in case .htaccess is disabled and its ON in php.ini */
+function unregister_globals() {
+    if (ini_get('register_globals')) {
+        $array = array('_POST', '_GET', '_COOKIE', '_REQUEST', '_SESSION', '_SERVER', '_ENV', '_FILES');
+        foreach ($array as $value) {
+            foreach ($GLOBALS[$value] as $key => $var) {
+                if (isset($GLOBALS[$key]) && $var === $GLOBALS[$key]) {
+                    unset($GLOBALS[$key]);
+                }
+            }
+        }
+    }
+}
+
 /** Security Functions Ends **/
 
 /** Load Templates into the database */

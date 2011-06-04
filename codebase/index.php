@@ -119,6 +119,10 @@ if(!defined("ADMIN_USERID") )
 ///Contains functions which are common to many tasks and very frequently used.
 require_once($sourceFolder."/common.lib.php");
 
+///Only works in case Magic Quotes and Register Globals are ENABLED by chance or mistake.
+disable_magic_quotes();
+unregister_globals();
+
 require_once($sourceFolder."/icons.lib.php");
 
 ///Defined here to set its access as global to the project
