@@ -79,7 +79,7 @@ function openid_endpoint($openid_url){
      * It could be a separate verify.php script, or just pass a parameter to tell a
      * single processing script what to do (like I've done with this file you're reading).
      */
-    $openid->setReturnURL("http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."../../../index.php?action=login&subaction=openid_verify");
+    $openid->setReturnURL("http://".$_SERVER['HTTP_HOST'].dirname(isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'])."../../../index.php?action=login&subaction=openid_verify");
 	
     /*
      * YOU MUST EDIT THIS LINE
@@ -87,7 +87,7 @@ function openid_endpoint($openid_url){
      * to trust when signing in with their OpenID Provider. It could be your base
      * URL or a subdirectory thereof. Up to you.
      */
-    $openid->SetTrustRoot("http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."../../../");
+    $openid->SetTrustRoot("http://".$_SERVER['HTTP_HOST'].dirname(isset($_SERVER['ORIG_SCRIPT_NAME'])?$_SERVER['ORIG_SCRIPT_NAME']:$_SERVER['SCRIPT_NAME'])."../../../");
     //            echo "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])."../../";
     //    exit;
     /*
