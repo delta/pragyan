@@ -427,7 +427,6 @@ Ck;
 			  $oCKEditor->returnOutput = true;
 	
 			  if($editor=='ckeditor'){
-			    echo "Choosen:ckeditor";
 			  $Ckbody = $oCKEditor->editor('CKEditor1',$content);
 			  }
 			  else{
