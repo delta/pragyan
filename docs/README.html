@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Pragyan CMS :: README</title>
+
+<style type='text/css' media='all'>@import url('./template.css');</style>
+<link rel='stylesheet' type='text/css' media='all' href='template.css' />
+
+<meta http-equiv='expires' content='-1' />
+<meta http-equiv= 'pragma' content='no-cache' />
+<meta name='robots' content='all' />
+
+</head>
+<body>
+<a name="top"></a>
+<!-- START NAVIGATION -->
+<div id="nav"><div id="nav_inner">
+
+<table cellpadding=0 cellspacing=0 border=0 style="width:98%">
+<tbody>
+<tr>
+	<td class="td" valign="top">
+		
+		<h3> About </h3>
+		<ul>
+			<li><a href="#introduction">Introduction</a></li>
+			<li><a href="#features">Features</a></li>
+			<li><a href="#important_documents">Important Documents</a></li>
+			<li><a href="LICENSE.html" target="_blank">License</a></li>
+		</ul>
+	</td>
+	<td class="td" valign="top">
+		
+		<h3> How to begin </h3>
+		<ul>	
+			<li><a href="#download">Download</a></li>
+			<li><a href="#requirements">Requirements</a></li>
+			<li><a href="#installation">Installation</a></li>
+		
+		</ul>		
+		
+	</td>
+	<td class="td" valign="top">
+		
+		<h3> For Developers </h3>
+	
+		
+		<ul>
+			<li><a href="#developers">Developers</a></li>	
+			<li><a href="#documentation">Documentation</a></li>
+			<li><a href="#bugs">Bugs and Feature Requests</a></li>
+			<li><a href="http://sourceforge.net/apps/trac/pragyan/log/trunk?action=stop_on_copy&mode=stop_on_copy&stop_rev=1&limit=1000&verbose=on" target="_blank">ChangeLog</a></li>
+		</ul>
+	</td>
+	<td class="td" valign="top">
+		
+		<h3> Need help ? </h3>
+		<ul>
+			<li><a href="#support">Support</a></li>
+			<li><a href="CREDITS.html" target="_blank">Credits</a></li>
+			<li><a href="#links">Links</a></li>	
+			<li><a href="#disclaimer">Disclaimer</a></li>	
+		</ul>
+		
+	</td>
+</tr>
+</tbody>
+</table>
+
+</div></div>
+<div id="nav2"></div>
+<div id="masthead">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+<tr>
+<td><h1>Pragyan CMS</h1></td>
+<td id="breadcrumb_right">v 3.0</td>
+</tr>
+</table>
+</div>
+<!-- END NAVIGATION -->
+
+
+<br clear="all" />
+
+
+<!-- START CONTENT -->
+<div id="content">
+
+
+<h1>README</h1>
+
+<p>Welcome to the Pragyan CMS User's Guide. Please use the navigation toolbar at the top of the page to browse through the sections, or simply scroll down below.</p>
+
+<a name="introduction"><h2>Introduction</h2></a>
+
+
+<p>
+Pragyan CMS is a multi-user, modular Content Management System (CMS) to organize & facilitate collaborative content creation & updation on a website and its administration. It is written completely in PHP and supports MySQL databases. It has a strong custom inbuilt framework with  independent components like templates, modules and widgets. It comes pre-packaged with a large number of modules like article, form, quiz, forum, gallery, book, news, poll, etc, widgets like image slider, facebook plugins, page hits counter, news flash etc and third-party plugins like PDF converter, google maps, sphider search engine, etc. It also provides tools to organize and manage permissions for users and groups. There are a lot more features which you'll come to know as you read further ! <br/><br/>
+</p> 
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="features"><h2>Features</h2></a>
+<ul>
+<li><ul><h3>Generic</h3>
+    <li>Multi-user open source content management system</li>
+    <li>Facilitate collaborative content creation and updation from the web</li>
+    <li>Quickly create articles, galleries, registration forms or host time-constrained quizzes and polls, or create news feed</li>
+    <li>Powerful search engine powered by Sphider</li>
+    <li>In situ page editing i.e. no separate administrator interface</li>
+    <li>Allow user discussion on every article by allowing comments</li>
+</ul></li>
+<li><ul><h3>Convenience</h3>
+    <li>Integrated with latest CkEditor v3.5 for easy editing of pages from the web</li>
+    <li>Manage page revisions, and revert back to any old revision</li>
+    <li>Save draft copies of pages and edit them later as per your convenience and then publish</li>
+    <li>Censor abusive words in articles, comments and forum posts</li>
+    <li>Choose from a number of pre-installed widgets and configure them as per your needs</li>
+    <li>Copy or move page to a different path swiftly</li>
+</ul></li>
+<li><ul><h3>Security</h3>
+    <li>Handy tools to manage permissions for groups and users</li>
+    <li>Use captcha (without internet) or ReCaptcha (with internet) for avoiding spam registrations</li>
+    <li>Easily convert email IDs into images to save it from spamming bots</li>
+    <li>Built-in security and protection against hacking attempts ( like XSS and Injections )</li>
+    <li>Secure login via OpenID</li>
+    <li>Blacklist domains to avoid users from registering via those domains</li>
+</ul></li>
+<li><ul><h3>Beautify</h3>
+    <li>Associate icons with every page using icons management</li>
+    <li>Have page-specific templates so every page can have its own template</li>
+    <li>Pick from 3 different kind of menus - Classic, Complete and Multi-depth, as per your template needs</li>
+    <li>Template installation module comes with compatibility check and reports what's missing</li>
+</ul></li>
+<li><ul><h3>Handy</h3>
+    <li>Easily convert pages into PDF</li>
+    <li>Easily add Google Maps in your pages</li>
+    <li>Latex plugin to convert text into images to avoid scanning via bots</li>
+    <li>Automatic notification of forms with nearby deadlines</li>
+</ul></li>
+<li><ul><h3>Easy Administration</h3>
+    <li>Send mass emails to site registrants
+    <li>Easily install new modules, widgets or templates using the module, widget and template management tools</li>
+    <li>Edit the website registration form and user profile information fields as per your needs</li>
+    <li>Find out who has permissions to do what in the website and revoke them if you wish</li>
+    <li>Don't have direct access to database from web? Use CMS to browse the tables directly</li>
+</ul></li>
+</ul>
+
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="important_documents"><h2>Important Documents</h2></a>
+<ul>
+ <li><a href="Documentation/html/index.html" target="_blank">Documentation</a> (You must extract the documentation.tar.bz2 file in the docs folder)</li>
+ <li><a href="Developers-guide.html" target="_blank">Developer's Guide</a></li>
+ <li><a href="LICENSE.html" target="_blank">GNU GPL License</a></li>
+ <li>ChangeLog [<a href="../ChangeLog" target="_blank">Local Copy</a>] [<a href="http://sourceforge.net/apps/trac/pragyan/log/trunk?action=stop_on_copy&mode=stop_on_copy&stop_rev=1&limit=1000&verbose=on" target="_blank">Latest Copy on Internet</a>]</li>
+ <li><a href="CREDITS.html" target="_blank">Credits</a></li>
+</ul>
+<a style="float:right" href="#top">Top of Page</a>
+
+
+<a name="download"><h2>Download</h2></a>
+<p>
+    You can get the latest release version at <a href="http://sourceforge.net/projects/pragyan">Pragyan's Sourceforge Website</a> or from the downloads page of <a href="http://pragyan.integriti.org.in/home/downloads/">Pragyan's Home page</a>.<br/>
+    <br/>
+    If you wish to download Pragyan CMS for developing purposes, then you should download the latest revision available at the Pragyan CMS Trac code browser from <a href="http://pragyan.svn.sourceforge.net/viewvc/pragyan/trunk/codebase/?view=tar">here</a>. For more details, please read the <a href="Developers-guide.html" target="_blank">Developer's Guide</a>.
+    
+    
+</p>
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="requirements"><h2>Minimum Requirements</h2></a>
+<ul>
+ <li>PHP 5.2.4 or later</li>
+ <li>MySQL 5.0.45 or later</li>
+ <li>A javascript and cookies enabled web-browser (duh!)</li>
+ <p class="important">Pragyan CMS recommends that you use any <kbd>Unix-based operating system (like Ubuntu, Fedora, Arch, etc)</kbd> for your webserver.</p>
+</ul>
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="installation"><h2>Installation</h2></a>
+<p>
+<p class="important"><strong>Note:</strong> If .htaccess is enabled in your webserver for the installation directory, then directly jump to Step 3!</p>
+<ol>
+	<li>Pragyan CMS will work just fine without any tweaks if .htaccess is enabled in the directory where Pragyan CMS is going to be installed. In order to do this, you've do add the directive : <xmp>AllowOverride All</xmp> within the <xmp><Directory "..."></xmp><xmp></Directory></xmp> block where "..." corresponds to your install location or includes it. If .htaccess is enabled, you can goto Step 3. However, if for some reason you do not wish to enable .htaccess, you'll have to do the Step 2. </li>
+    <li> (Only needed if .htaccess is disabled for your webserver) Make sure the FollowSymLinks feature is included in the Options directive of the <xmp><Directory "..."></xmp> corresponding to your install location.	For this,<br/><br/>
+	<ol type='a'>
+	<li>Open the configuration file of your web server. (Usually, it is named httpd.conf, check your web server documentation to find it's location).</li>
+	<li>Search for the <xmp><Directory "..."></xmp> directive which includes the location where you will install the CMS.</li>
+	<li>Search for the line containing the "Options" directive. (It's just a line starting with the word "Options").</li>
+	<li>Make sure it has either "All", or "FollowSymLinks" included in the list of included features.</li>
+	<li>If the line doesn't exist copy paste this line <xmp>Options FollowSymLinks</xmp> within the <xmp><Directory "..."></xmp><xmp></Directory></xmp> block.
+	
+	</li>
+	</ol>
+	</li> 
+<li>Unzip the source code in the root of your http server or from wherever you want to serve up the site.</li>
+
+<li>Open INSTALL/install.php from your browser and follow the instructions.</li>
+</ol>
+Done!<br/>
+</p>
+<a style="float:right" href="#top">Top of Page</a>
+ 
+<a name="developers"><h2>Developers</h2></a>
+<p>
+    Please read the <a href="Developers-guide.html" target="_blank">Developer's Guide</a> file carefully.<br/>
+    Pragyan CMS TRAC is available is <a href="http://sourceforge.net/apps/trac/pragyan" target="_blank">here</a>.<br/>
+    You can also subscribe to Pragyan Developer's mailing list by registering <a href="https://lists.sourceforge.net/lists/listinfo/pragyan-developers" target="_blank">here</a>.
+    
+</p>
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="documentation"><h2>Documentation</h2></a>
+<p>
+    Unfortunately, Pragyan CMS documentation is not complete yet and is still underconstruction. However, a basic documentation is available in docs/Documentation folder. Click <a href="Documentation/html/index.html" target="_blank">here</a>.
+</p>
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="bugs"><h2>Bugs and Feature Requests</h2></a>
+<p>
+    For reporting any bugs or request new feature, please click <a href="http://sourceforge.net/apps/trac/pragyan/newticket">here</a>.
+    
+    
+    <br/>You may also want to check the list of features or bugs already reported and currently under development, <a href="https://sourceforge.net/apps/trac/pragyan/report/3">here</a>.
+
+</p>
+<a style="float:right" href="#top">Top of Page</a>
+
+<a name="support"><h2>Support</h2></a>
+<p> 
+    A dedicated website for Pragyan CMS support is currently under development and we will be able to answer your queries more effectively using that platform. Meanwhile, for any kind of queries, you can directly contact :
+    <p class="important">
+	Abhishek Shrivastava<br/>
+	i.abhi27 [at] gmail [dot] com
+    </p>
+</p>  
+<a style="float:right" href="#top">Top of Page</a>
+ 
+
+<a name="links"><h2>External Links</h2></a>
+<ul>
+   <li><a href="http://pragyan.sourceforge.net/">Pragyan CMS homepage</a></li>
+   <li><a href="http://sourceforge.net/apps/trac/pragyan">Pragyan CMS TRAC</a></li>
+   <li><a href="http://sourceforge.net/projects/pragyan">Pragyan CMS SourceForge project</a></li>
+   <li><a href="http://teamdeltaforce.org">Team Delta Force</a></li>
+</ul>
+<a href="#top">Top of Page</a><a style="float:right" href="#top">Top of Page</a><br/><br/>
+
+
+<a name="disclaimer"><h2>Disclaimer</h2></a>
+
+<pre>
+<xmp>
+    Pragyan CMS is an open-source web-based content management system
+    for developing, publishing and managing websites.
+    
+    Copyright (C) 2010-11 Pragyan CMS Team
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+</xmp>
+</pre>
+	 
+  Enjoy!<br/>
+        The Pragyan CMS Development team.<br/>
+        
+  Any kind of feedback will be highly appreciated :)<br/>
+</div>
+<!-- END CONTENT -->
+
+
+<div id="footer">
+<p>
+<a href="LICENSE.html" target="_blank">License</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;<a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;<a href="CREDITS.html" target="_blank">Credits</a>
+</p>
+
+<p><a href="http://pragyan.sourceforge.net">Pragyan CMS</a> &nbsp;&middot;&nbsp; Copyright &#169; 2010-2011 &nbsp;&middot;&nbsp; <a href="http://teamdeltaforce.org/">Team Delta Force</a></p>
+</div>
+
+</body>
+</html>
