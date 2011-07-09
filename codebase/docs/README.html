@@ -97,41 +97,65 @@
 
 
 <p>
- Pragyan CMS is a multi-user, modular Content Management System (CMS) to organize & facilitate collaborative content creation & updation on a website and its administration. It is written completely in PHP and supports MySQL databases. It has a strong custom inbuilt framework with  independent components like templates, modules and widgets. It comes pre-packaged with a large number of modules like article, form, quiz, forum, gallery, book, news, poll,  etc and third-party plugins like PDF converter, google maps, sphider search engine, etc. It also provides tools to organize and manage permissions for users and groups. <br/><br/>
+Pragyan CMS is a multi-user, modular Content Management System (CMS) to organize & facilitate collaborative content creation & updation on a website and its administration. It is written completely in PHP and supports MySQL databases. It has a strong custom inbuilt framework with  independent components like templates, modules and widgets. It comes pre-packaged with a large number of modules like article, form, quiz, forum, gallery, book, news, poll, etc, widgets like image slider, facebook plugins, page hits counter, news flash etc and third-party plugins like PDF converter, google maps, sphider search engine, etc. It also provides tools to organize and manage permissions for users and groups. There are a lot more features which you'll come to know as you read further ! <br/><br/>
 </p> 
 <a style="float:right" href="#top">Top of Page</a>
 
 <a name="features"><h2>Features</h2></a>
 <ul>
- <li>Multi-user open source content management system</li>
- <li>Organize and facilitate collaborative content creation and updation</li>
- <li>Integrated CkEditor v3.1 for easy editing of pages from the web</li>
- <li>Choose from a number of pre-installed widgets and configure them as per your needs</li>
- <li>Handy tools to manage permissions for groups and users</li>
- <li>Quickly create pages of type article, gallery, quiz, form, forum, poll, etc.</li>
- <li>Support for OpenID</li>
- <li>Template installation module with compatibility check</li>
- <li>Have page-specific templates so every page can have its own template</li>
- <li>Easily convert pages into PDF</li>
- <li>Integrated Google Maps and Latex plugins in articles</li>
- <li>Powerful search engine powered by Sphider</li>
- <li>Send mass emails to site registrants</li>
- <li>Security and protection against hacking attempts ( like XSS and Injections )</li>
- <li>Use captcha (without internet) or ReCaptcha (with internet) for avoiding spams</li>
- <li>Associate icons with every page using icons management</li>
- <li>Save articles as drafts and edit them later</li>
- <li>Censor specific words in articles and forum posts</li>
- <li>Easily install new modules using the module management</li>
- <li>Edit the registration form and user profile information fields as per your needs</li>
+<li><ul><h3>Generic</h3>
+    <li>Multi-user open source content management system</li>
+    <li>Facilitate collaborative content creation and updation from the web</li>
+    <li>Quickly create articles, galleries, registration forms or host time-constrained quizzes and polls, or create news feed</li>
+    <li>Powerful search engine powered by Sphider</li>
+    <li>In situ page editing i.e. no separate administrator interface</li>
+    <li>Allow user discussion on every article by allowing comments</li>
+</ul></li>
+<li><ul><h3>Convenience</h3>
+    <li>Integrated with latest CkEditor v3.5 for easy editing of pages from the web</li>
+    <li>Manage page revisions, and revert back to any old revision</li>
+    <li>Save draft copies of pages and edit them later as per your convenience and then publish</li>
+    <li>Censor abusive words in articles, comments and forum posts</li>
+    <li>Choose from a number of pre-installed widgets and configure them as per your needs</li>
+    <li>Copy or move page to a different path swiftly</li>
+</ul></li>
+<li><ul><h3>Security</h3>
+    <li>Handy tools to manage permissions for groups and users</li>
+    <li>Use captcha (without internet) or ReCaptcha (with internet) for avoiding spam registrations</li>
+    <li>Easily convert email IDs into images to save it from spamming bots</li>
+    <li>Built-in security and protection against hacking attempts ( like XSS and Injections )</li>
+    <li>Secure login via OpenID</li>
+    <li>Blacklist domains to avoid users from registering via those domains</li>
+</ul></li>
+<li><ul><h3>Beautify</h3>
+    <li>Associate icons with every page using icons management</li>
+    <li>Have page-specific templates so every page can have its own template</li>
+    <li>Pick from 3 different kind of menus - Classic, Complete and Multi-depth, as per your template needs</li>
+    <li>Template installation module comes with compatibility check and reports what's missing</li>
+</ul></li>
+<li><ul><h3>Handy</h3>
+    <li>Easily convert pages into PDF</li>
+    <li>Easily add Google Maps in your pages</li>
+    <li>Latex plugin to convert text into images to avoid scanning via bots</li>
+    <li>Automatic notification of forms with nearby deadlines</li>
+</ul></li>
+<li><ul><h3>Easy Administration</h3>
+    <li>Send mass emails to site registrants
+    <li>Easily install new modules, widgets or templates using the module, widget and template management tools</li>
+    <li>Edit the website registration form and user profile information fields as per your needs</li>
+    <li>Find out who has permissions to do what in the website and revoke them if you wish</li>
+    <li>Don't have direct access to database from web? Use CMS to browse the tables directly</li>
+</ul></li>
 </ul>
+
 <a style="float:right" href="#top">Top of Page</a>
 
 <a name="important_documents"><h2>Important Documents</h2></a>
 <ul>
- <li><a href="Documentation/html/index.html" target="_blank">Documentation</a></li>
+ <li><a href="Documentation/html/index.html" target="_blank">Documentation</a> (You must extract the documentation.tar.bz2 file in the docs folder)</li>
  <li><a href="Developers-guide.html" target="_blank">Developer's Guide</a></li>
  <li><a href="LICENSE.html" target="_blank">GNU GPL License</a></li>
- <li><a href="http://sourceforge.net/apps/trac/pragyan/log/trunk?action=stop_on_copy&mode=stop_on_copy&stop_rev=1&limit=1000&verbose=on" target="_blank">ChangeLog</a></li>
+ <li>ChangeLog [<a href="../ChangeLog" target="_blank">Local Copy</a>] [<a href="http://sourceforge.net/apps/trac/pragyan/log/trunk?action=stop_on_copy&mode=stop_on_copy&stop_rev=1&limit=1000&verbose=on" target="_blank">Latest Copy on Internet</a>]</li>
  <li><a href="CREDITS.html" target="_blank">Credits</a></li>
 </ul>
 <a style="float:right" href="#top">Top of Page</a>
@@ -139,34 +163,37 @@
 
 <a name="download"><h2>Download</h2></a>
 <p>
-    You can get the latest release version at <a href="http://sourceforge.net/projects/pragyan">Pragyan's Sourceforge Website</a>.<br/>
+    You can get the latest release version at <a href="http://sourceforge.net/projects/pragyan">Pragyan's Sourceforge Website</a> or from the downloads page of <a href="http://pragyan.integriti.org.in/home/downloads/">Pragyan's Home page</a>.<br/>
     <br/>
-    If you wish to download Pragyan CMS for developing purposes, then you should download the latest revision available at the Pragyan CMS Trac code browser from <a href="http://pragyan.svn.sourceforge.net/viewvc/pragyan/trunk/codebase/?view=tar">here</a>. For more details, please read the <a href="Developers-guide.html">Developer's Guide</a>.
+    If you wish to download Pragyan CMS for developing purposes, then you should download the latest revision available at the Pragyan CMS Trac code browser from <a href="http://pragyan.svn.sourceforge.net/viewvc/pragyan/trunk/codebase/?view=tar">here</a>. For more details, please read the <a href="Developers-guide.html" target="_blank">Developer's Guide</a>.
     
     
 </p>
 <a style="float:right" href="#top">Top of Page</a>
 
-<a name="requirements"><h2>Requirements</h2></a>
+<a name="requirements"><h2>Minimum Requirements</h2></a>
 <ul>
  <li>PHP 5.2.4 or later</li>
  <li>MySQL 5.0.45 or later</li>
  <li>A javascript and cookies enabled web-browser (duh!)</li>
- <p class="important">Pragyan CMS recommends that you use any <kbd>Unix-based operating system (like Ubuntu, Fedora, etc)</kbd> for your webserver. The Latex plugin feature of Pragyan CMS may not work when installed on windows. </p>
+ <p class="important">Pragyan CMS recommends that you use any <kbd>Unix-based operating system (like Ubuntu, Fedora, Arch, etc)</kbd> for your webserver.</p>
 </ul>
 <a style="float:right" href="#top">Top of Page</a>
 
 <a name="installation"><h2>Installation</h2></a>
 <p>
+<p class="important"><strong>Note:</strong> If .htaccess is enabled in your webserver for the installation directory, then directly jump to Step 3!</p>
 <ol>
-    <li>Make sure the FollowSymLinks feature is included in the Options directive of the <xmp><Directory "..."></xmp> corresponding to your install location.
-	<p class="important"><strong>Note:</strong> You can also skip this step now, in which case Pragyan CMS will generate a code at the end of installation, that you can put into your webserver's configuration file.</p>
-	For this,<br/><br/>
+	<li>Pragyan CMS will work just fine without any tweaks if .htaccess is enabled in the directory where Pragyan CMS is going to be installed. In order to do this, you've do add the directive : <xmp>AllowOverride All</xmp> within the <xmp><Directory "..."></xmp><xmp></Directory></xmp> block where "..." corresponds to your install location or includes it. If .htaccess is enabled, you can goto Step 3. However, if for some reason you do not wish to enable .htaccess, you'll have to do the Step 2. </li>
+    <li> (Only needed if .htaccess is disabled for your webserver) Make sure the FollowSymLinks feature is included in the Options directive of the <xmp><Directory "..."></xmp> corresponding to your install location.	For this,<br/><br/>
 	<ol type='a'>
-	<li>Go the configuration directory of your web server. (Usually, it is named httpd.conf, check your web server documentation to find it's location).</li>
+	<li>Open the configuration file of your web server. (Usually, it is named httpd.conf, check your web server documentation to find it's location).</li>
 	<li>Search for the <xmp><Directory "..."></xmp> directive which includes the location where you will install the CMS.</li>
 	<li>Search for the line containing the "Options" directive. (It's just a line starting with the word "Options").</li>
 	<li>Make sure it has either "All", or "FollowSymLinks" included in the list of included features.</li>
+	<li>If the line doesn't exist copy paste this line <xmp>Options FollowSymLinks</xmp> within the <xmp><Directory "..."></xmp><xmp></Directory></xmp> block.
+	
+	</li>
 	</ol>
 	</li> 
 <li>Unzip the source code in the root of your http server or from wherever you want to serve up the site.</li>
@@ -179,9 +206,9 @@ Done!<br/>
  
 <a name="developers"><h2>Developers</h2></a>
 <p>
-    Please read the <a href="Developers-guide.html">Developer's Guide</a> file carefully.<br/>
-    Pragyan CMS TRAC is available is <a href="http://sourceforge.net/apps/trac/pragyan">here</a>.<br/>
-    You can also subscribe to Pragyan Developer's mailing list by registering <a href="https://lists.sourceforge.net/lists/listinfo/pragyan-developers">here</a>.
+    Please read the <a href="Developers-guide.html" target="_blank">Developer's Guide</a> file carefully.<br/>
+    Pragyan CMS TRAC is available is <a href="http://sourceforge.net/apps/trac/pragyan" target="_blank">here</a>.<br/>
+    You can also subscribe to Pragyan Developer's mailing list by registering <a href="https://lists.sourceforge.net/lists/listinfo/pragyan-developers" target="_blank">here</a>.
     
 </p>
 <a style="float:right" href="#top">Top of Page</a>
