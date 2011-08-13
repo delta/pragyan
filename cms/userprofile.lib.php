@@ -14,4 +14,20 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
-echo "adfads";
+class Item {
+	
+	public $visible;
+	
+	function __construct() {
+		$this->visible = false;
+	}
+	
+	public function getField($fieldType) {
+		
+	}
+	
+}
+
+function generatePublicProfile($userId) {
+	
+}

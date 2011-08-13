@@ -100,6 +100,7 @@ $ICONS_SRC = "";
 ///Variables for storing widgets.
 $WIDGETS = array();
 
+//User Public profile module
 $publicPageRequest = false;
 
 ///For example, if hosted on pragyan.org/10, $onlineSiteUrl = http://pragyan.org/10/home
