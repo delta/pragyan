@@ -213,12 +213,12 @@ require_once($sourceFolder."/login.lib.php");
 
 ///Check if request is made
 if($publicPageRequest) {
-	//require_once($sourceFolder."/profile.lib.php");
+	require_once($sourceFolder."/profile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));
-	$TITLE = $userProfileName;
-	//$CONTENT = profile($userId);
-	$CONTENT = "You are currently viewing a Public Profile of ". htmlentities($userProfileName);
-	$MENUBAR = '';
+	$TITLE = CMS_TITLE . " | User : " .$userProfileName;
+	$CONTENT = profile($userId);
+	//$CONTENT = "You are currently viewing a Public Profile of ". htmlentities($userProfileName);
+	$MENUBAR = getMenu($userId, $pageIdArray);
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();
 }
