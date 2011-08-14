@@ -214,14 +214,14 @@ require_once($sourceFolder."/login.lib.php");
 
 ///Check if request is made
 if($publicPageRequest) {
-	require_once($sourceFolder."/profile.lib.php");
+	require_once($sourceFolder."/userprofile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));
 	$TITLE = CMS_TITLE . " | User : " .$userProfileName;
-	$CONTENT = profile($userId);
+	$CONTENT = generatePublicProfile($userId);
 	//$CONTENT = "You are currently viewing a Public Profile of ". htmlentities($userProfileName);
 	$MENUBAR = getMenu($userId, $pageIdArray);
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
-	exit();
+	exit(1);
 }
 
 ///Parse the URL and retrieve the PageID of the request page if its valid

@@ -29,5 +29,6 @@ class Item {
 }
 
 function generatePublicProfile($userId) {
+	$username = getUserName($userId);
 	
 }
