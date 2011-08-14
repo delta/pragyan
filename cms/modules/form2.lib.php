@@ -48,20 +48,83 @@ class form2 implements module {
 		
 		$html .= "<table><tr><td>";
 		
-		$html .= "<input type='button' value='+' onclick='addNewFormField()' />";
+		$html .= "<input type='button' value='+' onclick='addNewFormField(\"cms-form2\")' />";
 		
+		
+		$html .= "<div class=\"cms-form2-node\"><form class=\"cms-form2\"></form></div>";
 		$html .= <<<Script
 		<script type="text/javascript">
-			function newFormField() {
+			if(window.attachEvent) {
+				window.attachEvent("onload", function(){
+					if(typeof jQuery === "undefined")
+						alert("You must include jQuery to use this page");
+				});
+			}
+			else {
+				window.addEventListener("load", function() {
+					if(typeof jQuery === "undefined")
+						alert("You must include jQuery to use this page");
+				}, false);
+			}
+			if(typeof window.setAttributes != "function") {
+				window.setAttributes = function(o,attr) {
+					for(i in attr)
+						o.setAttribute(i,attr[i]);
+				}
+			}
+			var addNewFormField = (function() {
+				var c = (function(){
+					var count = 0;
+					return {
+						inc: function() {
+							count++;
+						},
+						get: function() {
+							return count;
+						}
+					}
+				})();
+				function newField() {
+					var i = c.get();
+					var cover = document.createElement("div");
 					
-			}
-			function addNewFormField(){
-				
-			}
+					var el = [];
+					var tmp;
+					tmp = document.createElement("input");
+					setAttributes(tmp, {
+						type: "text",
+						"name": "fieldName" + i 
+					});
+					el.push(tmp);
+					
+					tmp = document.createElement("select");
+					setAttributes(tmp, {
+						"name": "fieldType" + i
+					});
+					var possible = ["text", "time", "date", "checkbox", "file", "time", "number", "phone", "email", "name", "password", "ip", "list", "radio"];
+					for(i in possible) {
+						var temp = document.createElement("option");
+						setAttributes(temp,{"value": possible[i]});
+						temp.innerHTML = possible[i];
+						tmp.appendChild(temp);
+					}
+					el.push(tmp);
+					
+					for(j=0;j<el.length;j++)
+						cover.appendChild(el[j]);
+					return cover;
+				}
+				return function (x){
+					c.inc();
+					var i = c.get();
+					document.getElementsByClassName(x)[0].appendChild(newField());
+				};
+			})();
 		</script>
 Script;
 		
-		$html .= "</td></tr><table>";
+		$html .= "</td></tr></table>";
+		return $html;
 	}
 	
 	public function createModule($compId) {
