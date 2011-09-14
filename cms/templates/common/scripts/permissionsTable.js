@@ -161,15 +161,15 @@ function removeByElement(arrayName,arrayElement) {
 }
 
 function savelist(e) {
-	class = e.className.substr(6,e.className.length-6);
-	if(inArray(selected[class], e.value) != e.checked) {
+	classx = e.className.substr(6,e.className.length-6);
+	if(inArray(selected[classx], e.value) != e.checked) {
 		if(e.checked)
-			if(selected[class])
-				selected[class].push(e.value);
+			if(selected[classx])
+				selected[classx].push(e.value);
 			else
-				selected[class] = Array(e.value);
+				selected[classx] = Array(e.value);
 		else
-			removeByElement(selected[class],e.value);
+			removeByElement(selected[classx],e.value);
 	}
 }
 
@@ -178,14 +178,14 @@ function checkClick(e) {
 	showPermissions();
 }
 
-function render(arr,class) {
+function render(arr,classx) {
 	var ret = '';
 	var isChecked = '';
 	for(var key in arr) {
 		isChecked = '';
-		if(inArray(selected[class],key))
+		if(inArray(selected[classx],key))
 			isChecked = ' checked';
-		ret += "<tr><td><INPUT type=checkbox class='check_" + class + "' value='" + key + "' name='" + class + "_" + key + "' onChange='checkClick(this)'" + isChecked + ">&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
+		ret += "<tr><td><INPUT type=checkbox class='check_" + classx + "' value='" + key + "' name='" + classx + "_" + key + "' onChange='checkClick(this)'" + isChecked + ">&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
 	}
 	return ret;
 }

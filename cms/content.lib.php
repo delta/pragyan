@@ -259,11 +259,15 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
  * To get title bar text
  */
 function getTitle($pageId,$action, &$heading) {
+
 	if($action=="login" || $action == "logout") {
 		$heading = ucfirst($action);
 		return true;
 	}
-
+	global $allow_pageheadings_intitle;
+	if($allow_pageheadings_intitle == 0)
+		return false;
+		
 	$pagetitle_query = "SELECT `page_title`, `page_module`, `page_modulecomponentid`, `page_displaypageheading` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
 	$pagetitle_result = mysql_query($pagetitle_query);
 	if (!$pagetitle_result)

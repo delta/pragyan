@@ -45,6 +45,7 @@ if(!defined('__PRAGYAN_CMS'))
 
 -----------------------------------------------------------------
 Database Structure :
+#TODO Need to verify with the current structure
  
  PragyanV3_widgetsinfo table :
  *widget_id	widget_name	widget_classname	widget_description	widget_version	widget_author	widget_foldername

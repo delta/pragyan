@@ -497,7 +497,7 @@ OPENIDLOGIN;
 					}
 					-->
 					</script>
-					<form method="POST" class="registrationform" name="user_loginform" id="pragyan_loginform" onsubmit="return checkLoginForm(this);" action="./+login" autocomplete="off">
+					<form method="POST" class="registrationform" name="user_loginform" id="pragyan_loginform" onsubmit="return checkLoginForm(this);" action="./+login">
 						<fieldset>
 						<legend>Login</legend>
 							<table cellspacing=0 cellpadding=0>
