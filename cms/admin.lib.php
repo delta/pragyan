@@ -137,6 +137,7 @@ global $pageFullPath;
 	$templates = getAvailableTemplates();
 	$allow_pagespecific_header=$allow_pagespecific_header==0?"":"checked";
 	$allow_pagespecific_template=$allow_pagespecific_template==0?"":"checked";
+	$allow_pageheadings_intitle=$allow_pageheadings_intitle==0?"":"checked";
 
 	$globalform=<<<globalform
 		<table style="width:100%">
@@ -166,7 +167,10 @@ globalform;
 	<td>Allow Page-specific Headers ?</td>
 	<td><input name='allow_page_header' type='checkbox' $allow_pagespecific_header></td>
 	</tr>
-	
+	<tr>
+	<td>Allow Page Headings in Title ?</td>
+	<td><input name='allow_pageheadings_intitle' type='checkbox' $allow_pageheadings_intitle></td>
+	</tr>
 	<tr>
 	<td>Show Breadcrumbs Submenu ?</td>
 	<td><input name='breadcrumb_submenu' type='checkbox' $breadcrumb_submenu></td>
@@ -596,6 +600,7 @@ function updateGlobalSettings()
        
 	$global=array();
 	$global['allow_pagespecific_header']=isset($_POST['allow_page_header'])?1:0;
+	$global['allow_pageheadings_intitle']=isset($_POST['allow_pageheadings_intitle'])?1:0;
 	$global['allow_pagespecific_template']=isset($_POST['allow_page_template'])?1:0;
 	$global['default_user_activate']=isset($_POST['activate_useronreg'])?1:0;
 	$global['default_mail_verify']=isset($_POST['send_mail_on_reg'])?1:0;
