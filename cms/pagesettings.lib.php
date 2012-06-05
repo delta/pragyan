@@ -89,7 +89,7 @@ function getSettingsForm($pageId, $userId) {
 				'<td><input type="checkbox" name="childrenshowicon[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayicon'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td align="center"><input type="submit" name="moveUp" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Up" /></td>' .
 				'<td align="center"><input type="submit" name="moveDn" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Down" /></td>' .
-				'<td align="center"><input type="submit" name="deletePage" onclick="return checkDelete(this,\''.$page_result_row['page_name'].'\')"  value="Delete" /></td></tr>';
+				'<td align="center"><input type="submit" name="deletePage" onclick="javascript:if(checkDelete(this,\''.$page_result_row['page_name'].'\'))this.form.action+=\''.$page_result_row['page_name'].'\'"  value="Delete" /></td></tr>';
 	}
 	if(!mysql_num_rows($page_result)==0)
 		$childList .= "</table>";
@@ -386,8 +386,9 @@ MOVECOPY;
 			{
 				if(confirm('Are you sure you want to delete '+fileName+'?'))
 				{
-					butt.form.action+=fileName;
-					butt.form.submit();
+				return true;
+//					butt.form.action+=fileName;
+//					butt.form.submit();
 				}
 				else return false;
 			}
