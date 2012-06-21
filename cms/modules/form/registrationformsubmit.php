@@ -412,7 +412,7 @@ if(!defined('__PRAGYAN_CMS'))
 			if(mysql_num_rows($existsResult)>0) {
 				$existsRow = mysql_fetch_array($existsResult);
 				if(deleteFile( $moduleCompId,'form', $existsRow[0])) {
-					$deleteQuery = "DELETE FROM `form_elementdata` WHERE `form_elementid` = '$elementId' AND `page_modulecomponentid` = '$moduleCompId' AND `user_id`=$userId"";
+					$deleteQuery = "DELETE FROM `form_elementdata` WHERE `form_elementid` = '$elementId' AND `page_modulecomponentid` = '$moduleCompId' AND `user_id`=$userId";
 					mysql_query($deleteQuery);
 				}
 			}
