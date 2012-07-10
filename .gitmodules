@@ -4,3 +4,6 @@
 [submodule "cms/templates/jack"]
 	path = cms/templates/jack
 	url = git@github.com:Integriti/pragyan-template-jack.git
+[submodule "cms/templates/pragyan2011"]
+	path = cms/templates/pragyan2011
+	url = git@github.com:Integriti/pragyan-template-pragyan2011.git
