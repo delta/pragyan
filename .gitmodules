@@ -10,3 +10,6 @@
 [submodule "cms/templates/blacksilver"]
 	path = cms/templates/blacksilver
 	url = git@github.com:Integriti/pragyan-template-blacksilver.git
+[submodule "cms/templates/trinity"]
+	path = cms/templates/trinity
+	url = git@github.com:Integriti/pragyan-template-trinity.git
