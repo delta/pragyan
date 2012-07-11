@@ -7,3 +7,6 @@
 [submodule "cms/templates/pragyan2011"]
 	path = cms/templates/pragyan2011
 	url = git@github.com:Integriti/pragyan-template-pragyan2011.git
+[submodule "cms/templates/blacksilver"]
+	path = cms/templates/blacksilver
+	url = git@github.com:Integriti/pragyan-template-blacksilver.git
