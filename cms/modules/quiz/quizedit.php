@@ -57,7 +57,7 @@ function getQuestionTypeBox($questionType) {
  */
 function getTableRow($tableName, $condition) {
 	$query = "SELECT * FROM `$tableName` WHERE $condition";
-	echo $query;
+	//	echo $query;
 	$result = mysql_query($query);
 	if (!$result) {
 		displayerror('Database error. Could not retrieve information from the database.');
