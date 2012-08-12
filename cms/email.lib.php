@@ -83,10 +83,10 @@ function displayEmail($template = "") {
 		}
 	}
 	
-	function renderCheckList(arr,class) {
+	function renderCheckList(arr,class1) {
 		var ret = '<table name="rcptlisttable" id="rcpttable" class="userlisttable display"><thead><tr><th>Select Recipients</th></thead><tbody>';
 		for(var key in arr)
-			ret += "<tr><td><INPUT type=checkbox class=" + class + " value='" + key + "'>&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
+			ret += "<tr><td><INPUT type=checkbox class=" + class1 + " value='" + key + "'>&nbsp;&nbsp;&nbsp;" + arr[key] + "</td></tr>";
 		ret += "</tbody></table>";
 		return ret;
 	}
@@ -108,9 +108,9 @@ function displayEmail($template = "") {
 		initSmartTable();
 	}
 	
-	function getList(class) {
+	function getList(class1) {
 		var listarr = new Array();
-		var list = document.getElementsByClassName(class);
+		var list = document.getElementsByClassName(class1);
 		var l = list.length;
 		for(var i = 0; i<l; i++)
 			if(list[i].checked)
