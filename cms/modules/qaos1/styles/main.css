@@ -1,0 +1,36 @@
+.viewbuttons
+{
+    width:auto;
+    height:30px;
+    background-color:grey;
+    color:white;
+}
+.forms
+{
+	margin-left: auto;
+	margin-right: 5px;u
+	display: none;
+	text-align:center;
+}
+table.qaostables
+	{
+		margin-right: auto;
+		margin-left: auto;
+		text-align: center;
+		overflow: scroll;		
+		width: 97% !important;
+	}
+tr
+	{
+		width: 2%;
+		text-align: center;
+		overflow: scroll;	
+	}		
+#buttonsDiv
+	{
+   	margin-right: auto;
+		margin-left: auto;
+		text-align: center;
+	}
+
+	
