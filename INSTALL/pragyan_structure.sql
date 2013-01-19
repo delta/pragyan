@@ -188,7 +188,7 @@ CREATE TABLE IF NOT EXISTS `form_elementdesc` (
   `form_elementid` int(11) NOT NULL DEFAULT '0',
   `form_elementname` varchar(1000) NOT NULL,
   `form_elementdisplaytext` varchar(5000) NOT NULL COMMENT 'Description of data held',
-  `form_elementtype` enum('text','textarea','radio','checkbox','select','password','file','date','datetime') NOT NULL DEFAULT 'text',
+  `form_elementtype` enum('text','textarea','radio','checkbox','select','password','file','date','datetime','member') NOT NULL DEFAULT 'text',
   `form_elementsize` int(11) DEFAULT NULL,
   `form_elementtypeoptions` text,
   `form_elementdefaultvalue` varchar(4000) DEFAULT NULL,
