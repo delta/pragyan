@@ -69,7 +69,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$formResult = mysql_query($formQuery);
 		if(!$formResult)	{ displayerror('E52 : Invalid query: ' . mysql_error()); 	return false; }
 		if($formRow = mysql_fetch_assoc($formResult)) {
-			$body .= '<fieldset><legend>' . $formRow['form_heading'] . '</legend><br /><div style="text-align:center">' . $formRow['form_headertext'] . '</div><br />';
+			$body .= '<fieldset><legend><h2>' . $formRow['form_heading'] . '</h2></legend><br /><div style="text-align:center;font-size:20px;">' . $formRow['form_headertext'] . '</div><br />';
 		}
 		else {
 			displayerror('Could not load form data.');
@@ -237,7 +237,6 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 		if($functionName($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,$jsOutput,$htmlOutput)==false)
 			displayerror("Unable to run function ".$functionName);
 	}
-
 	$jsOutput = join($jsOutput, ' && ');
 	$javascriptCheckFunctions = $jsOutput;
 
@@ -427,3 +426,36 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 			$htmlOutput .= '<input type="text" '. $validCheck . ' name="'.$elementName.'" value="' . $value . '" id="'.$elementName.'" /><input name="cal'.$elementName.'" type="reset" value=" ... " onclick="return showCalendar(\'' . $elementName . '\', '.$datetimeFormat.', \'24\', true);" />';
 			return true;
 		}
+
+		function getFormElementMember($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,&$jsOutput,&$htmlOutput)
+		 {
+		   $sizeText = '';
+		 	if($isRequired)
+			$validCheck=" class=\"required\"";
+			else $validCheck="";
+			$txtFieldMember = displaySuggestionBox($sizeText,$elementName,$value,$elementTooltip,$validCheck,"div_".$elementName,"view","userBox_".$elementName);
+			$htmlOutput .= $txtFieldMember;			
+			return true;
+		 }
+//displaySuggestionBox($txtField,$divId,$action,$userBoxName) ;
+
+function displaySuggestionBox($sizeText,$txtField,$value,$elementTooltip,$validCheck,$divId,$action,$userBoxName) {
+  global $urlRequestRoot, $moduleFolder, $cmsFolder,$templateFolder,$sourceFolder,$cmsFolder,$STARTSCRIPTS;
+  $scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
+  $imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
+  $suggestionsBox = '<input type="text" '.$sizeText.' name="'.$txtField.'" id="'.$txtField.'" value="'.$value.'" '.'title="'.$elementTooltip."\"".$validCheck.' autocomplete="off" style="width: 285px" onKeyPress="'/*return disableEnterKey(event,\''.$divId.'\')*/.'" placeholder="Enter Email Id or Pragyan Id"/>';
+  /*
+  $suggestionsBox .=<<<FIELD
+    <div id="{$divId}" style="background-color: white; width: 300px; border: 1px solid black; position: relative; overflow-y: scroll; max-height: 180px;z-index:100; display: none;left:11px;top:-10px;" tabindex="1"  ></div>
+   <script type="text/javascript" language="javascript" src="$scriptsFolder/ajaxsuggestionbox.js"></script>
+   <script language="javascript">
+      var {$userBoxName} = new SuggestionBox(document.getElementById('{$txtField}'), document.getElementById('{$divId}'), "./+{$action}&subaction=getsuggestions&forwhat=%pattern%");
+  {$userBoxName}.loadingImageUrl = '$imagesFolder/ajaxloading.gif';
+  document.getElementById('{$divId}').style.left="11px";
+  document.getElementById('{$divId}').style.top="-10px";
+  document.getElementById('{$divId}').style.width="350px";
+  </script>
+FIELD;
+  */
+  return $suggestionsBox;
+}

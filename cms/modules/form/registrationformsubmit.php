@@ -118,7 +118,7 @@ if(!defined('__PRAGYAN_CMS'))
 				// send mail code starts here - see common.lib.php for more
 
 				if ($footerRow[1]) {
-					$from = ''; // Default CMS email will be added automatically if this is left blank
+				  $from = "from: Pragyan Events Team <no-reply@pragyan.org>"; // Default CMS email will be added automatically if this is left blank
 					$to = getUserEmail($userId);
 
 					$pageId = getPageIdFromModuleComponentId('form',$moduleCompId);
@@ -130,7 +130,11 @@ if(!defined('__PRAGYAN_CMS'))
 					$messenger = new messenger(false);
 
 					global $onlineSiteUrl;				
-					$messenger->assign_vars(array('FORMNAME'=>"$formname",'KEY'=>"$key",'WEBSITE'=>CMS_TITLE,'DOMAIN'=>$onlineSiteUrl,	'NAME'=>getUserFullName($userId)));
+					$pos = strrpos($_SERVER['REQUEST_URI'],'/');
+					$webAdd = substr('http://www.pragyan.org'.$_SERVER['REQUEST_URI'],0,22+$pos);;
+					$pos = strrpos($webAdd,'/');
+					$webAdd = substr('http://www.pragyan.org'.$_SERVER['REQUEST_URI'],0,$pos);
+				$messenger->assign_vars(array('FORMNAME'=>"$formname",'KEY'=>"$key",'WEBSITE'=>CMS_TITLE,'DOMAIN'=>$onlineSiteUrl,	'NAME'=>getUserFullName($userId),'PRID'=>$userId,'EVENTWEB' => $webAdd));
 					if ($messenger->mailer($to,$mailtype,$key,$from))
 							displayinfo("You have been succesfully registered to $formname and a registration confirmation mail has been sent. Kindly check your e-mail.");
 						else 
@@ -195,21 +199,24 @@ if(!defined('__PRAGYAN_CMS'))
 				return false;
 			}
 		}
-		if($elementMoreThan!=0)
+		if($submitData==""&&!$elementIsRequired);
+		else if($elementMoreThan!=0)
 		{
 			if($elementMoreThan > $submitData) {
 				displayerror("$elementName is less than element minimum value");
 				return false;
 			}
 		}
-		if($elementLessThan!=0)
+		if($submitData==""&&!$elementIsRequired);
+		else if($elementLessThan!=0)
 		{
 			if($elementLessThan < $submitData) {
 				displayerror("$elementName is more than element maximum value");
 				return false;
 			}
 		}
-		if($elementCheckInt)
+		if($submitData==""&&!$elementIsRequired);
+		else if($elementCheckInt)
 		{
 			if(!is_numeric($submitData)) {
 				if($submitData != '') {
@@ -437,6 +444,72 @@ if(!defined('__PRAGYAN_CMS'))
 			return false;
 		}
 		return true;
+	}
+
+
+	function submitRegistrationFormMember($moduleCompId, $elementId, $userId, $postVarName, $elementName, $elementSize, $elementTypeOptions, $elementMoreThan, $elementLessThan, $elementCheckInt, $elementIsRequired) {
+		if($elementIsRequired && ( !isset($_POST[$postVarName]) || $_POST[$postVarName] == NULL || trim($_POST[$postVarName]) == "")) {
+			displayerror("Essential field $elementName is missing");
+			return false;
+		}
+		
+		$submitData = escape(trim($_POST[$postVarName]));
+		
+		if($submitData != "") {
+		  if(!is_numeric($submitData)) {
+		    if(!filter_var( $submitData, FILTER_VALIDATE_EMAIL )) {
+		      displayerror("Not a Valid Email Or Pragyan Id");
+		      return false;
+		    }
+		    $query = 'SELECT `user_id` FROM `'.MYSQL_DATABASE_PREFIX."users` WHERE `user_email` = '".$submitData."'";
+		    $result = mysql_query($query);
+		    $row = mysql_fetch_row($result);
+		    if(!mysql_num_rows($result)) {
+		      displayerror("The User with this Email Id is not registered in pragyan site.");
+		      return false;
+		    }
+		    $submitData = $row[0];
+		  }
+		  $query = 'SELECT * FROM `'.MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$submitData."'";
+		  $result = mysql_query($query);
+		  if(!mysql_num_rows($result)) {
+		    displayerror("Not a Valid Pragyan Id.");
+		    return false;
+		  }
+		    
+		  $query="SELECT * FROM `form_elementdata` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementdata` ='{$submitData}'";
+		  $result=mysql_query($query);
+		  if(mysql_num_rows($result)>1) {
+		    displayerror("User ".$submitData." has already enrolled for this event");
+		    return false;
+		  }    
+		  
+		}
+		$textQuery = "SELECT 1 FROM `form_elementdata` " .
+						"WHERE `user_id` ='$userId' AND `page_modulecomponentid` ='$moduleCompId' AND `form_elementid` ='$elementId'";
+		$textResult = mysql_query($textQuery);
+		if (!$textResult) {	displayerror('E46 : Invalid query: ' . mysql_error()); 	return false; 	}
+		
+		
+		$query="SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid` ='$elementId'";
+		$result=mysql_query($query);
+		$fetch=mysql_fetch_assoc($textResult);
+		
+		if(mysql_num_rows($textResult)>0) {
+			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$submitData."' ".
+								"WHERE `user_id` = '$userId' AND `page_modulecomponentid` = '$moduleCompId' AND `form_elementid` = $elementId";
+			$textUpdateResult = mysql_query($textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E67 : Invalid query: ' . mysql_error()); 	return false; 	}
+		} else {
+		  
+			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
+								"VALUES ( '$userId', '$moduleCompId', '$elementId', '". $submitData ."')";
+		$textInsertResult = mysql_query($textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E13 : Invalid query: ' . mysql_error()); 	return false; 	}
+		}
+		
+	
+		  return true;
 	}
 
 	function submitRegistrationFormDate($moduleCompId, $elementId, $userId, $postVarName, $elementName, $elementSize, $elementTypeOptions, $elementMoreThan, $elementLessThan, $elementCheckInt, $elementIsRequired) {
