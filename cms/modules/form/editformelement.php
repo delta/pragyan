@@ -86,7 +86,7 @@ if(!defined('__PRAGYAN_CMS'))
 	/**
 	 * Loads properties of the element from a mysql table row (associative)
 	 */
-	public function fromMysqlTableRow($elementDescRow) {
+ 	public function fromMysqlTableRow($elementDescRow) {
 		foreach(FormElement::$fieldMap as $key => $value) {
 			$this->$value = $elementDescRow[$key];
 		}
@@ -99,7 +99,7 @@ if(!defined('__PRAGYAN_CMS'))
 	 * Loads properties of the element from a submitted form
 	 */
 	public function fromHtmlForm() {
-		if($_POST['elementid'] == 'new' || !ctype_digit($_POST['elementid'])) {
+	        if($_POST['elementid'] == 'new' || !ctype_digit($_POST['elementid'])) {
 			if(isset($this->elementId))
 				unset($this->elementId);
 		}
@@ -206,7 +206,7 @@ ROWSTRING;
 
 		$elemTypeBox = '';
 
-		$elementTypes = array('text', 'textarea', 'radio', 'checkbox', 'select', 'password', 'file', 'date', 'datetime');
+		$elementTypes = array('text', 'textarea', 'radio', 'checkbox', 'select', 'password', 'file', 'date', 'datetime','member');
 		if(isset($this->elementType)) {
 			for($i = 0; $i < count($elementTypes); $i++) {
 				$elemTypeBox .= '<option';
@@ -248,7 +248,7 @@ ROWSTRING;
 				if(elemType == 'checkbox' || elemType == 'radio' || elemType == 'select' || elemType == 'file') {
 					form.txtElementTypeOptions.disabled = false;
 				}
-				else {
+ 				else {
 					form.txtElementTypeOptions.disabled = true;
 				}
 
@@ -268,6 +268,13 @@ ROWSTRING;
 
 				if(elemType == 'file') {
 					form.txtDefaultValue.disabled = true;
+				}
+				else {
+					form.txtDefaultValue.disabled = false;
+				}
+				if(elemType == 'member') {
+				  form.txtElementSize.disabled = false;
+			 
 				}
 				else {
 					form.txtDefaultValue.disabled = false;
@@ -390,7 +397,6 @@ HTMLOUTPUT;
 
 	public function toMysqlUpdateQuery($formId) {
 		$updates = array();
-
 		foreach(FormElement::$fieldMap as $key => $value) {
 			if(isset($this->$value)) {
 				$updates[] = "`$key` = '". $this->$value . "'";
