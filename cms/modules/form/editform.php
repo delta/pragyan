@@ -88,6 +88,18 @@ if(!defined('__PRAGYAN_CMS'))
 			if(isset($_POST['txtFooterText'])) {
 				$updates[] = "`form_footertext` = '".escape($_POST['txtFooterText'])."'";
 			}
+			if(isset($_POST['txtRegistrantsLimit'])){
+				$updates[] = "`form_registrantslimit` = '".escape($_POST['txtRegistrantsLimit'])."'";
+			}
+			if(isset($_POST['txtCloseLimit'])){
+				$registrantsLimit = escape($_POST['txtRegistrantsLimit']);
+				$closeLimit = escape($_POST['txtCloseLimit']);
+				if (($registrantsLimit == '-1')&&($closeLimit!='-1')||($closeLimit<$registrantsLimit)){
+					$closeLimit =$registrantsLimit;
+					displaywarning("Close Limit cannot be less than registrants limit. Using".$registrantsLimit."as the close limit");
+				}
+				$updates[] = "`form_closelimit` = '".$closeLimit."'";
+			}
 			if(count($updates) > 0) {
 				$updateQuery = 'UPDATE `form_desc` SET ' . join($updates, ', ') .
 				               ' WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
@@ -107,7 +119,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$formQuery = 'SELECT page_modulecomponentid, form_heading, form_loginrequired, form_headertext,	form_footertext, ' .
 				'form_expirydatetime, form_sendconfirmation, form_usecaptcha, form_allowuseredit, '. 
 				'form_allowuserunregister,form_showuseremail, form_showuserfullname, form_showuserprofiledata, '. 
-				'form_showregistrationdate, form_showlastupdatedate ' .
+				'form_showregistrationdate, form_showlastupdatedate, form_registrantslimit, form_closelimit ' .
 				'FROM `form_desc` WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
 		$formResult = mysql_query($formQuery);
 
@@ -131,6 +143,8 @@ if(!defined('__PRAGYAN_CMS'))
 				$regDate = $formResultRow['form_showregistrationdate'] ? 'checked="checked"' : '';
 				$lastUpdate = $formResultRow['form_showlastupdatedate'] ? 'checked="checked"' : '';
 				$footerText = $formResultRow['form_footertext'];
+				$registrantsLimit = $formResultRow['form_registrantslimit'];
+				$closeLimit = $formResultRow['form_closelimit'];
 			}
 		}
 
@@ -158,7 +172,7 @@ if(!defined('__PRAGYAN_CMS'))
 		<link rel="stylesheet" type="text/css" media="all" href="$calpath/form/calendar/calendar.css" title="Aqua" />
 		<script type="text/javascript" src="$calpath/form/calendar/calendar.js"></script>
 
-		<form id="formdetails" action="./+$action" method="post">
+		<form id="formdetails" action="./+$action" method="post" name="formDetails">
 			<table width="100%" cellpadding="1" cellspacing="1" border="1">
 				<tr>
 					<td width="20%">Form Heading:</td><td><input type="text" name="txtFormHeading" value="$formHeading" onblur=check(this); /></td>
@@ -264,9 +278,40 @@ if(!defined('__PRAGYAN_CMS'))
 						<label><input type="radio" name="optLastUpdate" value="no" $lastUpdateN />No</label>
 					</td>
 				</tr>
+				<tr>
+					<td width="20%">Registrants Limit:</td><td><input type="text" name="txtRegistrantsLimit" value="$registrantsLimit" onblur=change(this); /></td>
+						<script type=text/javascript>
+							function change(field) {
+								val = field.value;
+								if(val!=$registrantsLimit)
+									alert("Changing this value when the form is active is not advisable");
+								if(val=='-1') {
+										document.formDetails.txtCloseLimit.value = '-1';				
+								}
+							}
+						</script>
+				</tr>
+				<tr>
+					<td width="20%">Form Close Limit:</td><td><input type="text" name="txtCloseLimit" value="$closeLimit" onblur=check(this); /></td>
+					
+						<script type=text/javascript>
+							function check(field) {
+								val = field.value;
+								limit = document.formDetails.txtRegistrantsLimit.value;
+								if((limit == '-1')&&(val!='-1'))
+									field.value = '-1';
+								if((val!='-1')&&(val<limit)) {
+									alert("Close limit must be greater than or equal to Registrants Limit");
+									field.value = limit;
+									field.focus();								
+								}
+							}
+						</script>
+				</tr>
 				</table>
 			<input type="submit" name="submittedform_desc" value="Update Form" />
-		</form><br/>
+		</form>
+		<br/>
 BODY;
 		return $formDescBody;
 	}

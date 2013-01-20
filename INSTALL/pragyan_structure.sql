@@ -160,8 +160,11 @@ CREATE TABLE IF NOT EXISTS `form_desc` (
   `form_showuserprofiledata` tinyint(1) NOT NULL DEFAULT '0',
   `form_showregistrationdate` tinyint(1) NOT NULL DEFAULT '1',
   `form_showlastupdatedate` tinyint(1) NOT NULL DEFAULT '0',
+  `form_registrantslimit` int(11) NOT NULL DEFAULT '-1',
+  `form_closelimit` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 
 -- --------------------------------------------------------
 

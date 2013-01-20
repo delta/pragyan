@@ -79,6 +79,7 @@ if(!defined('__PRAGYAN_CMS'))
 				break;
 			}
 		}
+		$update = 0;
 		if(!$allFieldsUpdated) {
 			if($userId < 0)
 				unregisterUser($moduleCompId,$userId);
@@ -94,11 +95,13 @@ if(!defined('__PRAGYAN_CMS'))
 			if(!verifyUserRegistered($moduleCompId,$userId)) {
 				registerUser($moduleCompId,$userId);
 			}
-			else
+			else{
 				updateUser($moduleCompId,$userId);
+				$update = 1;
+			}
 			if(!$silent)
 			{
-				$footerQuery = "SELECT `form_footertext`, `form_sendconfirmation` FROM `form_desc` WHERE `page_modulecomponentid` = '$moduleCompId'";
+				$footerQuery = "SELECT `form_footertext`, `form_sendconfirmation`, `form_registrantslimit`, `form_closelimit` FROM `form_desc` WHERE `page_modulecomponentid` = '$moduleCompId'";
 				$footerResult = mysql_query($footerQuery);
 				$footerRow = mysql_fetch_row($footerResult);
 
@@ -113,14 +116,25 @@ if(!defined('__PRAGYAN_CMS'))
 				}
 				else
 					$footerText = '';
-
-				displayinfo($footerText == '' ? "User successfully registered!" : $footerText);
+				$waitlisted = '';
+				displayinfo($footerText == '' ? "User successfully registered!." : $footerText);
+				if(!$update){
+					if($footerRow[2]!='-1'){
+						$usersRegisteredQuery = " SELECT COUNT( * ) FROM `form_regdata` WHERE `page_modulecomponentid` ='".$moduleCompId."'";
+						$usersRegisteredResult = mysql_fetch_array(mysql_query($usersRegisteredQuery));
+						if($usersRegisteredResult[0]==$footerRow[3])
+							displayerror('Form registration limit has been reached.');
+						else 
+						if($usersRegisteredResult[0]>$footerRow[2]){
+							$waitlist = 'You registration has been waitlisted. We will contact you through mail if we could accommodate you';	
+							displayinfo("Thanks for registering. $waitlist");	
+						}
+					}
+				}
 				// send mail code starts here - see common.lib.php for more
-
-				if ($footerRow[1]) {
+				if ($footerRow[1]=='1') {
 				  $from = "from: Pragyan Events Team <no-reply@pragyan.org>"; // Default CMS email will be added automatically if this is left blank
 					$to = getUserEmail($userId);
-
 					$pageId = getPageIdFromModuleComponentId('form',$moduleCompId);
 					$parentPage = getParentPage($pageId);
 					$formname = getPageTitle($parentPage);
@@ -134,7 +148,7 @@ if(!defined('__PRAGYAN_CMS'))
 					$webAdd = substr('http://www.pragyan.org'.$_SERVER['REQUEST_URI'],0,22+$pos);;
 					$pos = strrpos($webAdd,'/');
 					$webAdd = substr('http://www.pragyan.org'.$_SERVER['REQUEST_URI'],0,$pos);
-				$messenger->assign_vars(array('FORMNAME'=>"$formname",'KEY'=>"$key",'WEBSITE'=>CMS_TITLE,'DOMAIN'=>$onlineSiteUrl,	'NAME'=>getUserFullName($userId),'PRID'=>$userId,'EVENTWEB' => $webAdd));
+				$messenger->assign_vars(array('FORMNAME'=>"$formname",'KEY'=>"$key",'WEBSITE'=>CMS_TITLE,'DOMAIN'=>$onlineSiteUrl,	'NAME'=>getUserFullName($userId),'PRID'=>$userId,'EVENTWEB' => $webAdd, 'INFO' =>$waitlisted));
 					if ($messenger->mailer($to,$mailtype,$key,$from))
 							displayinfo("You have been succesfully registered to $formname and a registration confirmation mail has been sent. Kindly check your e-mail.");
 						else 

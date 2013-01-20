@@ -114,7 +114,7 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 		global $sourceFolder;		global $moduleFolder;
 
 		$formDescQuery='SELECT `form_loginrequired`, `form_expirydatetime`, (NOW() >= `form_expirydatetime`) AS `form_expired`, `form_sendconfirmation`, ' .
-				'`form_usecaptcha`, `form_allowuseredit`, `form_allowuserunregister` ' .
+				'`form_usecaptcha`, `form_allowuseredit`, `form_allowuserunregister`, `form_closelimit` ' .
 				'FROM `form_desc` WHERE `page_modulecomponentid`='."'".$this->moduleComponentId."'";
 		$formDescResult=mysql_query($formDescQuery);
 		if (!$formDescResult) {
@@ -139,16 +139,25 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 			displayerror('The last date to register to this form ('.$formDescRow['form_expirydatetime'].') is over.');
 			return '';
 		}
-
 		if($formDescRow['form_allowuseredit']==0 &&  verifyUserRegistered($this->moduleComponentId,$this->userId)) {
 			displayerror('You have already registered to this form once. You cannot register again. Contact the administrator for further queries.');
 			return '';
 		}
-
-
-		if(isset($_POST['submitreg_form_'.$this->moduleComponentId]))
+		if($formDescRow['form_closelimit']!= '-1'){
+			$usersRegisteredQuery = " SELECT COUNT( * ) FROM `form_regdata` WHERE `page_modulecomponentid` ='".$this->moduleComponentId."'";
+			$usersRegisteredResult = mysql_fetch_array(mysql_query($usersRegisteredQuery));
+			if(($usersRegisteredResult[0]>=$formDescRow['form_closelimit'])&&(!verifyUserRegistered($this->moduleComponentId,$this->userId))){
+				displayerror('Form registration limit has been reached.');
+				return '';	
+			}
+			
+		}
+		if(isset($_POST['submitreg_form_'.$this->moduleComponentId])){
 			submitRegistrationForm($this->moduleComponentId,$this->userId);
-
+			if($formDescRow['form_allowuseredit']==0)
+				return;
+			
+		}
 		if($formDescRow['form_allowuserunregister'] == 1 && isset($_GET['subaction'])&&($_GET['subaction']=="unregister"))
 			unregisterUser($this->moduleComponentId,$this->userId);
 
