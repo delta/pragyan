@@ -408,10 +408,10 @@ CSS;
 		return join($suggestions, ',');
 	}
 
-	public function createModule($compId) {
+	public function createModule($moduleComponentId) {
 		global $sourceFolder, $moduleFolder;
 		$query = "INSERT INTO `form_desc` (`page_modulecomponentid`, `form_heading`,`form_loginrequired`,`form_headertext`)
-					VALUES ('".$compId."', '',1,'Coming up Soon');";
+					VALUES ('".$moduleComponentId."', '',1,'Coming up Soon');";
 		$result = mysql_query($query) or die(mysql_error()."form.lib L:157");
 		addDefaultFormElement($moduleComponentId);
 	}
