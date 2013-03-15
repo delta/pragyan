@@ -294,7 +294,14 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`,`page_module`, `perm_ac
 (61, 'qaos1', 'view', 'View', 0, 'Qaos Page view'),
 (62, 'qaos1', 'team', 'Team', 0, 'Qaos Team Page'),
 (63, 'qaos1', 'head', 'Head', 0, 'Qaos Head Page'),
-(64, 'qaos1', 'treasurer', 'Treasurer', 0, 'Qaos Treasurer page');
+(64, 'qaos1', 'treasurer', 'Treasurer', 0, 'Qaos Treasurer page'),
+(65, 'qaos1', 'orgc', 'Orgc', 0, 'OC'),
+(66, 'prhospi', 'create', 'Create' ,0, 'Prhopi Create'),
+(67, 'prhospi', 'view' , 'View', 0,'Prhospi View'),
+(68, 'prhospi', 'prview', 'Priew', 0, 'Pr View'),
+(69, 'prhospi', 'prhead', 'Prhead', 0, 'Pr Head'),
+(70, 'prhospi', 'csg', 'Csg', 0, 'Team CSG'),
+(71, 'prhospi', 'hospihead', 'Hospihead', 0, 'Hospi Head');
 
 --
 -- Dumping data for table `pragyanV3_templates`

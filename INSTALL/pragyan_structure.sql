@@ -839,6 +839,122 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsinfo` (
 
 -- --------------------------------------------------------
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prhospi_accomodation_status`
+--
+
+CREATE TABLE IF NOT EXISTS `prhospi_accomodation_status` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `hospi_room_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `hospi_actual_checkin` datetime NOT NULL,
+  `hospi_actual_checkout` datetime NOT NULL,
+  `hospi_checkedin_by` int(11) NOT NULL,
+  `hospi_cash_recieved` int(11) NOT NULL DEFAULT '0',
+  `hospi_cash_refunded` int(1) NOT NULL,
+  `hospi_printed` int(11) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prhospi_admin`
+--
+
+CREATE TABLE IF NOT EXISTS `prhospi_admin` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `page_getform_modulecomponentid` int(11) NOT NULL,
+  `details_to_display` int(11) NOT NULL,
+  `detail_required` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prhospi_disclaimer`
+--
+
+CREATE TABLE IF NOT EXISTS `prhospi_disclaimer` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `disclaimer_team` varchar(30) NOT NULL,
+  `disclaimer_desc` text NOT NULL,
+  `team_cost` int(11) NOT NULL DEFAULT '0',
+  UNIQUE KEY `disclaimer_team` (`disclaimer_team`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prhospi_hostel`
+--
+
+CREATE TABLE IF NOT EXISTS `prhospi_hostel` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `hospi_room_id` int(11) NOT NULL AUTO_INCREMENT,
+  `hospi_hostel_name` varchar(11) NOT NULL,
+  `hospi_room_capacity` int(11) NOT NULL DEFAULT '0',
+  `hospi_room_no` int(11) NOT NULL DEFAULT '0',
+  `hospi_floor` int(1) NOT NULL,
+  PRIMARY KEY (`hospi_room_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=175 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prhospi_pr_status`
+--
+
+CREATE TABLE IF NOT EXISTS `prhospi_pr_status` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `hospi_checkin_time` datetime NOT NULL,
+  `hospi_checkpout_time` datetime NOT NULL,
+  `amount_recieved` int(11) NOT NULL,
+  `amount_refunded` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `qaos1_bills`
+--
+
+CREATE TABLE IF NOT EXISTS `qaos1_bills` (
+  `bill_no` int(11) NOT NULL AUTO_INCREMENT,
+  `qaos1_eventid` int(11) NOT NULL,
+  `page_modulecomponentid` int(11) NOT NULL,
+  `qaos1_imgname` text NOT NULL,
+  `userid` int(11) NOT NULL,
+  `qaos1_cluster` varchar(100) NOT NULL,
+  `qaos1_corp` varchar(100) NOT NULL,
+  `qaos1_bill` varchar(100) NOT NULL,
+  `qaos1_bill_date` date NOT NULL,
+  `qaos1_amt` varchar(100) NOT NULL,
+  `qaos1_tin` varchar(100) NOT NULL,
+  PRIMARY KEY (`bill_no`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `qaos1_disclaimer`
+--
+
+CREATE TABLE IF NOT EXISTS `qaos1_disclaimer` (
+  `page_modulecomponentid` int(11) NOT NULL,
+  `disclaimer_team` varchar(30) NOT NULL,
+  `disclaimer_desc` text NOT NULL,
+  UNIQUE KEY `disclaimer_team` (`disclaimer_team`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
 --
 -- Table structure for table `qaos1_events`
 --
@@ -846,9 +962,10 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_widgetsinfo` (
 CREATE TABLE IF NOT EXISTS `qaos1_events` (
   `events_id` int(11) NOT NULL AUTO_INCREMENT,
   `events_name` varchar(30) NOT NULL,
-  `events_amount` int(11) NOT NULL,
+  `page_modulecomponentid` int(11) NOT NULL,
   PRIMARY KEY (`events_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=39 ;
+
 
 -- --------------------------------------------------------
 
@@ -868,7 +985,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_evtproc` (
   `evtproc_reason` text NOT NULL,
   `evtproc_date` text NOT NULL,
   PRIMARY KEY (`evtproc_Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -889,9 +1006,7 @@ CREATE TABLE IF NOT EXISTS `qaos1_fundreq` (
   `fundreq_reason` text NOT NULL,
   `fundreq_date` text NOT NULL,
   PRIMARY KEY (`fundreq_Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Table structure for table `qaos_designations`
