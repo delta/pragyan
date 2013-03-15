@@ -89,7 +89,7 @@ function getSettingsForm($pageId, $userId) {
 				'<td><input type="checkbox" name="childrenshowicon[]" id="'.$page_result_row['page_name'].'" value="' . $page_result_row['page_name'] . '" ' . ($page_result_row['page_displayicon'] == 1 ? 'checked="yes" ' : '') . '/></td>'.
 				'<td align="center"><input type="submit" name="moveUp" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Up" /></td>' .
 				'<td align="center"><input type="submit" name="moveDn" onclick="this.form.action+=\''.$page_result_row['page_name'].'\'" value="Move Down" /></td>' .
-				'<td align="center"><input type="submit" name="deletePage" onclick="javascript:if(checkDelete(this,\''.$page_result_row['page_name'].'\'))this.form.action+=\''.$page_result_row['page_name'].'\'"  value="Delete" /></td></tr>';
+				'<td align="center"><input type="submit" name="deletePage" onclick="javascript:if(checkDelete(this,\''.$page_result_row['page_name'].'\')){this.form.action+=\''.$page_result_row['page_name'].'\'}"  value="Delete" /></td></tr>';
 	}
 	if(!mysql_num_rows($page_result)==0)
 		$childList .= "</table>";
@@ -385,12 +385,12 @@ MOVECOPY;
 			function checkDelete(butt,fileName)
 			{
 				if(confirm('Are you sure you want to delete '+fileName+'?'))
-				{
-				return true;
-//					butt.form.action+=fileName;
-//					butt.form.submit();
-				}
-				else return false;
+				  {
+				    return true;
+				    //			    butt.form.action+=fileName;
+				    //butt.form.submit();
+				  }
+				else {console.log("hi");return false;}
 			}
 			function toggleSelTemplate2()
 				{
@@ -861,7 +861,8 @@ function pagesettings($pageId, $userId) {
 			}
 			if(isset($_POST['deletePage']))
 			{
-				if(isset($_GET['pageName']) || $_GET['pageName']=="") {
+                                 
+				if(isset($_GET['pageName']) && $_GET['pageName']!="") {
 					$childPageName=escape($_GET['pageName']);
 					$query="SELECT `page_id` FROM  `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_parentid`='$pageId' AND `page_name`='$childPageName'";
 					$result=mysql_query($query);
