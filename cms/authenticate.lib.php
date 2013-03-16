@@ -216,7 +216,7 @@ function my_imap_auth ($username, $password)
 	  }
 	  $server_info = fgets ($imap_stream, 1024);
 
-	  $query = 'b221 ' .  'LOGIN "' . quoteIMAP($username) .  '" "'  .quoteIMAP($password) . "\"\r\n";
+	  $query = 'b221 ' .  'LOGIN "' . $username .  '" "'  .$password . "\"\r\n";
 	  $read = fputs ($imap_stream, $query);
 
 	  $response = fgets ($imap_stream, 1024);
