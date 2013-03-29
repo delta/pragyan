@@ -1,0 +1,74 @@
+/*
+ *
+ * Definitions for div.error, div.warning, div.notice
+ *
+ * All debug messages to be printed using
+ *   <div class="error|warning|notice">Debug message here</div>
+ * format
+ *
+ */
+
+div.cms-error, div.cms-warning, div.cms-notice, div.cms-info {vertical-align: middle; margin: 11px; border-width: 1px; border-style: solid; z-index: 1; padding: 8px 8px 8px 58px; background-position: left 50%; background-repeat: no-repeat; min-height: 30px;-moz-opacity:.75; filter:alpha(opacity=75);color:#000}
+div.cms-error { background-image: url('../images/cms_error.png'); background-color: #DAA; border-color:#FBB; color:black;}
+.cms-error, .cms-warning, .cms-notice, .cms-info a:link, .cms-info a:visited, .cms-info a{color:#023455;}
+div.cms-warning { background-image: url('../../common/icons/32x32/status/dialog-warning.png'); background-color: #cccccc; border-color: #ffdc79 }
+div.cms-notice { background-image: url('../../common/icons/32x32/status/dialog-information.png'); background-color: #dde4ef; border-color: #6894da }
+div.cms-info { line-height:20px;background-image: url('../images/cms_info.png'); background-color: #b9b4f8; border-radius:	5px;-moz-border-radius:	5px;-webkit-border-radius:	5px;border: 2px #6961d2 solid; color: black;}
+div.cms-info a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
+div.cms-info a:hover {background: #44F; color: #FFF!important; }
+
+div.cms-error { background-image: url('../images/cms_error.png'); background-color: #b9b4f8; border-radius:	5px;-moz-border-radius:	5px;-webkit-border-radius:	5px;border: 2px #6961d2 solid; color: black;}
+div.cms-error a{ background: #BBF; color: #333!important; text-decoration: none!important; padding: 1px 3px; border: solid 1px #DDF;}
+div.cms-error a:hover {background: #44F; color: #FFF!important; }
+
+
+/**
+ * For the trees
+ */
+div#directorybrowser span {	background-color: none; display: block;	}
+div#directorybrowser span:hover { background-color: #E8E8FF; }
+span.ddtree_selected { background-color: #E8E8E8; }
+span.ddtree_accessible { background-color: #E8FFE8; }
+span.ddtree_inaccessible { background-color: #FFE8E8; }
+.treeview ul{ margin-left: -10px; padding: 0px; }
+.treeview li{ padding-top: 2px; padding-bottom: 2px; background: url('../../common/images/ddtree_list.gif') no-repeat left center; list-style-type: none; padding-left: 22px; }
+.treeview li.submenu{ background: url('../../common/images/ddtree_closed.gif') no-repeat left 4px; }
+.treeview li.submenu ul{ display: none; }
+.treeview .submenu ul li{ cursor: default; }
+
+
+/**
+ * For the suggestion boxes
+ */
+div.suggestionbox {
+	background-color: white; width: 260px; border: 1px solid black;
+	position: absolute; overflow-y: scroll; max-height: 180px; display: none
+}
+span.suggestion {
+	padding: 2px 4px 2px 4px;
+	display: block;
+	background-color: white;
+	cursor: pointer;
+}
+span.suggestion:hover {
+	background-color: #DEDEDE;
+}
+
+/**
+ * For Billing
+ */
+table.billingtable tr.itemavailable {
+	background-color: #F3FFF3;
+}
+table.billingtable tr.itemsoldout {
+	background-color: #FFF3F3;
+}
+table.billingtable tr.shopname {
+	background-color: #FFFFFF;
+}
+table.billingtable tr.shopname:hover {
+	background-color: #FFFFFF;
+}
+table.billingtable tr:hover {
+	background-color: #F3F3FF;
+}
