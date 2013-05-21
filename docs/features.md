@@ -49,5 +49,5 @@ Features
 -   Easily install new modules, widgets or templates using the module, widget and template management tools
 -   Edit the website registration form and user profile information fields as per your needs
 -   Find out who has permissions to do what in the website and revoke them if you wish
--   Don¡¯t have direct access to database from web? Use CMS to browse the tables directly
+-   Don't have direct access to database from web? Use CMS to browse the tables directly
 

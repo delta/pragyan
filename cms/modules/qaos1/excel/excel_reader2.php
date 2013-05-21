@@ -1716,7 +1716,7 @@ class Spreadsheet_Excel_Reader {
 		if ($this->_defaultEncoding){
 			switch ($this->_encoderFunction){
 				case 'iconv' :	 $result = iconv('UTF-16LE', $this->_defaultEncoding, $string);
-								break;
+									     break;
 				case 'mb_convert_encoding' :	 $result = mb_convert_encoding($string, $this->_defaultEncoding, 'UTF-16LE' );
 								break;
 			}
