@@ -37,21 +37,24 @@ function submitAddEventData() {
 }
 
 function deleteEvent(eventid) {
-	var ajx=$.ajax({
-		type: "POST",
-		url: "./+eventshead&subaction=deleteEvent",
-		data: {
-			eventId: eventid,
-		},
-		dataType: "html"
-	});
-	ajx.done(function(msg) {
-		if(msg=="Success") {
-			window.location = ("./+eventshead&subaction=viewAll");
-			cmsShow("info", "Event deleted");
-		}
-		else{
-			cmsShow('error', "Error");
-		}
-	});
+	var r=confirm("Are you sure?");
+	if (r==true){
+		var ajx=$.ajax({
+			type: "POST",
+			url: "./+eventshead&subaction=deleteEvent",
+			data: {
+				eventId: eventid,
+			},
+			dataType: "html"
+		});
+		ajx.done(function(msg) {
+			if(msg=="Success") {
+				window.location = ("./+eventshead&subaction=viewAll");
+				cmsShow("info", "Event deleted");
+			}
+			else{
+				cmsShow('error', "Error");
+			}
+		});
+	}
 }

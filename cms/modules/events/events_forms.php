@@ -70,7 +70,7 @@ return $addForm;
 }
 
 
-function aeditEvent($eid, $pcmid){
+function editEvent($eid, $pcmid){
 global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 require_once("$sourceFolder/$moduleFolder/events/googleMapsConfig.php");
@@ -113,7 +113,6 @@ $editForm=<<<FORM
 	</tbody>
 	</table>
 		<script>
-			console.log("checking");
 			if (typeof isValid != 'undefined') {
 				console.log("DEFINED");
 				cmsShow("info", "Event successfully added");
