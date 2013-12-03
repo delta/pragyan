@@ -141,14 +141,16 @@ function getEventsJSON($pmcid){
 	$events=array();
 	$page=0;
 	$ipp=20;
+	$lastdate="0000-00-00 00:00:00";
 	if(isset($_GET['pageno']))
 		$page=$_GET['pageno'];
 	if(isset($_GET['ipp'])) 
 		$ipp=$_GET['ipp'];
+	if(isset($_GET['lud']))//lud=last updated date
+		$lastdate=$_GET['lud'];
 	$prod=$page*$ipp;
-	$curdate="2010-01-01 12:00:00";
 	//Query to select all events
-	$eventsQuery="SELECT * FROM `events_details` WHERE '{$curdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'" //event_date>='{$date1}' AND  <---add to query later
+	$eventsQuery="SELECT * FROM `events_details` WHERE '{$lastdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'" //event_date>='{$date1}' AND  <---add to query later
 				."ORDER BY event_date ASC LIMIT {$prod}, {$ipp};";
 	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
 	while($row=mysql_fetch_array($eventsRes)){
