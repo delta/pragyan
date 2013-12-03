@@ -98,6 +98,7 @@ TABLEEND;
 }
 
 function selectEventsHeadSubaction(){
+	//form to select the subaction
 	$subactionForm=<<<SFORM
 	<p>
 		Select an option:
@@ -145,7 +146,9 @@ function getEventsJSON($pmcid){
 	if(isset($_GET['ipp'])) 
 		$ipp=$_GET['ipp'];
 	$prod=$page*$ipp;
-	$eventsQuery="SELECT * FROM `events_details` WHERE  `page_moduleComponentId`='{$pmcid}' " //event_date>='{$date1}' AND  <---add to query later
+	$curdate="2010-01-01 12:00:00";
+	//Query to select all events
+	$eventsQuery="SELECT * FROM `events_details` WHERE '{$curdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'" //event_date>='{$date1}' AND  <---add to query later
 				."ORDER BY event_date ASC LIMIT {$prod}, {$ipp};";
 	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
 	while($row=mysql_fetch_array($eventsRes)){
@@ -162,14 +165,15 @@ function getEventsJSON($pmcid){
 			"event_loc_x"=>$row['event_loc_x'],
 			"event_loc_y"=>$row['event_loc_y'], 
 		);
-		array_push($events, $event);
+		array_push($events, $event);//array with event
 	}
-	$obj=array("status"=>'success', "data"=>$events);
+	$obj=array("status"=>'success', "data"=>$events);//array with status and events
 	echo json_encode($obj);
 	exit;
 }
 
 function deleteEvent($eventid, $pmcid){
+	//query to delete event
 	$deleteQuery="DELETE FROM `events_details` WHERE `event_id`='{$eventid}' AND `page_moduleComponentId`='{$pmcid}';";
 	$deletetRes=mysql_query($deleteQuery) or displayerror(mysql_error());
 	if ($deletetRes==1) {
