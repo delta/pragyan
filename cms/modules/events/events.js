@@ -58,3 +58,7 @@ function deleteEvent(eventid) {
 		});
 	}
 }
+
+function showEventsMap(events_data){
+	
+}

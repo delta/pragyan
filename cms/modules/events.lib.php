@@ -46,7 +46,21 @@ class events implements module,fileuploadable {
 		$userId=$this->userId;
 		$scriptFolder = "$sourceFolder/$moduleFolder/events/";
 		require_once("$sourceFolder/$moduleFolder/events/events_common.php");
-		return "hello";
+		if(isset($_GET['subaction'])){
+			if($_GET['subaction']=="map"){
+				return showEventMap();
+			}
+			if($_GET['subaction']=="mobile"){
+				return getEventsJSON($moduleComponentId);
+				exit;
+			}
+			if($_GET['subaction']=="schedule"){
+				return "schedule";
+			}
+		}
+		else{
+			return selectViewSubaction();
+		}
 	}
 	public function actionCsg(){
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
@@ -80,7 +94,7 @@ class events implements module,fileuploadable {
 			}
 		}
 		else{
-			return selectSubaction();
+			return selectEventsHeadSubaction();
 		}
 	}
 	public function actionOchead(){

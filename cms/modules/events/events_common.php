@@ -29,7 +29,7 @@ function validateEventData($pageModuleComponentId){
 	if($isValid){
 		//insert data
 		foreach ($_POST as $postValue){
-			$postValue=mysqli_real_escape_string($postValue);
+			$postValue=escape($postValue);
 		}
 		//Query to insert into the db
 		$insertQuery="INSERT INTO `events_details` (`event_name`, `event_date`, `event_start_time`, `event_end_time`, "
@@ -97,7 +97,7 @@ TABLEEND;
 
 }
 
-function selectSubaction(){
+function selectEventsHeadSubaction(){
 	$subactionForm=<<<SFORM
 	<p>
 		Select an option:
@@ -110,6 +110,63 @@ function selectSubaction(){
 	</form>
 SFORM;
 return $subactionForm;
+}
+
+function selectViewSubaction(){
+	$subactionForm=<<<SFORM
+	<p>
+		Select an option:
+	</p>
+	<form method="GET"  action="./+view&subaction=mobile">
+		<input type="submit" name="" value="MOBILE"/>
+	</form>
+	<form method="GET"  action="./+view&subaction=map">
+		<input type="submit" name="" value="MAP"/>
+	</form>
+	<form method="GET"  action="./+view&subaction=schedule">
+		<input type="submit" name="" value="SCHEDULE"/>
+	</form>
+SFORM;
+return $subactionForm;
+}
+
+function showEventMap(){
+	return "MAPS";
+}
+
+function getEventsJSON($pmcid){
+	date_default_timezone_set('Asia/Calcutta');
+	$date1=date("Y-m-d");
+	$events=array();
+	$page=0;
+	$ipp=20;
+	if(isset($_GET['pageno']))
+		$page=$_GET['pageno'];
+	if(isset($_GET['ipp'])) 
+		$ipp=$_GET['ipp'];
+	$prod=$page*$ipp;
+	$eventsQuery="SELECT * FROM `events_details` WHERE  `page_moduleComponentId`='{$pmcid}' " //event_date>='{$date1}' AND  <---add to query later
+				."ORDER BY event_date ASC LIMIT {$prod}, {$ipp};";
+	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
+	while($row=mysql_fetch_array($eventsRes)){
+		$event=array(
+			"event_id"=> $row['event_id'], 
+			"event_name"=> $row['event_name'],
+			"event_date"=> $row['event_date'], 
+			"event_start_time"=>$row['event_start_time'], 
+			"event_end_time"=>$row['event_end_time'],
+			"event_venue"=>$row['event_venue'],
+			"event_desc"=>$row['event_desc'],
+			"event_last_update_time"=>$row['event_last_update_time'], 
+			"event_image"=>$row['event_image'], 
+			"event_loc_x"=>$row['event_loc_x'],
+			"event_loc_y"=>$row['event_loc_y'], 
+		);
+		array_push($events, $event);
+	}
+	$obj=array("status"=>'success', "data"=>$events);
+	echo json_encode($obj);
+	exit;
 }
 
 function deleteEvent($eventid, $pmcid){
