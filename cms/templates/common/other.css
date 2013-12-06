@@ -1,0 +1,93 @@
+
+/**
+ *Book Module
+ */
+.tabEnvelope {
+	margin-top: 10px;
+	padding: 0;
+	border: 0;
+	text-decoration : none;
+}
+.tabContent {
+	display: none;
+	padding: 13px;
+	clear: both;
+}
+.tabElement {
+	border: 1px solid black;
+	padding: 3px;
+	margin: 2px;
+	color: black;
+	float : left;
+	
+}
+
+.tabElement a {
+	text-decoration : none;
+}
+
+.active {
+	display: block;
+}
+
+/**
+ * Gallery Module
+ */
+div.pragyangallery{margin:10px;}
+div.galleryimagebox {
+border : 1px solid #B7CAF6; float : left; 
+}
+
+/**
+ * Pagelist Module
+ */
+ul.simplelist li {
+	display: inline;
+}
+ul.simplelist img {
+	display: none;
+}
+ul.blocklist li {
+	
+}
+ul.blocklist img {
+	float: left;
+}
+ul.iconlist {
+	text-align: center;
+	list-style: none;
+	height: 60px;
+}
+ul.iconlist li {
+	margin: 8px;
+	float: left;
+	width: 50px;
+}
+ul.iconlist img {
+	display: block;
+}
+div.listheader {
+	display: block;
+	font-size: 5;
+}
+div.listenvelope ul {
+	margin: 0px;
+}
+div.listenvelope a {
+	text-decoration: none;
+}
+.list {
+	font-size: 13px;
+	margin: 20px 0;
+	padding: 10px;
+	/*background: #a0c0e0;
+	border: solid 1px #abcdef;*/
+}
+.list:hover{
+	border: solid 1px #fff;
+	background: #E2E9FC;
+}
+
+#sitemap a {
+	text-decoration : none;
+}

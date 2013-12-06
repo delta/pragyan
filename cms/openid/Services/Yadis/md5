@@ -1,0 +1,8 @@
+5138e68c35282f6a33d6ae506cc110a6  HTTPFetcher.php
+5d0abaa392b66cb2b27cc45e0b979d82  Manager.php
+57a67dd1a9eeeffee19898b2725db202  ParanoidHTTPFetcher.php
+965f7130645e3bf29164c8bc92fd26bd  ParseHTML.php
+947ac81f64aad7512944f5a3914f2fcb  PlainHTTPFetcher.php
+1006f6e1dadfceb5d3536dec86f22a41  XML.php
+8670ca2bfb4fd9cb6f0d100f8a956cff  XRDS.php
+bfecf1ab944516860682e162d06278ad  Yadis.php

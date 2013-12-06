@@ -1,0 +1,158 @@
+##########################GENERAL CONFIGURATION###########################
+Options +FollowSymLinks
+
+#REWRITEENGINE
+RewriteEngine Off
+IndexIgnore *
+
+##Disable magic quotes in PHP, in case it is turned ON in php.ini
+php_flag magic_quotes_gpc off
+
+#Register Global Must ALWAYS BE TURNED OFF. Else it will pose security risks.
+php_flag register_globals off
+
+##For file uploads ##############################
+# php directives :
+#php_value upload_max_filesize 50*1024*1024
+#php_value post_max_size 60*1024*1024 --> should be greater than upload_max_filesize
+#php_value memory_limit 64*1024*1024 --> should be greater than post_max_size
+# apache directives :
+#LimitRequestBody 61*1024*1024 --> Used by apache for request body. So, should be greater than post_max_size.
+
+php_flag  file_uploads 1
+php_value upload_max_filesize 50M
+php_value post_max_size 60M
+php_value memory_limit 64M
+php_value LimitRequestBody 63963136
+
+##Disable showing of ~ files and python scripts
+<FilesMatch ".*(~|#|py)$">
+    	   Order allow,deny
+    	   Deny from all
+</FilesMatch>
+
+####################END OF GENERAL CONFIGURATION##########################
+
+####################REWRITE RULE CONFIGURATION############################
+#AIM : To convert
+# http://pragyan.org/directory1/home/events/dalalstreet+admin_edit?uid=2004&page=2
+# to : http://pragyan.org/direcityr1/index.php?page=home/events/dalalstreet&action=admin_edit&uid=2004&page=2
+# (Can't be done )
+# So doing this : http://pragyan.org/directory1/home/events/dalalstreet+admin_edit&uid=2004&page=2
+# To : http://pragyan.org/directory1/index.php?page=home/events/dalalstreet&action=admin_edit&uid=2004&page=2
+#
+#                                          Rules
+# Get vars are passed directly by &a=b&c=d (no ? in the beginning)
+# Actions are specified like this : http://localhost/workspace2/pragyan_v2/home/page1/+view
+# Example :
+# For the page /event/ventura/register   action: register  getVariables:uid=1,gid=2,reload=1
+# , the url would be :                                                                             #
+#       http://pragyan.org/CMSROOTDIR/home/event/ventura/register/+register&uid=1&gid=2&reload=1
+
+##Tell rewriterule the current directory :#######
+############################################################################
+####CHANGE THE FOLLOWING LINES ACCORDING TO YOUR RewriteBase################
+####Eg: /workspace2/pragyan_v2 is RewriteBase for http://localhost/workspace2/pragyan_v2/home/a/+b&a=34
+####    or assuming the directory where this file is kept is webserverRoot/workspace6/pragyan_v2
+
+#BASEDIRECTORY
+
+
+############################################################################
+##The previous rewritecond is there because the -d option even disables the current directory
+##But we want the current directory to also to convert to something/home/something
+RewriteRule ^(.*)$ home/$1	[R,L]
+
+##To put /home in each request###################
+#If the requested path is not file, and so is directed the cms only, then make sure that /home is the root path.
+RewriteCond %{REQUEST_FILENAME}	!-d
+RewriteCond %{REQUEST_FILENAME}	!-f
+RewriteCond %{REQUEST_URI}	!^(.*)/home(.*)$
+RewriteCond %{REQUEST_URI}	!^(.*)/user:(.*)$
+RewriteCond %{REQUEST_URI}	!^(.*)/index.php(.*)$
+RewriteRule ^(.*)$ home/$1	[R,L]
+
+##To put trailing slash after page so links work fine
+# pragyan/home/a to pragyan/home/a/
+RewriteCond %{REQUEST_FILENAME}	!-f
+RewriteCond %{REQUEST_URI}	!^(.*)/user:(.*)$
+RewriteCond %{REQUEST_URI}	^([^+?&]+[^/])$
+RewriteCond %{REQUEST_URI}	!^([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
+RewriteRule ^([^+?]+[^/])$ $1/ 	[R,L]
+
+# pragyan/home/a&a=b&c=d to pragyan/home/a/&a=b&c=d
+RewriteCond %{REQUEST_URI}	^([^+?&]+[^/])&(.*)$
+RewriteRule ^([^+?&]+[^/])&(.*)$ $1/&$2 	[R,L]
+
+# pragyan/home/a+view&a=b&c=d to pragyan/home/a/+view&a=b&c=d
+RewriteCond %{REQUEST_URI}	^([^+]+[^/])[+]([^+]*)$
+RewriteRule ^([^+]+[^/])[+]([^+]*) $1/+$2 	[R,L]
+
+##Home : name of root page
+# pragyan.org/.../home/a/b/ to pragyan.org/.../index.php/a/b/ internally (not redirecting)
+RewriteCond %{REQUEST_URI} ^(.*)home/(.*)$
+RewriteRule ^(.*)home(.*)$ $1index.php$2
+
+##User profile page
+RewriteCond %{REQUEST_URI} ^(.*)user:(.*)$
+RewriteRule ^(.*)user:(.*)$ $1index.php?user=$2
+
+##Case 0 : The requested page is a file for file module
+# pragyan.org/.../index.php/a/b/xxx.jpg to pragyan.org/.../index.php?page=/a/b/&file=xxx.jpg
+
+RewriteCond %{REQUEST_URI}	^(.*)index.php([^+?&]+\.(css|gif|png|jpe?g|js|html|xml|pdf|doc|docx|ods|odt|oft|pps|ppt|pptx|avi|txt|std|stc|sti|stw|svgz?|sxc|sx.|tex|tiff|txt|chm|mp3|mp2|wave?|ogg|mpe?g|wmv|wma|wmf|rm|avi|gzip|gz|rar|bmp|psd|bz2|tar|zip|swf|fla|flv|eps|ico|xcf|m3u|lit|bcf|xls|mov|xlr|exe|7?z))$ [NC]
+RewriteRule ^(.*)index.php(.*)/([^/]+)$ $1index.php?page=$2/&fileget=$3	[L]
+
+##Case 1 : no action given
+# pragyan.org/.../index.php/a/b/ to pragyan.org/.../index.php?page=/a/b/
+RewriteCond %{REQUEST_URI} ^(.*)index.php([^+]+)$
+RewriteRule ^(.*)index.php([^+]+)$ $1index.php?page=$2	[L]
+
+##Case 2 : action given
+# pragyan.org/.../index.php/a/b/+view to pragyan.org/.../index.php?page=/a/b/&action=view
+RewriteCond %{REQUEST_URI} ^(.*)index.php([^+]*)\+([^+]*)$
+RewriteRule ^(.*)index.php([^+]*)\+([^+]*)$  $1index.php?page=$2&action=$3 [L]
+
+####################END OF REWRITE RULE CONFIGURATION#####################
+
+####ALL CHANGES FROM THIS POINT ONWARDS ARE NOT NECESSARY#################
+
+##To disable www ################################
+#RewriteCond %{HTTP_HOST} ^pragyan$ [NC,OR]
+#RewriteCond %{HTTP_HOST} ^www.pragyan.org$ [NC]
+#RewriteRule ^(.*)$ http://pragyan.org/$1	[R=301,L]
+
+############Following added to httpd.conf to make home directories work: #
+##To prevent access to files ~something.html and #something.html#
+#<Files ~ "(.*(~|#)$)">
+#    	   Order allow,deny
+#    	   Deny from all
+#</Files>
+##To show public_html access
+#    RewriteEngine On
+#    RewriteCond %{REQUEST_URI}	^/~\w+/.*$
+#    RewriteRule /~(\w+)/(.*)	/webteam/$1/public_html/$2
+#    RewriteCond %{REQUEST_URI}	^/~\w+$
+#    RewriteRule /~(\w+)		/webteam/$1/public_html/
+##To enable .htaccess rules in public_html
+#<Directory /webteam/*/public_html>
+#    AllowOverride All
+#</Directory>
+#
+#Also make "AllowOverride All" in the <Directory /var/www/html> Section
+# Other optimization changes :
+#	MaxKeepAliveRequests 200
+#
+#
+#TO PREVENT LEECHING OF IMAGES
+#RewriteEngine on
+#
+#RewriteCond %{HTTP_REFERER} !^$
+#RewriteCond %{HTTP_REFERER} !^http://www.pragyan.org/.*$ [NC]
+#RewriteCond %{HTTP_REFERER} !^http://pragyan.org/.*$ [NC]
+#RewriteCond %{HTTP_REFERER} !^http://pragyan(.org)?/.*$ [NC]
+#RewriteCond %{HTTP_REFERER} !^http://10.0.0.125/.*$ [NC]
+#RewriteCond %{HTTP_REFERER} !^http://203.129.195.143/.*$ [NC]
+#RewriteRule .*.(gif|jpe?g|png)$ http://www.pragyan.org/accessdenied.jpg [NC,L]
+#<== The file that we want to display rather
+#

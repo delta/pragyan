@@ -1,0 +1,33 @@
+#main
+{
+	margin-left: 310px;
+	width:auto;
+}
+#left
+{
+	float: left;
+	width:150px;
+	display:inline;
+	margin-left:160px;
+}
+/* display:inline is in there to prevent an IE Bug (IE doubles margins on floats). */
+#container {width:100%;float:left;display:inline;margin-left:-160px}
+/* this is to make sure IE6 (v6.0.29?) *shows* everything inside this element */
+#sidebar * {position:relative}
+/* the trick is in the padding/margin values. Note that this element is *not* a float. If the sidebar is shorter than #main, then there is no need for this rule. */
+#sidebar
+{
+    float: right;
+	width:159px;
+}
+/** For the right border*/
+#container {
+	border-right: 1px solid gray;
+}
+/**For the left border*/
+#main {
+	border-left: 1px solid gray;
+}
+#left {
+	border-right: 1px solid gray;
+	}

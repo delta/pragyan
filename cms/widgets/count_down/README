@@ -1,0 +1,24 @@
+/**
+ * @package pragyan
+ * @file README
+ * @brief Readme file for Date Countdown Widget.
+ * 
+ * @author Balanivash <balanivash[at]gmail.com>
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+
+========================================
+COUNT DOWN WIDGET
+========================================
+
+The Countdown widget has 4 widget variables.
+Three local and one global(for disable).
+Local variables are - date, event and format
+Date - This must be in the format MM DD YYYY
+Event - The occasionto which the widget is counting down to. 
+Format - The format of the output ie in days/hours/minutes/seconds
+To Style the output of the widget, apply it to the div "countdowncontainer"
+If you further want to modify the output try modifying the funtions result() 
+and showresults().

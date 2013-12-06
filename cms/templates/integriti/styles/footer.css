@@ -1,0 +1,14 @@
+/* Footer */
+
+.footer {
+	border-bottom:2px black solid;
+	height: 76px;
+	line-height: 57px;
+	background: url(../images/footer_bg.jpg) repeat-x;
+	text-align: center;
+	vertical-align: middle;
+	color: #1d7ccc;
+	font-family: sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+}

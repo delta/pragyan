@@ -1,0 +1,34 @@
+.SuggestFramework_List
+{
+	border: 1px solid #CCCCCC;
+	border-top: 0;
+}
+
+.SuggestFramework_Heading
+{
+	padding: 0 1px 0 1px;
+	background-color: #CCCCCC;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.SuggestFramework_Highlighted
+{
+	padding: 0 1px 0 1px;
+	background-color: Highlight;
+	color: HighlightText;
+}
+
+.SuggestFramework_Normal
+{
+	padding: 0 1px 0 1px;
+	background-color: #e6e6bf;
+	color: #000000;
+}
+
+.SuggestFramework_Combo
+{
+	width: 100%; 
+	margin: 0; 
+	padding: 0;
+}

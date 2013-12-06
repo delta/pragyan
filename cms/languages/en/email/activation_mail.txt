@@ -1,0 +1,18 @@
+Subject: {WEBSITE} Registration
+Dear  {NAME},
+Thank you for registering on {WEBSITE} ({DOMAIN}).
+Please use the following link to activate your account and get started.
+
+{ACTIVATE_URL}
+
+(Copy and paste the given link in your browser window if required)
+
+Regards,
+Administrator
+{WEBSITE} ({DOMAIN})
+
+--------------------------------------------------------------------------
+This is an auto-generated email. Please do not reply to it as this email
+address is not monitored.
+This mail was sent because you or someone registered on {DOMAIN} 
+with this mail id. Please ignore the mail otherwise.

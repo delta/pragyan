@@ -1,0 +1,31 @@
+/**
+ * @package pragyan
+ * @file widget.class.php
+ * @brief Class file for the widget News.
+ * 
+ * @author Balanivash <balanivash[at]gmail.com>
+ * @copyright (c) 2010 Pragyan Team
+ * @license http://www.gnu.org/licenses/ GNU Public License
+ * For more details, see README
+ */
+
+=========================================
+UPDATES IDGET
+=========================================
+
+The Updates widget has 5 Variables
+Three local and two global
+Local Variables - News, enable javascript, Number of news items to
+		 be displayed if js enabled
+Global Variables - Enable of diable news, Enable javascript global
+
+News variable - Two news items must be separated by a pipeline ' | '
+		If a news item must point to a link, then specify 
+		it at the end of the news item between [ ].
+		For example News [link] | News2 [link2]
+Numbeor of items- This is the number of items that has to be displayed
+		 at a time i the ticker if javascript is enabled. 
+
+To style the container of the news, specify it to the div 
+#news_container
+To style the news items, specify it to the #news ul and li. 		

@@ -1,0 +1,4 @@
+.htaccess
+.project
+cms/config.inc.php
+cms/modules/search/settings/database.php

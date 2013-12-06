@@ -1,0 +1,2062 @@
+commit 049cf9c737c69cdc07b252e08a4177027834f97c
+Author: Abhishek Shrivastava <i.abhi27@gmail.com>
+Date:   Thu Sep 15 03:45:21 2011 +0530
+
+    GIT testing
+
+commit b9a1bf90a99d4271c2df0997bf3bcbb6750ca766
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Wed Sep 14 21:47:33 2011 +0530
+
+    including autocomplete for login box
+
+commit 963c2cec6340f57cb1d200907ac01a490cffd591
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 11:13:22 2011 +0530
+
+    form2
+
+commit 4b8f090d34ba5095cc2db182b9c5d8f296355a65
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 05:51:08 2011 +0530
+
+    form2 beginning
+
+commit 8ca8dba6b16456b7f978640354ddd090c44bea34
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 04:23:51 2011 +0530
+
+    base for public profile
+
+commit 0ee0017d203db7209ae276c4f691320baa3b704c
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 04:02:08 2011 +0530
+
+    ignore all temp files ending with a
+
+commit c5038cb401608535613b9a6b91ddc29ff9948dd3
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 04:01:25 2011 +0530
+
+    enabled feature user:username to redirect to profile
+
+commit a3123aaf3f4b52728a7e4b9529320c1ef05fa549
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 03:09:53 2011 +0530
+
+    gitignore modified
+
+commit ac0b27dbf5bc267962d2cfc571c9bad8605d1bc6
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 14 03:04:23 2011 +0530
+
+    ignore INSTALL DIRECTORY
+
+commit e52483c31f389535ee9ff8af0045fc112a7ea6af
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Thu Aug 11 13:30:04 2011 +0530
+
+    modified gitignore file to include INSTALL folder
+
+commit f187ecaca31e92855a25975aa51097430d5cb00e
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Thu Aug 11 13:29:10 2011 +0530
+
+    changing permissions on files
+
+commit 7b340f223b80697a89471339d666904c40864331
+Author: Boopathi Rajaa <boopathi@Scriptle.localdomain>
+Date:   Thu Aug 11 13:15:07 2011 +0530
+
+    added git ignore file
+
+commit 9b1ac90ecd0aa85c81e3d6016d3897ca67f8bfda
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Aug 8 16:23:30 2011 +0530
+
+    readme
+
+commit 12218e0e0d828e122c8811f06768587467fac128
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Aug 8 16:14:01 2011 +0530
+
+    README
+
+commit 2eac0b3974c5ddd09a3b1403539806284060e1b1
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Aug 8 16:02:34 2011 +0530
+
+    move readme.html
+
+commit 46a4da294538ae8a320c7cabdcbd7514946d8235
+Author: root <root@Scriptle.localdomain>
+Date:   Mon Aug 8 15:48:08 2011 +0530
+
+    Made readme a markdown file
+
+commit e3cee5664c3b5d42b82bab996d70ec7752fc24e8
+Merge: a3c0ce3 6aa33ee
+Author: Siddhant Sanyam <siddhant3s@gmail.com>
+Date:   Sun Aug 7 18:05:14 2011 +0530
+
+    Merge branch 'master' of https://github.com/Integriti/pragyan
+
+commit a3c0ce3dfa40f48817f5df038120de8b6d02f510
+Author: Siddhant Sanyam <siddhant3s@gmail.com>
+Date:   Sun Aug 7 17:48:12 2011 +0530
+
+    Moved codebase/<everything> to root
+
+commit f074e3281efc3927e0f8a7f907222e99f92e62ac
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 7 08:57:52 2011 +0000
+
+    remove files
+
+commit 504f9f9bf0516e1ed37e7a9ced576e39c25555ad
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Aug 7 08:56:13 2011 +0000
+
+    svn:ignore project
+
+commit 660feb8a281ed857ddf66fbe4a9f2337ab7fdd55
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jul 9 21:49:15 2011 +0000
+
+    Few updates in README file
+
+commit 9e00fea43286dbfd4e96d91c6f7f2312fc38e0c5
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 13 00:29:42 2011 +0000
+
+    Removing an echo from article module while toggling ckeditor
+
+commit 56bc2ba0f9b5da6d6474788a5c838346f80dcda0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 4 23:59:51 2011 +0000
+
+    Adding modified .htaccess for servers where PHP is running as CGI binary
+
+commit 802b3ea0222e477e6226c5d0ea14355d388d138d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 4 23:54:53 2011 +0000
+
+    Adding runtime functions to undo effects of magic_quotes and register_globals in case .htaccess is disabled and they're enabled.
+
+commit 72b836bd966e4de433d9698c423eb2704cd93a18
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 4 23:08:56 2011 +0000
+
+    Prioritising ORIG_SCRIPT_NAME over SCRIPT_NAME server variable for mod_rewrite+phpsuexec environment.
+
+commit f4577f670bca77cc9091b578bb8fe71e09a854b2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 4 00:11:20 2011 +0000
+
+    Added FollowSymLinks in htaccess-dist and better warning messages during installation
+
+commit 388e46ef582b1681204cf1c1bc972f18a7ff1505
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 3 22:42:31 2011 +0000
+
+    Added check for issues in widget during widget installation
+
+commit b4c476d53033a72b0f8b2d79d9bb13ae91b24eae
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 3 22:03:10 2011 +0000
+
+    Fixed an installation bug in widget management,renamed required file WidgetInfo.pgyn to widget.info,modified integriti template and added censor words in article comments
+
+commit 29c120678fc2c74241826c4e031babe6efa5d4b4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 22 21:49:12 2011 +0000
+
+    Adding missing database structure for gallery ratings
+
+commit 953842a0d7353b1c0f2a5402412cdd6a697cf960
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 22 21:39:15 2011 +0000
+
+    Finished integriti template
+
+commit ee108b4a2283f7c78a3bb49528e1130203c3c15d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed May 18 16:21:52 2011 +0000
+
+    Added ability to edit links #140
+
+commit b698681f7b3e9d7894b6f95d77a24120a6030d90
+Author: balanivash <balanivash@gmail.com>
+Date:   Mon Apr 25 17:06:50 2011 +0000
+
+    Correcting a minor error in page settings
+
+commit 47c330f582591cd042076a8b4776e607cd36e317
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Apr 14 09:02:23 2011 +0000
+
+    Adding option to dynamically disable cKeditor
+
+commit 3e8d2fb7af15b261ac9416110f32c24694690d78
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Apr 14 08:35:47 2011 +0000
+
+    Renaming of INSTALL folder after installation to avoid hacking #162
+
+commit d4198870bd2e95b372d8e25a768cfa4ff5abb5bd
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Apr 12 17:02:49 2011 +0000
+
+    Added option to disable cKeditor #139
+
+commit 22547df4efff2eda9e29fa059fb7b0cbf3404d0f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Apr 9 17:17:11 2011 +0000
+
+    Disabling password reset for openid users #137
+
+commit b646a3a566ce88e925c82bb0f62eaebc595908b4
+Author: Akash Chouhan <akash6190@gmail.com>
+Date:   Thu Mar 31 01:11:50 2011 +0000
+
+    Small typo in searchstructure solved
+
+commit 6aa33eeab1720d27ca7f9b135b011079a2286476
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Tue Mar 29 22:31:45 2011 +0530
+
+    Add description
+
+commit 3f0ff5fe9653a284a72bfa6a0ccece7946fa2a47
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Tue Mar 29 22:06:41 2011 +0530
+
+    First Commit
+
+commit 0cce35648615b7749723ca80b624c97598b62dc9
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Tue Mar 29 15:10:54 2011 +0530
+
+    Readme
+
+commit 6a58fc123b80921304118294ffda3990a5adc3c5
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Mar 27 17:09:37 2011 +0000
+
+    Added rating in gallery #64
+
+commit 8e6e0bd12348702b9373a567817822561e941a2a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Mar 26 20:04:04 2011 +0000
+
+    Fixed a bug when opening integriti in chrome
+
+commit 28f3c4947215535fe3cd1291e330220f21212fe3
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Mar 21 00:54:42 2011 +0000
+
+    Updating ckeditor to v3.5
+
+commit 7598b72e2d6aa6bf8ae1917c358e989f61332e96
+Author: Akash Chouhan <akash6190@gmail.com>
+Date:   Sat Mar 19 11:39:38 2011 +0000
+
+    Changed latex to gd library for portability with windows
+
+commit 204c63656ce89c2b4e02efe38080946659d3cc5d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Mar 18 14:04:46 2011 +0000
+
+    Adding automatic menu propagation to child pages #143
+
+commit b451f1d6b7b8bbc590245553d1ed89a01a98be4a
+Author: Akash Chouhan <akash6190@gmail.com>
+Date:   Thu Mar 17 17:51:46 2011 +0000
+
+    Fixed some typo bugs in quiz and hospi modules
+
+commit 86c70d02ba3f87851d8d2499a8c1b02efda9f51e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Mar 17 08:09:53 2011 +0000
+
+    Fixed typo bugs in quiz and sitemap
+
+commit 0c80dd359c3288486c57280f4d743f51a291695f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Mar 16 18:57:34 2011 +0000
+
+    Fixed a bug in escape function
+
+commit 255f6573924d96653585f6b684512782e3d5263f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Mar 16 18:36:04 2011 +0000
+
+    Added another escape function which doesn't require mysql connection
+
+commit d6b56f165fa3b8c7ba52369120c1be4bcf71ce7c
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Wed Mar 16 16:45:58 2011 +0000
+
+    Ticket #151: bug in Multiple Choice Question
+
+commit 3c47f6ef9e8d423c9c4e2ee9b3a47bfe63f771be
+Author: Akash Chouhan <akash6190@gmail.com>
+Date:   Wed Mar 16 12:52:49 2011 +0000
+
+    Ticket #127 Sql injection in V3.0 resolved
+
+commit fb218385cc7d454d870e97111179cbdd28bf786a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Mar 14 01:30:45 2011 +0000
+
+    Updating documentation
+
+commit aec6210d546ce61508f36657d9b9355ec18d7750
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Mar 14 01:03:34 2011 +0000
+
+    Finishing touches on trinity template, will be followed by one more commit
+
+commit e423932306af54dfc31456ae289c94f0d3ecd29b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Mar 13 19:33:51 2011 +0000
+
+    Finalizing integriti template
+
+commit a64f537c1421f61350954d77a732540f8b1460b1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Mar 13 15:40:28 2011 +0000
+
+    Changes in integriti template
+
+commit 92e00b70cfa1472a6c2b43caf9e958d5f3f9c7bd
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Mar 13 13:38:20 2011 +0000
+
+    Adding submenu in integriti template
+
+commit 69593d713185b8f5d9363f82c068dd008776d67a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Mar 13 10:57:08 2011 +0000
+
+    Adding template integriti
+
+commit 99552bbe4c38d0e38a594c65648dbbc7e08e4223
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sat Mar 12 08:21:11 2011 +0000
+
+    Ticket #113 Generalised copy/create/delete module in core part of cms
+
+commit 6e6248d37d7676427c68d3e4b0fda3469834b242
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Mar 11 19:04:29 2011 +0000
+
+    Adding functions to block disposable emails #124
+
+commit 3622f631b9db78adfa6dfaec7b572d7b9f6f8793
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Mar 11 15:44:57 2011 +0000
+
+    Fixed template deletion #123
+
+commit 2b1aa5ab1866c72b1412259adabc412e97f85263
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Mar 11 15:29:27 2011 +0000
+
+    Fixed URL Rewrite bugs #115 and #117
+
+commit 044022eb6f679d14a088918a06a2245a40ccb060
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Fri Mar 11 12:51:01 2011 +0000
+
+    Ticket #122, activating/deactivating/deleting multiple users
+
+commit 7bfc87790f7751e20618208f4ea688210ab436b8
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Mar 10 22:51:24 2011 +0000
+
+    Auto detection of Rewrite engine during installation #98
+
+commit d0353a69d6a13bce323688dbbd499e8a1c5d376a
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Wed Mar 9 00:06:41 2011 +0000
+
+    Ticket #120 - Permissions improvement
+
+commit e1b9f8a3d9166ba53d2defcb4d88f5dc66008745
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Mar 7 16:51:55 2011 +0000
+
+    User Public Profile - Redirection Only.
+
+commit 1f2602c230a98347a811c7ebdd8d25f41d59858c
+Author: balanivash <balanivash@gmail.com>
+Date:   Mon Mar 7 10:33:20 2011 +0000
+
+    Patch for Ticket #121
+
+commit 5d933da2c54786300580e13f5d7155806dc4dd43
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Mar 7 03:43:04 2011 +0000
+
+    iconmanagement.lib documentation
+
+commit b9f1cc007289cc1fe68cf8e9ce7d046dadd636ea
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Mar 7 03:06:50 2011 +0000
+
+    Menu Documentation
+
+commit 06fc67ea1ba2442b20f2ca7e9c84b790f3d97db1
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Mar 4 13:24:28 2011 +0000
+
+    Adding Documentation for core libraries
+
+commit 5164238efa4ae313fa5d9cc0e418ea49b88fb58f
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Fri Mar 4 02:43:30 2011 +0000
+
+    Documentation for quiz module
+
+commit e67bc08f7a6ae47e9a15991f7863ee396291d3ec
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Mar 3 19:20:44 2011 +0000
+
+    Adding form deadlines feature #125 and fixed hospi module #83
+
+commit 85c1b9dfb949ae11f12da0b8b7284e84967805be
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Feb 24 23:44:53 2011 +0000
+
+    Escaping user inputs and moving save config.inc.php as the last step during install for security
+
+commit 5fb0612421af91d5860c06cfeefbd2fad7119c91
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Feb 17 19:42:03 2011 +0000
+
+    Fixed an xss vulnerability related to cms_desc,cms_keywords and footer in admin module
+
+commit fc3d7c62e18e2b9b9739b90e488152e02e92490a
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sun Feb 13 23:16:16 2011 +0000
+
+    Preventing auto-correct, Correct only on btn clik, and small bugfix
+
+commit 71c56f10c849b9cab0cb60fb849e03814c3cbd6f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Feb 13 18:08:06 2011 +0000
+
+    Fixing a bug in quiz correct
+
+commit b1323cb8f5c44bec2ecd84e420a39d83a2a60325
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Feb 13 13:58:26 2011 +0000
+
+    Fixing bugs in quiz and form view registrants
+
+commit 6339a51ae859642c7b376121f9d80bab003d7af7
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Feb 12 19:40:44 2011 +0000
+
+    Adding save as excel feature to quiz and having the form or quiz name as excel file name
+
+commit 20ffcb7db3daf5e27af4ddeb454334e86021eb10
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Feb 12 19:26:56 2011 +0000
+
+    Adding profile information display in quiz correct
+
+commit 4d385efe7ad5fab4617a2abace5ba6fecb0d7278
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Feb 12 15:41:05 2011 +0000
+
+    Adding hospitality module
+
+commit af6f9dafe5629779361193a1f8d66806df21869f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Feb 8 02:27:04 2011 +0000
+
+    Adding the news slider in trinity
+
+commit b5a81e216fb3f7dfb8aff2833b763f3233a5d203
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Feb 8 01:24:33 2011 +0000
+
+    Just another commit
+
+commit 334a347e048b6b89e645cb3ddfedf9c00b5963bc
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Feb 3 19:30:04 2011 +0000
+
+    Editing template for email, fixing a bug in show-details of forum users, and trinity template improvements
+
+commit 15828b84b3ee926cf9b049d8199eac647e0ad120
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Feb 3 18:20:06 2011 +0000
+
+    Adding right sub menu in trinity
+
+commit 378227d0ed7ba69d198a6e3698d28fc31ad0b710
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Feb 2 07:50:52 2011 +0000
+
+    Trinity improvements
+
+commit 436b0d9065a058d2edce29683eefca1f1231692b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Feb 2 07:50:02 2011 +0000
+
+    Displaying emails instead of usernames in permissions table
+
+commit b2e5af56ec3a5f2f250b65d1f06b7eb8fbd1b66b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Feb 2 07:48:55 2011 +0000
+
+    Changing the default entry of form
+
+commit b204ba6fc0ee5fe896f97700f8724dd5cff76bf2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Feb 1 14:55:58 2011 +0000
+
+    Commiting minor changes related to Pragyan 2011 and trinity template
+
+commit f6319cf71082cd80df542fa6f5bd2e248a72488e
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Tue Feb 1 13:57:18 2011 +0000
+
+    Resolving conflicts between templates
+
+commit ea5fae28aef35ef2f1cb9d8559ef669f7d539f77
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Tue Feb 1 07:03:17 2011 +0000
+
+    Renaming the news widget to updates widget due to conflict with news module class
+
+commit 32f04e3bb2d2346530f5ce3e5dbe31b00dfff491
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Jan 31 18:53:58 2011 +0000
+
+    Trinity Updates
+
+commit 576e9be6e7553ff4a1ea6f4b7049ed5c1248dedb
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Jan 22 20:50:16 2011 +0000
+
+    Trinity Bug fixes
+
+commit 06b8eb80891f767d175c956cd686415bd0d7f31f
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sat Jan 22 09:29:37 2011 +0000
+
+    Changes in previous commit
+
+commit cc653cc70df0b92f2ff8c3d4f1a078bfa6734652
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sat Jan 22 05:06:27 2011 +0000
+
+    Fixed permission bug with url rewrite, and included jQuery to Jack template
+
+commit 958d1e80803bdad9838657395f07d19fcc0e211c
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Wed Jan 19 08:35:10 2011 +0000
+
+    trinity menu background bug fix
+
+commit 9146823a20367330ce3d0b15e51e40ec189d3aab
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jan 19 06:14:32 2011 +0000
+
+    Bug fixes in Trinity
+
+commit 505c74b76ed1844177b9dad87876ce47fcbb04f6
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Wed Jan 19 05:46:52 2011 +0000
+
+    Trinity Improvements
+
+commit 3ee64a91fdf5a0f3bdb0205fdaf4f94ab4104f11
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jan 18 20:57:07 2011 +0000
+
+    Adding save as excel to form view registrants
+
+commit 86542bd49d0c248549bed0546597e7ee5289d13f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jan 18 20:42:49 2011 +0000
+
+    Applying saving as Excel sheet in user management
+
+commit 9cc9003434a90184cbf8b0bea95685dd79044ead
+Author: balanivash <balanivash@gmail.com>
+Date:   Tue Jan 18 19:10:35 2011 +0000
+
+    Minor corrections in Recaptcha, Form and User Management
+
+commit 6e42c3d113d0930f609705e70925c661f65565aa
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Thu Jan 13 09:42:44 2011 +0000
+
+    Removing unwanted stuff from trinity
+
+commit 3b69582bf40528076043a87373bf4e8bfe0091bd
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Jan 10 04:31:11 2011 +0000
+
+    Trinity Improvements
+
+commit c34cabeb3f2c7bdad2c22a47ce9d340603fc8e5d
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Jan 9 18:31:45 2011 +0000
+
+    Adding basic working prototype of share module
+
+commit f4ebe4ef8d678e23366e2ce627eadbdecec7dfc5
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Jan 8 11:49:57 2011 +0000
+
+    Trinity Modifications - testing
+
+commit 3ba079a9e06f5f4af3b118d0fffc7f3dfce4cc0f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jan 7 22:01:33 2011 +0000
+
+    Some bugs fixed in beta installation
+
+commit 2412589b7df3576024765683a2ce9e7624299b89
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Jan 7 10:34:14 2011 +0000
+
+    Minor corrections in Icon Management and Article
+
+commit cb118115612599dcfd8b68e8eec86bd20d8e6159
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jan 7 06:56:58 2011 +0000
+
+    Template fixes in trinity
+
+commit c0c6b1309eaabe63eab9ec730a19ef7c2d68310f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jan 1 23:42:01 2011 +0000
+
+    Final commit before the beta release
+
+commit d54c4b75d799f2ef4be6b77fd264e84938b6cc2f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jan 1 21:44:32 2011 +0000
+
+    Adding view count in gallery pictures
+
+commit 2ce5077926344ec3f35b8c1438bf7abe421cb959
+Author: balanivash <balanivash@gmail.com>
+Date:   Wed Dec 29 17:25:22 2010 +0000
+
+    Adding facebook like widget
+
+commit 8312733f266ccf758f4bee09117e904c3f554d03
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Tue Dec 28 17:51:15 2010 +0000
+
+    Improvements in Module, Template management
+
+commit 906d8b945299c9da6c019ffc50c1621d85e807e3
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Mon Dec 27 19:21:33 2010 +0000
+
+    removing http_send_status function
+
+commit 9a80f282814194276a596e921c001c2c8d3830a2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Dec 27 19:13:27 2010 +0000
+
+    Converting all instances of http_send_status() to equivalent header() function
+
+commit 7e50d2361c7443509924162ecb9dc9647efde588
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Dec 26 21:33:33 2010 +0000
+
+    Bugfixes in form view registrants, added selected tab in book module and trinity template improvements
+
+commit aad947a20770e00d7cd4235240425c719f1ebcf0
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Dec 26 18:13:38 2010 +0000
+
+    Adding Widget:slider
+
+commit 4bd9a865175ee1543d9adc92dd3ed24e76b0a485
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sun Dec 26 07:58:57 2010 +0000
+
+    documentation for book, safedit and bug fix in book, template installation
+
+commit 46208118ea9a1c134307fba06794c7c965cce1b4
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 25 14:41:48 2010 +0000
+
+    Trinity improvements
+
+commit 7517795f3bc5d0b092fc1d1f3b38c2fc6fe90390
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sat Dec 25 11:20:32 2010 +0000
+
+    Widget installation done, Template installation vunerability fixed
+
+commit 93f68547738f51521ae9e500dedd7c0caff91968
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Dec 24 22:37:49 2010 +0000
+
+    Fixing the security bug related to direct script access reported in #111
+
+commit be8a332bc00afc2587db13d2d7529873d132bfd1
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Fri Dec 24 05:00:38 2010 +0000
+
+    Corrected errors in Icon Management
+
+commit 437d73a7919348386c53f4f22fff85aca349ed52
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Thu Dec 23 23:39:00 2010 +0000
+
+    Icon management add icon and select multiple files in upload form
+
+commit 39f9fae9bbfd3b9c3ea2b0739643ae53f6d42de6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Dec 23 22:00:50 2010 +0000
+
+    Updating pragyan_structure.sql
+
+commit 9117d5b91d1921b013ab1088beed52cb0141a0a8
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Dec 23 21:27:05 2010 +0000
+
+    Added support for widget propagation to child pages recursively
+
+commit 28a979dd98224f0ea33abfcb4b6b720671d4ceb3
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Dec 20 21:13:16 2010 +0000
+
+    Unnecessary usage of cms-variable . removed all instances
+
+commit 0d7396a8b287f51fc6669e780f0b411cfdcbb1a2
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Dec 20 20:51:03 2010 +0000
+
+    changed to relative links in icon management. Dependencies corrected.
+
+commit 473d51389b7c3ec6b78b9e372e834ab45e2e73f7
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Dec 20 20:49:04 2010 +0000
+
+    Added advanced options to news widget so that it can be integrated with trinity
+
+commit 2f9f71a01e4d8711139555435e27ba6cbc6d491b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Dec 20 19:07:56 2010 +0000
+
+    Fixing a bug in countdown widget due to addition of js calender
+
+commit eb3d45fd1fb10061ee11e93b0c087161e929ccf4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Dec 20 18:34:08 2010 +0000
+
+    Adding support for noinput type configuration in widget framework
+
+commit 721841cc476dfb7d44b885f0d3eb143fc3fcf04a
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Dec 20 16:59:15 2010 +0000
+
+    Classic menu restored #106, Icon management bugs with mozilla and drag-drop fixed. #107
+
+commit 8619f027653c1d09619ccf8d1521f7784174b0b8
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Dec 20 15:37:38 2010 +0000
+
+    Fixing potential bugs in countdown and news widget
+
+commit 5c5e8d4f2584e3511fe51af46d63112e5a96f97a
+Author: balanivash <balanivash@gmail.com>
+Date:   Mon Dec 20 00:58:43 2010 +0000
+
+    Resolving the clash between trinity and ReCaptcha css #108
+
+commit d37dfb7d3a37cca6a8b644fc722ceb9dba59e075
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Dec 19 23:47:36 2010 +0000
+
+    Resolving errors in js in countdown and news widget #104 #102
+
+commit 45533ee8f6efd564e97a4dc9583ad0a6cc405c4b
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Dec 19 20:44:50 2010 +0000
+
+    Fixing bugs in upload
+
+commit 7bc6548c47e1f46375d7aa27be1413afc1253a1e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Dec 19 20:08:49 2010 +0000
+
+    Adding support for common widget output
+
+commit 0d0b53b1011a9a78a7c29e2bbdae1e1a212d42c2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Dec 19 19:20:41 2010 +0000
+
+    Fixing the bug with child page pdf
+
+commit dcd491ee163c0fd00c2627e38be1416a547bef79
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Dec 19 19:09:58 2010 +0000
+
+    Fixing bug in widget framework and adding display text option in server_date_time widget
+
+commit 182e73279b43492791a3ef7504d1dc9f508b7cda
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Dec 19 18:50:16 2010 +0000
+
+    Correcting errors in gallery thumbnail and child pages pdf
+
+commit 2c5d0b11d687dc4ffd42e4fda1f6ad5f6f409288
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 18 21:57:25 2010 +0000
+
+    Removing unnecessary files from the documentation template
+
+commit 779d0cbed74e99f055725be6a1abc3ec552786a4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 18 21:45:58 2010 +0000
+
+    Changes in trinity template including removal of pragyan video
+
+commit 603342247c32990471818576fc9bb6912fe7c66e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 18 21:17:19 2010 +0000
+
+    Fixing bugs in installation form
+
+commit 2c085e82c54b08aaa82404ac58bb2166f34c9782
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 18 20:07:43 2010 +0000
+
+    Fixing bugs in openid user deletion and activation
+
+commit 3c55a68a25b6d3688e523b66f2df5afc739dcfbe
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 18 19:40:04 2010 +0000
+
+    Fixing the height of the thumbnail generated in gallery to be same as its widget
+
+commit 3a254c47f1b249c7b0388ad6b959a223caca0b5d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 18 18:43:59 2010 +0000
+
+    Modifying the template of documents and relocating all documents to docs folder
+
+commit 618756bd25795079a7fd4e03a2276243cf109cfa
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Dec 16 19:55:47 2010 +0000
+
+    A minor bug in installation related to the ordering of installation functions
+
+commit 98b8d34792164bebb13dafa3e354eea519712b8a
+Author: balanivash <balanivash@gmail.com>
+Date:   Tue Dec 14 23:06:18 2010 +0000
+
+    Options to use recaptcha
+
+commit c8a7506b81d1a27d4ff80f10c8b1a44d1ed8f7ac
+Author: balanivash <balanivash@gmail.com>
+Date:   Sat Dec 11 19:04:14 2010 +0000
+
+    Correcting minor problems in login/register disable
+
+commit 9b9e6f1b2603f9ca4564f3a8d6899e42a7ebfe5b
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 11 18:51:06 2010 +0000
+
+    prettyURL changed. Works fine with the present menu and breadcrumb
+
+commit e5570a2aa68b0175de1ad0ed79d997a407350952
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 11 17:51:50 2010 +0000
+
+    Menu errors corrected
+
+commit 85926e20464d88eb03f68dbcec52f9d93b77f15d
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 11 10:20:54 2010 +0000
+
+    Changed clock date in trinity template
+
+commit 86b5171958540436ce90afdc85d4da8cf208426a
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 11 10:09:32 2010 +0000
+
+    Icon Management Improvements - Erase Icon, File fetch changed
+
+commit 704d24abd9fbefca9ffa77033a33c0cee47ef39c
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 11 06:31:17 2010 +0000
+
+    Countdown timer changed
+
+commit f8f0cb94e93e47c062d8354c024943e4ba0a0b3e
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sat Dec 11 05:34:34 2010 +0000
+
+    Registration form styling
+
+commit cae2959a79d0187b7b6ab6fa1d09a84e1dbca04f
+Author: balanivash <balanivash@gmail.com>
+Date:   Sat Dec 11 04:59:37 2010 +0000
+
+    Correcting typo in pragyan_structures.sql
+
+commit 0daa17f7e1a283c5edb035cc96a19fb8737ceabb
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Dec 10 23:52:37 2010 +0000
+
+    Correcting problems in icon enable/diable propagate
+
+commit e63944c699e6ab601a2441ec2c468a07dce7e688
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Dec 10 23:32:49 2010 +0000
+
+    Adding Funtion for saving article edits as draft #93
+
+commit f15d6e1af32b4a4175d581e28336ee09985ae8b4
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Dec 10 22:24:59 2010 +0000
+
+    Option to include Child pages in pdf Ticket#12
+
+commit 9a797f2ab4feee402ba6d015035297483e78c360
+Author: balanivash <balanivash@gmail.com>
+Date:   Fri Dec 10 18:45:59 2010 +0000
+
+    Adding News widget
+
+commit 9a60da966c104693b51927926ffd9e3d0ca7441c
+Author: balanivash <balanivash@gmail.com>
+Date:   Thu Dec 9 21:23:11 2010 +0000
+
+    Adding Count Down Widget
+
+commit 49937a0faa67ca33370820b4790acd6af27064ef
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 23:03:23 2010 +0000
+
+    Color change in the menu css of trinity
+
+commit 6339833483bdf33e79b1674046f6604bbc0c1056
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 22:34:52 2010 +0000
+
+    Fixing some minor bugs in openid
+
+commit 7b0830fb17f03c7113063ba9883e06db941eccf1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 22:23:47 2010 +0000
+
+    Adding pragyan logos, banners and images and also adding them in the trinity template
+
+commit bc0666c53e60079c21c2a31c17400e1f20717996
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 21:58:59 2010 +0000
+
+    Resizing the countdown timer in trinity
+
+commit 5e1d63ad1975fcbbb895487a2dba63f5e37d38ec
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 21:24:02 2010 +0000
+
+    Fixing conflicts between openid and trintiy template : courtesy siddhant
+
+commit 9207dcec3b053515788222c1073f9d822bf6e7f9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 19:38:57 2010 +0000
+
+    Fixed bug in installation, duh
+
+commit 9e551ee5353f7e536e6e491f2e529028f5aab13b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 19:07:49 2010 +0000
+
+    Fixing the installation script with some installation steps being done even though user has selected not to install that feature
+
+commit 0504c2d506514179ab62ae08f7f781e10fa87ae6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 18:20:25 2010 +0000
+
+    Undoing commit 179 regarding breadcrumbs url rewrite bug, some fatal error found
+
+commit b827a23432ab148294534d6d31c8455b9a8b04e9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 17:13:39 2010 +0000
+
+    Fixed openid bug which logged in even deactivated users
+
+commit 8d11cdc285884b4e75978a3eaa0e0fb1a38d7972
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Dec 8 09:11:09 2010 +0000
+
+    Fixed bug in breadcrumbs due to URL Rewriting
+
+commit 2325acb7c107d92a3e9f055ac757de91dc8a2952
+Author: balanivash <balanivash@gmail.com>
+Date:   Tue Dec 7 17:11:33 2010 +0000
+
+    Funtion to create thumbnails for images in gallery
+
+commit 398ad0e038883dcecda2cb2bbead81cefa874325
+Author: balanivash <balanivash@gmail.com>
+Date:   Tue Dec 7 11:15:55 2010 +0000
+
+    Correcting problems with censor words
+
+commit 870819fdcca674a009eef3b05805139497fc8433
+Author: balanivash <balanivash@gmail.com>
+Date:   Mon Dec 6 13:28:24 2010 +0000
+
+    Including Propagate for icon enable/disable and modifying censor words
+
+commit 48f80283dbf9af6cb01b7d704003708157af835b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Dec 6 11:01:08 2010 +0000
+
+    Fixed a typo in an install query
+
+commit e180450a28e91396e228f348af445e804865d641
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Dec 5 16:32:48 2010 +0000
+
+    Function for censoring content
+
+commit cd1897f79cc541c7962e1bf4528a0e1e84ad35b6
+Author: balanivash <balanivash@gmail.com>
+Date:   Sun Dec 5 15:43:48 2010 +0000
+
+    Enable/Disable icon in menu
+
+commit 558a899602f0082f5141c5a77661b4b990375393
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 22:40:05 2010 +0000
+
+    Template modification in Trinity
+
+commit ca8074772c02ddfc72f37b5e66fba5c664e161d0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 22:16:37 2010 +0000
+
+    Fixing the url parsing regular expression in book module
+
+commit 320ecbc65ee95389b8623c79809e887a37c0b3b9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 21:45:52 2010 +0000
+
+    Fixing bug with classic menu generation when the url has an action in it
+
+commit 6e98689c048e3dc81faf91d91f71211921427b8a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 21:10:39 2010 +0000
+
+    Fixing a bug with the tabs styling of book module
+
+commit c3c7d8a5ac919e265923fee90c7bae5d90f91147
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 20:54:44 2010 +0000
+
+    Fixed bug in classic menu generation
+
+commit 30e25fea200dc122b42fb625b8a48140c131f011
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 18:56:17 2010 +0000
+
+    Added warning to the user upon logout regarding logging out completely from openid
+
+commit f9a5a0da8f80f912c263d0b9c5e7b84def0f0ec1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Dec 4 13:49:38 2010 +0000
+
+    Applying the openid disabling patch
+
+commit c715d35d858a12fa18c1cc00981ff5f8848bd229
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Fri Dec 3 11:45:06 2010 +0000
+
+    Added safedit module
+
+commit e2b1cf2b481e241b73602b2607b41a7dda59fb3e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Nov 28 01:32:02 2010 +0000
+
+    Adding Poll Module
+
+commit e732b405ce9af1c25efc917ad26a8ac863049fbf
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Nov 27 23:32:07 2010 +0000
+
+    Fixed minor bug with menu, openid css and updated changelog
+
+commit 38d9f34e02329cac3bcd6b2fa69e9d30e9cf550d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Nov 21 22:27:32 2010 +0000
+
+    Adding patch for disabling openid and installation check and fixed some bugs in email
+
+commit 424f3910d807bf1d90c11857084c073aad0915ba
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Nov 21 21:06:57 2010 +0000
+
+    Adding  and template modifications in trinity
+
+commit bea4c5aa8e44c1c1347de19b857ff76e3273a42e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Nov 21 19:05:54 2010 +0000
+
+    Modifying CSS for trinity
+
+commit 629d185748d1efec9e93f2d4a3e3e3e5c3f0f611
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Nov 21 17:45:29 2010 +0000
+
+    Fixed bugs in icon management and added icons and banner for trinity
+
+commit 358103690b3fafcf786313e3a6c1e27801f0dae8
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Sun Nov 21 06:45:03 2010 +0000
+
+    Icon Management - basic prototype - working
+
+commit b0d40c5003941c2a2abea8d33e0ada03cd96cd90
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sun Nov 21 00:46:53 2010 +0000
+
+commit 57daf61b2c735a128f75c9c6301b5002197eb5f4
+Author: balanivash <balanivash@gmail.com>
+Date:   Sat Nov 20 23:43:04 2010 +0000
+
+    Trinity Template changes
+
+commit 508d977f57c2e71b3e4ed6a7821790e5760912a2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Nov 20 22:50:15 2010 +0000
+
+    Replaced  with  at correct places and modified CSS for trinity
+
+commit b683cc5e4c61068e146f1c0f6f1cdb25dcdac90e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Nov 20 21:14:43 2010 +0000
+
+    Added twitter and facebook links in trinity template and removed jquery lib from openid
+
+commit 7acb104c950bbc13cc33427d7b9694a84b6b099a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Nov 12 20:38:09 2010 +0000
+
+    Including the dope open id library
+
+commit 13d20c967c8a298c205add5f617ac9f99a4937a5
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Nov 12 20:26:54 2010 +0000
+
+    Adding support for Open ID by siddhant #28
+
+commit 84bf20fec9bd4affabeed0d207bca2625cdff4c4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Nov 12 12:54:29 2010 +0000
+
+    Fixing dbcmp.py and adding facebook like button in trinity
+
+commit 35390af6f220d08dc823643c9f9b4fa6848cfb6a
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Thu Nov 11 13:40:18 2010 +0000
+
+    Trinity Template Improvements
+
+commit b8cb610279435c305ebe9fa6ffab25e3d99b0e65
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Nov 6 23:14:48 2010 +0000
+
+    Adding documentation for widgets
+
+commit b39c5c8f2bfe6a1532477d676563a82d9d73c208
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Nov 5 21:00:44 2010 +0000
+
+    Fixing a bug in widgetsinfo table structure
+
+commit 31cf08e530174f19e4d96ee79ec4813fbf046c82
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Nov 5 10:32:19 2010 +0000
+
+    Converting widget variables  into a single widget array [i]
+
+commit 38826972351e2f44fd70ae80a5153c61e1bb79d6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Nov 5 10:26:47 2010 +0000
+
+    Fixing the problem with  links not getting properly converted into non-pretty URLs #87
+
+commit 4380e90ff681f95dc9a3f61c558f0fa707cd26ef
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Nov 4 22:21:51 2010 +0000
+
+    Adding Widget Framework, Widget Management, and first basic Server Date and Time widget #13
+
+commit a602334a8f4490811c50c8299f99e1c5cd238372
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Thu Nov 4 04:03:40 2010 +0000
+
+    Trinity Template Improvements and ICON replaced welcome text near user name
+
+commit 67e05f0d6f66b59839b0dd582731bdf2358813d1
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Sat Oct 30 05:19:26 2010 +0000
+
+    Module Management(Ticket #71) and minor bug fixes
+
+commit cbadeb376d6979503fa6726e08ad1ead00644d3f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 28 21:02:51 2010 +0000
+
+    Updated coding guidelines and table structure for target links
+
+commit 3cfd22d2ce85cf40516a1e38f1c29c39bc7c3ab4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 28 20:47:03 2010 +0000
+
+    Added option of opening a menu link in new tab #75
+
+commit 93810ecfc69f37039769caa140204505914531a0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 28 19:57:09 2010 +0000
+
+    Added support for parsing hardcoded absolute URLs in URL Rewriting feature
+
+commit 92089bb7a5ac71cfc0e113fd475b23ef02d2cde5
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 28 19:42:11 2010 +0000
+
+    Added ffeature to hide pages from sitemap #79
+
+commit 5c9c09c553b149a528bef8b71cea74637ef7227f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 28 10:44:11 2010 +0000
+
+    Adding pagelist module #48
+
+commit dc3bef88b9d688ad53186108c69a4cb1be535d19
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Tue Oct 26 16:06:01 2010 +0000
+
+    Trinity Template modification, Added Login Form Variable
+
+commit ea2248731cae7b850774f2abeb39e73926d91f34
+Author: Boopathi Rajaa <boopathi@live.com>
+Date:   Mon Oct 25 15:52:31 2010 +0000
+
+    Fixed bug with window.onload
+
+commit f5bcad44e5c143041eaeb7f507ed8071e53b4b47
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 14 06:12:18 2010 +0000
+
+    Added option for disabling URL rewriting and .htaccess #69
+
+commit 83677004e0caf000ac25095f8c7c6a2f912480e1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Oct 10 22:55:35 2010 +0000
+
+    Added hostURL() function in common.lib.php and used in menu.lib.php
+
+commit f3784c3a1beab9801bf057d36e3049bfb7f56add
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Oct 10 21:45:40 2010 +0000
+
+    Fixed the bug with relative links inside book module's child pages
+
+commit c86cbda6f82c04eab269feab74e6fea8738b0325
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Oct 7 19:47:13 2010 +0000
+
+    Created the SmartTable API and replace datatables with it in all the files to avoid conflict with various jQuery includes
+
+commit 348a76d7944d631a865f478a3548464de7e65408
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Oct 6 22:46:47 2010 +0000
+
+    Fixed infostrings and hideinmenu bugs of book module #82
+
+commit 892d98c0902f42bd6d23853dab46e50be99f6043
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Oct 6 21:46:53 2010 +0000
+
+    Added template Trinity
+
+commit caa250407db70b8340667b74b130e8f48ffd1f55
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Oct 5 22:01:45 2010 +0000
+
+    Fixed installation bugs, enhanced access checks and .htaccess permission problem
+
+commit 431dfa2b3ae68ee769acf2c10c620ad8aa28ffa1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Sep 28 21:44:58 2010 +0000
+
+    Added categorization of global settings by gaurav
+
+commit 799603d0fd1118a924431d4db127c0135ff3b601
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Sep 28 20:53:18 2010 +0000
+
+    Added book module by chakra
+
+commit 71e23b56b5906d0a92e4140957a6c1da1bc6973a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Sep 26 23:31:39 2010 +0000
+
+    Fixed bug with default values of form fields
+
+commit ded4b062ec16f54799a9573049aa361c25283c5a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 22 21:40:15 2010 +0000
+
+    Pragyan 2011 template : Added footer and fixed css
+
+commit 6c766d89ea059a4d21bd2efdf756263d41b4e051
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Sep 20 09:14:10 2010 +0000
+
+    Fixed bugs in registration related to the user-added date and required fields
+
+commit 84659c1225f1ce79fb39b2a2919c3854cc68a99e
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Sep 20 08:12:44 2010 +0000
+
+    Added documentation guidelines in Developer's Guide
+
+commit bb3e98aa2506e05daed96325cf1084853b4d6564
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Sep 16 20:20:49 2010 +0000
+
+    Adding svn:ignore properties and removing config.inc.php, database.php and .htaccess from subversion
+
+commit 8b3c17dd730e63dd9a89203fb34c963e17212156
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Sep 16 15:27:05 2010 +0000
+
+    Pragyan 2011 template fixes
+
+commit 77be3a426455b0446d36702996432d113aff25ca
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Sep 16 14:04:08 2010 +0000
+
+    Removed echo from spider.php and enhanced common adminui.css
+
+commit 2646c00897bf16ef21c1f7767b1a6d523c172dd2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Sep 16 12:16:23 2010 +0000
+
+    Shifted row extra-info before extra-options in edit form page
+
+commit 9bd3bd61e5dc80b91ed4250c8e6655bcb0a7ccaa
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 15 23:36:36 2010 +0000
+
+    Adding styling and images to the jquery timer
+
+commit c3168413ab5df168ed8c4ed59cff6668d92f15c9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 15 23:30:13 2010 +0000
+
+    Added jquery countdown timer in the template Pragyan 2011
+
+commit d415e645d6d56f4aeec1cfd6eb177da97770116b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 15 22:38:29 2010 +0000
+
+    Added Pragyan 2011 template
+
+commit de38c9414f21575b47fafd1ed366548a5d7b0912
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 15 22:13:03 2010 +0000
+
+    Added option for  when menu depth=-1
+
+commit f28652cf1cf5c50b0ae6755520a5498ce4e901a0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 15 21:50:56 2010 +0000
+
+    Testing commit from Pragyan server
+
+commit e65bfbe49da4965f310e1f1065e155abbac9fbf5
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Sep 14 21:15:36 2010 +0000
+
+    Added some user-friendly features and fixed bugs with multidepth
+
+commit 8cfabc61c2f2512950e60ca40fb03d99e6607f94
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Sep 12 22:51:51 2010 +0000
+
+    Added propogation to child pages for menu-related settings
+
+commit c8a52642e17b25020da8410c735fe5f2e8142967
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Sep 12 22:17:03 2010 +0000
+
+    Prepared for the beta release, added documentation and stuff
+
+commit 00bb8e0a7dde91e956f9b255da166cc2bd42d585
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Sep 11 13:03:26 2010 +0000
+
+    Drop-down menu option with customizable depth
+
+commit 5ee0497aba9f512ba2dbb991349d6af8db3309f3
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Sep 7 14:04:50 2010 +0000
+
+    Recalculation button for quiz marks and bugs with multiple timers fixed
+
+commit 66f946ca376b08a8b0d4927936bf2c721196f926
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Sep 4 22:58:15 2010 +0000
+
+    Enable/Disable login and register options
+
+commit 058c8a51cbe0cc3443a303dc722caf9862fec0fe
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Sep 2 19:53:48 2010 +0000
+
+    Profile page will display the forms the user have registered to
+
+commit 14c6bdf47bc6bc9d10f456a4282857503a803afb
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Sep 1 20:46:37 2010 +0000
+
+    Fixed user profile form editing option in Admin
+
+commit d74628447a9cc2e219405376bf0d125136175781
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Aug 25 19:36:42 2010 +0000
+
+    Full name in Page revisions and uploaded files information
+
+commit 2308c61fbc5cf806250db24e62a060df6bf04098
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Aug 22 22:21:22 2010 +0000
+
+    Fixed countdown timer in quiz and auto-submit when it runs out
+
+commit a4b5a106cd80217130c0be2ce8306c88b23e4355
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Aug 22 21:22:40 2010 +0000
+
+    Fixed the mixup bug with ckEditor, changed About of ckEditor, added widgets link (unfinished)
+
+commit 4c4f6744d9b0debabe5647f22ce23f85c75d81a2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Aug 17 11:11:25 2010 +0000
+
+    Added Google maps plugin for ckEditor
+
+commit e31e14242a79e06dced1f3df1f2d73c5cceccad6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Aug 17 10:46:12 2010 +0000
+
+    Integrated Google Maps API with articles. Usage : Enclose with [googlemaps][/googlemaps] tags while editing
+
+commit 7b1aec7bcbb8606b21c2312fe37dfd82cbfea11f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Aug 15 16:32:26 2010 +0000
+
+    Quiz: Can edit marks-weight even after setting, fixed <?= to <?php in install and increased form and fields description length
+
+commit 2f706ad1e85e9da5c45aa4d606a4a2287fec95cb
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Aug 1 05:50:14 2010 +0000
+
+    Fixed problems with datatables in quiz correct
+
+commit 0d70960bcf71dc65709610f56b9adf58db3d5612
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 30 16:52:47 2010 +0000
+
+    Fixed bugs with quiz that screwed inductions 2010
+
+commit 255aee93e3805297ca8aac483aca9156f718e026
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jul 24 19:19:02 2010 +0000
+
+    Added tex plugin for ckEditor in Pragyan CMS
+
+commit 18c7be77f1fc72b58864530f2419d60f4f8bdcde
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jul 22 12:31:35 2010 +0000
+
+    Name removed and description added in forum
+
+commit a44c97ac160fc75126810c5f4d8c2ab686af98ca
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jul 20 20:52:04 2010 +0000
+
+    Minor forum improvements in design, looks and user friendliness
+
+commit 85204b13fe924efa759adae45b7f9bd0f7ef03fb
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jul 20 18:18:43 2010 +0000
+
+    Fixed typo bug in pragyan_inserts.sql and retain old checkbox forms selection data.
+
+commit cfc29996720e25cc63fbf80835c2a0dda3ed0046
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jul 17 21:11:19 2010 +0000
+
+    Added profile images feature for registered users
+
+commit b6c71bd6a5a120fe8eed331485d4a61449132779
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Sat Jul 17 06:26:14 2010 +0000
+
+    Changing svn directory structure to include templates
+
+commit f88b2e90f4c1d9a5ef8f5b99239741fbec95ad4c
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Thu Jul 15 21:05:17 2010 +0000
+
+    Fixing security bugs
+
+commit a81395451e88983410f833ba19a1e76f1282678a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jul 15 17:24:19 2010 +0000
+
+    Reload templates will also remove absent templates from database + bugfixes in admin
+
+commit 5fe32b2074c7d5ca20730cbf6cb8d3b4842dee58
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Thu Jul 15 05:09:33 2010 +0000
+
+    Adding footer to templates
+
+commit e874c5dc13b4353c41eca857d136cf6073067003
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Thu Jul 15 05:00:20 2010 +0000
+
+    Adding two templates
+
+commit 79dccc757d9041654865f1564f7e6b118db0aed8
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Thu Jul 15 04:30:07 2010 +0000
+
+    Fixing perm rank admin page
+
+commit 5ae95fdcba157e7c4a50b6a0f433ba998b74018b
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Thu Jul 15 04:04:54 2010 +0000
+
+    Changing layout of admin page
+
+commit 9581a12712a9e64729561665126ebf4f46b505d4
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 20:41:48 2010 +0000
+
+    Adding default timezone config
+
+commit b44e55ef08d60b4bb0314c3630bed349c1d72fc2
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 20:26:25 2010 +0000
+
+    Changing layout of check admin permissions page
+
+commit 69f9b5e401ac457075236fb7953d0dd259fa3e32
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 20:11:54 2010 +0000
+
+    Limiting scope of error.css
+
+commit 835a33032722c4dc1251207225f1ac1e966cd143
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 15:42:01 2010 +0000
+
+    Changing layout of check admin permissions page
+
+commit 891a14e520a836e8968599e6dd4410bcdbdbbc89
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 14:42:23 2010 +0000
+
+    Changing <? in template to <?php (php 5.3 compatibility)
+
+commit 6cfde4b08dd2827810e5cf9f21e45e7413b09107
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 14:41:55 2010 +0000
+
+    Changing <? in template to <?php (php 5.3 compatibility)
+
+commit 1c9e93a29d413b728ebd2d7900664cd1a0dd27f6
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 14:38:14 2010 +0000
+
+    Changing <? in template to <?php (php 5.3 compatibility)
+
+commit 6482b10b4a2198273e2336ab066cdabc5940894b
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Wed Jul 14 12:36:39 2010 +0000
+
+    Correcting typo
+
+commit 0979d0f2566aeac08a9dca394ccf56d756c8344c
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jul 12 23:03:30 2010 +0000
+
+    Quiz module fixes : reject submission button on all entries, assign marks form, made secure and bug fixes
+
+commit 438814d5c54d1a6180efac9fa39c67f4dcdd059f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Jul 11 22:49:26 2010 +0000
+
+    Bugfixes in users,permissions and removed edittable.lib.php
+
+commit 735d7b027c78ec36313cee8d4701fccd026b34a0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jul 10 22:46:33 2010 +0000
+
+    Enhanced permissions table structure with AJAX by Chakra
+
+commit 00aeaec5f10122449ebaf74b7f9e4312129c64e7
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jul 10 22:36:20 2010 +0000
+
+    Adding forum styling by balanivash
+
+commit c619816266c0c7c3b7668f13f94067dded3131ba
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jul 8 21:11:58 2010 +0000
+
+    Updated changelog and DEVELOPER-README
+
+commit 46970f2b22de59ca268656716e5dd64ef6ed616d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jul 8 13:41:41 2010 +0000
+
+    Improved SQL module, removed defunct modules and added module icons
+
+commit bc82ba7d1eabfdac7732bd2698f695355e26e235
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jul 8 11:17:08 2010 +0000
+
+    Made user management to also display extra custom user profile form fields
+
+commit 9ac4bc529b25125c79684ca08258b0929544bd68
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jul 6 12:21:12 2010 +0000
+
+    Bugfixes in permissions table
+
+commit 134ad1a5383ab83e1c4ff7a801ac795b21acc7f0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jul 6 11:54:47 2010 +0000
+
+    Fixed permissions table : patch by Chakra
+
+commit 3203959a20789d4e4d6860bfe82ac10eb3a8b2b8
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jul 5 21:16:28 2010 +0000
+
+    Fixed Quiz module in working state
+
+commit 1b3f8545cd356d28863864ca9794c58af880ab32
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jul 5 14:31:26 2010 +0000
+
+    Added docs folder and updated default article content
+
+commit 2248faea4f296e7efbe976a2acad26b7ae0d6de1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jul 5 13:32:23 2010 +0000
+
+    Minor fixes in emails and admin.lib.php
+
+commit 3f0b0bf083ad8a4db216f9a09f47c15215abd2f9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Jul 4 15:49:30 2010 +0000
+
+    Fixed security bug related to logging in on clicking back
+
+commit 0bdef7cb20f21dd4feff9cf8acdec416a40442a0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 2 23:03:41 2010 +0000
+
+    Fixed styles and icons in forum
+
+commit 59bb8c0803423928dbd86b3de93f8fd1eb63e1b3
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 2 22:12:15 2010 +0000
+
+    Fixed Forum Module : patch by Balanivash
+
+commit 6191597c59b2296ed6271e4c6f410ce60dfdef28
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 2 21:49:15 2010 +0000
+
+    Added security check for URLs that contains <,>
+
+commit 2997105b78241b30af54ea1c51456e0f615f7a65
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 2 15:02:16 2010 +0000
+
+    Modified svnlogger script
+
+commit 2007b9289d50700c4276ff9927bac1f8bf8d7703
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 2 14:44:36 2010 +0000
+
+    Adding support for user-specified MySQL server
+
+commit 3d29e2e758198bb0a2e361726b9a7490b3a0ca3a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jul 2 11:48:46 2010 +0000
+
+    Fixing a bug in email
+
+commit ff8962fe3d763e32f878f56cd7088b103f77aad1
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jul 1 23:00:46 2010 +0000
+
+    Undoing last commit
+
+commit ae37cd077ea12a30be76ab5f659e4fad8526beb6
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Thu Jul 1 06:16:58 2010 +0000
+
+    fixing permissions table: patch from mohnish
+
+commit 10d40d9b17a689b649dcec70f57f138940c50b3c
+Author: chakradarraju <charkadarraju@gmail.com>
+Date:   Tue Jun 29 18:40:54 2010 +0000
+
+    to learn svn commit
+
+commit 278404195b21fabff7bc350e61bcb9f3e6f2c2b4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 28 19:41:40 2010 +0000
+
+    Added Email Registrants in Admin
+
+commit 06f270d9b6f236adf26ef4f33548f6243746495f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 28 13:23:04 2010 +0000
+
+    Bugfixes in default emails
+
+commit 5883b20f28e5c64cf60c2bda608d477c4f9bc9b9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 28 03:04:15 2010 +0000
+
+    fixed a bug in previous commit
+
+commit c78659eef160c5cdbb6d3933aafbb49a949bb463
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 28 03:01:15 2010 +0000
+
+    Removed Pragyan stuff from email templates
+
+commit c3bec191871f3c9710f63e71a7ff82d5629ff76d
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Jun 27 23:13:57 2010 +0000
+
+    Added site footer option and changed admin CSS
+
+commit d8e8870f6e91a9529ba224b4446b60750f81645f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 25 22:04:35 2010 +0000
+
+    Fixed problem with no_img.gif in PDF plugin
+
+commit 6ceb7d4facc4ae535ed5e48a7833af3e631e6fea
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 25 19:01:05 2010 +0000
+
+    Bugfixes in users,settingsform and installation
+
+commit b474525ea1789d0fd216f626f6d987121a85568b
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 23 23:04:43 2010 +0000
+
+    Fixed forum module
+
+commit 59c5dc494a894776265d2eb54601b9c322bbec6f
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 23 22:43:30 2010 +0000
+
+    Fixed installation form check
+
+commit f8781ddf485f93a53015862f43d9ed18dacf6476
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 23 18:18:21 2010 +0000
+
+    Bugfixes in gallery,icons,users
+
+commit deee66d55a76f4f26f82d28277730c41578de6bf
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 23 16:57:16 2010 +0000
+
+    Forgot to include a file in last revision
+
+commit c57d2774e64d76b9479d81228b34a901eb35ee82
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jun 22 11:21:12 2010 +0000
+
+    Added sphider reindexing frequency
+
+commit 622fd80c5a195619ba81dd228239f294c80b8bd4
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jun 22 10:34:05 2010 +0000
+
+    Replaces buttons with icons and adminui.css
+
+commit 43074b0eb29de8148ae4a92dc4c48784e0d50830
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 21 14:33:23 2010 +0000
+
+    Fixed PDF plugin for images
+
+commit c1e55ac053a10fa95b7183b8e933c13d7928b657
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 19 21:17:39 2010 +0000
+
+    Bugfixes, Site keywords and desc inputs added
+
+commit c4a9c6f81c31985a6ba189b318774c43ba3ee088
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 16 17:10:27 2010 +0000
+
+    Gallery module updated and enhanced
+
+commit bdc3d55c061b55ef42d2faf55b9be29efb65ce0a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jun 15 19:17:50 2010 +0000
+
+    Finally added sphider search engine in Pragyan
+
+commit 9b85c50b3d5959670a29f6f705afca8b4d027fc0
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jun 15 18:47:23 2010 +0000
+
+    Added Sphider search engine phase-I
+
+commit 5f291262fe8cc240b677ff4ac81526d2ed77cba6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 14 07:44:41 2010 +0000
+
+    Bugfixes in Gallery, Article and Uploads
+
+commit ed44ba4126b53ec74d698d1aa38bfe2352e86fd3
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Jun 13 00:03:43 2010 +0000
+
+    Fixed Form Module and added Smart Tables in form users
+
+commit 1c8a37eee3e89bbab9356d4d26d6cb957551a623
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 12 11:27:54 2010 +0000
+
+    Fixed the gallery module
+
+commit 35246952da63c07a6a8821d8d1d3bc5dc1447d13
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 12 01:26:22 2010 +0000
+
+    Added smart tables in user management
+
+commit 76118af9472244c18e7f746e4fa1405ce24ce3ef
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 11 20:37:38 2010 +0000
+
+    Added comments feature for articles
+
+commit 0e728aaf37518f10ca119c16d7968e3f89e15019
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 11 19:16:04 2010 +0000
+
+    Fixed problems with News module : patch by Chakra
+
+commit 991cc619c683ddf5b3f6ee6ecc4d5196bdda038c
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jun 10 18:00:54 2010 +0000
+
+    Added Installation Forms Check : patch for Ticket 1 by Mohsin
+
+commit 051830c13dafdc0a0241c5dd1cbc450c5af2d1cb
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 9 19:30:26 2010 +0000
+
+    Fixed bug specified in Ticket 19
+
+commit f5884983bb46c7eb3fb86524f6167e433cac4ccb
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Tue Jun 8 17:55:17 2010 +0000
+
+    Fixed php shortforms bugs and updated DEVELOPER-README
+
+commit 24a006e769d44dd844cd98f7d2ed75756261c196
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 7 17:12:17 2010 +0000
+
+    Added SQL query helper for sqlquery module
+
+commit 55b7b2ab4382d62fa4774c6df466dd913e5cbee6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 7 14:08:45 2010 +0000
+
+    Added quicklinks in Pagesettings
+
+commit 8ffe1a7e58c238f478ac5cd7f99d675b5572f5d6
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon Jun 7 10:05:16 2010 +0000
+
+    Minor bugfixes
+
+commit 4e6ae74a60f869abb10e3fdf6cb248be60debc95
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Jun 6 17:00:30 2010 +0000
+
+    Added PDF module : patch by Chakra applied
+
+commit 90c58d16744eba570e05abb4feeb835585880163
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun Jun 6 15:43:54 2010 +0000
+
+    fixed a bug in template installation
+
+commit c7eb91ef7a83cd539ce6653b9cc4a4c0fef9dc65
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat Jun 5 06:08:46 2010 +0000
+
+    Minor bugfixes
+
+commit 973050ac6b2669c62b94cc515475eea428d28da2
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Fri Jun 4 17:52:57 2010 +0000
+
+    Added Template Installation Module : patch by Chakra
+
+commit 00912b6a54501e165dc1fda964e53f33d0a78254
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu Jun 3 21:10:35 2010 +0000
+
+    Changed structure of global table and many bugfixes
+
+commit 95b7e925fb524bdf027032334b68ca5d18a40d93
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 2 19:05:55 2010 +0000
+
+    Fixed few bugs in form and pagesettings
+
+commit cfbabe30489b7681d6d37eb416bd689e0acebe16
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 2 05:54:12 2010 +0000
+
+    Made forum in working condition
+
+commit ea960292fd27ecf5d964e525514f2bbad7f2eff3
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed Jun 2 04:57:41 2010 +0000
+
+    Turned off magic quotes gpc permanently
+
+commit e43a194f9d3df955f3618732cd8e2c39d3dc6171
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 30 20:47:25 2010 +0000
+
+    ChangeLog updated
+
+commit afac05acadd982300e27e296cb746a06104d3f85
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 30 20:26:43 2010 +0000
+
+    Patch by Chakra applied : Breadcrumb Submenu
+
+commit 53e92c9441dc02298e186cc0ebf5d6f4c12fef23
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 30 20:06:41 2010 +0000
+
+    Fixed a bug in pagesettings.lib.php
+
+commit f7010c484f516fef69580733f182516654a29351
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 30 20:01:59 2010 +0000
+
+    Installed Pragyan CMS v3
+
+commit ab07135aa685a2124c81929014437925460c09cd
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sat May 29 20:30:43 2010 +0000
+
+    Escaping all form inputs
+
+commit 76b474d3e757cef00590bfc54ab038c68d747802
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Thu May 27 04:46:19 2010 +0000
+
+    Making a bit secure against SQL attacks
+
+commit 2d1b9fc57905d3a0008ab3fc3f58217b3828000a
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Wed May 26 08:25:20 2010 +0000
+
+    Adding Developer Notes and Changelog
+
+commit 1f7a90fcc9674252d76f381ee213a0d6b09ba752
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon May 24 17:23:13 2010 +0000
+
+    Reloading INSTALL Folder
+
+commit 365031a89a14da61e4c616b97874e9cf76054282
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Mon May 24 17:17:28 2010 +0000
+
+    Deleting INSTALL folder. Heirarchy messed.
+
+commit 3b3f6a0adc32638967e9eddfbfba611d329901fc
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 23 22:08:22 2010 +0000
+
+    Adding Modules
+
+commit 69113c257e35c513a092bbd46f402b1fddcbf2a5
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 23 21:42:18 2010 +0000
+
+    Adding Templates
+
+commit c9529b1872e2033a869406d8ec7c8c41604894e9
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 23 21:03:48 2010 +0000
+
+    Adding core libraries
+
+commit beb838d4e79bd94e9876a8967efcbc9887cd38ca
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 23 20:56:18 2010 +0000
+
+    Adding some more files
+
+commit 69e8a07cac461240500e7d481ed9228b514a30cc
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 23 20:51:19 2010 +0000
+
+    Adding top directories
+
+commit d6ac2485a72f8e482d3c50587d0105cc6786c998
+Author: Abhishek Srivastava <i.abhi27@gmail.com>
+Date:   Sun May 23 19:27:54 2010 +0000
+
+    Deleting the old Repo
+
+commit 15c1712ccea0b0db7fc9d4bc015e08b474418c2c
+Author: sahilahuja <sahilahuja@gmail.com>
+Date:   Tue Mar 18 18:57:23 2008 +0000
+
+    Added project

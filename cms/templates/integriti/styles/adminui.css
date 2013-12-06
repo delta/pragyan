@@ -1,0 +1,95 @@
+/**
+ * Admin User Interface generic styling
+ */
+
+table.pragyan_fulltable {
+	width : 100%;
+}
+
+/**
+ * Admin User Interface CSS Styling
+ */
+
+div.articlecomment { font-size : 100%; border : 1px solid #B7CAF6; margin : 5px; padding : 5px; float: left; width: 90%;}
+span.articlecomment_info { font-size : 90%; font-style : italic; }
+a.commentdelete img { float: right; }
+
+span.pragyangallery {margin:10px;}
+
+div.formfieldextrainfo {border : 1px solid #B7CAF6; text-align : center;  }
+div.formfieldextrainfo span {font-style : italic; font-weight : normal;}
+div.formfieldred {border-color : #FF0000; background-color : #E9C1BF; font-weight : bold; text-align : center; }
+div.formfieldgreen {border-color : #00FF00; background-color : #ABEABF;text-align : center; }
+div.formfieldinfo { background-color : #9FC5E2;text-align : center; }
+/**
+ * For Table
+ */
+table {display:table; ; margin:15px 0; padding:2px; border:1px solid; font-size:100%;}
+tr {display:table-row;}
+th, td {display: table-cell; border:1px solid rgba(77,77,77,0.3); background-color:#f7f5f2;margin:0; padding:5px; vertical-align:top; text-align:left;}
+th {background:#DEDFDA; text-align:center; color:#5F5F5F; font-weight:bold;}
+
+/**
+ *For Icons Panel
+ */
+fieldset > a:hover{
+border-bottom:1px solid #344547;
+}
+div#tabBar > table > tbody > tr > td {
+border-radius:	5px;
+-moz-border-radius:	5px;
+-webkit-border-radius:	5px;
+vertical-align:middle;
+min-width:150px;
+}
+div#tabBar > table > tbody > tr > td > a{
+
+}
+table.iconspanel {
+width: 100%;
+}
+
+table.iconspanel > tbody > tr > td:hover{
+background-color: #336699;
+border-bottom:1px black solid;
+border-right:1px black solid;
+}
+table.iconspanel > tbody > tr > td:hover > a > div{
+color:white;
+}
+
+table.iconspanel img {
+border : none;
+}
+table.iconspanel td {
+margin:4px;
+border-radius:	5px;
+-moz-border-radius:	5px;
+-webkit-border-radius:	5px;
+text-align : center;
+vertical-align : middle;
+
+}
+table.iconspanel td:hover {
+text-align : center;
+vertical-align : middle;
+cursor : pointer;
+}
+table.iconspanel td a {
+text-decoration : none;
+}
+
+/**
+ *For Article
+ */
+input, textarea, select {font-family : Verdana, Arial, Helvetica, sans-serif;font-size : 10px;color : #555;background-color : #f1f1f1;border : 1px solid #ccc;margin : 2px;}
+input[type='image'] { /*Overrding for images */ background-color : inherit !important; border : none !important; }
+input[disabled], select[disabled], textarea[disabled] {background-color : #cecece;}
+#cklowerpanel .tbl2 {font-size : 11px;color : #555;background-color : #f1f1f1;padding : 4px;}
+
+/**
+ *For Profile Image
+ */
+img#profileimg { border : solid 2px #CCC; padding : 5px; }
+
+

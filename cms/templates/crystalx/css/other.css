@@ -1,0 +1,60 @@
+div#pragyan_banner {
+	background : transparent url('../../common/images/pragyancms/cms_logo_banner.jpg') no-repeat;
+	width : 269px;
+	height : 100px;
+}
+div#pragyan_banner_footer {
+	background : transparent url('../../common/images/pragyancms/cms_powerd_small') no-repeat;
+	width : 96px;
+	height : 35px;
+	float : right;
+	margin-right : 270px;
+}
+
+
+/**
+*For action bar
+*/
+
+div#cms-actionbarModule, div#cms-actionbarPage{
+	background-color: transparent;
+	font-size: x-small;
+	display: inline;
+	float: right;
+	position: relative;
+	}
+.cms-actionbarPageItem, .cms-actionbarModuleItem{
+	border : none;
+	}
+.cms-actionbarPageItem:hover , .cms-actionbarModuleItem:hover {
+	background-color: #E5E5EE;
+	    border-radius: 15px 15px 15px 15px;
+        -moz-border-radius: 15px 15px 15px 15px;
+        -webkit-border-radius: 15px 15px 15px 15px;
+
+	}
+.cms-actionbarPageItem *:hover , .cms-actionbarModuleItem *:hover {
+	background-color: #E5E5EE;
+    border-radius: 15px 15px 15px 15px;
+        -moz-border-radius: 15px 15px 15px 15px;
+        -webkit-border-radius: 15px 15px 15px 15px;
+
+}
+
+div#cms-breadcrumb { width : 100%; height : 20px;  }
+div#cms-breadcrumbsubmenu { width : 100%; height : 20px; }
+div#cms-breadcrumb li { float : left; margin-left : 20px; } 
+div#cms-breadcrumbsubmenu li { float : left; margin-left : 20px; } 
+
+
+.cms-actionbarPageItem, .cms-actionbarModuleItem{ padding: 0px 5px 0px 5px;  }
+
+
+
+div.cms-menu { margin: 0pt -10px 15px }
+div.cms-menuhead {padding: 13px 15px 14px;font-size:120%; font-weight:bold; line-height:100%; background: #A0B9F3 url(../design/col_title_bg.gif) repeat-y scroll 0pt 0pt;margin : 0 -10px 15px; }
+div.cms-menuitem {margin:4px 16pt; padding:0; border-bottom:1px solid #E0E8FA;}
+div.cms-menuitem {display:block; padding:3px 0 3px 22px; background:url("../design/ico_archive.gif") 5px 6px no-repeat; text-decoration:none;}
+div.cms-menuitem:hover {background-color:#D3DFF8; color:#192666;}
+#col ul#category li#category-active a {background:#E0E8FA url("../design/ico_archive2.gif") 5px 50% no-repeat; font-weight:bold;}
+

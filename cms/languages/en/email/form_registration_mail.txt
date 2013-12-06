@@ -1,0 +1,17 @@
+Subject: {WEBSITE} {FORMNAME} Registration
+Dear {NAME},
+
+You have successfully registered for {FORMNAME} in {WEBSITE}.
+{INFO}
+{KEY}
+
+Regards,
+Administrator
+{WEBSITE} ({DOMAIN})
+
+--------------------------------------------------------------------------
+This is an auto-generated email. Please do not reply to it as this email
+address is not monitored.
+This mail was sent because you or someone registered on {DOMAIN}
+with this mail id. Please ignore the mail otherwise.
+
