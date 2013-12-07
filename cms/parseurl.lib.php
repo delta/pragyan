@@ -44,7 +44,7 @@ if(!defined('__PRAGYAN_CMS'))
 		if($urlPieces[$i] != "") {
 			$selectString.=", node".$i.".page_id AS pageid".$i;
 			$fromString.=", `$pagesTable` as node".$i;
-			$whereString.=" and node".$i.".page_parentid = IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id) and node".$i.".page_name='".$urlPieces[$i]."'";
+			$whereString.=" and node".$i.".page_parentid = IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id) and node".$i.".page_name='".mysql_real_escape_string($urlPieces[$i])."'";
 	  }
 	}
   	$pageid_query = $selectString.$fromString.$whereString;
