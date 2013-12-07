@@ -62,3 +62,22 @@ function deleteEvent(eventid) {
 function showEventsMap(events_data){
 	
 }
+
+//Test... (Should be changed)
+function confirmParticipant(userid,eventid){
+	var option = confirm("Are you sure?");
+	if(option == true){
+		var ajaxReq = $.ajax({
+			type:"POST",
+			dataType :"html",
+			url:"./+qa&subaction=confirmParticipant",
+			data:{
+				userid:userid,
+				eventid:eventid,
+			}
+		});
+		ajaxReq.done(function(){
+			cmsShow("info","Participant Added.");
+		});
+	}
+}

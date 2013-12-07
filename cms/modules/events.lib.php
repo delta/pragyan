@@ -110,10 +110,30 @@ class events implements module,fileuploadable {
 		return "hello";
 	}
 	public function actionQa(){
-		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
-		$moduleComponentId=$this->moduleComponentId;
-		$userId=$this->userId;
-		return "hello";
+			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
+			$moduleComponentId=$this->moduleComponentId;
+			$userId=$this->userId;
+			require_once("$sourceFolder/$moduleFolder/events/events_common1.php");
+			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+			if(isset($_GET['subaction'])){
+				if($_GET['subaction']=="viewEvent"){
+					$eventId=trim(escape($_POST['eventId']));
+					if(!empty($eventId)){
+						return eventParticipants($moduleComponentId,$eventId);
+					}
+				}
+			else if($_GET['subaction'] == "confirmParticipant"){
+				$confirmUserid = trim(escape($_POST['userid']));
+				$confirmEventId = trim(escape($_POST['eventid']));
+				if(!empty($userId)){
+					return confirmParticipation($moduleComponentId,$confirmEventId,$confirmUserid);
+				}
+			}
+		}
+		else{
+			//return smartTableTest($moduleComponentId);
+			return displayQA($moduleComponentId);
+		}
 	}
 	public function actionPr(){
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
