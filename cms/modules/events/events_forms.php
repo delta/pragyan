@@ -139,6 +139,56 @@ FORM;
 return $editForm;
 }
 
+function addNewProcurement(){
+global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+
+//displayinfo($scriptFolder);					
+
+$addForm=<<<FORM
+	<script src="$scriptFolder/jquery.js"></script>
+	<script src="$scriptFolder/events.js"></script>
+	<form method="post" id="addProcurementForm" enctype="multipart/form-data" action="./+ochead">
+	<table>
+	<tbody>
+		<tr><th><label for="eventName">Event name</label></th>	
+		<td><select>
+FORM;
+		$array=mysql_query("SELECT `event_name` FROM `events_details`");		
+		while($row = mysql_fetch_assoc($array)) {
+		$addForm.="<option value={$row['event_name']}>{$row['event_name']}</option>";
+		}
+$addForm.=<<<FORM
+		</select>
+
+		<tr><th><label for="eventName">Procurement name</label></th>	
+		<td><select>
+FORM;
+		$array=mysql_query("SELECT `event_name` FROM `events_details`");
+		while($row = mysql_fetch_assoc($array)) {
+		$addForm.="<option value={$row['event_name']}>{$row['event_name']}</option>";
+		}
+$addForm.=<<<FORM
+		</select>
+		
+		<tr><th><label for="Quantity">Quantity</label></th>		
+		<td><input type="text" decsription="quantity" name="quantity" id="quantity">
+
+	</tbody>
+	</table>
+		<script>
+			console.log("checking");
+			if (typeof isValid != 'undefined') {
+				console.log("DEFINED");
+				cmsShow("info", "Procurement successfully added");
+			}
+
+		</script>
+		<input type='button' onclick="submitAddProcurementData();" id="Add" name="Add" value='Add'><br />
+	</form>
+FORM;
+return $addForm;
+}
 
 
 ?>

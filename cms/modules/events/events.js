@@ -81,3 +81,26 @@ function confirmParticipant(userid,eventid){
 		});
 	}
 }
+
+function deleteProcurement(eventid) {
+	var r=confirm("Are you sure?");
+	if (r==true){
+		var ajx=$.ajax({
+			type: "POST",
+			url: "./+ochead&subaction=deleteProcurement",
+			data: {
+				eventId: eventid,
+			},
+			dataType: "html"
+		});
+		ajx.done(function(msg) {
+			if(msg=="Success") {
+				window.location = ("./+ochead&subaction=viewAll");
+				cmsShow("info", "Procurement deleted");
+			}
+			else{
+				cmsShow('error', "Error");
+			}
+		});
+	}
+}

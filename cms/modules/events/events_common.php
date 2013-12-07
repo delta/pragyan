@@ -33,9 +33,11 @@ function validateEventData($pageModuleComponentId){
 		}
 		//Query to insert into the db
 		$insertQuery="INSERT INTO `events_details` (`event_name`, `event_date`, `event_start_time`, `event_end_time`, "
-					."`event_venue`, `event_desc`, `event_last_update_time`, `event_image`, `page_moduleComponentId`, "
-					."`event_loc_x`, `event_loc_y`) VALUES ('{$_POST['eventName']}', '{$_POST['eventDate']}', '{$_POST['eventStartTime']}', '{$_POST['eventEndTime']}', "
-					."'{$_POST['eventVenue']}', '{$_POST['eventDesc']}', CURRENT_TIME(), '', '{$pageModuleComponentId}', '{$_POST['lng']}', '{$_POST['lat']}');";
+					."`event_venue`, `event_desc`, `event_last_update_time`, `event_image`, `page_moduleComponentId`, `event_loc_x`, `event_loc_y`) "
+					."VALUES ('{$_POST['eventName']}', '{$_POST['eventDate']}', "
+					."'{$_POST['eventStartTime']}', '{$_POST['eventEndTime']}', "
+					."'{$_POST['eventVenue']}', '{$_POST['eventDesc']}', CURRENT_TIME(), '', '{$pageModuleComponentId}', "
+					."'{$_POST['lng']}', '{$_POST['lat']}');";
 		$insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
 		echo "Valid";
 	}
@@ -150,7 +152,8 @@ function getEventsJSON($pmcid){
 		$lastdate=$_GET['lud'];
 	$prod=$page*$ipp;
 	//Query to select all events
-	$eventsQuery="SELECT * FROM `events_details` WHERE '{$lastdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'" //event_date>='{$date1}' AND  <---add to query later
+	$eventsQuery="SELECT * FROM `events_details` "
+				."WHERE '{$lastdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'" //event_date>='{$date1}' AND  <---add to query later
 				."ORDER BY event_date ASC LIMIT {$prod}, {$ipp};";
 	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
 	while($row=mysql_fetch_array($eventsRes)){
@@ -186,8 +189,6 @@ function deleteEvent($eventid, $pmcid){
 }
 
 
-//~~~~~~~~~~~~~~~~   QA   ~~~~~~~~~~~~~~~~~
-
 function displayQA($pmcid){
 	$selectEventQuery = "SELECT `event_id`,`event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' ORDER BY `event_name`";
 	$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
@@ -212,7 +213,8 @@ function eventParticipants($pmcId,$eventId){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 //	$selectNameQuery="SELECT `events_form`.`form_id`,`events_form`.`event_id`,`form_elementdata`.`form_elementdata`,
-//	`form_elementdata`.`page_moduleComponentId`,`pragyancms_users`.`user_id`,`pragyancms_users`.`user_name` FROM `form_elementdata`,`events_form`,`pragyancms_users` WHERE `form_elementdata`.`page_moduleComponentId`=`form_id`"
+//	`form_elementdata`.`page_moduleComponentId`,`pragyancms_users`.`user_id`,`pragyancms_users`.`user_name` FROM "
+//	."`form_elementdata`,`events_form`,`pragyancms_users` WHERE `form_elementdata`.`page_moduleComponentId`=`form_id`"
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	global $STARTSCRIPTS;
 	$smarttable = smarttable::render(array('reg_users_table'),null);
@@ -282,5 +284,75 @@ function confirmParticipation($pmcid,$eventId,$userId){
 	return "Successfully deleted.";
 }
 
+function selectSubactionProcurement(){
+        $subactionForm=<<<SFORM
+        <p>
+                Select an option:
+        </p>
+        <form method="GET"  action="./+ochead&subaction=viewAll">
+                <input type="submit" name="" value="VIEW ALL"/>
+        </form>
+        <form method="GET"  action="./+ochead&subaction=addProcurement">
+                <input type="submit" name="" value="ADD PROCUREMENT"/>
+        </form>
+SFORM;
+return $subactionForm;
+}
+
+function getAllProcurements($pmcid){
+        //Query to select all entries
+        global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+        $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+        $selectQuery="SELECT * FROM `events_event_procurement` WHERE `page_moduleComponentId`={$pmcid};";
+        $insertRes=mysql_query($selectQuery) or displayerror(mysql_error());
+        global $STARTSCRIPTS;
+        $smarttablestuff = smarttable::render(array('table_procurement_details'),null);
+        $STARTSCRIPTS .="initSmartTable();";
+$procurementDetails =<<<TABLE
+        <script src="$scriptFolder/events.js"></script>
+        <script src="$scriptFolder/jquery.js"></script>
+        $smarttablestuff
+        <table class="display" id="table_event_details" width="100%" border="1">
+        <thead>
+                <tr>
+                <th>Event ID</th>
+                <th>Procurement</th>
+                <th>Quantity</th>
+                </tr>
+        </thead>
+TABLE;
+
+while($res = mysql_fetch_assoc($insertRes)) {
+        $procurementDetails .=<<<TR
+          <tr>        
+           <td>{$res['event_id']}</td>
+           <td>{$res['procurement_id']}</td>
+           <td>{$res['quantity']}</td>
+           <td>
+                <button onclick="deleteProcurement({$res['event_id']});" value="DELETE" />DELETE</button>
+                <form method="POST"  action="./+ochead&subaction=editProcurement">
+                        <input type="submit" name="" value="EDIT"/>
+                        <input type="hidden" name="eventId" value="{$res['event_id']}" />
+                </form>
+                </td>
+          </tr>
+TR;
+  }
+  $eventDetails .=<<<TABLEEND
+        </table>
+TABLEEND;
+  return $procurementDetails;
+
+}
+
+function deleteProcurement($eventid, $pmcid){
+        $deleteQuery="DELETE FROM `events_event_procuement` WHERE `event_id`='{$eventid}' AND `page_moduleComponentId`='{$pmcid}'";
+        $deletetRes=mysql_query($deleteQuery) or displayerror(mysql_error());
+        if ($deletetRes==1) {
+                echo("Success");
+        }
+        else echo("error");
+        exit();
+}
 
 ?>

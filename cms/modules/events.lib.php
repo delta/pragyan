@@ -101,7 +101,30 @@ class events implements module,fileuploadable {
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 		$moduleComponentId=$this->moduleComponentId;
 		$userId=$this->userId;
-		return "hello";
+		require_once("$sourceFolder/$moduleFolder/events/events_common.php");
+		require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+		if(isset($_POST['eventName'])){
+			validateEventData($moduleComponentId);
+			exit();
+		}
+		if(isset($_GET['subaction'])){
+			if($_GET['subaction']=="viewAll"){
+				return getAllProcurements($moduleComponentId);
+			}
+			if($_GET['subaction']=="addProcurement"){
+				return addNewProcurement();
+			}
+			if($_GET['subaction']=="deleteProcurement"){
+				return delete($_POST['eventId'], $moduleComponentId);
+				exit();
+			}
+			if($_GET['subaction']=="editEvent"){
+				return "EDITING";
+			}
+		}
+		else{
+			return selectSubactionProcurement();
+		}
 	}
 	public function actionOcteam(){
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
@@ -110,18 +133,18 @@ class events implements module,fileuploadable {
 		return "hello";
 	}
 	public function actionQa(){
-			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
-			$moduleComponentId=$this->moduleComponentId;
-			$userId=$this->userId;
-			require_once("$sourceFolder/$moduleFolder/events/events_common1.php");
-			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
-			if(isset($_GET['subaction'])){
-				if($_GET['subaction']=="viewEvent"){
-					$eventId=trim(escape($_POST['eventId']));
-					if(!empty($eventId)){
-						return eventParticipants($moduleComponentId,$eventId);
-					}
+		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
+		$moduleComponentId=$this->moduleComponentId;
+		$userId=$this->userId;
+		require_once("$sourceFolder/$moduleFolder/events/events_common.php");
+		require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+		if(isset($_GET['subaction'])){
+			if($_GET['subaction']=="viewEvent"){
+				$eventId=trim(escape($_POST['eventId']));
+				if(!empty($eventId)){
+					return eventParticipants($moduleComponentId,$eventId);
 				}
+			}
 			else if($_GET['subaction'] == "confirmParticipant"){
 				$confirmUserid = trim(escape($_POST['userid']));
 				$confirmEventId = trim(escape($_POST['eventid']));
@@ -142,29 +165,23 @@ class events implements module,fileuploadable {
 		return "hello";
 	}
 
+
 	public static function getFileAccessPermission($pageId,$moduleComponentId,$userId, $fileName)
 	{
 		return getPermissions($userId, $pageId, "view");
 	}
-
 	public static function getUploadableFileProperties(&$fileTypesArray,&$maxFileSizeInBytes)
 	{
 		$fileTypesArray = array('jpg','jpeg','png','doc','pdf','gif','bmp','css','js','html','xml','ods','odt','oft','pps','ppt','t\
 			ex','tiff','txt','chm','mp3','mp2','wave','wav','mpg','ogg','mpeg','wmv','wma','wmf','rm','avi','gzip','gz','rar','bmp','psd','bz2','tar','zip','swf','fla','flv','eps','xcf','xls','exe','7z');
 		$maxFileSizeInBytes = 30*1024*1024;
 	}
-
-
-
-
 	public function deleteModule($moduleComponentId) {
 		return true;
 	}
 	public function createModule($moduleComponentId) {
     ///No initialization
 	}
-
-
 	public function copyModule($moduleComponentId, $newId) {
 		return true;
 	}
