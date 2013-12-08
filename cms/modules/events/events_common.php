@@ -134,7 +134,17 @@ return $subactionForm;
 }
 
 function showEventMap(){
-	return "MAPS";
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+	require_once("$sourceFolder/$moduleFolder/events/googleMapsConfig.php");
+	$maps=<<<MAP
+		<script src="$scriptFolder/jquery.js"></script>
+		<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
+		<script src="$scriptFolder/googleMaps.js"></script>
+		<div id="allEventGoogleMap" style="width:500px;height:380px;"></div>
+
+MAP;
+	return $maps;
 }
 
 function getEventsJSON($pmcid){
