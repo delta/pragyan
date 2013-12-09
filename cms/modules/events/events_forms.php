@@ -152,7 +152,7 @@ $addForm=<<<FORM
 	<table>
 	<tbody>
 		<tr><th><label for="eventName">Event name</label></th>	
-		<td><select>
+		<td><select id="eventName">
 FORM;
 		$array=mysql_query("SELECT `event_name` FROM `events_details`");		
 		while($row = mysql_fetch_assoc($array)) {
@@ -161,8 +161,8 @@ FORM;
 $addForm.=<<<FORM
 		</select>
 
-		<tr><th><label for="eventName">Procurement name</label></th>	
-		<td><select>
+		<tr><th><label for="procurementName">Procurement name</label></th>	
+		<td><select id="procurementName">
 FORM;
 		$array=mysql_query("SELECT `event_name` FROM `events_details`");
 		while($row = mysql_fetch_assoc($array)) {
