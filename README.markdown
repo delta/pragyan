@@ -30,4 +30,7 @@ Contributors
 - Dinesh Prashanth
 - Siddhanth Sanyam
 - Shriram Venkataramana (vshriram93)
+- Sriram Sundarraj (srirams6)
+- Amal (amal1293)
+- Sarwesh Krishnan (baxiz)
 - (this could be you...)
