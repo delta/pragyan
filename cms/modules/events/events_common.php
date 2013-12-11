@@ -411,11 +411,11 @@ function deleteProcurement($eventname, $pmcid){
 		$cnt=1;
 		while($res = mysql_fetch_assoc($selectRes)) {		
 		if($cnt==$eventname){
+		$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`-{$res['quantity']} WHERE `procurement_name`='{$res['procurement_name']}'";	
+		$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
 		$deleteQuery="DELETE FROM `events_event_procurement` WHERE `event_name`='{$res['event_name']}' AND `procurement_name`='{$res['procurement_name']}'";
         $deletetRes=mysql_query($deleteQuery) or displayerror(mysql_error());
-			
-		$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`-{$res['quantity']} WHERE `procurement_name`='{$res['procurement_name']}'";	}
-		$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+		}
 		$cnt++;
 		}
 		if ($deletetRes==1) {
