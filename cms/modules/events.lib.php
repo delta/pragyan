@@ -107,18 +107,25 @@ class events implements module,fileuploadable {
                         validateProcurementData($moduleComponentId);
                         exit();
                 }
+                if(isset($_POST['newProc'])){
+                        validateNewProcurement($moduleComponentId);
+                        exit();
+                }
                 if(isset($_GET['subaction'])){
                         if($_GET['subaction']=="viewAll"){
                                 return getAllProcurements($moduleComponentId);
                         }
-                        if($_GET['subaction']=="addProcurement"){
+                        if($_GET['subaction']=="addEventProcurement"){
                                 return addNewProcurement();
+                        }
+						if($_GET['subaction']=="addProcurement"){
+                                return addNewProc();
                         }
                         if($_GET['subaction']=="deleteProcurement"){
                                 return deleteProcurement($_POST['eventname'], $moduleComponentId);
                                 exit();
                         }
-                        if($_GET['subaction']=="editEvent"){
+                        if($_GET['subaction']=="editProcurement"){
                                 return "EDITING";
                         }
                 }

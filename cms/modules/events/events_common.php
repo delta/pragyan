@@ -297,7 +297,7 @@ function confirmParticipation($pmcid,$eventId,$userId){
 function validateProcurementData($pageModuleComponentId){
         $isValid=true;
         
-        if($_POST['quantity']=="" && is_numeric($_POST['quantity'])){
+        if($_POST['quantity']=="" || !(is_numeric($_POST['quantity']))){
                 $isValid=false;
         }
 
@@ -310,8 +310,32 @@ function validateProcurementData($pageModuleComponentId){
                 $insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
                              ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['quantity']}', '{$pageModuleComponentId}')";
                 $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
-                echo "Valid";
+  
+				$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`+ {$_POST['quantity']} WHERE `procurement_name`='{$_POST['procurementName']}'";
+				$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+				echo "Valid";
+		}
+        else echo "Invalid";
+        exit();
+}
+
+function validateNewProcurement($pageModuleComponentId){
+		$isValid=true;
+        if($_POST['newProc']==""){
+                $isValid=false;
         }
+
+        if($isValid){
+                //insert data
+                foreach ($_POST as $postValue){
+                        $postValue=escape($postValue);
+                }
+                //Query to insert into the db
+                $insertQuery="INSERT INTO `events_procurements` (`procurement_id`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
+                             ."VALUES (NULL, '{$_POST['newProc']}', 0, '{$pageModuleComponentId}')";
+                $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+                echo "Valid";
+		}
         else echo "Invalid";
         exit();
 }
@@ -321,11 +345,14 @@ function selectSubactionProcurement(){
         <p>
                 Select an option:
         </p>
-        <form method="GET"  action="./+ochead&subaction=viewAll">
-                <input type="submit" name="" value="VIEW ALL"/>
-        </form>
         <form method="GET"  action="./+ochead&subaction=addProcurement">
                 <input type="submit" name="" value="ADD PROCUREMENT"/>
+        </form>
+		<form method="GET"  action="./+ochead&subaction=addEventProcurement">
+                <input type="submit" name="" value="ADD EVENT PROCUREMENTS"/>
+        </form>
+        <form method="GET"  action="./+ochead&subaction=viewAll">
+                <input type="submit" name="" value="VIEW ALL"/>
         </form>
 SFORM;
 return $subactionForm;
@@ -336,41 +363,42 @@ function getAllProcurements($pmcid){
         global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
         $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
         $selectQuery="SELECT * FROM `events_event_procurement` WHERE `page_moduleComponentId`={$pmcid};";
-        $insertRes=mysql_query($selectQuery) or displayerror(mysql_error());
-        global $STARTSCRIPTS;
-        $smarttablestuff = smarttable::render(array('table_procurement_details'),null);
-        $STARTSCRIPTS .="initSmartTable();";
+		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+
 $procurementDetails =<<<TABLE
         <script src="$scriptFolder/events.js"></script>
         <script src="$scriptFolder/jquery.js"></script>
-        $smarttablestuff
-        <table class="display" id="table_event_details" width="100%" border="1">
+
+        <table class="display" width="100%" border="1">
         <thead>
                 <tr>
-                <th>Event Name</th>
+				<th>Serial no.</th>
+				<th>Event Name</th>
                 <th>Procurement</th>
                 <th>Quantity</th>
                 </tr>
         </thead>
 TABLE;
-
-while($res = mysql_fetch_assoc($insertRes)) {
-        $procurementDetails .=<<<TR
+$cnt=1;
+while($res = mysql_fetch_assoc($selectRes)) {
+$procurementDetails .=<<<TR
           <tr>        
+		   <td>{$cnt}</td>
            <td>{$res['event_name']}</td>
            <td>{$res['procurement_name']}</td>
            <td>{$res['quantity']}</td>
-           <td>
-                <button onclick="deleteProcurement({$res['event_name']});" value="DELETE" />DELETE</button>
-
+		   <td>
+				<button onclick="deleteProcurement({$cnt});" value="DELETE" />DELETE</button>
+				
                 <form method="POST"  action="./+ochead&subaction=editProcurement">
-                        <input type="submit" name="" value="EDIT"/>
+                <input type="submit" name="" value="EDIT"/>
                 </form>
-                </td>
+           </td>
           </tr>
 TR;
+  $cnt++;
   }
-  $eventDetails .=<<<TABLEEND
+$procurementDetails .=<<<TABLEEND
         </table>
 TABLEEND;
   return $procurementDetails;
@@ -378,9 +406,19 @@ TABLEEND;
 }
 
 function deleteProcurement($eventname, $pmcid){
-        $deleteQuery="DELETE FROM `events_event_procuement` WHERE `event_name`='{$eventname}' AND `page_moduleComponentId`='{$pmcid}'";
+		$selectQuery="SELECT * FROM `events_event_procurement` ";
+		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+		$cnt=1;
+		while($res = mysql_fetch_assoc($selectRes)) {		
+		if($cnt==$eventname){
+		$deleteQuery="DELETE FROM `events_event_procurement` WHERE `event_name`='{$res['event_name']}' AND `procurement_name`='{$res['procurement_name']}'";
         $deletetRes=mysql_query($deleteQuery) or displayerror(mysql_error());
-        if ($deletetRes==1) {
+			
+		$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`-{$res['quantity']} WHERE `procurement_name`='{$res['procurement_name']}'";	}
+		$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+		$cnt++;
+		}
+		if ($deletetRes==1) {
                 echo("Success");
         }
         else echo("error");

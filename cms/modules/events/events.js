@@ -92,6 +92,29 @@ function submitAddProcurementData() {
         });
         ajx.done(function(msg) {
                 if(msg=="Valid") {
+                        window.location = ("./+ochead&subaction=addEventProcurement");
+                        var isAdded=1;
+                        window.onload(function(){
+                                cmsShow("info", "Procurement successfully added");
+                        });
+                }
+                else{
+                        cmsShow('error', "Invalid data");
+                }
+        });
+}
+
+function submitAddProc() {
+        var ajx=$.ajax({
+                type: "POST",
+                url: "./+ochead",
+                data: {
+                        newProc: document.getElementById("newProc").value,
+                }, 
+                dataType: "html"
+        });
+        ajx.done(function(msg) {
+                if(msg=="Valid") {
                         window.location = ("./+ochead&subaction=addProcurement");
                         var isAdded=1;
                         window.onload(function(){

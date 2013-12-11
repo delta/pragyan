@@ -164,9 +164,9 @@ $addForm.=<<<FORM
                 <tr><th><label for="procurementName">Procurement name</label></th>        
                 <td><select id="procurementName">
 FORM;
-                $array=mysql_query("SELECT `event_name` FROM `events_details`");
+                $array=mysql_query("SELECT `procurement_name` FROM `events_procurements`");
                 while($row = mysql_fetch_assoc($array)) {
-                $addForm.="<option value={$row['event_name']}>{$row['event_name']}</option>";
+                $addForm.="<option value={$row['procurement_name']}>{$row['procurement_name']}</option>";
                 }
 $addForm.=<<<FORM
                 </select>
@@ -186,6 +186,24 @@ $addForm.=<<<FORM
                 </script>
                 <input type='button' onclick="submitAddProcurementData();" id="Add" name="Add" value='Add'><br />
         </form>
+FORM;
+return $addForm;
+}
+
+function addNewProc(){
+global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+
+//displayinfo($scriptFolder);                                        
+
+$addForm=<<<FORM
+        <script src="$scriptFolder/jquery.js"></script>
+        <script src="$scriptFolder/events.js"></script>
+        <form method="post" id="addProcForm" enctype="multipart/form-data" action="./+ochead">
+                <tr><th><label for="procurement_name">Procurement name</label></th>        
+                <td><input type="text" description="newProc" name="newProc" id="newProc" /></td>
+        <input type='button' onclick="submitAddProc();" id="Add" name="Add" value='Add'><br />
+		</form>
 FORM;
 return $addForm;
 }
