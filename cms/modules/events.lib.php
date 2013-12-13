@@ -137,7 +137,19 @@ class events implements module,fileuploadable {
                 global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
                 $moduleComponentId=$this->moduleComponentId;
                 $userId=$this->userId;
-                return "hello";
+				require_once("$sourceFolder/$moduleFolder/events/events_common.php");
+				
+				if(isset($_GET['subaction'])){
+                        if($_GET['subaction']=="viewEventWise"){
+                                return viewEventWise();
+                        }
+                        if($_GET['subaction']=="viewProcurementWise"){
+                                return viewProcurementWise();
+                        }
+                }
+                else{
+                        return selectSubactionOcTeam();
+                }
         }
         public function actionQa(){
                 global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;

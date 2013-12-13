@@ -194,8 +194,6 @@ function addNewProc(){
 global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 
-//displayinfo($scriptFolder);                                        
-
 $addForm=<<<FORM
         <script src="$scriptFolder/jquery.js"></script>
         <script src="$scriptFolder/events.js"></script>

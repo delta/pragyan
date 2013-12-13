@@ -425,4 +425,99 @@ function deleteProcurement($eventname, $pmcid){
         exit();
 }
 
+function selectSubactionOcTeam(){
+        $subactionForm=<<<SFORM
+        <p>
+                Select an option:
+        </p>
+        <form method="GET"  action="./+octeam&subaction=viewEventWise">
+                <input type="submit" name="" value="VIEW EVENT WISE"/>
+        </form>
+		<form method="GET"  action="./+octeam&subaction=viewProcurementWise">
+                <input type="submit" name="" value="VIEW PROCUREMENT WISE"/>
+        </form>
+SFORM;
+return $subactionForm;
+}
+
+function viewEventWise(){
+        //Query to select all entries
+        global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+        $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+        $selectQuery="SELECT * FROM `events_event_procurement`;";
+		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+
+$procurementDetails =<<<TABLE
+        <script src="$scriptFolder/events.js"></script>
+        <script src="$scriptFolder/jquery.js"></script>
+
+        <table class="display" width="100%" border="1">
+        <thead>
+                <tr>
+				<th>Serial no.</th>
+				<th>Event Name</th>
+                <th>Procurement</th>
+                <th>Quantity</th>
+                </tr>
+        </thead>
+TABLE;
+$cnt=1;
+while($res = mysql_fetch_assoc($selectRes)) {
+$procurementDetails .=<<<TR
+          <tr>        
+		   <td>{$cnt}</td>
+           <td>{$res['event_name']}</td>
+           <td>{$res['procurement_name']}</td>
+           <td>{$res['quantity']}</td>
+          </tr>
+TR;
+  $cnt++;
+  }
+$procurementDetails .=<<<TABLEEND
+        </table>
+TABLEEND;
+  return $procurementDetails;
+}	
+
+function viewProcurementWise(){
+        //Query to select all entries
+        global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+        $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+        $selectQuery="SELECT * FROM `events_procurements`;";
+		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+
+$procurementDetails =<<<TABLE
+        <script src="$scriptFolder/events.js"></script>
+        <script src="$scriptFolder/jquery.js"></script>
+
+        <table class="display" width="100%" border="1">
+        <thead>
+                <tr>
+				<th>Serial no.</th>
+				<th>Procurement Id</th>
+                <th>Procurement name</th>
+                <th>Quantity</th>
+                </tr>
+        </thead>
+TABLE;
+$cnt=1;
+while($res = mysql_fetch_assoc($selectRes)) {
+$procurementDetails .=<<<TR
+          <tr>        
+		   <td>{$cnt}</td>
+           <td>{$res['procurement_id']}</td>
+           <td>{$res['procurement_name']}</td>
+           <td>{$res['quantity']}</td>
+          </tr>
+TR;
+  $cnt++;
+  }
+$procurementDetails .=<<<TABLEEND
+        </table>
+TABLEEND;
+  return $procurementDetails;
+
+}
+
+
 ?>
