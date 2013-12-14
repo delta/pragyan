@@ -114,15 +114,19 @@ function submitAddProc() {
                 dataType: "html"
         });
         ajx.done(function(msg) {
-                if(msg=="Valid") {
+				if(msg=="Valid") {
                         window.location = ("./+ochead&subaction=addProcurement");
                         var isAdded=1;
                         window.onload(function(){
                                 cmsShow("info", "Procurement successfully added");
                         });
                 }
+				else if(msg=="Exists"){
+                        cmsShow('error', " Procurement already exists");
+                }
+				
                 else{
-                        cmsShow('error', "Invalid data or Procurement already exists");
+                        cmsShow('error', "Invalid data");
                 }
         });
 }

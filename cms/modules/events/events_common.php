@@ -330,6 +330,8 @@ function validateNewProcurement($pageModuleComponentId){
 				$selectRes=mysql_query($selectQuery);
 				if(mysql_num_rows($selectRes)==1)
 					$isValid=false;
+				echo "Exists";
+				exit();
 		}
         
 		if($isValid){
