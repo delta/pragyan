@@ -307,11 +307,12 @@ function validateProcurementData($pageModuleComponentId){
 				$_POST['procurementName']=escape($_POST['procurementName']);
 				$selectQuery = "SELECT * FROM `events_event_procurement` WHERE `event_name`='{$_POST[eventName]}' AND `procurement_name`='{$_POST[procurementName]}' ";
 				$selectRes=mysql_query($selectQuery);
-				if(mysql_num_rows($selectRes)==1)
+				if(mysql_num_rows($selectRes)==1){
 					$isValid=false;
-				echo "Procurement ".$_POST['procurementName']." already exists for event ".$_POST['eventName'].". Kindly edit in VIEW ALL if you want to change.";
-				exit();
+					echo "Procurement ".$_POST['procurementName']." already exists for event ".$_POST['eventName'].". Kindly edit in VIEW ALL if you want to change.";
+					exit();
 				}
+			 }
 		
         if($isValid){
                 //insert data
