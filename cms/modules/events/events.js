@@ -122,7 +122,7 @@ function submitAddProc() {
                         });
                 }
                 else{
-                        cmsShow('error', "Invalid data");
+                        cmsShow('error', "Invalid data or Procurement already exists");
                 }
         });
 }

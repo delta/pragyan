@@ -324,8 +324,15 @@ function validateNewProcurement($pageModuleComponentId){
         if($_POST['newProc']==""){
                 $isValid=false;
         }
-
-        if($isValid){
+		else {
+				$_POST['newProc']=escape(strtolower($_POST['newProc']));
+				$selectQuery = "SELECT `procurement_name` FROM `events_procurements` WHERE `procurement_name`='{$_POST[newProc]}' ";
+				$selectRes=mysql_query($selectQuery);
+				if(mysql_num_rows($selectRes)==1)
+					$isValid=false;
+		}
+        
+		if($isValid){
                 //insert data
                 foreach ($_POST as $postValue){
                         $postValue=escape($postValue);
@@ -528,6 +535,5 @@ TABLEEND;
   return $procurementDetails;
 
 }
-
 
 ?>
