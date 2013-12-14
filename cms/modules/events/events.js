@@ -98,9 +98,11 @@ function submitAddProcurementData() {
                                 cmsShow("info", "Procurement successfully added");
                         });
                 }
-                else{
+                else if(msg=="Invalid"){
                         cmsShow('error', "Invalid data");
                 }
+				else
+					cmsShow('error',msg);
         });
 }
 

@@ -299,8 +299,20 @@ function validateProcurementData($pageModuleComponentId){
         
         if($_POST['quantity']=="" || !(is_numeric($_POST['quantity']))){
                 $isValid=false;
+		        echo "Invalid";
+				exit();
         }
-
+		else {
+				$_POST['eventName']=escape($_POST['eventName']);
+				$_POST['procurementName']=escape($_POST['procurementName']);
+				$selectQuery = "SELECT * FROM `events_event_procurement` WHERE `event_name`='{$_POST[eventName]}' AND `procurement_name`='{$_POST[procurementName]}' ";
+				$selectRes=mysql_query($selectQuery);
+				if(mysql_num_rows($selectRes)==1)
+					$isValid=false;
+				echo "Procurement ".$_POST['procurementName']." already exists for event ".$_POST['eventName'].". Kindly edit in VIEW ALL if you want to change.";
+				exit();
+				}
+		
         if($isValid){
                 //insert data
                 foreach ($_POST as $postValue){
@@ -315,7 +327,6 @@ function validateProcurementData($pageModuleComponentId){
 				$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
 				echo "Valid";
 		}
-        else echo "Invalid";
         exit();
 }
 
@@ -323,6 +334,7 @@ function validateNewProcurement($pageModuleComponentId){
 		$isValid=true;
         if($_POST['newProc']==""){
                 $isValid=false;
+				exit();
         }
 		else {
 				$_POST['newProc']=escape(strtolower($_POST['newProc']));
