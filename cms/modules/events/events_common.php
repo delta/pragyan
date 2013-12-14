@@ -364,19 +364,23 @@ function getAllProcurements($pmcid){
         $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
         $selectQuery="SELECT * FROM `events_event_procurement` WHERE `page_moduleComponentId`={$pmcid};";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+		global $STARTSCRIPTS;
+        $smarttablestuff = smarttable::render(array('table_procurement_details'),null);
+        $STARTSCRIPTS .="initSmartTable();";
 
 $procurementDetails =<<<TABLE
         <script src="$scriptFolder/events.js"></script>
         <script src="$scriptFolder/jquery.js"></script>
-
-        <table class="display" width="100%" border="1">
+		$smarttablestuff
+        <table class="display" id="table_procurement_details" width="100%" border="1">
         <thead>
                 <tr>
 				<th>Serial no.</th>
 				<th>Event Name</th>
                 <th>Procurement</th>
                 <th>Quantity</th>
-                </tr>
+				<th></th>
+				</tr>
         </thead>
 TABLE;
 $cnt=1;
@@ -446,12 +450,15 @@ function viewEventWise(){
         $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
         $selectQuery="SELECT * FROM `events_event_procurement`;";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+		global $STARTSCRIPTS;
+        $smarttablestuff = smarttable::render(array('show_event_wise'),null);
+        $STARTSCRIPTS .="initSmartTable();";
 
 $procurementDetails =<<<TABLE
         <script src="$scriptFolder/events.js"></script>
         <script src="$scriptFolder/jquery.js"></script>
-
-        <table class="display" width="100%" border="1">
+		$smarttablestuff
+        <table class="display" id="show_event_wise" width="100%" border="1">
         <thead>
                 <tr>
 				<th>Serial no.</th>
@@ -485,12 +492,15 @@ function viewProcurementWise(){
         $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
         $selectQuery="SELECT * FROM `events_procurements`;";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+		global $STARTSCRIPTS;
+        $smarttablestuff = smarttable::render(array('show_procurement_wise'),null);
+        $STARTSCRIPTS .="initSmartTable();";
 
 $procurementDetails =<<<TABLE
         <script src="$scriptFolder/events.js"></script>
         <script src="$scriptFolder/jquery.js"></script>
-
-        <table class="display" width="100%" border="1">
+		$smarttablestuff
+        <table class="display" id="show_procurement_wise" width="100%" border="1">
         <thead>
                 <tr>
 				<th>Serial no.</th>
