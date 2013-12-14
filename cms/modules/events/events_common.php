@@ -471,7 +471,7 @@ function viewEventWise(){
         //Query to select all entries
         global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
         $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-        $selectQuery="SELECT * FROM `events_event_procurement`;";
+        $selectQuery="SELECT `event_name` FROM `events_details` ORDER BY `event_date`,`event_start_time` DESC;";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
 		global $STARTSCRIPTS;
         $smarttablestuff = smarttable::render(array('show_event_wise'),null);
@@ -492,16 +492,20 @@ $procurementDetails =<<<TABLE
         </thead>
 TABLE;
 $cnt=1;
-while($res = mysql_fetch_assoc($selectRes)) {
-$procurementDetails .=<<<TR
-          <tr>        
-		   <td>{$cnt}</td>
-           <td>{$res['event_name']}</td>
-           <td>{$res['procurement_name']}</td>
-           <td>{$res['quantity']}</td>
-          </tr>
+while($event=mysql_fetch_assoc($selectRes)) {
+	$result=mysql_query("SELECT * FROM `events_event_procurement` WHERE `event_name`={$event}");
+	while($res=mysql_fetch_assoc($result))
+	{
+		$procurementDetails .=<<<TR
+			<tr>        
+			<td>{$cnt}</td>
+			<td>{$res['event_name']}</td>
+			<td>{$res['procurement_name']}</td>
+			<td>{$res['quantity']}</td>
+			</tr>
 TR;
-  $cnt++;
+	$cnt++;
+	}
   }
 $procurementDetails .=<<<TABLEEND
         </table>
