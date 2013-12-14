@@ -340,10 +340,11 @@ function validateNewProcurement($pageModuleComponentId){
 				$_POST['newProc']=escape(strtolower($_POST['newProc']));
 				$selectQuery = "SELECT `procurement_name` FROM `events_procurements` WHERE `procurement_name`='{$_POST[newProc]}' ";
 				$selectRes=mysql_query($selectQuery);
-				if(mysql_num_rows($selectRes)==1)
+				if(mysql_num_rows($selectRes)==1){
 					$isValid=false;
-				echo "Exists";
-				exit();
+					echo "Exists";
+					exit();
+				}
 		}
         
 		if($isValid){
