@@ -107,8 +107,16 @@ class events implements module,fileuploadable {
                         validateProcurementData($moduleComponentId);
                         exit();
                 }
+				if(isset($_POST['editquantity'])){
+                        validateEditProcurementData($moduleComponentId);
+                        exit();
+                }
                 if(isset($_POST['newProc'])){
                         validateNewProcurement($moduleComponentId);
+                        exit();
+                }
+				if(isset($_POST['eventnum'])){
+                        return editProcurement($_POST['eventnum']);
                         exit();
                 }
                 if(isset($_GET['subaction'])){
@@ -119,14 +127,10 @@ class events implements module,fileuploadable {
                                 return addNewProcurement();
                         }
 						if($_GET['subaction']=="addProcurement"){
-                                return addNewProc();
+								return addNewProc();
                         }
                         if($_GET['subaction']=="deleteProcurement"){
                                 return deleteProcurement($_POST['eventname'], $moduleComponentId);
-                                exit();
-                        }
-                        if($_GET['subaction']=="editProcurement"){
-                                return "EDITING";
                         }
                 }
                 else{

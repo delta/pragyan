@@ -331,6 +331,59 @@ function validateProcurementData($pageModuleComponentId){
         exit();
 }
 
+function validateEditProcurementData($pageModuleComponentId){
+        $isValid=true;
+        
+        if($_POST['editquantity']=="" || !(is_numeric($_POST['editquantity']))){
+                $isValid=false;
+				exit();
+        }
+		else {
+				$selectQuery="SELECT * FROM `events_event_procurement`";
+				$selectRes=mysql_query($selectQuery);
+				$cnt=1;
+				while($res = mysql_fetch_assoc($selectRes)) {
+				if($cnt!=$_POST['eventnum'] &&	($_POST['procurementName']==$res['procurement_name'] && $_POST['eventName']==$res['event_name']) )
+					$isValid=false;
+				$cnt++;
+				}
+			 }
+			 
+        if($isValid){
+                //insert data
+                foreach ($_POST as $postValue){
+                        $postValue=escape($postValue);
+                }
+                //Query to insert into the db
+				$selectQuery="SELECT * FROM `events_event_procurement`";
+				$selectRes=mysql_query($selectQuery);
+				$cnt=1;
+				while($res = mysql_fetch_assoc($selectRes)) {		
+				if($cnt==$_POST['eventnum']){
+					$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`-{$res['quantity']} WHERE `procurement_name`='{$res['procurement_name']}'";	
+					$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+	
+					$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`+ {$_POST['editquantity']} WHERE `procurement_name`='{$_POST['procurementName']}'";
+					$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+					
+					$deleteQuery="DELETE FROM `events_event_procurement` WHERE `event_name`='{$res['event_name']}' AND `procurement_name`='{$res['procurement_name']}' ";
+					$deleteRes=mysql_query($deleteQuery) or displayerror(mysql_error());
+  
+					$insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
+                             ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['editquantity']}', '{$pageModuleComponentId}')";
+					$insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+					
+					echo '<script>window.location = ("./+ochead&subaction=viewAll");</script>';
+					echo '<script>cmsShow("info", "Procurement edited");</script>';
+					exit();
+				}
+				$cnt++;
+				}
+		}
+		echo '<script>window.location = ("./+ochead&subaction=viewAll");</script>';
+        echo '<script>cmsShow("info", "Procurement '.$_POST["procurementName"].' for event '.$_POST["eventName"].' already exists");</script>';
+}
+
 function validateNewProcurement($pageModuleComponentId){
 		$isValid=true;
         if($_POST['newProc']==""){
@@ -339,7 +392,7 @@ function validateNewProcurement($pageModuleComponentId){
         }
 		else {
 				$_POST['newProc']=escape(strtolower($_POST['newProc']));
-				$selectQuery = "SELECT `procurement_name` FROM `events_procurements` WHERE `procurement_name`='{$_POST[newProc]}' ";
+				$selectQuery = "SELECT `procurement_name` FROM `events_procurements` WHERE `procurement_name`='{$_POST['newProc']}' ";
 				$selectRes=mysql_query($selectQuery);
 				if(mysql_num_rows($selectRes)==1){
 					$isValid=false;
@@ -415,11 +468,12 @@ $procurementDetails .=<<<TR
            <td>{$res['procurement_name']}</td>
            <td>{$res['quantity']}</td>
 		   <td>
-				<button onclick="deleteProcurement({$cnt});" value="DELETE" />DELETE</button>
+				<button onclick="deleteProcurement({$cnt});" value="DELETE">DELETE</button>
 				
-                <form method="POST"  action="./+ochead&subaction=editProcurement">
+				<form method="POST"  action="./+ochead">
                 <input type="submit" name="" value="EDIT"/>
-                </form>
+				<input style="visibility:hidden;" name="eventnum" id="eventnum" value="{$cnt}" />
+				</form> 
            </td>
           </tr>
 TR;

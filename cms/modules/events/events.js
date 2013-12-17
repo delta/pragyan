@@ -106,6 +106,34 @@ function submitAddProcurementData() {
         });
 }
 
+function submitEditProcurementData(eventnum) {
+        var ajx=$.ajax({
+                type: "POST",
+                url: "./+ochead",
+                data: {
+                        eventName: document.getElementById("eventName").value,
+                        procurementName: document.getElementById("procurementName").value,
+                        editquantity: document.getElementById("quantity").value,
+						eventnum: eventnum,
+				}, 
+                dataType: "html"
+        });
+        ajx.done(function(msg) {
+                if(msg=="Valid") {
+                        window.location = ("./+ochead&subaction=addEventProcurement");
+                        var isAdded=1;
+                        window.onload(function(){
+                                cmsShow("info", "Procurement successfully added");
+                        });
+                }
+                else if(msg=="Invalid"){
+                        cmsShow('error', "Invalid data");
+                }
+				else
+					cmsShow('error',msg);
+        });
+}
+
 function submitAddProc() {
         var ajx=$.ajax({
                 type: "POST",
