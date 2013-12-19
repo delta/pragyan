@@ -80,6 +80,7 @@ function confirmParticipant(userid,eventid){
 }
 
 function submitAddProcurementData() {
+<<<<<<< HEAD
 	var ajx=$.ajax({
 		type: "POST",
 		url: "./+ochead",
@@ -149,3 +150,108 @@ function deleteProcurement(eventName) {
 		});
 	}
 }
+=======
+        var ajx=$.ajax({
+                type: "POST",
+                url: "./+ochead",
+                data: {
+                        eventName: document.getElementById("eventName").value,
+                        procurementName: document.getElementById("procurementName").value,
+                        quantity: document.getElementById("quantity").value,
+                }, 
+                dataType: "html"
+        });
+        ajx.done(function(msg) {
+                if(msg=="Valid") {
+                        window.location = ("./+ochead&subaction=addEventProcurement");
+                        var isAdded=1;
+                        window.onload(function(){
+                                cmsShow("info", "Procurement successfully added");
+                        });
+                }
+                else if(msg=="Invalid"){
+                        cmsShow('error', "Invalid data");
+                }
+				else
+					cmsShow('error',msg);
+        });
+}
+
+function submitEditProcurementData(eventnum) {
+        var ajx=$.ajax({
+                type: "POST",
+                url: "./+ochead",
+                data: {
+                        eventName: document.getElementById("eventName").value,
+                        procurementName: document.getElementById("procurementName").value,
+                        editquantity: document.getElementById("quantity").value,
+						eventnum: eventnum,
+				}, 
+                dataType: "html"
+        });
+        ajx.done(function(msg) {
+                if(msg=="Valid") {
+                        window.location = ("./+ochead&subaction=addEventProcurement");
+                        var isAdded=1;
+                        window.onload(function(){
+                                cmsShow("info", "Procurement successfully added");
+                        });
+                }
+                else if(msg=="Invalid"){
+                        cmsShow('error', "Invalid data");
+                }
+				else
+					cmsShow('error',msg);
+        });
+}
+
+function submitAddProc() {
+        var ajx=$.ajax({
+                type: "POST",
+                url: "./+ochead",
+                data: {
+                        newProc: document.getElementById("newProc").value,
+                }, 
+                dataType: "html"
+        });
+        ajx.done(function(msg) {
+				if(msg=="Valid") {
+                        window.location = ("./+ochead&subaction=addProcurement");
+                        var isAdded=1;
+                        window.onload(function(){
+                                cmsShow("info", "Procurement successfully added");
+                        });
+                }
+				else if(msg=="Exists"){
+                        cmsShow('error', " Procurement already exists");
+                }
+				
+                else{
+                        cmsShow('error', "Invalid data");
+                }
+        });
+}
+
+function deleteProcurement(eventName) {
+        var r=confirm("Are you sure?");
+        if (r==true){
+                var ajx=$.ajax({
+                        type: "POST",
+                        url: "./+ochead&subaction=deleteProcurement",
+                        data: {
+                                eventname: eventName,
+                        },
+                        dataType: "html"
+                });
+                ajx.done(function(msg) {
+                        if(msg=="Success") {
+                                window.location = ("./+ochead&subaction=viewAll");
+                                cmsShow("info", "Procurement deleted");
+                        }
+                        else{
+                                cmsShow('error', "Error");
+                        }
+                });
+        }
+}
+>>>>>>> 18bb9da7d8ba0f5a28a4ec714dc59aa774fae2d5

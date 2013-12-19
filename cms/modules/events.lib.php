@@ -55,7 +55,7 @@ class events implements module,fileuploadable {
 					exit;
 				}
 				if($_GET['subaction']=="schedule"){
-					return getSchedule();
+					return "schedule";
 				}
 			}
 			else{
@@ -107,8 +107,16 @@ class events implements module,fileuploadable {
 				validateProcurementData($moduleComponentId);
 				exit();
 			}
+			if(isset($_POST['editquantity'])){
+				validateEditProcurementData($moduleComponentId);
+				exit();
+			}
 			if(isset($_POST['newProc'])){
 				validateNewProcurement($moduleComponentId);
+				exit();
+			}
+			if(isset($_POST['eventnum'])){
+				return editProcurement($_POST['eventnum']);
 				exit();
 			}
 			if(isset($_GET['subaction'])){
@@ -123,10 +131,6 @@ class events implements module,fileuploadable {
 				}
 				if($_GET['subaction']=="deleteProcurement"){
 					return deleteProcurement($_POST['eventname'], $moduleComponentId);
-					exit();
-				}
-				if($_GET['subaction']=="editProcurement"){
-					return "EDITING";
 				}
 			}
 			else{
@@ -137,7 +141,19 @@ class events implements module,fileuploadable {
 			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 			$moduleComponentId=$this->moduleComponentId;
 			$userId=$this->userId;
-			return "hello";
+			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
+			
+			if(isset($_GET['subaction'])){
+				if($_GET['subaction']=="viewEventWise"){
+					return viewEventWise();
+				}
+				if($_GET['subaction']=="viewProcurementWise"){
+					return viewProcurementWise();
+				}
+			}
+			else{
+				return selectSubactionOcTeam();
+			}
 		}
 		public function actionQa(){
 			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
@@ -171,7 +187,6 @@ class events implements module,fileuploadable {
 			$userId=$this->userId;
 			return "hello";
 		}
-
 
 		public static function getFileAccessPermission($pageId,$moduleComponentId,$userId, $fileName)
 		{
