@@ -188,40 +188,25 @@ function getEventsJSON($pmcid){
 		exit;
 }
 
-function getSchedule(){
-	global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
-	//ini_set('include_path', ini_get('include_path').';../Classes/');
-	include "$sourceFolder/$moduleFolder/events/PHPExcel/PHPExcel.php";
-	include "$sourceFolder/$moduleFolder/events/PHPExcel/PHPExcel/Writer/Excel2007.php";
-	
-	$objPHPExcel = new PHPExcel();
-	// Set properties
-	echo date('H:i:s') . " Set properties\n";
-	$objPHPExcel->getProperties()->setCreator("Maarten Balliauw");
-	$objPHPExcel->getProperties()->setLastModifiedBy("Maarten Balliauw");
-	$objPHPExcel->getProperties()->setTitle("Office 2007 XLSX Test Document");
-	$objPHPExcel->getProperties()->setSubject("Office 2007 XLSX Test Document");
-	$objPHPExcel->getProperties()->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.");
+function getSchedule($pmcid){
+	$eventsQuery="SELECT * FROM `events_details` "
+				."WHERE '{$lastdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'"
+				."ORDER BY event_date ASC;";
+	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
+	$schedule = array();
+	$emptyTimeArray=array();
+	for($j=0; $j<24; $j=$j+1){
+		for($i=0; $i<60; $i=$i+10){
+			array_push($emptyTimeArray, array('{$j*100+$i}' => array()));
+		}
+	}
+	while($row=mysql_fetch_array($eventsRes)){
+		array_merge($schedule, array($row['event_venue']=>$emptyTimeArray));
+	}
+	displayinfo(print_r($schedule['asa'], true));
 
-
-	// Add some data
-	echo date('H:i:s') . " Add some data\n";
-	$objPHPExcel->setActiveSheetIndex(0);
-	$objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Hello');
-	$objPHPExcel->getActiveSheet()->SetCellValue('B2', 'world!');
-	$objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Hello');
-	$objPHPExcel->getActiveSheet()->SetCellValue('D2', 'world!');
-
-	// Rename sheet
-	echo date('H:i:s') . " Rename sheet\n";
-	$objPHPExcel->getActiveSheet()->setTitle('Simple');
-
-			
-	// Save Excel 2007 file
-	echo date('H:i:s') . " Write to Excel2007 format\n";
-	$objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-	$objWriter->save("str_replace('.php', '.xlsx', __FILE__)");
 }
+
 
 function deleteEvent($eventid, $pmcid){
 		//query to delete event
@@ -365,7 +350,6 @@ function validateProcurementData($pageModuleComponentId){
 				$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
 				echo "Valid";
 		}
-
         exit();
 }
 
@@ -418,8 +402,8 @@ function validateEditProcurementData($pageModuleComponentId){
 				$cnt++;
 				}
 		}
-		echo '<script>window.location = ("./+ochead&subaction=viewAll");</script>';
         echo '<script>cmsShow("info", "Procurement '.$_POST["procurementName"].' for event '.$_POST["eventName"].' already exists");</script>';
+		exit();
 }
 
 function validateNewProcurement($pageModuleComponentId){
@@ -450,18 +434,6 @@ function validateNewProcurement($pageModuleComponentId){
                              ."VALUES (NULL, '{$_POST['newProc']}', 0, '{$pageModuleComponentId}')";
                 $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
                 echo "Valid";
-		}
-
-		if($isValid){
-				//insert data
-				foreach ($_POST as $postValue){
-						$postValue=escape($postValue);
-				}
-				//Query to insert into the db
-				$insertQuery="INSERT INTO `events_procurements` (`procurement_id`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
-							 ."VALUES (NULL, '{$_POST['newProc']}', 0, '{$pageModuleComponentId}')";
-				$insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
-				echo "Valid";
 		}
 		else echo "Invalid";
 		exit();
@@ -507,12 +479,18 @@ $procurementDetails =<<<TABLE
 				<th>Event Name</th>
                 <th>Procurement</th>
                 <th>Quantity</th>
+				<th>Date</th>
+				<th>Start time</th>
+				<th>End time</th>  
 				<th></th>
 				</tr>
         </thead>
 TABLE;
 $cnt=1;
 while($res = mysql_fetch_assoc($selectRes)) {
+$selQuery="SELECT * FROM `events_details` WHERE `event_name`='{$res['event_name']}'";
+$selRes=mysql_query($selQuery) or displayerror(mysql_error());
+$selRes = mysql_fetch_assoc($selRes);
 $procurementDetails .=<<<TR
 
           <tr>        
@@ -520,6 +498,9 @@ $procurementDetails .=<<<TR
            <td>{$res['event_name']}</td>
            <td>{$res['procurement_name']}</td>
            <td>{$res['quantity']}</td>
+		   <td>{$selRes['event_date']}</td>
+		   <td>{$selRes['event_start_time']}</td>
+		   <td>{$selRes['event_end_time']}</td>
 		   <td>
 				<button onclick="deleteProcurement({$cnt});" value="DELETE">DELETE</button>
 				
@@ -578,7 +559,7 @@ function viewEventWise(){
         //Query to select all entries
         global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
         $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-        $selectQuery="SELECT `event_name` FROM `events_details` ORDER BY STR_TO_DATE(`event_date`, '%d.%m.%y'),`event_start_time` ";
+        $selectQuery="SELECT * FROM `events_details` ORDER BY STR_TO_DATE(`event_date`, '%d.%m.%y'),`event_start_time` ";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
 		global $STARTSCRIPTS;
         $smarttablestuff = smarttable::render(array('show_event_wise'),null);
@@ -595,20 +576,26 @@ $procurementDetails =<<<TABLE
 				<th>Event Name</th>
                 <th>Procurement</th>
                 <th>Quantity</th>
+				<th>Date</th>
+				<th>Start time</th>
+				<th>End time</th>
                 </tr>
         </thead>
 TABLE;
 $cnt=1;
-while($event=mysql_fetch_assoc($selectRes)) {
+while($event=mysql_fetch_assoc($selectRes)) {	
 	$result=mysql_query("SELECT * FROM `events_event_procurement` WHERE `event_name`='{$event['event_name']}'");
 	while($res=mysql_fetch_assoc($result))
 	{
-		$procurementDetails .=<<<TR
+			$procurementDetails .=<<<TR
 			<tr>        
 			<td>{$cnt}</td>
 			<td>{$res['event_name']}</td>
 			<td>{$res['procurement_name']}</td>
 			<td>{$res['quantity']}</td>
+			<td>{$event['event_date']}</td>
+			<td>{$event['event_start_time']}</td>
+			<td>{$event['event_end_time']}</td>
 			</tr>
 TR;
 	$cnt++;
