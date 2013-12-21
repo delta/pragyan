@@ -55,7 +55,7 @@ class events implements module,fileuploadable {
 					exit;
 				}
 				if($_GET['subaction']=="schedule"){
-					return "schedule";
+					return getSchedule($moduleComponentId);
 				}
 			}
 			else{
@@ -90,7 +90,7 @@ class events implements module,fileuploadable {
 					exit();
 				}
 				if($_GET['subaction']=="editEvent"){
-					return "EDITING";
+					return editEvent($_GET['eventId'], $moduleComponentId);
 				}
 			}
 			else{
@@ -142,7 +142,7 @@ class events implements module,fileuploadable {
 			$moduleComponentId=$this->moduleComponentId;
 			$userId=$this->userId;
 			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
-			
+
 			if(isset($_GET['subaction'])){
 				if($_GET['subaction']=="viewEventWise"){
 					return viewEventWise();

@@ -1,6 +1,7 @@
 var map, placed=0, marker;
 
-function initialize(){
+
+function initializeAddEventMap(){
 	var mapProp = {
 		center:new google.maps.LatLng(10.76155,78.815768),
 		zoom:15,
@@ -12,6 +13,33 @@ function initialize(){
 	google.maps.event.addListener(map, 'click', function(event) {
 		placeMarker(event.latLng);
 	});
+}
+
+
+google.maps.event.addDomListener(window, 'load', initializeAddEventMap);
+
+function initializeEditEventMap(){
+	var mapProp = {
+		center:new google.maps.LatLng(10.76155,78.815768),
+		zoom:15,
+		mapTypeId:google.maps.MapTypeId.ROADMAP
+	};
+
+	map = new google.maps.Map(document.getElementById("editEventGoogleMap"),mapProp);
+
+
+	google.maps.event.addListener(map, 'click', function(event) {
+		placeMarker(event.latLng);
+	});
+	var oldlat=document.getElementById('lat').value;
+	var oldlng=document.getElementById('lng').value;
+	var oldloc = new google.maps.LatLng(oldlat, oldlng);
+
+	marker = new google.maps.Marker({
+		position: oldloc,
+		map: map,
+	});
+	placed=1;
 }
 
 function placeMarker(location){
@@ -27,11 +55,11 @@ function placeMarker(location){
 	document.getElementById('lng').value=location.lng();
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+google.maps.event.addDomListener(window, 'load', initializeEditEventMap);
 
-var map, placed=0, marker;
 
 function placeAllEventMarkers(){
+	var map, placed=0, marker;
 	var ajx=$.ajax({
 		type: "GET",
 		url: "./+view&subaction=mobile&ipp=100",

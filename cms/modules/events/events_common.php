@@ -55,7 +55,7 @@ function getAllEvents($pmcid){
 		global $STARTSCRIPTS;
 		$smarttablestuff = smarttable::render(array('table_event_details'),null);
 		$STARTSCRIPTS .="initSmartTable();";
-$eventDetails =<<<TABLE
+		$eventDetails =<<<TABLE
 		<script src="$scriptFolder/events.js"></script>
 		<script src="$scriptFolder/jquery.js"></script>
 		$smarttablestuff
@@ -73,29 +73,28 @@ $eventDetails =<<<TABLE
 		</thead>
 TABLE;
 
-while($res = mysql_fetch_assoc($insertRes)) {
+	while($res = mysql_fetch_assoc($insertRes)) {
 		$eventDetails .=<<<TR
-		  <tr>        
-		   <td>{$res['event_id']}</td>
-		   <td>{$res['event_name']}</td>
-		   <td>{$res['event_venue']}</td>
-		   <td>{$res['event_date']}</td>
-		   <td>{$res['event_start_time']}</td>
-		   <td>{$res['event_end_time']}</td>
-		   <td>
-				<button onclick="deleteEvent({$res['event_id']});" value="DELETE" />DELETE</button>
-				<form method="POST"  action="./+eventshead&subaction=editEvent">
-						<input type="submit" name="" value="EDIT"/>
-						<input type="hidden" name="eventId" value="{$res['event_id']}" />
-				</form>
-				</td>
-		  </tr>
+		<tr>        
+		<td>{$res['event_id']}</td>
+		<td>{$res['event_name']}</td>
+		<td>{$res['event_venue']}</td>
+		<td>{$res['event_date']}</td>
+		<td>{$res['event_start_time']}</td>
+		<td>{$res['event_end_time']}</td>
+		<td>
+		<button onclick="deleteEvent({$res['event_id']});" value="DELETE" />DELETE</button>
+		<form method="GET"  action="./+eventshead&subaction=editEvent&eventId={$res['event_id']}">
+		<input type="submit" name="" value="EDIT"/>
+		</form>
+		</td>
+		</tr>
 TR;
-  }
-  $eventDetails .=<<<TABLEEND
+}
+	$eventDetails .=<<<TABLEEND
 		</table>
 TABLEEND;
-  return $eventDetails;
+	return $eventDetails;
 
 }
 
@@ -110,6 +109,9 @@ function selectEventsHeadSubaction(){
 		</form>
 		<form method="GET"  action="./+eventshead&subaction=addEvent">
 				<input type="submit" name="" value="ADD EVENT"/>
+		</form>
+		<form method="GET"  action="./+eventshead&subaction=editEvent">
+				<input type="submit" name="" value="EDIT EVENT"/>
 		</form>
 SFORM;
 return $subactionForm;
@@ -218,7 +220,6 @@ function deleteEvent($eventid, $pmcid){
 		else echo("error");
 		exit();
 }
-
 
 function displayQA($pmcid){
 		$selectEventQuery = "SELECT `event_id`,`event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' ORDER BY `event_name`";
