@@ -10,6 +10,7 @@ function submitAddEventData() {
 		type: "POST",
 		url: "./+eventshead",
 		data: {
+			type: "add",
 			eventName: document.getElementById("eventName").value,
 			eventVenue: document.getElementById("eventVenue").value,
 			eventDate: document.getElementById("eventDate").value,
@@ -24,7 +25,7 @@ function submitAddEventData() {
 	});
 	ajx.done(function(msg) {
 		if(msg=="Valid") {
-			window.location = ("./+eventshead&subaction=addEvent");
+			window.location = ("./+eventshead");
 			var isAdded=1;
 			window.onload(function(){
 				cmsShow("info", "Event successfully added");
@@ -35,6 +36,41 @@ function submitAddEventData() {
 		}
 	});
 }
+
+function submitEditEventData(event_id) {
+	console.log("EDITING");
+	var ajx=$.ajax({
+		type: "POST",
+		url: "./+eventshead",
+		data: {
+			type: "edit",
+			eventId: event_id,
+			eventName: document.getElementById("eventName").value,
+			eventVenue: document.getElementById("eventVenue").value,
+			eventDate: document.getElementById("eventDate").value,
+			eventDesc: document.getElementById("eventDesc").value,
+			eventDesc: document.getElementById("eventDesc").value,
+			eventStartTime: document.getElementById("eventStartTime").value,
+			eventEndTime: document.getElementById("eventEndTime").value,
+			lat: document.getElementById("lat").value,
+			lng: document.getElementById("lng").value,
+		}, 
+		dataType: "html"
+	});
+	ajx.done(function(msg) {
+		if(msg=="Valid") {
+			window.location = ("./+eventshead");
+			var isAdded=1;
+			window.onload(function(){
+				cmsShow("info", "Event successfully edited");
+			});
+		}
+		else{
+			cmsShow('error', "Invalid data");
+		}
+	});
+}
+
 
 function deleteEvent(eventid) {
 	var r=confirm("Are you sure?");

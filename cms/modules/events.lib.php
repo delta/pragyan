@@ -74,14 +74,16 @@ class events implements module,fileuploadable {
 			$userId=$this->userId;
 			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
 			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
-			if(isset($_POST['eventName'])){
-				validateEventData($moduleComponentId);
+			if(isset($_POST['type'])){
+				if($_POST['type']=='add'){
+					validateAddEventData($moduleComponentId);
+				}
+				else if($_POST['type']=='edit'){
+					validateEditEventData($moduleComponentId);
+				}
 				exit();
 			}
 			if(isset($_GET['subaction'])){
-				if($_GET['subaction']=="viewAll"){
-					return getAllEvents($moduleComponentId);
-				}
 				if($_GET['subaction']=="addEvent"){
 					return addNewEvent();
 				}
@@ -94,7 +96,7 @@ class events implements module,fileuploadable {
 				}
 			}
 			else{
-				return selectEventsHeadSubaction();
+				return selectEventsHeadSubaction($moduleComponentId);
 			}
 		}
 		public function actionOchead(){

@@ -82,6 +82,10 @@ $row=mysql_fetch_array($insertRes);
 
 $query="SELECT * FROM `events_details` WHERE `event_Id`={$eid} AND `page_moduleComponentId={$pcmid}";
 mysql_query($query);
+
+$startTime=substr($row[event_start_time], 0, 5);
+$endTime=substr($row[event_end_time], 0, 5);
+
 $editForm=<<<FORM
 		<link rel="stylesheet" type="text/css" href="$scriptFolder/jquery.datetimepicker.css"/ >
 		<script src="$scriptFolder/jquery.js"></script>
@@ -90,31 +94,31 @@ $editForm=<<<FORM
 		<form method="post" id="editEventForm" enctype="multipart/form-data" action="./+eventshead">
 		<table>
 		<tbody>
-				<tr><th><label for="eventName">Event name</label></th>
-				<td><input type="text" decsription="eventName" value="{$row[event_name]}" name="eventName" id="eventName" </td></tr>
+			<tr><th><label for="eventName">Event name</label></th>
+			<td><input type="text" decsription="eventName" value="{$row[event_name]}" name="eventName" id="eventName" </td></tr>
 
-				<tr><th><label for="eventDesc">Description</label></th>
-				<td><textarea type="text" rows="4" cols="50" decsription="eventDesc" name="eventDesc" id="eventDesc">{$row[event_desc]}</textarea></td></tr>
+			<tr><th><label for="eventDesc">Description</label></th>
+			<td><textarea type="text" rows="4" cols="50" decsription="eventDesc" name="eventDesc" id="eventDesc">{$row[event_desc]}</textarea></td></tr>
 
-				<tr><th><label for"eventDate">Event date</label></th>
-				<td><input type="text" decsription="day" name="eventDate" id="eventDate" value="{$row[event_date]}"></td></tr>
+			<tr><th><label for"eventDate">Event date</label></th>
+			<td><input type="text" decsription="day" name="eventDate" id="eventDate" value="{$row[event_date]}"></td></tr>
 
-				<tr><th><label for="eventStartTime">Event start time</label></th>
-				<td><input type="text" decsription="eventStartTime" name="eventStartTime" id="eventStartTime" size='5' value="{$row[event_start_time]}"></td></tr>
+			<tr><th><label for="eventStartTime">Event start time</label></th>
+			<td><input type="text" decsription="eventStartTime" name="eventStartTime" id="eventStartTime" size='5' value="{$startTime}"></td></tr>
 
-				<tr><th><label for="eventEndTime">Event end time</label></th>
-				<td><input type="text" decsription="eventEndTime" name="eventEndTime" id="eventEndTime" size='5' value="{$row[event_end_time]}"></td></tr>
+			<tr><th><label for="eventEndTime">Event end time</label></th>
+			<td><input type="text" decsription="eventEndTime" name="eventEndTime" id="eventEndTime" size='5' value="{$endTime}"></td></tr>
 
-				<tr><th><label for="eventVenue">Event venue</label></th>
-				<td><input type="text" decsription="eventVenue" name="eventVenue" id="eventVenue" value="{$row[event_venue]}"></td></tr>
+			<tr><th><label for="eventVenue">Event venue</label></th>
+			<td><input type="text" decsription="eventVenue" name="eventVenue" id="eventVenue" value="{$row[event_venue]}"></td></tr>
 
-				<tr><th><label>Select the coordinates</label></th>
-				<input type="text" decsription="lat" name="lat"	 id="lat" style="display:none;" value="{$row[event_loc_y]}">
-				<input type="text" decsription="lng" name="lng" id="lng" style="display:none;" value="{$row[event_loc_x]}">
-				<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
-				<script src="$scriptFolder/googleMaps.js"></script>
-				<td><div id="editEventGoogleMap" style="width:500px;height:380px;"></div></td>
-				</tr>
+			<tr><th><label>Select the coordinates</label></th>
+			<input type="text" decsription="lat" name="lat"	 id="lat" style="display:none;" value="{$row[event_loc_y]}">
+			<input type="text" decsription="lng" name="lng" id="lng" style="display:none;" value="{$row[event_loc_x]}">
+			<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
+			<script src="$scriptFolder/googleMaps.js"></script>
+			<td><div id="editEventGoogleMap" style="width:500px;height:380px;"></div></td>
+			</tr>
 		</tbody>
 		</table>
 				<script>
@@ -138,7 +142,7 @@ $editForm=<<<FORM
 								step:10,
 						});
 				</script>
-				<input type='button' onclick="submitAddEventData();" id="Add" name="Add" value='Add'><br />
+				<input type='button' onclick="submitEditEventData({$eid});" id="Edit" name="Edit" value='Edit'><br />
 		</form>
 FORM;
 return $editForm;

@@ -1,32 +1,36 @@
 <?php
 
-function validateEventData($pageModuleComponentId){
-		$isValid=true;
-		$day=substr($_POST['eventDate'], 0, 2);
-		$month=substr($_POST['eventDate'], 3, 2);
-		$year=substr($_POST['eventDate'], 6, 4);
-		if($_POST['eventName']==""){
-				$isValid=false;
-		}
-		if(checkdate($month, $day, $year)==false){
-				$isValid=false;
-		}
-		if(!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $_POST['eventStartTime'])){
-				$isValid=false;
-		}
-		if(!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $_POST['eventEndTime'])){
-				$isValid=false;
-		}
-		if($_POST['eventVenue']==""){
-				$isValid=false;
-		}
-		if($_POST['lat']==""){
-				$isValid=false;
-		}
-		if($_POST['lng']==""){
-				$isValid=false;
-		}
-		if($isValid){
+function validateEventData(){
+	$isValid=true;
+	$day=substr($_POST['eventDate'], 0, 2);
+	$month=substr($_POST['eventDate'], 3, 2);
+	$year=substr($_POST['eventDate'], 6, 4);
+	if($_POST['eventName']==""){
+			$isValid=false;
+	}
+	if(checkdate($month, $day, $year)==false){
+			$isValid=false;
+	}
+	if(!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $_POST['eventStartTime'])){
+			$isValid=false;
+	}
+	if(!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $_POST['eventEndTime'])){
+			$isValid=false;
+	}
+	if($_POST['eventVenue']==""){
+			$isValid=false;
+	}
+	if($_POST['lat']==""){
+			$isValid=false;
+	}
+	if($_POST['lng']==""){
+			$isValid=false;
+	}
+	return $isValid;
+}
+
+function validateAddEventData($pageModuleComponentId){
+		if(validateEventData()){
 				//insert data
 				foreach ($_POST as $postValue){
 						$postValue=escape($postValue);
@@ -44,7 +48,31 @@ function validateEventData($pageModuleComponentId){
 		else echo "Invalid";
 		exit();
 }
-		
+
+function validateEditEventData($pageModuleComponentId){
+		if(validateEventData()){
+				//insert data
+				foreach ($_POST as $postValue){
+						$postValue=escape($postValue);
+				}
+				//Query to insert into the db
+				$editQuery="UPDATE `events_details` SET `event_name`='{$_POST['eventName']}', 
+														`event_date`='{$_POST['eventDate']}',
+														`event_start_time`='{$_POST['eventStartTime']}',
+														`event_end_time`='{$_POST['eventEndTime']}',
+														`event_venue`='{$_POST['eventVenue']}',
+														`event_desc`='{$_POST['eventDesc']}',
+														`event_last_update_time`=CURRENT_TIME(),
+														`event_loc_x`='{$_POST['lng']}',
+														`event_loc_y`='{$_POST['lat']}' "
+							." WHERE `page_moduleComponentId`='{$pageModuleComponentId}'"
+							."AND `event_id`={$_POST['eventId']}";
+				$editRes=mysql_query($editQuery) or displayerror(mysql_error());
+				echo "Valid";
+		}
+		else echo "Invalid";
+		exit();
+}	
 
 function getAllEvents($pmcid){
 		//Query to select all entries
@@ -98,22 +126,14 @@ TABLEEND;
 
 }
 
-function selectEventsHeadSubaction(){
+function selectEventsHeadSubaction($pmcid){
 		//form to select the subaction
 		$subactionForm=<<<SFORM
-		<p>
-				Select an option:
-		</p>
-		<form method="GET"  action="./+eventshead&subaction=viewAll">
-				<input type="submit" name="" value="VIEW ALL"/>
-		</form>
 		<form method="GET"  action="./+eventshead&subaction=addEvent">
 				<input type="submit" name="" value="ADD EVENT"/>
 		</form>
-		<form method="GET"  action="./+eventshead&subaction=editEvent">
-				<input type="submit" name="" value="EDIT EVENT"/>
-		</form>
 SFORM;
+		$subactionForm.=getAllEvents($pmcid);
 return $subactionForm;
 }
 
