@@ -45,13 +45,22 @@ function isRoomAvailable($roomNo,$mcid) {
 // not yet done
 function displayUsersInRoom($roomId,$mcid) {
   $displayQuery = "SELECT * FROM `prhospi_accomodation_status` WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id` = {$roomId}";
-   $displayResult = mysql_query($displayQuery) or displayerror(mysql_error());
-  
+  $displayResult = mysql_query($displayQuery) or displayerror(mysql_error());
+  $retForm =<<<DIV
+    <div class="roomDetails" style="display:none" id="userInRoom$roomId">
+DIV;
+  while($res = mysql_fetch_assoc($displayResult)) {
+    $retForm.="PID: ".$res['user_id'].", Name: ".getUserName($res['user_id']).", Email: ".getUserEmail($res['user_id'])."<br/>";
+  }
+  $retForm .=<<<DIV
+    </div>
+DIV;
+  return $retForm;
 }
 function addUserToRoom($userId,$roomId,$mcid,$checkedInBy) {
+  displayinfo($userId);
   global $sourceFolder,$moduleFolder;
   require_once("$sourceFolder/$moduleFolder/prhospi/prhospi_common.php");
-
   if(!isRegisteredToPr($userId,$mcid)) {
     displayerror("User is not register to PR.");
     return false;
@@ -149,30 +158,19 @@ function displayRooms ($mcid,$userId=0) {
 	$result1=mysql_query($query1);
 	if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
 	else $status="Full";
-	if(mysql_num_rows($result1)>=$temp['hospi_room_capacity']) {
+	if(mysql_num_rows($result1)>=$temp['hospi_room_capacity']||$temp['hospi_blocked']==1) {
 	  $statusall.='<td id="asdf">';
 	}
 	else {
 	  $statusall.='<td id="asdf1">';
 	}
+	$usersInRoom = displayUsersInRoom($temp['hospi_room_id'],$mcid);
 	$statusall.=<<<ADDUSER
-             <a href="+view&subaction=viewUsers&hostel={$temp['hospi_hostel_name']}&room_id={$temp['hospi_room_id']}">
-	  {$temp['hospi_room_no']}
+             <div class="details">
+	  Room No: {$temp['hospi_room_no']}{$usersInRoom}
 ADDUSER;
 	$statusall.="$status      (".mysql_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
-	$statusall.=<<<RED
-	  <style type="text/css">
-           #asdf 
-           {
-	      background-color: #FF0000;
-	   }
-	   #asdf1 
-           {
-	      background-color: #00FF00;
-	   }
- 	  </style>
-RED;
-	   $statusall.='</a></td>';
+	   $statusall.='</div></td>';
 	   $j++;
 	   if($j==8) {
 	     $j=0;
@@ -184,6 +182,26 @@ RED;
     $statusall.='</tr>';
   }
   $statusall.='</tr></table>';
+  $statusall.=<<<RED
+	  <style type="text/css">
+           #asdf 
+           {
+	      background-color: #FF0000;
+	   }
+	   #asdf1 
+           {
+	      background-color: #00FF00;
+	   }
+ 	  </style>
+	  <script type="text/javascript"> 
+	      $(".details").hover(function(){
+		  $(this).children('.roomDetails').css('display','');
+		},function(){
+		  $(this).children('.roomDetails').css('display','none');
+		}
+               );
+          </script>     
+RED;
   return $statusall;
 }
 
@@ -215,7 +233,7 @@ function addUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay) {
     $insertDetailsQuery = "INSERT INTO `prhospi_accomodation_status` 
                             (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,hospi_cash_recieved)
                             VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved})";
-    $insertDetailsRes = mysql_query($insertDetailsQuery) or displayerror(mysql_error());
+    $insertDetailsRes = mysql_query($insertDetailsQuery) or die(mysql_error());
     $availableRoomNo=getAvailableRooms($mcid);
     return "Success  {$availableRoomNo}";
 }
