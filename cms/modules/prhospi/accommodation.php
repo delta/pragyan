@@ -233,6 +233,8 @@ function addUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay,$registeredB
     $insertDetailsQuery = "INSERT INTO `prhospi_accomodation_status` 
                             (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,hospi_cash_recieved,user_registered_by)
                             VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved},'{$registeredBy}')";
+                            (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,hospi_cash_recieved)
+                            VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved})";
     $insertDetailsRes = mysql_query($insertDetailsQuery) or die(mysql_error());
     $availableRoomNo=getAvailableRooms($mcid);
     return "Success  {$availableRoomNo}";

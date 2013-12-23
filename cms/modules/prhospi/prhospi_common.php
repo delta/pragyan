@@ -1016,6 +1016,26 @@ function blockRoomNo($roomId,$mcid) {
 }
 
 
+function blockRoomNo($roomId,$mcid) {
+  $roomId = escape($roomId);
+  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if(!mysql_num_rows($blockRoomQueryRes)) {
+    displayerror("Room Does Not exist");
+    return;
+  } 
+  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  if($res['hospi_blocked']!=0) {
+    displaywarning("Room Blocked Already");
+    return;
+  }
+  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if($blockRoomQueryRes) displayinfo("Room Blocked ");
+  else  displayinfo("There is a Error.Please contact System Administrator for Details");
+  return;
+}
+
 function unBlockRoomNo($roomId,$mcid) {
   $roomId = escape($roomId);
   $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
