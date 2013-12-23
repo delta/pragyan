@@ -1015,6 +1015,7 @@ function blockRoomNo($roomId,$mcid) {
   return;
 }
 
+
 function unBlockRoomNo($roomId,$mcid) {
   $roomId = escape($roomId);
   $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
