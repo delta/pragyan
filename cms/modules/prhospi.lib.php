@@ -278,7 +278,13 @@ TAG;
 
 
     if(isset($_GET['subaction'])&&$_GET['subaction'] == 'viewRegisteredUser')   {
-      return $displayTags.displayUsersRegisteredToAcco($moduleComponentId);
+      $excel ="<a href='./+view&subaction=viewRegisteredUser&saveAsExcel'>Save as Excel</a>";
+      if(isset($_GET['saveAsExcel'])) {
+	require_once("$sourceFolder/$moduleFolder/qaos1/excel.php");
+	displayExcelForTable(displayUsersRegisteredToAcco($moduleComponentId));
+	
+      }
+      return $displayTags.$excel.displayUsersRegisteredToAcco($moduleComponentId);
     }
 
 
@@ -444,11 +450,13 @@ checkOut;
            <td><a href="./+hospihead&subaction=viewStatus"><div>View All Rooms</div></a></td>
            <td><a href="./+hospihead&subaction=ckEditor"><div>Update Disclaimer</div></a></td>
            <td><a href="./+hospihead&subaction=deleteUsers"><div>Delete User in Accomodation</div></a></td>
+           <td><a href="./+hospihead&subaction=blockRooms"><div>Block Rooms</div></a></td>
          </tr>
         </table>
 
 VIEW;
     if(isset($_GET['subaction'])) {
+      if($_GET['subaction']=='blockRooms') $hospiview.=blockRoom($this->moduleComponentId);
       if($_GET['subaction']=='ckEditor') $hospiview.=$this->getCkBody("","hospihead");
       else if($_GET['subaction']=='addRoom') {
 	$fileUploadableForm=getFileUploadForm($this->moduleComponentId,"prhospi",'./+hospihead',UPLOAD_SIZE_LIMIT,1);

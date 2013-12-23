@@ -150,9 +150,9 @@ OPTIONS;
 
 }
 function getAvailableRooms($mcid) {
-    $roomQuery="SELECT `hospi_room_id`,`hospi_hostel_name`,`hospi_room_no`,`hospi_room_capacity` 
+     $roomQuery="SELECT `hospi_room_id`,`hospi_hostel_name`,`hospi_room_no`,`hospi_room_capacity` 
                 FROM `prhospi_hostel` 
-                WHERE `page_modulecomponentid`={$mcid} ORDER BY `hospi_hostel_name`,`hospi_room_no` ASC";
+                WHERE `page_modulecomponentid`={$mcid} AND `hospi_blocked`=0 ORDER BY `hospi_hostel_name`,`hospi_room_no` ASC";
     $roomRes=mysql_query($roomQuery) or displayerror(mysql_error());
     $ret="<option value=''>SELECT ROOM NO</option>";
     while($res=mysql_fetch_array($roomRes)) {
@@ -926,6 +926,108 @@ TR;
 TABLEEND;
   return $userDetails;
 }
+function blockRoom($mcid) {
+  global $sourceFolder,$moduleFolder;
+  if(isset($_POST['roomId'])&&isset($_POST['block'])) {
+    if($_POST['block']=='BLOCK') blockRoomNo(substr($_POST['roomId'],9),$mcid);
+    if($_POST['block']=='UNBLOCK') unBlockRoomNo(substr($_POST['roomId'],9),$mcid);
+  }
+  $getAvailableRoomQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid}";
+  $getAvailableRoomQueryRes = mysql_query($getAvailableRoomQuery) or displayerror(mysql_error());
+  require_once("$sourceFolder/$moduleFolder/prhospi/accommodation.php");
+  $roomDetails = displayRooms($mcid);
+  $blockRoomForm=<<<FORM
+<h1>Available Room</h1>
+$roomDetails
+<hr/>
+<h1> Block Room</h1>
+     <form action="./+hospihead&subaction=blockRooms" method="post">
+        <select id="blockRoomNo" name="roomAllotted">
+        <option class="blockRoom" id="">Select Room</option>
+FORM;
+  while($details = mysql_fetch_assoc($getAvailableRoomQueryRes)) {
+  $blockRoomForm.=<<<FORM
+    <option class="blockRoom" id="blockRoom{$details['hospi_room_id']}">{$details['hospi_hostel_name']} RoomNo:{$details['hospi_room_no']}</option>
+FORM;
+  }
+  $blockRoomForm.=<<<FORM
+         </select>
+        <input type="hidden" id="roomId" name="roomId" />
+        <input type="submit" name="block" value="BLOCK"/>
+    </form>
+    <script type="text/javascript">
+    $('#blockRoomNo').change(function(){
+	roomIdValue=$('.blockRoom:selected').attr('id');
+	$('#roomId').val(roomIdValue);
+      });
+    </script>
+FORM;
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  $getAvailableRoomQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid}";
+  $getAvailableRoomQueryRes = mysql_query($getAvailableRoomQuery) or displayerror(mysql_error());
+  $blockRoomForm.=<<<FORM
+<hr/>
+<h1> UnBlock Room</h1>
+     <form action="./+hospihead&subaction=blockRooms" method="post">
+        <select id="unblockRoomNo" name="roomAllotted">
+        <option class="unblockRoom" id="">Select Room</option>
+FORM;
+  while($details = mysql_fetch_assoc($getAvailableRoomQueryRes)) {
+  $blockRoomForm.=<<<FORM
+    <option class="unblockRoom" id="blockRoom{$details['hospi_room_id']}">{$details['hospi_hostel_name']} RoomNo:{$details['hospi_room_no']}</option>
+FORM;
+  }
+  $blockRoomForm.=<<<FORM
+         </select>
+        <input type="hidden" id="unblockroomId" name="roomId" />
+        <input type="submit" name="block" value="UNBLOCK"/>
+    </form>
+    <script type="text/javascript">
+    $('#unblockRoomNo').change(function(){
+	roomIdValue=$('.unblockRoom:selected').attr('id');
+	$('#unblockroomId').val(roomIdValue);
+      });
+    </script>
+FORM;
 
+  return $blockRoomForm;
+}
+
+function blockRoomNo($roomId,$mcid) {
+  $roomId = escape($roomId);
+  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if(!mysql_num_rows($blockRoomQueryRes)) {
+    displayerror("Room Does Not exist");
+    return;
+  } 
+  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  if($res['hospi_blocked']!=0) {
+    displaywarning("Room Blocked Already");
+    return;
+  }
+  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if($blockRoomQueryRes) displayinfo("Room Blocked ");
+  else  displayinfo("There is a Error.Please contact System Administrator for Details");
+  return;
+}
+
+function unBlockRoomNo($roomId,$mcid) {
+  $roomId = escape($roomId);
+  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if(!mysql_num_rows($blockRoomQueryRes)) {
+    displayerror("Room Does Not exist");
+    return;
+  } 
+  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=0 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if($blockRoomQueryRes) displayinfo("Room Unblocked ");
+  else  displayinfo("There is a Error.Please contact System Administrator for Details");
+  
+  return;
+}
 
 ?>

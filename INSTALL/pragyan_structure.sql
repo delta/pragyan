@@ -900,9 +900,9 @@ CREATE TABLE IF NOT EXISTS `prhospi_hostel` (
   `hospi_room_capacity` int(11) NOT NULL DEFAULT '0',
   `hospi_room_no` int(11) NOT NULL DEFAULT '0',
   `hospi_floor` int(1) NOT NULL,
+  `hospi_blocked` int(11) NOT NULL,
   PRIMARY KEY (`hospi_room_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=175 ;
-
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 -- --------------------------------------------------------
 
 --
