@@ -70,7 +70,6 @@ function placeAllEventMarkers(){
 		eventsJSON=eval(msg);
 		if(eventsJSON.status=='success'){
 			for(var i=0; i<eventsJSON.data.length; i=i+1){
-				console.log(i)
 				var eventLatlng = new google.maps.LatLng(eventsJSON.data[i].event_loc_y, eventsJSON.data[i].event_loc_x);
 				marker = new google.maps.Marker({
 					position: eventLatlng,

@@ -211,22 +211,33 @@ function getEventsJSON($pmcid){
 }
 
 function getSchedule($pmcid){
-	$eventsQuery="SELECT * FROM `events_details` "
-				."WHERE '{$lastdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'"
-				."ORDER BY event_date ASC;";
-	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
-	$schedule = array();
-	$emptyTimeArray=array();
-	for($j=0; $j<24; $j=$j+1){
-		for($i=0; $i<60; $i=$i+10){
-			array_push($emptyTimeArray, array('{$j*100+$i}' => array()));
-		}
-	}
-	while($row=mysql_fetch_array($eventsRes)){
-		array_merge($schedule, array($row['event_venue']=>$emptyTimeArray));
-	}
-	displayinfo(print_r($schedule['asa'], true));
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 
+	$schedule=<<<SCHEDULE
+	<script src="$scriptFolder/jquery.js"></script>
+	<link href='$scriptFolder/fullcalendar/fullcalendar.css' rel='stylesheet' />
+	<link href='$scriptFolder/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
+	<script src="$scriptFolder/fullcalendar/fullcalendar.min.js"></script>
+	<script src="$scriptFolder/jquery-ui.custom.min.js"></script>
+	<script src="$scriptFolder/events.js"></script>
+	<div id='calendar'></div>
+	<script>
+		document.onreadystatechange = function () {
+		  if (document.readyState == "interactive") {
+		  	showSchedule($pmcid);
+		  }
+		}
+	</script>
+	<style>
+		#calendar {
+			width: 900px;
+			margin: 0 auto;
+			}
+
+	</style>
+SCHEDULE;
+	return $schedule;
 }
 
 

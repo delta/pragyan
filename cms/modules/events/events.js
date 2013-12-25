@@ -71,6 +71,48 @@ function submitEditEventData(event_id) {
 	});
 }
 
+function showSchedule(pcmid){
+	console.log(pcmid);
+	var ajx=$.ajax({
+		type: "GET",
+		url: "./+view&subaction=mobile&ipp=100",
+		data: {}, 
+		dataType: "json"
+	});
+	ajx.done(function(msg) {
+		eventsJSON=eval(msg);
+		if(eventsJSON.status=='success'){
+			all_events=Array()
+			var date = new Date();
+			var d = date.getDate();
+			var m = date.getMonth();
+			var y = date.getFullYear();
+			for(var i=0; i<eventsJSON.data.length; i=i+1){
+				year=eventsJSON.data[i].event_date.substring(6, 10)
+				month=eventsJSON.data[i].event_date.substring(3, 5)
+				day=eventsJSON.data[i].event_date.substring(0, 2)
+				single_event={"title":eventsJSON.data[i].event_name,
+							start: new Date(year, month, day, 11, 2),
+							end: new Date(year, month, day, 14, 5),
+							allDay: false,
+						}
+				all_events.push(single_event);
+			}
+			var calendar = $('#calendar').fullCalendar({
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'month,agendaWeek,agendaDay'
+				},
+				selectable: true,
+				selectHelper: true,
+				editable: false,
+				events: all_events,
+			});
+
+		}
+	});
+}
 
 function deleteEvent(eventid) {
 	var r=confirm("Are you sure?");
