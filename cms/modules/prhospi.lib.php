@@ -493,7 +493,7 @@ HOSPI;
 
   
  public function actionPrview() {
-    global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
+   global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
     $moduleComponentId=$this->moduleComponentId;
     $scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
     $imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
@@ -507,8 +507,6 @@ HOSPI;
       if($_POST['printHiddenId']!="") {
 	$pos = strpos($_POST['printHiddenId'],"printHostelAllotmentBill");
 	if($pos==0) return printDisclaimer($moduleComponentId,substr(escape($_POST['printHiddenId']),24),"prhead");
-                        
-	  
       }
     }
     if(isset($_POST['txtFormUserId1'])&&$_POST['txtFormUserId1'] != '') {
@@ -541,52 +539,22 @@ TAG;
 
   $inputUser=<<<USER
     <h2> CHECK IN FORM </h2>
-      <form method="POST" action="./+Prview">
-      Enter UserId or Email:<input type="text" name="txtFormUserId" id="txtFormUserId"  autocomplete="off" style="width: 256px" />
+      <form method="POST" id="prCheckInForm" action="./+Prview">
+     Enter UserId or Email:<input type="text" name="txtFormUserId" id="txtFormUserId"  autofocus autocomplete="off" style="width: 256px" />
       <div id="suggestionsBox" style="background-color: white; width: 260px; border: 1px solid black; position: absolute; overflow-y: scroll; max-height: 180px; display: none"></div>
       <input type="submit" Value="Find User"/>
-<!--      <script type="text/javascript" language="javascript" src="$scriptsFolder/ajaxsuggestionbox.js">
-      </script>
-      <script language="javascript">
-    var userBox = new SuggestionBox(document.getElementById('txtFormUserId'), document.getElementById('suggestionsBox'), "./+prview&subaction=getsuggestions&forwhat=%pattern%");
-  userBox.loadingImageUrl = '$imagesFolder/ajaxloading.gif';
-    </script>
--->   </form>
-
-
-<!--    <h2> CHECK IN FORM </h2>
-      <form method="POST" action="./+prview">
-      Enter UserId or Email:<input type="text" name="txtFormUserId" id="txtFormUserId"  autocomplete="off" style="width: 256px" />
-      <div id="suggestionsBox" style="background-color: white; width: 260px; border: 1px solid black; position: absolute; overflow-y: scroll; max-height: 180px; display: none"></div>
-      <input type="submit" Value="Find User"/>
-  <!--    <script type="text/javascript" language="javascript" src="$scriptsFolder/ajaxsuggestionbox.js">      </script>
-      <script language="javascript">
-      var userBox = new SuggestionBox(document.getElementById('txtFormUserId'), document.getElementById('suggestionsBox'), "./+prview&subaction=getsuggestions&forwhat=%pattern%");
-    userBox.loadingImageUrl = '$imagesFolder/ajaxloading.gif';
-    </script>
-   </form>
--->
+      <script type="text/javascript" src="$urlRequestRoot/$cmsFolder/$moduleFolder/prhospi/prregister.js"></script> 
 
 USER;
     $userDetails="";
     $displayActions="";
     if(isset($_POST['txtFormUserId'])&&$_POST['txtFormUserId'] != '') {
-      //      $detailsGiven=explode("- ",escape($_POST['txtFormUserId']));
       $detailsGiven=escape($_POST['txtFormUserId']);
-
-      //      if(isset($detailsGiven[1]))$userDetails.=getProfileDetailsForPr($detailsGiven[1],$moduleComponentId);
-      if(isset($detailsGiven))$userDetails.=getProfileDetailsForPr($detailsGiven,$moduleComponentId);
+      if(isset($detailsGiven)) $userDetails.=submitDetailsForPr($detailsGiven,$moduleComponentId,$this->userId);
       else displaywarning("Invalid Pragyan Id");
-
-    }
-    if(isset($_GET['subaction'])) {
-	if($_GET['subaction'] == 'regCompleted') {
-	   if($_POST['collected'] == 1) {
-	     $userDetails.=checkInPrUser(escape($_POST['pragyanId']),$moduleComponentId,$this->userId);
-	   }
-	}
     }
     $amtToCollect = getAmount("prhead",$moduleComponentId);
+
     $checkOutFORM=<<<checkOut
    <hr/>
    <h2> CHECK OUT FORM </h2>
