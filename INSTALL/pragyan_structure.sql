@@ -855,7 +855,8 @@ CREATE TABLE IF NOT EXISTS `prhospi_accomodation_status` (
   `hospi_checkedin_by` int(11) NOT NULL,
   `hospi_cash_recieved` int(11) NOT NULL DEFAULT '0',
   `hospi_cash_refunded` int(1) NOT NULL,
-  `hospi_printed` int(11) NOT NULL DEFAULT '0'
+  `hospi_printed` int(11) NOT NULL DEFAULT '0',
+  `user_registered_by` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -915,7 +916,9 @@ CREATE TABLE IF NOT EXISTS `prhospi_pr_status` (
   `hospi_checkin_time` datetime NOT NULL,
   `hospi_checkpout_time` datetime NOT NULL,
   `amount_recieved` int(11) NOT NULL,
-  `amount_refunded` int(11) NOT NULL
+  `amount_refunded` int(11) NOT NULL,
+  `user_registered_by` int(11) NOT NULL DEFAULT '0'
+
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

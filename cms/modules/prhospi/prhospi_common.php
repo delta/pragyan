@@ -353,7 +353,7 @@ TABLEAMOUNT;
 }
 
 
-function displayAccommodationForm($userId,$mcid) {
+function displayAccommodationForm($userId,$mcid,$registeredBy) {
   if(!isset($_POST['continueToAcco'])||!(isset($_GET['userId']))) {
     return getUserDetailsForHospi(escape($_GET['userId']),$mcid);
   }
@@ -393,7 +393,7 @@ TABLE;
       displayinfo("Room Not Available for Pragyan Id : ".$uid.".Please try again ");
       continue;
     }
-    if(!addUserToRoom($uid,$roomNo,$mcid,escape($_GET['userId']))) continue;
+    if(!addUserToRoom($uid,$roomNo,$mcid,escape($_GET['userId']),$registeredBy)) continue;
     $name = getUserName($uid);
     $email = getUserEmail($uid);
     $room = getRoomNoFromRoomId($roomNo,$mcid);
@@ -416,7 +416,7 @@ TROW;
   return $tableForDisclaimer."</table>".displayRooms($mcid,escape($_GET['userId']));
 }
 
-function ajaxSuggestions($mcid,$type=0) {
+function ajaxSuggestions($mcid,$type=0,$registeredBy=0) {
   // 0 is for insert . and 1 for update
   $content="";
   if(!isset($_POST['userid'])||$_POST['userid']=="") {
@@ -451,7 +451,7 @@ function ajaxSuggestions($mcid,$type=0) {
       return $content;
     }
  
-    if($type==0)  return addUserToRoomAjax($uid,$roomNo,$mcid,escape($_POST['user_reg_value']),$stay);
+    if($type==0)  return addUserToRoomAjax($uid,$roomNo,$mcid,escape($_POST['user_reg_value']),$stay,$registeredBy);
     else          return updateUserToRoomAjax($uid,$roomNo,$mcid,escape($_POST['user_reg_value']),$stay);
       /**code doesn't continue from this part"; */
 
@@ -597,7 +597,7 @@ function isRegisteredToPr($userId,$mcId) {
   return 0;
 }
 
-function checkInPrUser($userId,$mcId) {
+function checkInPrUser($userId,$mcId,$registeredBy) {
   $userId = escape($userId);
   if(!is_numeric($userId)) return 0;
   if(isRegisteredToPr($userId,$mcId)) {
@@ -606,7 +606,7 @@ function checkInPrUser($userId,$mcId) {
   }
   $time = date("Y-m-d H:i:s");
   $amtToBeCollected = getAmount("prhead",$mcId); 
-  $addUserToPrReg = "INSERT INTO `prhospi_pr_status` VALUES ({$mcId},{$userId},'{$time}','0000-00-00 00:00:00',{$amtToBeCollected},0)";
+  $addUserToPrReg = "INSERT INTO `prhospi_pr_status` VALUES ({$mcId},{$userId},'{$time}','0000-00-00 00:00:00',{$amtToBeCollected},0,'{$registeredBy}')";
   $addUserToPrRegQuery = mysql_query($addUserToPrReg) or displayerror(mysql_error());
   if(mysql_affected_rows()>0) {
     displayinfo("Sucessfully Registered for Pragyan");
@@ -694,6 +694,8 @@ function displayUsersRegisteredToPr($mcId) {
           <th>Check Out Time</th>
           <th>Amount Received</th>
           <th>Amount Refunded</th>
+          <th>Registered By</th>
+          <th>Registered By Email</th>
           <th>Disclaimer</th>
           
         </tr>
@@ -702,6 +704,8 @@ TABLE;
   $getRegisteredUserDetailPRQuery = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid`={$mcId}";
   $getRegisteredUserPR = mysql_query($getRegisteredUserDetailPRQuery) or displayerror("Error on viewing registered user".mysql_error());
   while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
+    $registeredByName = getUserName($res['user_registered_by']);
+    $registeredByEmail = getUserEmail($res['user_registered_by']);
     $name = getUserName($res['user_id']);
     $id=$res['user_id'];
     $email = getUserEmail($res['user_id']);
@@ -719,6 +723,8 @@ TABLE;
        <td>{$res['hospi_checkpout_time']}</td>
        <td>{$res['amount_recieved']}</td>
        <td>{$res['amount_refunded']}</td>
+       <td>$registeredByName</td>
+       <td>$registeredByEmail</td>
        <td>
           <form method="POST" target="_blank" action="./+prview">
            <input type="submit" name="printthis" value="PRINT"/>
@@ -811,6 +817,8 @@ function displayUsersRegisteredToAcco($mcId) {
           <th>Amount Refunded</th>
           <th>Hostel</th>
           <th>Room No</th>
+          <th>Registered By</th>
+          <th>Registered By Email</th>
           <th>Disclaimer</th>
         </tr>
     </thead>
@@ -821,7 +829,8 @@ TABLE;
                                        WHERE status.page_modulecomponentid={$mcId}";
   $getRegisteredUserPR = mysql_query($getRegisteredUserDetailAccoQuery) or displayerror("Error on viewing registered user".mysql_error());
   while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
-    
+    $registeredByName = getUserName($res['user_registered_by']);
+    $registeredByEmail = getUserEmail($res['user_registered_by']);
     $name = getUserName($res['user_id']);
     $email = getUserEmail($res['user_id']);
     $printSt = $res['hospi_printed'];
@@ -845,6 +854,8 @@ TABLE;
        <td>{$res['hospi_cash_refunded']}</td>
        <td>{$res['hospi_hostel_name']}</td>
        <td>{$res['hospi_room_no']}</td>
+       <td>$registeredByName</td>
+       <td>$registeredByEmail</td>
        <td>
           <form method="POST" target="_blank" action="./+view">
            <input type="submit" name="printthis" {$val}/>
