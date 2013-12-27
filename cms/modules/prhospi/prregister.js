@@ -8,7 +8,9 @@ $(document).ready(function() {
                 if (chars.length >= 1) {
                     var barcode = chars.join("");
 		    console.log(barcode);
-		    document.getElementById("prCheckInForm").submit();
+		    if ($("#txtFormUserId").is(":focus")) {
+			document.getElementById("prCheckInForm").submit();
+		    }
                 }
                 chars = [];
                 pressed = false;
