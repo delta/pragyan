@@ -176,7 +176,7 @@ function getUserDetailsForHospi($userId,$mcid) {
     //   return "";
   }
   if(!is_numeric($userId)|| $userId=="") {
-    displayerror("Invalid format.<br/>Format should be 'name' - 'userid'");
+    displayerror("Invalid format.<br/>Format should be 'userid'");
     return "";
   }
   $checkUserExist=mysql_query("SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(mysql_error());
@@ -518,15 +518,15 @@ TABLE;
   displayExcelForTable($table);
 }
 
-function getProfileDetailsForPr($userId,$mcid) {
+function submitDetailsForPr($userId,$mcid,$registeredBy) {
   if(!is_numeric($userId)|| $userId=="") {
-    displayerror("Invalid format.<br/>Format should be 'name' - 'userid'");
-    return "";
+    displayerror("Invalid format.<br/>Format should be 'userid'");
+    return '';
   }
   $checkUserExist=mysql_query("SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(mysql_error());
   if(!mysql_num_rows($checkUserExist)) {
     displayerror("Invalid User Id");
-    return "";
+    return '';
   }
 
   $profileDetailQuery = "SELECT descr.form_elementdisplaytext AS dispText,
@@ -545,7 +545,6 @@ function getProfileDetailsForPr($userId,$mcid) {
   }
   $checkRequired=0;
   $userDetails = <<<TABLE
-   <form method = "post" action = "./+prview&subaction=regCompleted">
     <table id="tableUserDetailsHospi" border="1">
        <tr>
          <th>Pr Id</th> 
@@ -571,21 +570,13 @@ TR;
   $userDetails .=<<<TRAMOUNT
 	<tr >
 	  <td colspan="3" style="text-align:center">	    
-		<input type="checkbox" name = "collected" value="1" />&nbsp;&nbsp;&nbsp;Collected Rs $amtToBeCollected from $userName
+		Collected Rs $amtToBeCollected from $userName
 	  </td>	
-
 	</tr>
-	<tr>
-	<td colspan="3">
-	  <input type="hidden" name = "pragyanId" value="{$userId}"/>
-	  <input type="submit"	style="width:100%;font-size:16px;" value = "Finish Registration for {$userId}" />	 
-	</td>
      </table>
-   </form>
 
 TRAMOUNT;
-  
-  return $userDetails;	
+  return $userDetails.checkInPrUser($userId,$mcid,$registeredBy);	
 }
 
 function isRegisteredToPr($userId,$mcId) {
