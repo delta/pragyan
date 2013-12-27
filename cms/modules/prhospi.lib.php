@@ -237,7 +237,7 @@ REQUIRED;
     require_once("$sourceFolder/$moduleFolder/prhospi/prhospi_common.php");
     require_once("$sourceFolder/$moduleFolder/prhospi/accommodation.php");
     if(isset($_POST['subaction'])&&$_POST['subaction']=='accoRegUser') {
-      echo ajaxSuggestions($moduleComponentId);
+      echo ajaxSuggestions($moduleComponentId,0,$this->userId);
       exit();
     }
     if(isset($_POST['subaction'])&&$_POST['subaction']=='accoRegUserUpdate') {
@@ -328,7 +328,7 @@ USER;
       }
     }
     if(isset($_GET['subaction'])&&($_GET['subaction'] == 'accommodation') && isset($_GET['userId'])&&(is_numeric($_GET['userId']))) {
-       $userDetails.=displayAccommodationForm(escape($_GET['userId']),$moduleComponentId);
+      $userDetails.=displayAccommodationForm(escape($_GET['userId']),$moduleComponentId,$this->userId);
     }
 
     $amtToCollect = getAmount("hospihead",$moduleComponentId);
@@ -582,7 +582,7 @@ USER;
     if(isset($_GET['subaction'])) {
 	if($_GET['subaction'] == 'regCompleted') {
 	   if($_POST['collected'] == 1) {
-	      $userDetails.=checkInPrUser(escape($_POST['pragyanId']),$moduleComponentId);
+	     $userDetails.=checkInPrUser(escape($_POST['pragyanId']),$moduleComponentId,$this->userId);
 	   }
 	}
     }

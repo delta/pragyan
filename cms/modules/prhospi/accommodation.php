@@ -57,7 +57,7 @@ DIV;
 DIV;
   return $retForm;
 }
-function addUserToRoom($userId,$roomId,$mcid,$checkedInBy) {
+function addUserToRoom($userId,$roomId,$mcid,$checkedInBy,$registeredBy) {
   displayinfo($userId);
   global $sourceFolder,$moduleFolder;
   require_once("$sourceFolder/$moduleFolder/prhospi/prhospi_common.php");
@@ -82,8 +82,8 @@ function addUserToRoom($userId,$roomId,$mcid,$checkedInBy) {
     $time = date("Y-m-d H:i:s");
     
     $insertDetailsQuery = "INSERT INTO `prhospi_accomodation_status` 
-                            (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by)
-                            VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}')";
+                            (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,user_registered_by)
+                            VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}','{$registeredBy}')";
     $insertDetailsRes = mysql_query($insertDetailsQuery) or displayerror(mysql_error());
     return true;
 
@@ -207,7 +207,7 @@ RED;
 
 
 
-function addUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay) {
+function addUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay,$registeredBy) {
  global $sourceFolder,$moduleFolder;
   require_once("$sourceFolder/$moduleFolder/prhospi/prhospi_common.php");
 
@@ -231,8 +231,8 @@ function addUserToRoomAjax($userId,$roomId,$mcid,$checkedInBy,$stay) {
     $initialAmount1=getAmount("hospihead1",$mcid);
     $amtRecieved = $initialAmount+($stay*$initialAmount1); 
     $insertDetailsQuery = "INSERT INTO `prhospi_accomodation_status` 
-                            (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,hospi_cash_recieved)
-                            VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved})";
+                            (page_modulecomponentid,hospi_room_id,user_id,hospi_actual_checkin,hospi_checkedin_by,hospi_cash_recieved,user_registered_by)
+                            VALUES ($mcid,$roomId,$userId,'{$time}','{$checkedInBy}',{$amtRecieved},'{$registeredBy}')";
     $insertDetailsRes = mysql_query($insertDetailsQuery) or die(mysql_error());
     $availableRoomNo=getAvailableRooms($mcid);
     return "Success  {$availableRoomNo}";
