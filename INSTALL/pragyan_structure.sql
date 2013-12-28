@@ -444,6 +444,55 @@ CREATE TABLE IF NOT EXISTS `news_data` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `oc_config`
+--
+
+CREATE TABLE IF NOT EXISTS `oc_config` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `key` varchar(100) NOT NULL,
+  `value` text NOT NULL,
+  UNIQUE KEY `key` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oc_form_reg`
+--
+
+CREATE TABLE IF NOT EXISTS `oc_form_reg` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_moduleComponentId` int(11) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
+  `name` text NOT NULL,
+  `amount` int(11) NOT NULL,
+  `Tshirt_size` text NOT NULL,
+  `updated_time` datetime NOT NULL,
+  `oc_tshirt_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `oc_food_coupon_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `oc_extra_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oc_valid_emails`
+--
+
+CREATE TABLE IF NOT EXISTS `oc_valid_emails` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_moduleComponentId` int(11) NOT NULL,
+  `oc_name` text NOT NULL,
+  `oc_valid_email` varchar(100) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `oc_valid_email` (`oc_valid_email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `news_desc`
 --
 
