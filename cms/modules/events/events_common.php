@@ -253,98 +253,410 @@ function deleteEvent($eventid, $pmcid){
 }
 
 function displayQA($pmcid){
-		$selectEventQuery = "SELECT `event_id`,`event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' ORDER BY `event_name`";
-		$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
-		if(mysql_num_rows($selectEventRes) > 0){
-				$selectEvent = <<<FORM
-						<form method="POST" action="./+qa&subaction=viewEvent">
-								<select name='eventId'>
+	$selectEventQuery = "SELECT `event_id`,`event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' AND `event_id` NOT IN (SELECT `event_id` FROM `events_locked` WHERE `page_moduleComponentId` = '{$pmcid}') ORDER BY `event_name`";
+	$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
+	if(mysql_num_rows($selectEventRes) > 0){
+		$selectEvent = <<<FORM
+			<form method="POST" action="./+qa&subaction=viewEvent">
+				<select name='eventId' id='eventId'>
 FORM;
-				while($eventList = mysql_fetch_assoc($selectEventRes)){
-						$selectEvent.=<<<DROPDOWN
-						<option value="{$eventList['event_id']}">{$eventList['event_name']}</option>        
+		while($eventList = mysql_fetch_assoc($selectEventRes)){
+			$selectEvent.=<<<DROPDOWN
+			<option value="{$eventList['event_id']}">{$eventList['event_name']}</option>	
 DROPDOWN;
-				}
-				$selectEvent.="</select><input type='submit'value='Select'></form>";
 		}
-		else
-				$selectEvent = displayerror("No Events Found");
-		return $selectEvent;
+		$selectEvent.="</select><input type='submit'value='Select'></form>";
+	}
+	else
+		$selectEvent = displayerror("No Events Found");
+	return $selectEvent;
 }
 
 function eventParticipants($pmcId,$eventId){
-		global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
-		$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-//        $selectNameQuery="SELECT `events_form`.`form_id`,`events_form`.`event_id`,`form_elementdata`.`form_elementdata`,
-//        `form_elementdata`.`page_moduleComponentId`,`pragyancms_users`.`user_id`,`pragyancms_users`.`user_name` FROM "
-//        ."`form_elementdata`,`events_form`,`pragyancms_users` WHERE `form_elementdata`.`page_moduleComponentId`=`form_id`"
-		global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
-		global $STARTSCRIPTS;
-		$smarttable = smarttable::render(array('reg_users_table'),null);
-		$STARTSCRIPTS.="initSmartTable();";
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+//	$selectNameQuery="SELECT `events_form`.`form_id`,`events_form`.`event_id`,`form_elementdata`.`form_elementdata`,
+//	`form_elementdata`.`page_moduleComponentId`,`pragyancms_users`.`user_id`,`pragyancms_users`.`user_name` FROM `form_elementdata`,`events_form`,`pragyancms_users` WHERE `form_elementdata`.`page_moduleComponentId`=`form_id`"
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	global $STARTSCRIPTS;
+	$smarttable = smarttable::render(array('reg_users_table'),null);
+	$STARTSCRIPTS.="initSmartTable();";
 
-		$selectTableHeadQuery = "SELECT `form_elementdesc`.`form_elementdisplaytext` FROM `form_elementdesc`
-						INNER JOIN `events_form` ON `form_elementdesc`.`page_moduleComponentId` = `events_form`.`form_id`
-						AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'";
+	$participantsList=displayQA($pmcId);
 
-		$selectTableHeadRes = mysql_query($selectTableHeadQuery) or displayerror(mysql_error());
+	$eventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `event_id` = '{$eventId}'";
+	$eventNameRes = mysql_query($eventNameQuery) or displayerror(mysql_error());
 
-		if(mysql_num_rows($selectTableHeadRes) > 0){
-				$participantsList =<<<TABLE
-						<script src="$scriptFolder/events.js"></script>
-						<script src="$scriptFolder/jquery.js"></script>
-						$smarttable<table id='reg_users_table' class='display' width='100%' border='1'><thead><tr>
+	while($eventName = mysql_fetch_assoc($eventNameRes))
+		$participantsList.="<strong>{$eventName['event_name']}</strong>";
+
+	$participantsList.=<<<CONFIRMED
+		<form method='POST' action='./+qa&subaction=viewConfirmed'>
+		<input type='hidden' name='eventId' value='{$eventId}'/>
+		<input type='submit' value='Confirmed'/></form>
+CONFIRMED;
+
+	$selectTableHeadQuery = "SELECT `form_elementdesc`.`form_elementdisplaytext` FROM `form_elementdesc`
+			INNER JOIN `events_form` ON `form_elementdesc`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'";
+
+	$selectTableHeadRes = mysql_query($selectTableHeadQuery) or displayerror(mysql_error());
+
+	if(mysql_num_rows($selectTableHeadRes) > 0){
+		$participantsList .=<<<TABLE
+			<script src="$scriptFolder/events.js"></script>
+			<script src="$scriptFolder/jquery.js"></script>
+			$smarttable<table id='reg_users_table' class='display' width='100%' border='1'><thead><tr>
 TABLE;
-				while($tableHead = mysql_fetch_assoc($selectTableHeadRes)){
-						$participantsList.="<th>{$tableHead['form_elementdisplaytext']}</th>";
-				}
-
-				$participantsList.="<th>Confirm</th></tr></thead>";
-
-				$selectIdQuery = "SELECT DISTINCT `form_elementdata`.`user_id` FROM `form_elementdata` 
-						INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
-						AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'
-						WHERE `form_elementdata`.`user_id` NOT IN (SELECT `events_confirmed_participants`.`user_id` FROM `events_confirmed_participants`)
-						ORDER BY `form_elementdata`.`user_id`";
-
-				$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
-
-				while($regId = mysql_fetch_assoc($selectIdRes)){
-				
-						$selectDetailsQuery = "SELECT `form_elementdata`.`form_elementdata`,`form_elementdata`.`user_id` 
-								FROM `form_elementdata` INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
-								AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND 
-								`form_elementdata`.`user_id` = '".$regId['user_id']."'";
-
-						$selectDetailsRes = mysql_query($selectDetailsQuery) or displayerror(mysql_error());
-						$participantsList.="<tr>";
-
-						while($userDetails = mysql_fetch_assoc($selectDetailsRes)){
-								$participantsList.="<td>".$userDetails['form_elementdata']."</td>";
-						}
-						$participantsList.=<<<BUTTON
-								<td>
-								<form method='POST' action='./+qa&subaction=confirmParticipation'>
-								<input type='hidden' value='{$regid['user_id']}' name='userid'>
-								<input type='hidden' value='$eventId' name='eventid'>
-								<input type='submit' value='Confirm'>
-								</form>
-								<!--<button onclick="confirmParticipant({$regId['user_id']},$eventId)" value="Confirm">Confirm</button>-->
-								</td>
-								</tr>
-BUTTON;
-				}
-				$participantsList.="</table>";
+		while($tableHead = mysql_fetch_assoc($selectTableHeadRes)){
+			$participantsList.="<th>{$tableHead['form_elementdisplaytext']}</th>";
 		}
-		else
-				$participantsList = displayerror("Event Form Doesn't Exist.");
-		return $participantsList;
+
+		$participantsList.="<th>Options</th></tr></thead>";
+
+		$selectIdQuery = "SELECT DISTINCT `form_elementdata`.`user_id`,`form_elementdata`.`page_moduleComponentId` FROM `form_elementdata` 
+			INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'
+			WHERE `form_elementdata`.`user_id` NOT IN (SELECT `events_confirmed_participants`.`user_id` FROM `events_confirmed_participants` WHERE `events_confirmed_participants`.`page_moduleComponentId` =  '{$pmcId}')
+			ORDER BY `form_elementdata`.`user_id`";
+
+		$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
+
+		while($regId = mysql_fetch_assoc($selectIdRes)){
+
+			//Check if edited form values exist in events_edited_form for the user
+
+			$selectModifiedDetailsQuery = "SELECT `events_edited_form`.`form_elementdata`,`events_edited_form`.`form_elementid`,`events_edited_form`.`user_id`
+				FROM `events_edited_form` INNER JOIN `events_form` ON `events_edited_form`.`form_id`=`events_form`.`form_id`
+				AND `events_form`.`event_id`='{$eventId}' AND `events_edited_form`.`page_moduleComponentId`='{$pmcId}' AND
+				`events_edited_form`.`user_id`='".$regId['user_id']."'";
+
+			$selectDetailsRes = mysql_query($selectModifiedDetailsQuery) or displayerror(mysql_error());
+
+			if(mysql_num_rows($selectDetailsRes) == 0){
+
+				//If not modified, select original data from form_elementdata
+		
+				$selectDetailsQuery = "SELECT `form_elementdata`.`form_elementdata`,`form_elementdata`.`form_elementid` 
+					FROM `form_elementdata` INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+					AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND 
+					`form_elementdata`.`user_id` = '".$regId['user_id']."'";
+
+				$selectDetailsRes = mysql_query($selectDetailsQuery) or displayerror(mysql_error());
+			}
+			$participantsList.="<tr>";
+
+			//$editRowValue="";
+			$editRowId="";
+			//$editRowId=array();
+
+			while($userDetails = mysql_fetch_assoc($selectDetailsRes)){
+				$participantsList.="<td><span class='userDataDisp{$regId['user_id']}'>".$userDetails['form_elementdata']."</span><input type='text' class='userDataEditVal{$regId['user_id']}' value='{$userDetails['form_elementdata']}' style='display:none'></td>";
+				//$editRowValue.=$userDetails['form_elementdata'].",";
+				//array_push($editRowId, $userDetail['form_elementid']);
+				$editRowId.=$userDetails['form_elementid'].",";
+			}
+
+		//	$editRowValue = rtrim($editRowValue,",");
+			$editRowId = rtrim($editRowId,",");
+			//return $editRowId;
+			$participantsList.=<<<BUTTON
+				<td>
+
+				<form method='POST' class='userDataDisp{$regId['user_id']}' action='./+qa&subaction=confirmParticipant' onsubmit='return confirmParticipant();'>
+				<input type='hidden' value='{$regId['user_id']}' name='userId'>
+				<input type='hidden' value='$eventId' name='eventId'>
+				<input type='submit' value='Confirm'>
+				</form>
+
+				<button class='userDataDisp{$regId['user_id']}' onclick="editParticipant({$regId['user_id']},$eventId)" value="Edit">Edit</button>
+				<button class='userDataEdit{$regId['user_id']}' onclick="updateParticipant({$regId['user_id']},{$regId['page_moduleComponentId']},'$editRowId')" style='display:none' value='Update'>Update</button>
+				<button class='userDataEdit{$regId['user_id']}' onclick="cancelEditParticipant({$regId['user_id']},$eventId)" style='display:none' value='Cancel'>Cancel</button>
+
+				<!--<button onclick="confirmParticipant({$regId['user_id']},$eventId)" value="Confirm">Confirm</button>-->
+				</td>
+				</tr>
+BUTTON;
+		}
+		$participantsList.="</table>";
+	}
+	else
+		$participantsList = displayerror("Event Form Doesn't Exist.");
+	return $participantsList;
 }
 
 function confirmParticipation($pmcid,$eventId,$userId){
-		$confirmQuery = "INSERT INTO `events_confirmed_participants`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
-		$confirmRes = mysql_query($confirmQuery) or displayerror(mysql_error());
-		return "Successfully deleted.";
+	$confirmQuery = "INSERT INTO `events_confirmed_participants`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
+	$confirmRes = mysql_query($confirmQuery) or displayerror(mysql_error());
+	$userRankQuery = "INSERT INTO `events_result`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
+	$userRankRes = mysql_query($userRankQuery) or displayerror(mysql_error());
+	//return "Successfully deleted.";
+	$redirectData = <<<POSTDATA
+		<form method='POST' action='./+qa&subaction=viewEvent' name='postDataForm'>
+		<input type='hidden' name='eventId' value='{$eventId}'/>
+		</form>
+		<script type='text/javascript'>
+			document.postDataForm.submit();
+		</script>
+POSTDATA;
+	return $redirectData;
+}
+
+function editParticipant($pmcId,$formId,$userId,$rowValue,$rowId){
+	$rowValueArray = explode(",",$rowValue);
+	$rowIdArray = explode(",",$rowId);
+	//$rowValueArray = $rowValue;
+	//$rowIdArray = $rowId;
+	//return $rowValue." AND ".$rowId;
+	for($i=0;$i<sizeof($rowValueArray);$i++){
+		$insertEditedRowQuery = "INSERT INTO `events_edited_form`(`page_moduleComponentId`,`form_id`,`user_id`,`form_elementid`,`form_elementdata`) 
+			VALUES('{$pmcId}','{$formId}','{$userId}','{$rowIdArray[$i]}','{$rowValueArray[$i]}') ON DUPLICATE KEY UPDATE `form_elementdata`='{$rowValueArray[$i]}'";
+		$insertEditedRowRes = mysql_query($insertEditedRowQuery) or displayerror(mysql_error());
+	}
+}
+
+function viewConfirmedParticipants($pmcId,$eventId){
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	global $STARTSCRIPTS;
+	$smarttable = smarttable::render(array('reg_users_table'),null);
+	$STARTSCRIPTS.="initSmartTable();";
+
+	$confirmedList=displayQA($pmcId);
+
+	$eventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `event_id` = '{$eventId}'";
+	$eventNameRes = mysql_query($eventNameQuery) or displayerror(mysql_error());
+
+	while($eventName = mysql_fetch_assoc($eventNameRes))
+		$confirmedList.="<strong>{$eventName['event_name']}</strong>";
+
+
+	$confirmedList.=<<<FORM
+		<form method='POST' action='./+qa&subaction=viewEvent'>
+		<input type='hidden' value='{$eventId}' name='eventId'>
+		<input type='submit' value='Unconfirmed'>
+		</form>
+		<form method='POST' action='./+qa&subaction=lockEvent' onsubmit='return lockConfirm();'>
+		<input type='hidden' value='{$eventId}' name='eventId'>
+		<input type='submit' id='lockButton' value='LOCK EVENT'>
+		</form>
+FORM;
+
+	
+	$selectTableHeadQuery = "SELECT `form_elementdesc`.`form_elementdisplaytext` FROM `form_elementdesc`
+			INNER JOIN `events_form` ON `form_elementdesc`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'";
+
+	$selectTableHeadRes = mysql_query($selectTableHeadQuery) or displayerror(mysql_error());
+
+	if(mysql_num_rows($selectTableHeadRes) > 0){
+		$confirmedList .=<<<TABLE
+			<script src="$scriptFolder/events.js"></script>
+			<script src="$scriptFolder/jquery.js"></script>
+			$smarttable<table id='reg_users_table' class='display' width='100%' border='1'><thead><tr>
+TABLE;
+		while($tableHead = mysql_fetch_assoc($selectTableHeadRes)){
+			$confirmedList.="<th>{$tableHead['form_elementdisplaytext']}</th>";
+		}
+
+		$confirmedList.="<th>Rank</th><th>Options</th></tr></thead>";
+
+		$selectIdQuery = "SELECT DISTINCT `form_elementdata`.`user_id` FROM `form_elementdata` 
+			INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'
+			WHERE `form_elementdata`.`user_id` IN (SELECT `events_confirmed_participants`.`user_id` FROM `events_confirmed_participants` WHERE `events_confirmed_participants`.`page_moduleComponentId` =  '{$pmcId}')
+			ORDER BY `form_elementdata`.`user_id`";
+
+
+		$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
+
+		while($regId = mysql_fetch_assoc($selectIdRes)){
+		
+			$selectDetailsQuery = "SELECT `form_elementdata`.`form_elementdata`,`form_elementdata`.`form_elementid` 
+				FROM `form_elementdata` INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+				AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND 
+				`form_elementdata`.`user_id` = '".$regId['user_id']."'";
+
+			$selectDetailsRes = mysql_query($selectDetailsQuery) or displayerror(mysql_error());
+			$confirmedList.="<tr>";
+
+
+			while($userDetails = mysql_fetch_assoc($selectDetailsRes)){
+				$confirmedList.="<td>".$userDetails['form_elementdata']."</td>";
+			}
+
+			$selectRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `user_id` = '{$regId['user_id']}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
+			$selectRankRes = mysql_query($selectRankQuery) or displayerror(mysql_error());
+			$userRank = mysql_result($selectRankRes,0);
+			$confirmedList.=<<<BUTTONS
+			<td><span id="userId{$regId['user_id']}"">$userRank</span>
+			<input type="text" id="userIdEdit{$regId['user_id']}" value="{$userRank}" name="userRank" style="display:none" /></td>
+			<td>
+			<button class="editRankButtons{$regId['user_id']}" onclick="editParticipantRank({$regId['user_id']},$eventId)" value="Edit">Edit</button>
+			<button value="Update" class="editRankOptionButtons{$regId['user_id']}" onclick="confirmEditRank({$regId['user_id']},$eventId)" style="display:none">Update</button>
+			<button value="Cancel" class="editRankOptionButtons{$regId['user_id']}" onclick="cancelEditRank({$regId['user_id']},$eventId)" style="display:none">Cancel</button>
+			</td></tr>
+BUTTONS;
+		}
+		$confirmedList.="</table>";
+	}
+
+	return $confirmedList;
+}
+
+function editParticipantRank($pmcId,$eventId,$userId,$newRank){
+	$updateRankQuery = "UPDATE `events_result` SET `user_rank` = '{$newRank}' WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$userId}' AND `event_id`='{$eventId}'";
+	$updateRankRes = mysql_query($updateRankQuery) or displayerror(mysql_error());
+}
+
+function lockEvent($pmcId,$eventId){
+
+	$lockEventQuery = "INSERT INTO `events_locked`(`page_moduleComponentId`,`event_id`) VALUES('{$pmcId}','{$eventId}')";
+	$lockEventRes = mysql_query($lockEventQuery) or displayerror(mysql_error());
+	return "Event Locked";
+}
+
+
+// ~~~~~~~~~~~~~~~~ QA Head  ~~~~~~~~~~~~~~~~~~~`
+
+function qaHeadOptions($pmcId){
+	$selectEventQuery = "SELECT `event_id`,`event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcId}' ORDER BY `event_name`";
+	$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
+	if(mysql_num_rows($selectEventRes) > 0){
+		$selectEvent = <<<FORM
+			<form method="POST" action="./+qa&subaction=viewEvent">
+				<select name='eventId'>
+FORM;
+		while($eventList = mysql_fetch_assoc($selectEventRes)){
+			$selectEvent.=<<<DROPDOWN
+			<option value="{$eventList['event_id']}">{$eventList['event_name']}</option>	
+DROPDOWN;
+		}
+		$selectEvent.="</select><input type='submit'value='Select'></form>";
+	}
+	else
+		$selectEvent = displayerror("No Events Found");
+	return $selectEvent;
+}
+
+
+//~~~~~~~~~~~~~~~    PR   ~~~~~~~~~~~~~~~~
+
+function displayPR($pmcId){
+	$selectLockedEventsQuery = "SELECT `events_details`.`event_id`, `events_details`.`event_name` FROM `events_details` INNER JOIN `events_locked` 
+		ON `events_locked`.`event_id` = `events_details`.`event_id` AND `events_locked`.`page_moduleComponentId` = `events_details`.`page_moduleComponentId` 
+		AND `events_details`.`page_moduleComponentId` = '{$pmcId}'";
+	$selectLockedEventsRes = mysql_query($selectLockedEventsQuery) or displayerror(mysql_error());
+	if(mysql_num_rows($selectLockedEventsRes) > 0){
+		$selectEvent = <<<FORM
+			<form method="POST" action="./+pr&subaction=viewEvent">
+				<select name='eventId'>
+FORM;
+		while($eventList = mysql_fetch_assoc($selectLockedEventsRes)){
+			$selectEvent.=<<<DROPDOWN
+			<option value="{$eventList['event_id']}">{$eventList['event_name']}</option>	
+DROPDOWN;
+		}
+		$selectEvent.="</select><input type='submit'value='Select'></form>";
+	}
+	else
+		$selectEvent = displayerror("No Events Found");
+	return $selectEvent;
+}
+
+function viewEventResult($pmcId,$eventId){
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	global $STARTSCRIPTS;
+	$resultList="";
+
+	//Print the details
+	$resultList.=<<<PRINT
+		<form method='POST' action='./+pr&subaction=printCerti'>
+		<input type='hidden' name='eventId' value='{$eventId}'>
+		<input type='submit' value='Print PDF'>
+		</form>
+PRINT;
+
+	$smarttable = smarttable::render(array('event_result_table'),null);
+	$STARTSCRIPTS.="initSmartTable();";
+
+	$selectTableHeadQuery = "SELECT `form_elementdesc`.`form_elementdisplaytext` FROM `form_elementdesc`
+			INNER JOIN `events_form` ON `form_elementdesc`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'";
+
+	$selectTableHeadRes = mysql_query($selectTableHeadQuery) or displayerror(mysql_error());
+	if(mysql_num_rows($selectTableHeadRes) > 0){
+		$resultList .=<<<TABLE
+			<script src="$scriptFolder/events.js"></script>
+			<script src="$scriptFolder/jquery.js"></script>
+			$smarttable<table id='event_result_table' class='display' width='100%' border='1'><thead><tr>
+TABLE;
+		while($tableHead = mysql_fetch_assoc($selectTableHeadRes)){
+			$resultList.="<th>{$tableHead['form_elementdisplaytext']}</th>";
+		}
+
+		$resultList.="<th>Rank</th></tr></thead>";
+
+		$selectIdQuery = "SELECT DISTINCT `form_elementdata`.`user_id` FROM `form_elementdata` 
+			INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'
+			WHERE `form_elementdata`.`user_id` IN (SELECT `events_confirmed_participants`.`user_id` FROM `events_confirmed_participants` WHERE `events_confirmed_participants`.`page_moduleComponentId` =  '{$pmcId}')
+			ORDER BY `form_elementdata`.`user_id`";
+
+
+		$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
+
+		while($regId = mysql_fetch_assoc($selectIdRes)){
+			$selectResultQuery = "SELECT `form_elementdata`.`form_elementdata`,`form_elementdata`.`user_id` 
+				FROM `form_elementdata` INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+				AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND 
+				`form_elementdata`.`user_id` = '".$regId['user_id']."'";
+
+			$selectResultRes = mysql_query($selectResultQuery) or displayerror(mysql_error());
+
+			$resultList.="<tr>";
+
+			while($userDetails = mysql_fetch_assoc($selectResultRes)){
+				$resultList.="<td>".$userDetails['form_elementdata']."</td>";
+			}
+
+			$selectRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `user_id` = '{$regId['user_id']}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
+			$selectRankRes = mysql_query($selectRankQuery) or displayerror(mysql_error());
+
+			$resultList.="<td>".mysql_result($selectRankRes,0)."</td>";
+		}
+		$resultList.="</table>";
+	}
+
+	return $resultList;
+}
+
+function printCertificates($pmcId,$eventId){
+	global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
+	//Get User Id and User Rank, Generate Image by passing these values
+	//Select user id and user rank where event id and pmc id and user rank not -1 confirmed participants
+	//for each participant print image and put it in a diff page
+	require_once("$sourceFolder/$moduleFolder/events/html2pdf/html2pdf.class.php");	
+	$selectIdQuery = "SELECT DISTINCT `form_elementdata`.`user_id`,`events_result`.`user_rank` FROM `form_elementdata`
+			INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
+			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'
+			INNER JOIN `events_result` ON `events_result`.`user_id` = `form_elementdata`.`user_id` AND `events_result`.`page_moduleComponentId`='{$pmcId}'
+			WHERE `form_elementdata`.`user_id` IN (SELECT `events_confirmed_participants`.`user_id` FROM `events_confirmed_participants` WHERE `events_confirmed_participants`.`page_moduleComponentId` =  '{$pmcId}')
+			AND `events_result`.`user_rank` IN ('0','1','2','3','5') ORDER BY `events_result`.`user_rank`";
+
+
+	$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
+	$certiImage = "";
+	while($printParticipant = mysql_fetch_assoc($selectIdRes)){
+		//return "$sourceFolder/$moduleFolder/events/events_certi_image.php?userId=".$printParticipant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank'];
+		$certiImage.="<page><img src='$sourceFolder/$moduleFolder/events/events_certi_image.php?userId=".$printParticipant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank']."'></page>";
+	}
+	$html2pdf = new HTML2PDF('P','A4','en');
+    $html2pdf->WriteHTML($certiImage);
+    $html2pdf->Output('example.pdf');
 }
 
 function validateProcurementData($pageModuleComponentId){

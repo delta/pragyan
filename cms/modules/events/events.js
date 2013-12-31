@@ -139,22 +139,96 @@ function deleteEvent(eventid) {
 
 
 //Test... (Should be changed)
-function confirmParticipant(userid,eventid){
-	var option = confirm("Are you sure?");
-	if(option == true){
-		var ajaxReq = $.ajax({
-			type:"POST",
-			dataType :"html",
-			url:"./+qa&subaction=confirmParticipant",
-			data:{
-				userid:userid,
-				eventid:eventid,
-			}
-		});
-		ajaxReq.done(function(){
-			cmsShow("info","Participant Added.");
-		});
+function confirmParticipant(){
+	if(confirm("Are You Sure?") == false){
+		return false;
 	}
+}
+
+function editParticipant(userid,eventid){
+	$(".userDataDisp"+userid).css('display','none');
+	$(".userDataEdit"+userid).css('display','block');
+	$(".userDataEditVal"+userid).css('display','block');
+}
+
+function cancelEditParticipant(userid,eventid){
+	$(".userDataDisp"+userid).css('display','block');
+	$(".userDataEdit"+userid).css('display','none');
+	$(".userDataEditVal"+userid).css('display','none');
+}
+
+function updateParticipant(userid,formid,rowId){
+	
+	var getAllEdits = document.getElementsByClassName('userDataEditVal'+userid);
+	var rowValue = new Array();
+	for(var i=0;i<getAllEdits.length;i++)
+		rowValue.push(getAllEdits[i].value);
+	//var rowValue="";
+	/*for(var i=0;i<rowValues.length;i++)
+		rowValue+=getAllEdits[i]+",";
+	rowValue = */
+	rowValue = rowValue.toString();
+	//rowId = rowId.toString();
+	alert(rowId);
+	var ajaxRequest = $.ajax({
+		type : "POST",
+		datatype : "html",
+		url : "./+qa&subaction=editParticipant",
+		data : {
+			formId : formid,
+			userId : userid,
+			rowValue : rowValue,
+			rowId : rowId,
+		}
+	});
+	$(".userDataDisp"+userid).css('display','block');
+	$(".userDataEdit"+userid).css('display','none');
+	$(".userDataEditVal"+userid).css('display','none');
+}
+
+function editParticipantRank(userid,eventid){
+	$("#userId"+userid).css('display','none');
+	$("#userIdEdit"+userid).css('display','block');
+	$(".editRankButtons"+userid).css('display','none');
+	$(".editRankOptionButtons"+userid).css('display','block');
+}
+
+function cancelEditRank(userid,eventid){
+	$("#userId"+userid).css('display','block');
+	$("#userIdEdit"+userid).css('display','none');
+	$(".editRankButtons"+userid).css('display','block');
+	$(".editRankOptionButtons"+userid).css('display','none');
+}
+
+function confirmEditRank(userid,eventid){
+	var newRank = $("#userIdEdit"+userid).val();
+	var ajaxRequest = $.ajax({
+		type : "POST",
+		datatype : "html",
+		url : "./+qa&subaction=editParticipantRank",
+		data :{
+			eventId : eventid,
+			userId : userid,
+			newRank : newRank,
+		}
+	});
+	ajaxRequest.done(function(msg){
+		console.log(msg);
+	});
+	cmsShow("info","Success!");
+	$("#userId"+userid).css('display','block');
+	$("#userIdEdit"+userid).css('display','none');
+	$(".editRankButtons"+userid).css('display','block');
+	$(".editRankOptionButtons"+userid).css('display','none');
+}
+
+function lockConfirm(){
+	if(confirm("Do you want to lock this event?")){
+		if(confirm("Are You Sure?") == false)
+			return false;
+	}
+	else
+		return false;
 }
 
 function submitAddProcurementData() {
