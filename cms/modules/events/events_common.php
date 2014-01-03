@@ -210,7 +210,7 @@ function getEventsJSON($pmcid){
 		exit;
 }
 
-function getSchedule($pmcid){
+function oldgetSchedule($pmcid){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 
@@ -236,6 +236,22 @@ function getSchedule($pmcid){
 			}
 
 	</style>
+SCHEDULE;
+	return $schedule;
+}
+
+function getSchedule($pmcid){
+	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+
+	$schedule=<<<SCHEDULE
+	<script src="$scriptFolder/jquery.js"></script>
+	<script src="$scriptFolder/events.js"></script>
+	<table>
+	<th>Event</th>
+	<th>Location</th>
+	<th>Time</th>
+	</table>
 SCHEDULE;
 	return $schedule;
 }

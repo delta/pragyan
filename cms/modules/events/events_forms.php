@@ -7,9 +7,9 @@ require_once("$sourceFolder/$moduleFolder/events/googleMapsConfig.php");
 //displayinfo($scriptFolder);
 
 $addForm=<<<FORM
-		<link rel="stylesheet" type="text/css" href="$scriptFolder/jquery.datetimepicker.css"/ >
+		<link rel="stylesheet" type="text/css" href="$scriptFolder/datetimepicker/jquery.datetimepicker.css"/ >
 		<script src="$scriptFolder/jquery.js"></script>
-		<script src="$scriptFolder/jquery.datetimepicker.js"></script>
+		<script src="$scriptFolder/datetimepicker/jquery.datetimepicker.js"></script>
 		<script src="$scriptFolder/events.js"></script>
 		<form method="post" id="addEventForm" enctype="multipart/form-data" action="./+eventshead">
 		<table>
@@ -87,9 +87,9 @@ $startTime=substr($row[event_start_time], 0, 5);
 $endTime=substr($row[event_end_time], 0, 5);
 
 $editForm=<<<FORM
-		<link rel="stylesheet" type="text/css" href="$scriptFolder/jquery.datetimepicker.css"/ >
+		<link rel="stylesheet" type="text/css" href="$scriptFolder/datetimepicker/jquery.datetimepicker.css"/ >
 		<script src="$scriptFolder/jquery.js"></script>
-		<script src="$scriptFolder/jquery.datetimepicker.js"></script>
+		<script src="$scriptFolder/datetimepicker/jquery.datetimepicker.js"></script>
 		<script src="$scriptFolder/events.js"></script>
 		<form method="post" id="editEventForm" enctype="multipart/form-data" action="./+eventshead">
 		<table>
