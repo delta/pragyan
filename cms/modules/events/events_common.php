@@ -244,15 +244,28 @@ function getSchedule($pmcid){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 
+	$eventsQuery="SELECT * FROM `events_details` "
+				."WHERE `page_moduleComponentId`='{$pmcid}'"
+				."ORDER BY event_date ASC;";
+	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
+
 	$schedule=<<<SCHEDULE
 	<script src="$scriptFolder/jquery.js"></script>
 	<script src="$scriptFolder/events.js"></script>
 	<table>
-	<th>Event</th>
-	<th>Location</th>
-	<th>Time</th>
-	</table>
+	<th width='10%;'>Event</th>
+	<th width='10%;'>Location</th>
+	<th width='10%;'>Time</th>
 SCHEDULE;
+
+	while($row=mysql_fetch_array($eventsRes)){
+		$schedule.="<tr> <td>{$row['event_name']}</td> <td>{$row['event_venue']}</td><td>";
+		$schedule.=substr($row['event_start_time'], 0, 5);
+		$schedule.=" to ";		
+		$schedule.=substr($row['event_end_time'], 0, 5);
+		$schedule.="</td></tr>";
+	}
+	$schedule.="</table>";
 	return $schedule;
 }
 
