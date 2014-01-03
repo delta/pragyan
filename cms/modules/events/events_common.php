@@ -210,36 +210,6 @@ function getEventsJSON($pmcid){
 		exit;
 }
 
-function oldgetSchedule($pmcid){
-	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
-	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-
-	$schedule=<<<SCHEDULE
-	<script src="$scriptFolder/jquery.js"></script>
-	<link href='$scriptFolder/fullcalendar/fullcalendar.css' rel='stylesheet' />
-	<link href='$scriptFolder/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
-	<script src="$scriptFolder/fullcalendar/fullcalendar.min.js"></script>
-	<script src="$scriptFolder/jquery-ui.custom.min.js"></script>
-	<script src="$scriptFolder/events.js"></script>
-	<div id='calendar'></div>
-	<script>
-		document.onreadystatechange = function () {
-		  if (document.readyState == "interactive") {
-		  	showSchedule($pmcid);
-		  }
-		}
-	</script>
-	<style>
-		#calendar {
-			width: 900px;
-			margin: 0 auto;
-			}
-
-	</style>
-SCHEDULE;
-	return $schedule;
-}
-
 function getSchedule($pmcid){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
@@ -254,12 +224,15 @@ function getSchedule($pmcid){
 	<script src="$scriptFolder/events.js"></script>
 	<table>
 	<th width='10%;'>Event</th>
-	<th width='10%;'>Location</th>
+	<th width='10%;'>Venue</th>
+	<th width='10%;'>Date</th>
 	<th width='10%;'>Time</th>
 SCHEDULE;
 
 	while($row=mysql_fetch_array($eventsRes)){
+		$edate=$row['event_name'];
 		$schedule.="<tr> <td>{$row['event_name']}</td> <td>{$row['event_venue']}</td><td>";
+		$schedule.="{$row['event_date']}</td><td>";
 		$schedule.=substr($row['event_start_time'], 0, 5);
 		$schedule.=" to ";		
 		$schedule.=substr($row['event_end_time'], 0, 5);
