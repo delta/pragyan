@@ -161,7 +161,7 @@ class events implements module,fileuploadable {
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 		$moduleComponentId=$this->moduleComponentId;
 		$userId=$this->userId;
-		require_once("$sourceFolder/$moduleFolder/events/events_common1.php");
+		require_once("$sourceFolder/$moduleFolder/events/events_common.php");
 		require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
 		return qaHeadOptions($moduleComponentId);
 	}
@@ -170,7 +170,7 @@ class events implements module,fileuploadable {
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 		$moduleComponentId=$this->moduleComponentId;
 		$userId=$this->userId;
-		require_once("$sourceFolder/$moduleFolder/events/events_common1.php");
+		require_once("$sourceFolder/$moduleFolder/events/events_common.php");
 		require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
 		if(isset($_GET['subaction'])){
 			if($_GET['subaction']=="viewEvent"){
@@ -223,7 +223,7 @@ class events implements module,fileuploadable {
 		global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 		$moduleComponentId=$this->moduleComponentId;
 		$userId=$this->userId;
-		require_once("$sourceFolder/$moduleFolder/events/events_common1.php");
+		require_once("$sourceFolder/$moduleFolder/events/events_common.php");
 		require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
 		if(isset($_GET['subaction'])){
 			if($_GET['subaction'] == "viewEvent"){
