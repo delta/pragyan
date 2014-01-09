@@ -138,7 +138,6 @@ function deleteEvent(eventid) {
 }
 
 
-//Test... (Should be changed)
 function confirmParticipant(){
 	if(confirm("Are You Sure?") == false){
 		return false;
@@ -157,7 +156,7 @@ function cancelEditParticipant(userid,eventid){
 	$(".userDataEditVal"+userid).css('display','none');
 }
 
-function updateParticipant(userid,formid,rowId){
+function updateParticipant(userid,formid,rowId,eventId){
 	
 	var getAllEdits = document.getElementsByClassName('userDataEditVal'+userid);
 	var rowValue = new Array();
@@ -169,7 +168,6 @@ function updateParticipant(userid,formid,rowId){
 	rowValue = */
 	rowValue = rowValue.toString();
 	//rowId = rowId.toString();
-	alert(rowId);
 	var ajaxRequest = $.ajax({
 		type : "POST",
 		datatype : "html",
@@ -179,11 +177,15 @@ function updateParticipant(userid,formid,rowId){
 			userId : userid,
 			rowValue : rowValue,
 			rowId : rowId,
+			eventId : eventId,
+		},
+		success : function(data){
+			$('#partRow'+userid).html(data);
 		}
 	});
-	$(".userDataDisp"+userid).css('display','block');
+/*	$(".userDataDisp"+userid).css('display','block');
 	$(".userDataEdit"+userid).css('display','none');
-	$(".userDataEditVal"+userid).css('display','none');
+	$(".userDataEditVal"+userid).css('display','none');*/
 }
 
 function editParticipantRank(userid,eventid){
@@ -210,16 +212,19 @@ function confirmEditRank(userid,eventid){
 			eventId : eventid,
 			userId : userid,
 			newRank : newRank,
-		}
+		},
+		success:function(data){
+				$('#userId'+userid).html(data);
+				$("#userId"+userid).css('display','block');
+				$("#userIdEdit"+userid).css('display','none');
+				$(".editRankButtons"+userid).css('display','block');	
+				$(".editRankOptionButtons"+userid).css('display','none');	
+			}
 	});
-	ajaxRequest.done(function(msg){
+	/*ajaxRequest.done(function(msg){
 		console.log(msg);
 	});
-	cmsShow("info","Success!");
-	$("#userId"+userid).css('display','block');
-	$("#userIdEdit"+userid).css('display','none');
-	$(".editRankButtons"+userid).css('display','block');
-	$(".editRankOptionButtons"+userid).css('display','none');
+	cmsShow("info","Success!");*/
 }
 
 function lockConfirm(){

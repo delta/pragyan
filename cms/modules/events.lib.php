@@ -197,15 +197,18 @@ class events implements module,fileuploadable {
 				$editUserId=trim(escape($_POST['userId']));
 				$rowValue = trim(escape($_POST['rowValue']));
 				$rowId = trim(escape($_POST['rowId']));
+				$evnetId = trim(escape($_POST['eventId']));
 				if(!empty($userId)){
-					return editParticipant($moduleComponentId,$editFormId,$editUserId,$rowValue,$rowId);
+					echo editParticipant($moduleComponentId,$eventId,$editFormId,$editUserId,$rowValue,$rowId);
+					die();
 				}
 			}
 			else if($_GET['subaction'] == "editParticipantRank"){
 				$eventId = trim(escape($_POST['eventId']));
 				$userId = trim(escape($_POST['userId']));
 				$newRank = trim(escape($_POST['newRank']));
-				return editParticipantRank($moduleComponentId,$eventId,$userId,$newRank);
+				echo editParticipantRank($moduleComponentId,$eventId,$userId,$newRank);
+				die();
 			}
 			else if($_GET['subaction'] == "lockEvent"){
 				$eventId = trim(escape($_POST['eventId']));
