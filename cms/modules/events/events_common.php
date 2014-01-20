@@ -214,31 +214,29 @@ function getSchedule($pmcid){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 
-	$eventsQuery="SELECT * FROM `events_details` "
-				."WHERE `page_moduleComponentId`='{$pmcid}'"
-				."ORDER BY event_date ASC;";
-	$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
-
 	$schedule=<<<SCHEDULE
 	<script src="$scriptFolder/jquery.js"></script>
+	<link href='$scriptFolder/fullcalendar/fullcalendar.css' rel='stylesheet' />
+	<link href='$scriptFolder/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
+	<script src="$scriptFolder/fullcalendar/fullcalendar.min.js"></script>
+	<script src="$scriptFolder/jquery-ui.custom.min.js"></script>
 	<script src="$scriptFolder/events.js"></script>
-	<table>
-	<th width='10%;'>Event</th>
-	<th width='10%;'>Venue</th>
-	<th width='10%;'>Date</th>
-	<th width='10%;'>Time</th>
-SCHEDULE;
+	<div id='calendar'></div>
+	<script>
+		document.onreadystatechange = function () {
+		  if (document.readyState == "interactive") {
+		  	showSchedule($pmcid);
+		  }
+		}
+	</script>
+	<style>
+		#calendar {
+			width: 900px;
+			margin: 0 auto;
+			}
 
-	while($row=mysql_fetch_array($eventsRes)){
-		$edate=$row['event_name'];
-		$schedule.="<tr> <td>{$row['event_name']}</td> <td>{$row['event_venue']}</td><td>";
-		$schedule.="{$row['event_date']}</td><td>";
-		$schedule.=substr($row['event_start_time'], 0, 5);
-		$schedule.=" to ";		
-		$schedule.=substr($row['event_end_time'], 0, 5);
-		$schedule.="</td></tr>";
-	}
-	$schedule.="</table>";
+	</style>
+SCHEDULE;
 	return $schedule;
 }
 
@@ -274,7 +272,7 @@ DROPDOWN;
 	return $selectEvent;
 }
 
-function eventParticipants($pmcId,$eventId){
+function eventParticipants($gotoaction,$pmcId,$eventId){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 //	$selectNameQuery="SELECT `events_form`.`form_id`,`events_form`.`event_id`,`form_elementdata`.`form_elementdata`,
@@ -284,19 +282,45 @@ function eventParticipants($pmcId,$eventId){
 	$smarttable = smarttable::render(array('reg_users_table'),null);
 	$STARTSCRIPTS.="initSmartTable();";
 
-	$participantsList=displayQA($pmcId);
+	if($gotoaction == 'qa')
+		$participantsList=displayQA($pmcId);
+	else if($gotoaction == 'qahead'){
+		$participantsList=qaHeadOptions($pmcId);
+	}
+
+	$participantsList.=<<<INCLUDE
+			<script src="$scriptFolder/events.js"></script>
+			<script src="$scriptFolder/jquery.js"></script>
+INCLUDE;
 
 	$eventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `event_id` = '{$eventId}'";
 	$eventNameRes = mysql_query($eventNameQuery) or displayerror(mysql_error());
 
 	while($eventName = mysql_fetch_assoc($eventNameRes))
 		$participantsList.="<strong>{$eventName['event_name']}</strong>";
+	
+	if($gotoaction== 'qahead'){
+		//Option to Unlocked if event locked.
+		$checkLockedQuery = "SELECT `event_id` FROM `events_locked` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
+		$checkLockedRes = mysql_query($checkLockedQuery) or displayerror(mysql_error());
+		if(mysql_num_rows($checkLockedRes) == 1){
+			$participantsList.=<<<CONFIRMED
+				<p>Event Locked.</p>
+				<form method='POST' action='./+qahead&subaction=unlockEvent' onsubmit='return unlockConfirm();'>
+				<input type='hidden' value='{$eventId}' name='eventId'>
+				<input type='submit' id='lockButton' value='UNLOCK EVENT'>
+				</form>
+CONFIRMED;
+			return $participantsList;
+		}
+	}
 
 	$participantsList.=<<<CONFIRMED
-		<form method='POST' action='./+qa&subaction=viewConfirmed'>
+		<form method='POST' action='./+{$gotoaction}&subaction=viewConfirmed'>
 		<input type='hidden' name='eventId' value='{$eventId}'/>
-		<input type='submit' value='Confirmed'/></form>
+		<input type='submit' value='View Confirmed List'/></form>
 CONFIRMED;
+	
 
 	$selectTableHeadQuery = "SELECT `form_elementdesc`.`form_elementdisplaytext` FROM `form_elementdesc`
 			INNER JOIN `events_form` ON `form_elementdesc`.`page_moduleComponentId` = `events_form`.`form_id`
@@ -306,8 +330,6 @@ CONFIRMED;
 
 	if(mysql_num_rows($selectTableHeadRes) > 0){
 		$participantsList .=<<<TABLE
-			<script src="$scriptFolder/events.js"></script>
-			<script src="$scriptFolder/jquery.js"></script>
 			$smarttable<table id='reg_users_table' class='display' width='100%' border='1'><thead><tr>
 TABLE;
 		while($tableHead = mysql_fetch_assoc($selectTableHeadRes)){
@@ -365,14 +387,14 @@ TABLE;
 			$participantsList.=<<<BUTTON
 				<td>
 
-				<form method='POST' class='userDataDisp{$regId['user_id']}' action='./+qa&subaction=confirmParticipant' onsubmit='return confirmParticipant();'>
+				<form method='POST' class='userDataDisp{$regId['user_id']}' action='./+{$gotoaction}&subaction=confirmParticipant' onsubmit='return confirmParticipant();'>
 				<input type='hidden' value='{$regId['user_id']}' name='userId'>
 				<input type='hidden' value='$eventId' name='eventId'>
 				<input type='submit' value='Confirm'>
 				</form>
 
 				<button class='userDataDisp{$regId['user_id']}' onclick="editParticipant({$regId['user_id']},$eventId)" value="Edit">Edit</button>
-				<button class='userDataEdit{$regId['user_id']}' onclick="updateParticipant({$regId['user_id']},{$regId['page_moduleComponentId']},'$editRowId',$eventId)" style='display:none' value='Update'>Update</button>
+				<button class='userDataEdit{$regId['user_id']}' onclick="updateParticipant('$gotoaction',{$regId['user_id']},{$regId['page_moduleComponentId']},'$editRowId',$eventId)" style='display:none' value='Update'>Update</button>
 				<button class='userDataEdit{$regId['user_id']}' onclick="cancelEditParticipant({$regId['user_id']},$eventId)" style='display:none' value='Cancel'>Cancel</button>
 
 				<!--<button onclick="confirmParticipant({$regId['user_id']},$eventId)" value="Confirm">Confirm</button>-->
@@ -387,14 +409,14 @@ BUTTON;
 	return $participantsList;
 }
 
-function confirmParticipation($pmcid,$eventId,$userId){
+function confirmParticipation($gotoaction,$pmcid,$eventId,$userId){
 	$confirmQuery = "INSERT INTO `events_confirmed_participants`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
 	$confirmRes = mysql_query($confirmQuery) or displayerror(mysql_error());
 	$userRankQuery = "INSERT INTO `events_result`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
 	$userRankRes = mysql_query($userRankQuery) or displayerror(mysql_error());
 	//return "Successfully deleted.";
 	$redirectData = <<<POSTDATA
-		<form method='POST' action='./+qa&subaction=viewEvent' name='postDataForm'>
+		<form method='POST' action='./+{$gotoaction}&subaction=viewEvent' name='postDataForm'>
 		<input type='hidden' name='eventId' value='{$eventId}'/>
 		</form>
 		<script type='text/javascript'>
@@ -404,7 +426,25 @@ POSTDATA;
 	return $redirectData;
 }
 
-function editParticipant($pmcId,$eventId,$formId,$userId,$rowValue,$rowId){
+function unconfirmParticipation($gotoaction,$pmcid,$eventId,$userId){
+	$unconfirmQuery = "DELETE FROM `events_confirmed_participants` WHERE `page_moduleComponentId`='{$pmcid}' AND `event_id`='{$eventId}' AND `user_id`='{$userId}'";
+	$unconfirmRes = mysql_query($unconfirmQuery) or displayerror(mysql_error());
+	$userRankDelQuery = "DELETE FROM `events_result` WHERE `page_moduleComponentId`='{$pmcid}' AND `event_id`='{$eventId}' AND `user_id`='{$userId}'";
+	$userRankDelRes = mysql_query($userRankDelQuery) or displayerror(mysql_error());
+	//return "Successfully deleted.";
+	$redirectData = <<<POSTDATA
+		<form method='POST' action='./+{$gotoaction}&subaction=viewConfirmed' name='postDataForm'>
+		<input type='hidden' name='eventId' value='{$eventId}'/>
+		</form>
+		<script type='text/javascript'>
+			document.postDataForm.submit();
+		</script>
+POSTDATA;
+	return $redirectData;
+}
+
+
+function editParticipant($gotoaction,$pmcId,$eventId,$formId,$userId,$rowValue,$rowId){
 	$rowValueArray = explode(",",$rowValue);
 	$rowIdArray = explode(",",$rowId);
 	//$rowValueArray = $rowValue;
@@ -442,7 +482,7 @@ POSTDATA;*/
 	return $updatedRow;
 }
 
-function viewConfirmedParticipants($pmcId,$eventId){
+function viewConfirmedParticipants($gotoaction,$pmcId,$eventId){
 	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
 	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 	global $STARTSCRIPTS;
@@ -459,11 +499,11 @@ function viewConfirmedParticipants($pmcId,$eventId){
 
 
 	$confirmedList.=<<<FORM
-		<form method='POST' action='./+qa&subaction=viewEvent'>
+		<form method='POST' action='./+{$gotoaction}&subaction=viewEvent'>
 		<input type='hidden' value='{$eventId}' name='eventId'>
-		<input type='submit' value='Unconfirmed'>
+		<input type='submit' value='View Unconfirmed List'>
 		</form>
-		<form method='POST' action='./+qa&subaction=lockEvent' onsubmit='return lockConfirm();'>
+		<form method='POST' action='./+{$gotoaction}&subaction=lockEvent' onsubmit='return lockConfirm();'>
 		<input type='hidden' value='{$eventId}' name='eventId'>
 		<input type='submit' id='lockButton' value='LOCK EVENT'>
 		</form>
@@ -520,7 +560,18 @@ TABLE;
 			<input type="text" id="userIdEdit{$regId['user_id']}" value="{$userRank}" name="userRank" style="display:none" /></td>
 			<td>
 			<button class="editRankButtons{$regId['user_id']}" onclick="editParticipantRank({$regId['user_id']},$eventId)" value="Edit">Edit</button>
-			<button value="Update" class="editRankOptionButtons{$regId['user_id']}" onclick="confirmEditRank({$regId['user_id']},$eventId)" style="display:none">Update</button>
+BUTTONS;
+			if($gotoaction == 'qahead')
+				$confirmedList.=<<<BUTTONS
+					<form method='POST' class='userDataDisp{$userId}' action='./+qahead&subaction=unconfirmParticipant' onsubmit='return confirmParticipant();'>
+					<input type='hidden' value='{$regId['user_id']}' name='userId'>
+					<input type='hidden' value='{$eventId}' name='eventId'>
+					<input type='submit' value='Unconfirm'>
+					</form>
+
+BUTTONS;
+			$confirmedList.=<<<BUTTONS
+			<button value="Update" class="editRankOptionButtons{$regId['user_id']}" onclick="confirmEditRank('$gotoaction',{$regId['user_id']},$eventId)" style="display:none">Update</button>
 			<button value="Cancel" class="editRankOptionButtons{$regId['user_id']}" onclick="cancelEditRank({$regId['user_id']},$eventId)" style="display:none">Cancel</button>
 			</td></tr>
 BUTTONS;
@@ -531,17 +582,24 @@ BUTTONS;
 	return $confirmedList;
 }
 
-function editParticipantRank($pmcId,$eventId,$userId,$newRank){
+function editParticipantRank($gotoaction,$pmcId,$eventId,$userId,$newRank){
 	$updateRankQuery = "UPDATE `events_result` SET `user_rank` = '{$newRank}' WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$userId}' AND `event_id`='{$eventId}'";
 	$updateRankRes = mysql_query($updateRankQuery) or displayerror(mysql_error());
 	return $newRank;
 }
 
-function lockEvent($pmcId,$eventId){
+function lockEvent($gotoaction,$pmcId,$eventId){
 
 	$lockEventQuery = "INSERT INTO `events_locked`(`page_moduleComponentId`,`event_id`) VALUES('{$pmcId}','{$eventId}')";
 	$lockEventRes = mysql_query($lockEventQuery) or displayerror(mysql_error());
 	return "Event Locked";
+}
+
+function unlockEvent($pmcId,$eventId){
+
+	$unlockEventQuery = "DELETE FROM `events_locked` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
+	$unlockEventRes = mysql_query($unlockEventQuery) or displayerror(mysql_error());
+	return "Event Unlocked";
 }
 
 
@@ -552,7 +610,7 @@ function qaHeadOptions($pmcId){
 	$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
 	if(mysql_num_rows($selectEventRes) > 0){
 		$selectEvent = <<<FORM
-			<form method="POST" action="./+qa&subaction=viewEvent">
+			<form method="POST" action="./+qahead&subaction=viewEvent">
 				<select name='eventId'>
 FORM;
 		while($eventList = mysql_fetch_assoc($selectEventRes)){
@@ -667,6 +725,7 @@ function printCertificates($pmcId,$eventId){
 	//Select user id and user rank where event id and pmc id and user rank not -1 confirmed participants
 	//for each participant print image and put it in a diff page
 	require_once("$sourceFolder/$moduleFolder/events/html2pdf/html2pdf.class.php");	
+	require_once("$sourceFolder/$moduleFolder/events/events_certi_image2.php");
 	$selectIdQuery = "SELECT DISTINCT `form_elementdata`.`user_id`,`events_result`.`user_rank` FROM `form_elementdata`
 			INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId` = `events_form`.`form_id`
 			AND `events_form`.`event_id` = '{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}'
@@ -676,17 +735,86 @@ function printCertificates($pmcId,$eventId){
 
 
 	$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
-	$certiImage = "";
+	$certiImagePage = "";
 	while($printParticipant = mysql_fetch_assoc($selectIdRes)){
 	//	$name = urlencode("AMAL SYRIAC");
 		//return "$sourceFolder/$moduleFolder/events/events_certi_image.php?userId=".$printParticipant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank'];
-		//?userId=".$printParticipant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank']."
-		$certiImage.="<page><img src='http://localhost/$urlRequestRoot/$cmsFolder/$moduleFolder/events/events_certi_image.php?userId=".$printParticipant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank']."'></page>";
+		//?userId=".$printParticiprintprintpant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank']."
+	//	/*				TESTING
+
+
+	$getCertiImgQuery = "SELECT `certificate_id`,`certificate_image` FROM `events_certificate` WHERE `user_rank` = '{$printParticipant['user_rank']}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id` = '{$eventId}'";
+	$getCertiImgRes = mysql_query($getCertiImgQuery);// or displayerror(mysql_error());
+	while($certiDetails = mysql_fetch_assoc($getCertiImgRes)){
+		$certiImage = $certiDetails['certificate_image'];
+		$certiId = $certiDetails['certificate_id'];
+		//Get Certificate Details From evets_certficate_details
+
+		$getCertiDetailsQuery = "SELECT `certificate_posx`,`certificate_posy`,`form_value_id` FROM `events_certificate_details` WHERE `page_moduleComponentId`='{$pmcId}' AND `certificate_id`='{$certiId}'";
+		$getCertiDetailsRes = mysql_query($getCertiDetailsQuery) or displayerror(mysql_error());
+		$posXString="";
+		$posYString="";
+		$certiValueString="";
+
+		//Get Form Values From form_elementdesc
+		//Form_value_id=-1 -> Rank
+		//Form_value_id=-2 -> Event Name
+		while($getValues = mysql_fetch_assoc($getCertiDetailsRes)){
+			//User Rank
+			if($getValues['form_value_id'] == -1){
+				//imagettftext($rotatedImage, 20, 90, $getValues['certificate_posx'], $getValues['certificate_posy'], $color, $font, $userRank);
+				$posXString.=$getValues['certificate_posx']."::";
+				$posYString.=$getValues['certificate_posy']."::";
+				$certiValueString.=$printParticipant['user_rank']."::";
+			}
+			//Event Name
+			else if($getValues['form_value_id'] == -2){
+				//Get Event Name
+				$getEventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `event_id` = '{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
+				$getEventNameRes = mysql_query($getEventNameQuery) or displayerror(mysql_error());
+				$eventName = mysql_result($getEventNameRes,0);
+			//	imagettftext($rotatedImage, 20, 90, $getValues['certificate_posx'], $getValues['certificate_posy'], $color, $font, $eventName);
+				$posXString.=$getValues['certificate_posx']."::";
+				$posYString.=$getValues['certificate_posy']."::";
+				$certiValueString.=$eventName."::";	
+			}
+			else{
+				//Check if modified value exists in events_edited_form
+				$getFormValuesQuery = "SELECT `events_edited_form`.`form_elementdata` FROM `events_edited_form` INNER JOIN `events_form` ON `events_edited_form`.`form_id`=`events_form`.`form_id`
+				AND `events_form`.`event_id`='{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND `events_edited_form`.`user_id`='{$printParticipant['user_id']}' AND `events_edited_form`.`page_moduleComponentId`='{$pmcId}' AND 
+				`events_edited_form`.`form_elementid`='{$getValues['form_value_id']}'";
+				$getFormValuesRes = mysql_query($getFormValuesQuery) or displayerror(mysql_error());
+				if(mysql_num_rows($getFormValuesRes) == 0){
+					//Else get value from form_elementdata
+					$getFormValuesQuery = "SELECT `form_elementdata`.`form_elementdata` FROM `form_elementdata` INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId`=`events_form`.`form_id` 
+					AND `events_form`.`event_id`='{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND `form_elementdata`.`user_id`='{$printParticipant['user_id']}' AND `form_elementdata`.`form_elementid`='{$getValues['form_value_id']}'";
+					$getFormValuesRes = mysql_query($getFormValuesQuery) or displayerror(mysql_error());
+				}
+				while($formData = mysql_fetch_assoc($getFormValuesRes)){
+				//	imagettftext($rotatedImage, 20, 90, $getValues['certificate_posx'], $getValues['certificate_posy'], $color, $font, $formData['form_elementdata']);
+					$posXString.=$getValues['certificate_posx']."::";
+					$posYString.=$getValues['certificate_posy']."::";
+					$certiValueString.=$formData['form_elementdata']."::";
+				}
+			}
+		}
 	}
-	return $certiImage;
-	//return $certiImage;
-	$html2pdf = new HTML2PDF('P','A4','en');
-    $html2pdf->WriteHTML($certiImage);
+
+	$posXString=rtrim($posXString,"::");
+	$posYString=rtrim($posYString,"::");
+	$certiValueString=rtrim($certiValueString,"::");
+
+	//					END OF TESTING*/
+	//	$certiImage.="<page><img src='http://localhost/$urlRequestRoot/$cmsFolder/$moduleFolder/events/events_certi_image.php?userId=".$printParticipant['user_id']."&pmcId=".$pmcId."&eventId=".$eventId."&userRank=".$printParticipant['user_rank']."'></page>";
+		//$folderPath = 'http://localhost/'.$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/events";
+		$certiImagePage.="<page><img src='".generateImage($certiImage,$posXString,$posYString,$certiValueString)."'></page>";
+	//	$certiImage.="<img src='".generateImage()."'>";
+	}
+	//return $certiImagePage;
+	//return $certiImagePage;
+	//Make Certi Size Dynamic
+	$html2pdf = new HTML2PDF('P','A4','en',true, 'UTF-8',array(0, 0, 0, 0));
+    $html2pdf->WriteHTML($certiImagePage);
     $html2pdf->Output('test.pdf');
 }
 

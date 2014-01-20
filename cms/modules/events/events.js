@@ -138,11 +138,13 @@ function deleteEvent(eventid) {
 }
 
 
+//Test... (Should be changed)
 function confirmParticipant(){
 	if(confirm("Are You Sure?") == false){
 		return false;
 	}
 }
+
 
 function editParticipant(userid,eventid){
 	$(".userDataDisp"+userid).css('display','none');
@@ -156,8 +158,8 @@ function cancelEditParticipant(userid,eventid){
 	$(".userDataEditVal"+userid).css('display','none');
 }
 
-function updateParticipant(userid,formid,rowId,eventId){
-	
+function updateParticipant(gotoaction,userid,formid,rowId,eventId){
+	//alert(gotoaction);
 	var getAllEdits = document.getElementsByClassName('userDataEditVal'+userid);
 	var rowValue = new Array();
 	for(var i=0;i<getAllEdits.length;i++)
@@ -168,6 +170,7 @@ function updateParticipant(userid,formid,rowId,eventId){
 	rowValue = */
 	rowValue = rowValue.toString();
 	//rowId = rowId.toString();
+	var actUrl = "./+"+gotoaction+"&subaction=editParticipant"
 	var ajaxRequest = $.ajax({
 		type : "POST",
 		datatype : "html",
@@ -202,8 +205,9 @@ function cancelEditRank(userid,eventid){
 	$(".editRankOptionButtons"+userid).css('display','none');
 }
 
-function confirmEditRank(userid,eventid){
+function confirmEditRank(gotoaction,userid,eventid){
 	var newRank = $("#userIdEdit"+userid).val();
+	var actUrl = "./+"+gotoaction+"&subaction=editParticipantRank"
 	var ajaxRequest = $.ajax({
 		type : "POST",
 		datatype : "html",
@@ -229,6 +233,15 @@ function confirmEditRank(userid,eventid){
 
 function lockConfirm(){
 	if(confirm("Do you want to lock this event?")){
+		if(confirm("Are You Sure?") == false)
+			return false;
+	}
+	else
+		return false;
+}
+
+function unlockConfirm(){
+	if(confirm("Do you want to unlock this event?")){
 		if(confirm("Are You Sure?") == false)
 			return false;
 	}
