@@ -36,9 +36,9 @@ function validateAddEventData($pageModuleComponentId){
 						$postValue=escape($postValue);
 				}
 				//Query to insert into the db
-				$insertQuery="INSERT INTO `events_details` (`event_name`, `event_date`, `event_start_time`, `event_end_time`, "
+				$insertQuery="INSERT INTO `events_details` (`event_name`, `event_date`, `event_cluster`, `event_form_id`, `event_start_time`, `event_end_time`, "
 										."`event_venue`, `event_desc`, `event_last_update_time`, `event_image`, `page_moduleComponentId`, `event_loc_x`, `event_loc_y`) "
-										."VALUES ('{$_POST['eventName']}', '{$_POST['eventDate']}', "
+										."VALUES ('{$_POST['eventName']}', '{$_POST['eventDate']}', '{$_POST['eventCluster']}', '{$_POST['eventFormId']}', "
 										."'{$_POST['eventStartTime']}', '{$_POST['eventEndTime']}', "
 										."'{$_POST['eventVenue']}', '{$_POST['eventDesc']}', CURRENT_TIME(), '', '{$pageModuleComponentId}', "
 										."'{$_POST['lng']}', '{$_POST['lat']}');";
@@ -58,6 +58,8 @@ function validateEditEventData($pageModuleComponentId){
 				//Query to insert into the db
 				$editQuery="UPDATE `events_details` SET `event_name`='{$_POST['eventName']}', 
 														`event_date`='{$_POST['eventDate']}',
+														`event_cluster`='{$_POST['eventCluster']}',
+														`event_form_id`='{$_POST['eventFormId']}',
 														`event_start_time`='{$_POST['eventStartTime']}',
 														`event_end_time`='{$_POST['eventEndTime']}',
 														`event_venue`='{$_POST['eventVenue']}',
@@ -193,6 +195,8 @@ function getEventsJSON($pmcid){
 				$event=array(
 						"event_id"=> $row['event_id'], 
 						"event_name"=> $row['event_name'],
+						"event_cluster"=> $row['event_cluster'],
+						"event_form_id"=> $row['event_form_id'],
 						"event_date"=> $row['event_date'], 
 						"event_start_time"=>$row['event_start_time'], 
 						"event_end_time"=>$row['event_end_time'],

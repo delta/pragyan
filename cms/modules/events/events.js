@@ -12,6 +12,8 @@ function submitAddEventData() {
 		data: {
 			type: "add",
 			eventName: document.getElementById("eventName").value,
+			eventCluster: document.getElementById("eventCluster").value,
+			eventFormId: document.getElementById("eventFormId").value,
 			eventVenue: document.getElementById("eventVenue").value,
 			eventDate: document.getElementById("eventDate").value,
 			eventDesc: document.getElementById("eventDesc").value,
@@ -46,6 +48,8 @@ function submitEditEventData(event_id) {
 			type: "edit",
 			eventId: event_id,
 			eventName: document.getElementById("eventName").value,
+			eventCluster: document.getElementById("eventCluster").value,
+			eventFormId: document.getElementById("eventFormId").value,
 			eventVenue: document.getElementById("eventVenue").value,
 			eventDate: document.getElementById("eventDate").value,
 			eventDesc: document.getElementById("eventDesc").value,
