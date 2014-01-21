@@ -211,35 +211,36 @@ function getEventsJSON($pmcid){
 }
 
 function getSchedule($pmcid){
-	global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
-	$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+		global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+		$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
 
-	$schedule=<<<SCHEDULE
-	<script src="$scriptFolder/jquery.js"></script>
-	<link href='$scriptFolder/fullcalendar/fullcalendar.css' rel='stylesheet' />
-	<link href='$scriptFolder/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
-	<script src="$scriptFolder/fullcalendar/fullcalendar.min.js"></script>
-	<script src="$scriptFolder/jquery-ui.custom.min.js"></script>
-	<script src="$scriptFolder/events.js"></script>
-	<div id='calendar'></div>
-	<script>
-		document.onreadystatechange = function () {
-		  if (document.readyState == "interactive") {
-		  	showSchedule($pmcid);
-		  }
-		}
-	</script>
-	<style>
-		#calendar {
-			width: 900px;
-			margin: 0 auto;
-			}
+		$eventsQuery="SELECT * FROM `events_details` "
+					."WHERE `page_moduleComponentId`='{$pmcid}'"
+					."ORDER BY event_date ASC;";
+		$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
 
-	</style>
+		$schedule=<<<SCHEDULE
+		<script src="$scriptFolder/jquery.js"></script>
+		<script src="$scriptFolder/events.js"></script>
+		<table>
+		<th width='10%;'>Event</th>
+		<th width='10%;'>Venue</th>
+		<th width='10%;'>Date</th>
+		<th width='10%;'>Time</th>
 SCHEDULE;
-	return $schedule;
-}
 
+		while($row=mysql_fetch_array($eventsRes)){
+			$edate=$row['event_name'];
+			$schedule.="<tr> <td>{$row['event_name']}</td> <td>{$row['event_venue']}</td><td>";
+			$schedule.="{$row['event_date']}</td><td>";
+			$schedule.=substr($row['event_start_time'], 0, 5);
+			$schedule.=" to ";                
+			$schedule.=substr($row['event_end_time'], 0, 5);
+			$schedule.="</td></tr>";
+		}
+		$schedule.="</table>";
+		return $schedule;
+}
 
 function deleteEvent($eventid, $pmcid){
 		//query to delete event
@@ -814,19 +815,19 @@ function printCertificates($pmcId,$eventId){
 	//return $certiImagePage;
 	//Make Certi Size Dynamic
 	$html2pdf = new HTML2PDF('P','A4','en',true, 'UTF-8',array(0, 0, 0, 0));
-    $html2pdf->WriteHTML($certiImagePage);
-    $html2pdf->Output('test.pdf');
+	$html2pdf->WriteHTML($certiImagePage);
+	$html2pdf->Output('test.pdf');
 }
 
 function validateProcurementData($pageModuleComponentId){
 
-        $isValid=true;
-        
-        if($_POST['quantity']=="" || !(is_numeric($_POST['quantity']))){
-                $isValid=false;
-		        echo "Invalid";
+		$isValid=true;
+		
+		if($_POST['quantity']=="" || !(is_numeric($_POST['quantity']))){
+				$isValid=false;
+				echo "Invalid";
 				exit();
-        }
+		}
 		else {
 				$_POST['eventName']=escape($_POST['eventName']);
 				$_POST['procurementName']=escape($_POST['procurementName']);
@@ -839,30 +840,30 @@ function validateProcurementData($pageModuleComponentId){
 				}
 			 }
 		
-        if($isValid){
-                //insert data
-                foreach ($_POST as $postValue){
-                        $postValue=escape($postValue);
-                }
-                //Query to insert into the db
-                $insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
-                             ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['quantity']}', '{$pageModuleComponentId}')";
-                $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+		if($isValid){
+				//insert data
+				foreach ($_POST as $postValue){
+						$postValue=escape($postValue);
+				}
+				//Query to insert into the db
+				$insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
+							 ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['quantity']}', '{$pageModuleComponentId}')";
+				$insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
   
 				$updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`+ {$_POST['quantity']} WHERE `procurement_name`='{$_POST['procurementName']}'";
 				$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
 				echo "Valid";
 		}
-        exit();
+		exit();
 }
 
 function validateEditProcurementData($pageModuleComponentId){
-        $isValid=true;
-        
-        if($_POST['editquantity']=="" || !(is_numeric($_POST['editquantity']))){
-                $isValid=false;
+		$isValid=true;
+		
+		if($_POST['editquantity']=="" || !(is_numeric($_POST['editquantity']))){
+				$isValid=false;
 				exit();
-        }
+		}
 		else {
 				$selectQuery="SELECT * FROM `events_event_procurement`";
 				$selectRes=mysql_query($selectQuery);
@@ -874,12 +875,12 @@ function validateEditProcurementData($pageModuleComponentId){
 				}
 			 }
 			 
-        if($isValid){
-                //insert data
-                foreach ($_POST as $postValue){
-                        $postValue=escape($postValue);
-                }
-                //Query to insert into the db
+		if($isValid){
+				//insert data
+				foreach ($_POST as $postValue){
+						$postValue=escape($postValue);
+				}
+				//Query to insert into the db
 				$selectQuery="SELECT * FROM `events_event_procurement`";
 				$selectRes=mysql_query($selectQuery);
 				$cnt=1;
@@ -895,7 +896,7 @@ function validateEditProcurementData($pageModuleComponentId){
 					$deleteRes=mysql_query($deleteQuery) or displayerror(mysql_error());
   
 					$insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
-                             ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['editquantity']}', '{$pageModuleComponentId}')";
+							 ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['editquantity']}', '{$pageModuleComponentId}')";
 					$insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
 					
 					echo '<script>window.location = ("./+ochead&subaction=viewAll");</script>';
@@ -905,17 +906,17 @@ function validateEditProcurementData($pageModuleComponentId){
 				$cnt++;
 				}
 		}
-        echo '<script>cmsShow("info", "Procurement '.$_POST["procurementName"].' for event '.$_POST["eventName"].' already exists");</script>';
+		echo '<script>cmsShow("info", "Procurement '.$_POST["procurementName"].' for event '.$_POST["eventName"].' already exists");</script>';
 		exit();
 }
 
 function validateNewProcurement($pageModuleComponentId){
 		$isValid=true;
 
-        if($_POST['newProc']==""){
-                $isValid=false;
+		if($_POST['newProc']==""){
+				$isValid=false;
 				exit();
-        }
+		}
 		else {
 				$_POST['newProc']=escape(strtolower($_POST['newProc']));
 				$selectQuery = "SELECT `procurement_name` FROM `events_procurements` WHERE `procurement_name`='{$_POST['newProc']}' ";
@@ -926,17 +927,17 @@ function validateNewProcurement($pageModuleComponentId){
 					exit();
 				}
 		}
-        
+		
 		if($isValid){
-                //insert data
-                foreach ($_POST as $postValue){
-                        $postValue=escape($postValue);
-                }
-                //Query to insert into the db
-                $insertQuery="INSERT INTO `events_procurements` (`procurement_id`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
-                             ."VALUES (NULL, '{$_POST['newProc']}', 0, '{$pageModuleComponentId}')";
-                $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
-                echo "Valid";
+				//insert data
+				foreach ($_POST as $postValue){
+						$postValue=escape($postValue);
+				}
+				//Query to insert into the db
+				$insertQuery="INSERT INTO `events_procurements` (`procurement_id`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
+							 ."VALUES (NULL, '{$_POST['newProc']}', 0, '{$pageModuleComponentId}')";
+				$insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+				echo "Valid";
 		}
 		else echo "Invalid";
 		exit();
@@ -967,27 +968,27 @@ function getAllProcurements($pmcid){
 		$selectQuery="SELECT * FROM `events_event_procurement` WHERE `page_moduleComponentId`={$pmcid};";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
 		global $STARTSCRIPTS;
-        $smarttablestuff = smarttable::render(array('table_procurement_details'),null);
-        $STARTSCRIPTS .="initSmartTable();";
+		$smarttablestuff = smarttable::render(array('table_procurement_details'),null);
+		$STARTSCRIPTS .="initSmartTable();";
 
 $procurementDetails =<<<TABLE
 
-        <script src="$scriptFolder/events.js"></script>
-        <script src="$scriptFolder/jquery.js"></script>
+		<script src="$scriptFolder/events.js"></script>
+		<script src="$scriptFolder/jquery.js"></script>
 		$smarttablestuff
-        <table class="display" id="table_procurement_details" width="100%" border="1">
-        <thead>
-                <tr>
+		<table class="display" id="table_procurement_details" width="100%" border="1">
+		<thead>
+				<tr>
 				<th>Serial no.</th>
 				<th>Event Name</th>
-                <th>Procurement</th>
-                <th>Quantity</th>
+				<th>Procurement</th>
+				<th>Quantity</th>
 				<th>Date</th>
 				<th>Start time</th>
 				<th>End time</th>  
 				<th></th>
 				</tr>
-        </thead>
+		</thead>
 TABLE;
 $cnt=1;
 while($res = mysql_fetch_assoc($selectRes)) {
@@ -996,11 +997,11 @@ $selRes=mysql_query($selQuery) or displayerror(mysql_error());
 $selRes = mysql_fetch_assoc($selRes);
 $procurementDetails .=<<<TR
 
-          <tr>        
+		  <tr>        
 		   <td>{$cnt}</td>
-           <td>{$res['event_name']}</td>
-           <td>{$res['procurement_name']}</td>
-           <td>{$res['quantity']}</td>
+		   <td>{$res['event_name']}</td>
+		   <td>{$res['procurement_name']}</td>
+		   <td>{$res['quantity']}</td>
 		   <td>{$selRes['event_date']}</td>
 		   <td>{$selRes['event_start_time']}</td>
 		   <td>{$selRes['event_end_time']}</td>
@@ -1008,11 +1009,11 @@ $procurementDetails .=<<<TR
 				<button onclick="deleteProcurement({$cnt});" value="DELETE">DELETE</button>
 				
 				<form method="POST"  action="./+ochead">
-                <input type="submit" name="" value="EDIT"/>
+				<input type="submit" name="" value="EDIT"/>
 				<input style="visibility:hidden;" name="eventnum" id="eventnum" value="{$cnt}" />
 				</form> 
-           </td>
-          </tr>
+		   </td>
+		  </tr>
 TR;
   $cnt++;
   }
@@ -1044,46 +1045,46 @@ function deleteProcurement($eventname, $pmcid){
 }
 
 function selectSubactionOcTeam(){
-        $subactionForm=<<<SFORM
-        <p>
-                Select an option:
-        </p>
-        <form method="GET"  action="./+octeam&subaction=viewEventWise">
-                <input type="submit" name="" value="VIEW EVENT WISE"/>
-        </form>
+		$subactionForm=<<<SFORM
+		<p>
+				Select an option:
+		</p>
+		<form method="GET"  action="./+octeam&subaction=viewEventWise">
+				<input type="submit" name="" value="VIEW EVENT WISE"/>
+		</form>
 		<form method="GET"  action="./+octeam&subaction=viewProcurementWise">
-                <input type="submit" name="" value="VIEW PROCUREMENT WISE"/>
-        </form>
+				<input type="submit" name="" value="VIEW PROCUREMENT WISE"/>
+		</form>
 SFORM;
 return $subactionForm;
 }
 
 function viewEventWise(){
-        //Query to select all entries
-        global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
-        $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-        $selectQuery="SELECT * FROM `events_details` ORDER BY STR_TO_DATE(`event_date`, '%d.%m.%y'),`event_start_time` ";
+		//Query to select all entries
+		global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+		$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+		$selectQuery="SELECT * FROM `events_details` ORDER BY STR_TO_DATE(`event_date`, '%d.%m.%y'),`event_start_time` ";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
 		global $STARTSCRIPTS;
-        $smarttablestuff = smarttable::render(array('show_event_wise'),null);
-        $STARTSCRIPTS .="initSmartTable();";
+		$smarttablestuff = smarttable::render(array('show_event_wise'),null);
+		$STARTSCRIPTS .="initSmartTable();";
 
 $procurementDetails =<<<TABLE
-        <script src="$scriptFolder/events.js"></script>
-        <script src="$scriptFolder/jquery.js"></script>
+		<script src="$scriptFolder/events.js"></script>
+		<script src="$scriptFolder/jquery.js"></script>
 		$smarttablestuff
-        <table class="display" id="show_event_wise" width="100%" border="1">
-        <thead>
-                <tr>
+		<table class="display" id="show_event_wise" width="100%" border="1">
+		<thead>
+				<tr>
 				<th>Serial no.</th>
 				<th>Event Name</th>
-                <th>Procurement</th>
-                <th>Quantity</th>
+				<th>Procurement</th>
+				<th>Quantity</th>
 				<th>Date</th>
 				<th>Start time</th>
 				<th>End time</th>
-                </tr>
-        </thead>
+				</tr>
+		</thead>
 TABLE;
 $cnt=1;
 while($event=mysql_fetch_assoc($selectRes)) {	
@@ -1105,49 +1106,49 @@ TR;
 	}
   }
 $procurementDetails .=<<<TABLEEND
-        </table>
+		</table>
 TABLEEND;
   return $procurementDetails;
 }	
 
 function viewProcurementWise(){
-        //Query to select all entries
-        global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
-        $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-        $selectQuery="SELECT * FROM `events_procurements`;";
+		//Query to select all entries
+		global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
+		$scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
+		$selectQuery="SELECT * FROM `events_procurements`;";
 		$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
 		global $STARTSCRIPTS;
-        $smarttablestuff = smarttable::render(array('show_procurement_wise'),null);
-        $STARTSCRIPTS .="initSmartTable();";
+		$smarttablestuff = smarttable::render(array('show_procurement_wise'),null);
+		$STARTSCRIPTS .="initSmartTable();";
 
 $procurementDetails =<<<TABLE
-        <script src="$scriptFolder/events.js"></script>
-        <script src="$scriptFolder/jquery.js"></script>
+		<script src="$scriptFolder/events.js"></script>
+		<script src="$scriptFolder/jquery.js"></script>
 		$smarttablestuff
-        <table class="display" id="show_procurement_wise" width="100%" border="1">
-        <thead>
-                <tr>
+		<table class="display" id="show_procurement_wise" width="100%" border="1">
+		<thead>
+				<tr>
 				<th>Serial no.</th>
 				<th>Procurement Id</th>
-                <th>Procurement name</th>
-                <th>Quantity</th>
-                </tr>
-        </thead>
+				<th>Procurement name</th>
+				<th>Quantity</th>
+				</tr>
+		</thead>
 TABLE;
 $cnt=1;
 while($res = mysql_fetch_assoc($selectRes)) {
 $procurementDetails .=<<<TR
-          <tr>        
+		  <tr>        
 		   <td>{$cnt}</td>
-           <td>{$res['procurement_id']}</td>
-           <td>{$res['procurement_name']}</td>
-           <td>{$res['quantity']}</td>
-          </tr>
+		   <td>{$res['procurement_id']}</td>
+		   <td>{$res['procurement_name']}</td>
+		   <td>{$res['quantity']}</td>
+		  </tr>
 TR;
   $cnt++;
   }
 $procurementDetails .=<<<TABLEEND
-        </table>
+		</table>
 TABLEEND;
   return $procurementDetails;
 
