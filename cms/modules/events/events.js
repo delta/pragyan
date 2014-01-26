@@ -6,6 +6,7 @@ function cmsShow(type,message) {
 }
 
 function submitAddEventData() {
+	console.log("lkjlkj");
 	var ajx=$.ajax({
 		type: "POST",
 		url: "./+eventshead",
@@ -96,26 +97,26 @@ function showSchedule(pcmid){
 				month=eventsJSON.data[i].event_date.substring(3, 5)
 				day=eventsJSON.data[i].event_date.substring(0, 2)
 				single_event={"title":eventsJSON.data[i].event_name,
-							start: new Date(year, month, day, 11, 2),
-							end: new Date(year, month, day, 14, 5),
-							allDay: false,
-						}
-				all_events.push(single_event);
+				start: new Date(year, month, day, 11, 2),
+				end: new Date(year, month, day, 14, 5),
+				allDay: false,
 			}
-			var calendar = $('#calendar').fullCalendar({
-				header: {
-					left: 'prev,next today',
-					center: 'title',
-					right: 'month,agendaWeek,agendaDay'
-				},
-				selectable: true,
-				selectHelper: true,
-				editable: false,
-				events: all_events,
-			});
-
+			all_events.push(single_event);
 		}
-	});
+		var calendar = $('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			selectable: true,
+			selectHelper: true,
+			editable: false,
+			events: all_events,
+		});
+
+	}
+});
 }
 
 function deleteEvent(eventid) {
@@ -171,8 +172,8 @@ function updateParticipant(gotoaction,userid,formid,rowId,eventId){
 	//var rowValue="";
 	/*for(var i=0;i<rowValues.length;i++)
 		rowValue+=getAllEdits[i]+",";
-	rowValue = */
-	rowValue = rowValue.toString();
+		rowValue = */
+		rowValue = rowValue.toString();
 	//rowId = rowId.toString();
 	var actUrl = "./+"+gotoaction+"&subaction=editParticipant"
 	var ajaxRequest = $.ajax({
@@ -222,17 +223,17 @@ function confirmEditRank(gotoaction,userid,eventid){
 			newRank : newRank,
 		},
 		success:function(data){
-				$('#userId'+userid).html(data);
-				$("#userId"+userid).css('display','block');
-				$("#userIdEdit"+userid).css('display','none');
-				$(".editRankButtons"+userid).css('display','block');	
-				$(".editRankOptionButtons"+userid).css('display','none');	
-			}
+			$('#userId'+userid).html(data);
+			$("#userId"+userid).css('display','block');
+			$("#userIdEdit"+userid).css('display','none');
+			$(".editRankButtons"+userid).css('display','block');	
+			$(".editRankOptionButtons"+userid).css('display','none');	
+		}
 	});
 	/*ajaxRequest.done(function(msg){
 		console.log(msg);
 	});
-	cmsShow("info","Success!");*/
+cmsShow("info","Success!");*/
 }
 
 function lockConfirm(){
@@ -357,4 +358,26 @@ function deleteProcurement(eventName) {
 			}
 		});
 	}
+}
+
+function getUpcomingEventsTable(pmcid){
+	$("#upcomingEventTable").html("");
+	var ajx=$.ajax({
+		type: "GET",
+		url: "./+view&subaction=mobile&ipp=100",
+		data: {}, 
+		dataType: "json"
+	});
+	ajx.done(function(msg) {
+		eventsJSON=eval(msg);
+		if(eventsJSON.status=='success'){
+			for(var i=0; i<eventsJSON.data.length; i=i+1){
+				var row_string="<tr><td>"+eventsJSON.data[i].event_name+" at "
+					+eventsJSON.data[i].event_venue+" at "
+					+eventsJSON.data[i].event_start_time.substring(0, 5)+"</tr></td>"
+				$("#upcomingEventTable").append(row_string);
+			}
+		}
+	});
+
 }

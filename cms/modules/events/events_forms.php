@@ -23,7 +23,7 @@ $addForm=<<<FORM
 				<tr><th><label for="eventCluster">Event cluster</label></th>
 				<td><input type="text" decsription="eventCluster" name="eventCluster" id="eventCluster" </td></tr>
 
-				<tr><th><label for="eventFormId">Event cluster</label></th>
+				<tr><th><label for="eventFormId">Event form</label></th>
 				<td><input type="text" decsription="eventFormId" name="eventFormId" id="eventFormId" </td></tr>
 
 				<tr><th><label for"eventDate">Event date</label></th>
@@ -48,7 +48,6 @@ $addForm=<<<FORM
 		</tbody>
 		</table>
 				<script>
-						console.log("checking");
 						if (typeof isValid != 'undefined') {
 								console.log("DEFINED");
 								cmsShow("info", "Event successfully added");
@@ -109,7 +108,7 @@ $editForm=<<<FORM
 			<tr><th><label for="eventCluster">Event cluster</label></th>
 			<td><input type="text" decsription="eventCluster" value="{$row[event_cluster]}" name="eventCluster" id="eventCluster" </td></tr>
 
-			<tr><th><label for="eventFormId">Event cluster</label></th>
+			<tr><th><label for="eventFormId">Event form</label></th>
 			<td><input type="text" decsription="eventFormId" name="eventFormId" id="eventFormId" </td></tr>
 
 			<tr><th><label for"eventDate">Event date</label></th>

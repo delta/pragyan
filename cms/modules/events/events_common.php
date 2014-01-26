@@ -165,8 +165,21 @@ function showEventMap(){
 				<script src="$scriptFolder/jquery.js"></script>
 				<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
 				<script src="$scriptFolder/googleMaps.js"></script>
-				<div id="allEventGoogleMap" style="width:100%;height:100%;"></div>
-
+				<script src="$scriptFolder/events.js"></script>
+				<div id="upcomingEventDiv" style="width:33%;height:100%;float:right;">
+					<table id="upcomingEventTable" border='1' style="width:100%;">
+					</table>
+				</div>				
+				<div id="allEventGoogleMap" style="width:66%;height:100%;"></div>
+				<script>
+					window.onload=function(){
+						console.log("Loaded.");
+						getUpcomingEventsTable();
+						setInterval(function(){
+							initAllEventsMap();getUpcomingEventsTable();
+							},30000);
+					}
+				</script>
 MAP;
 	echo $maps;
 	exit();
@@ -188,7 +201,7 @@ function getEventsJSON($pmcid){
 		$prod=$page*$ipp;
 		//Query to select all events
 		$eventsQuery="SELECT * FROM `events_details` "
-								."WHERE '{$lastdate}'<=`event_last_update_time` AND `page_moduleComponentId`='{$pmcid}'" //event_date>='{$date1}' AND  <---add to query later
+								."WHERE '{$lastdate}'<=`event_last_update_time` AND event_date>='{$date1}' AND `page_moduleComponentId`='{$pmcid}'" 
 								."ORDER BY event_date ASC LIMIT {$prod}, {$ipp};";
 		$eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
 		while($row=mysql_fetch_array($eventsRes)){
