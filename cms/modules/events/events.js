@@ -371,11 +371,19 @@ function getUpcomingEventsTable(pmcid){
 	ajx.done(function(msg) {
 		eventsJSON=eval(msg);
 		if(eventsJSON.status=='success'){
+			var d = new Date();
+			var hrs = d.getHours();
+			var mins = d.getMinutes();
+			var cur_timeval=Number(hrs)*60+Number(mins);
 			for(var i=0; i<eventsJSON.data.length; i=i+1){
-				var row_string="<tr><td>"+eventsJSON.data[i].event_name+" at "
-					+eventsJSON.data[i].event_venue+" at "
-					+eventsJSON.data[i].event_start_time.substring(0, 5)+"</tr></td>"
-				$("#upcomingEventTable").append(row_string);
+				var event_time=eventsJSON.data[i].event_start_time;
+				var event_timeval=Number(event_time.substring(0, 2))*60+Number(event_time.substring(3, 5));
+				if(event_timeval - cur_timeval <=30){
+					var row_string="<tr><td>"+eventsJSON.data[i].event_name+" at "
+						+eventsJSON.data[i].event_venue+" at "
+						+eventsJSON.data[i].event_start_time.substring(0, 5)+"</tr></td>"
+					$("#upcomingEventTable").append(row_string);
+				}
 			}
 		}
 	});
