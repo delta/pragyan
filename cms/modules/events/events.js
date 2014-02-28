@@ -143,7 +143,6 @@ function deleteEvent(eventid) {
 }
 
 
-//Test... (Should be changed)
 function confirmParticipant(){
 	if(confirm("Are You Sure?") == false){
 		return false;
@@ -163,7 +162,7 @@ function cancelEditParticipant(userid,eventid){
 	$(".userDataEditVal"+userid).css('display','none');
 }
 
-function updateParticipant(gotoaction,userid,formid,rowId,eventId){
+function updateParticipant(gotoaction,userid,teamid,formid,rowId,eventId){
 	//alert(gotoaction);
 	var getAllEdits = document.getElementsByClassName('userDataEditVal'+userid);
 	var rowValue = new Array();
@@ -172,20 +171,22 @@ function updateParticipant(gotoaction,userid,formid,rowId,eventId){
 	//var rowValue="";
 	/*for(var i=0;i<rowValues.length;i++)
 		rowValue+=getAllEdits[i]+",";
-		rowValue = */
-		rowValue = rowValue.toString();
+	rowValue = */
+	rowValue = rowValue.toString();
+	
 	//rowId = rowId.toString();
-	var actUrl = "./+"+gotoaction+"&subaction=editParticipant"
+	var actUrl = "./+"+gotoaction+"&subaction=editParticipant";
 	var ajaxRequest = $.ajax({
 		type : "POST",
 		datatype : "html",
-		url : "./+qa&subaction=editParticipant",
+		url : actUrl,
 		data : {
 			formId : formid,
 			userId : userid,
 			rowValue : rowValue,
 			rowId : rowId,
 			eventId : eventId,
+			teamId : teamid,
 		},
 		success : function(data){
 			$('#partRow'+userid).html(data);
@@ -194,6 +195,18 @@ function updateParticipant(gotoaction,userid,formid,rowId,eventId){
 /*	$(".userDataDisp"+userid).css('display','block');
 	$(".userDataEdit"+userid).css('display','none');
 	$(".userDataEditVal"+userid).css('display','none');*/
+}
+
+function downloadDetails(gotoaction,eventId){
+	var actUrl = "./+"+gotoaction+"&subaction=downloadDetails";
+	var ajaxRequest = $.ajax({
+			type : "POST",
+			datatype : "html",
+			url : actUrl,
+			data : {
+				eventId : eventId,
+			}
+		});
 }
 
 function editParticipantRank(userid,eventid){
@@ -216,24 +229,24 @@ function confirmEditRank(gotoaction,userid,eventid){
 	var ajaxRequest = $.ajax({
 		type : "POST",
 		datatype : "html",
-		url : "./+qa&subaction=editParticipantRank",
+		url : actUrl,
 		data :{
 			eventId : eventid,
 			userId : userid,
 			newRank : newRank,
 		},
 		success:function(data){
-			$('#userId'+userid).html(data);
-			$("#userId"+userid).css('display','block');
-			$("#userIdEdit"+userid).css('display','none');
-			$(".editRankButtons"+userid).css('display','block');	
-			$(".editRankOptionButtons"+userid).css('display','none');	
-		}
+				$('#userId'+userid).html(data);
+				$("#userId"+userid).css('display','block');
+				$("#userIdEdit"+userid).css('display','none');
+				$(".editRankButtons"+userid).css('display','block');	
+				$(".editRankOptionButtons"+userid).css('display','none');	
+			}
 	});
 	/*ajaxRequest.done(function(msg){
 		console.log(msg);
 	});
-cmsShow("info","Success!");*/
+	cmsShow("info","Success!");*/
 }
 
 function lockConfirm(){

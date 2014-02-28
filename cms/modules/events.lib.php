@@ -159,17 +159,92 @@ class events implements module,fileuploadable {
 				return selectSubactionOcTeam();
 			}
 		}
+		
+public function actionQa(){
+			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
+			$moduleComponentId=$this->moduleComponentId;
+			$userId=$this->userId;
+			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
+			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+			require_once("$sourceFolder/$moduleFolder/events/events.config.php");
+			require_once($sourceFolder."/".$moduleFolder."/qaos1/excel.php");
+			require_once($sourceFolder."/upload.lib.php");
+			if(isset($_GET['subaction'])){
+				if($_GET['subaction'] == "viewEvent"){
+					if(isset($_POST['eventId'])){
+						$eventId=escape($_POST['eventId']);
+						return displayEventOptions('qa',$moduleComponentId,$eventId);
+					}
+				}
+				else if($_GET['subaction'] == "editParticipant"){
+					$editFormId=escape($_POST['formId']);
+					$editUserId=escape($_POST['userId']);
+					$rowValue = escape($_POST['rowValue']);
+					$teamId = escape($_POST['teamId']);
+					$rowId = escape($_POST['rowId']);
+					$eventId = escape($_POST['eventId']);
+					if(!empty($userId)){
+						//return $rowId;
+						echo editParticipant('qa',$moduleComponentId,$eventId,$editFormId,$editUserId,$teamId,$rowValue,$rowId);
+						die();
+					}
+				}
+				else if($_GET['subaction'] == "lockEvent"){
+					$eventId = trim(escape($_POST['eventId']));
+					if(!empty($eventId)){
+						return lockEvent($moduleComponentId,$eventId);
+					}
+				}
+				else if($_GET['subaction'] == "downloadExcel"){
+					//$eventId = escape($_POST['eventId']);
+					//error_log($eventId);
+					//getUserDetailsTable($moduleComponentId,$eventId);
+					getUserDetailsTable($moduleComponentId,escape($_GET['event_id']));
+				}
+				/*else if($_GET['subaction'] == "getDetails"){
+					if(isset($_POST['eventId'])){
+						$eventId = escape($_POST['eventId']);
+						return 
+					}
+				}*/
+			}hitl
+			else
+				return displayQa($moduleComponentId);
+		}
+
 		public function actionQahead(){
 			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 			$moduleComponentId=$this->moduleComponentId;
 			$userId=$this->userId;
 			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
 			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+			require_once("$sourceFolder/$moduleFolder/events/events.config.php");
+			require_once($sourceFolder."/".$moduleFolder."/qaos1/excel.php");
+			require_once($sourceFolder."/upload.lib.php");
 			if(isset($_GET['subaction'])){
-				if($_GET['subaction'] == 'viewEvent'){
+				if($_GET['subaction'] == "viewEvent"){
+					if(isset($_POST['eventId'])){
+						$eventId=escape($_POST['eventId']);
+						return displayEventOptions('qahead',$moduleComponentId,$eventId);
+					}
+				}
+				else if($_GET['subaction'] == "editParticipant"){
+					$editFormId=escape($_POST['formId']);
+					$editUserId=escape($_POST['userId']);
+					$teamId = escape($_POST['teamId']);
+					$rowValue = escape($_POST['rowValue']);
+					$rowId = escape($_POST['rowId']);
+					$eventId = escape($_POST['eventId']);
+					if(!empty($userId)){
+						//return $rowId;
+						echo editParticipant('qahead',$moduleComponentId,$eventId,$editFormId,$editUserId,$teamId,$rowValue,$rowId);
+						die();
+					}
+				}
+				else if($_GET['subaction'] == "lockEvent"){
 					$eventId = trim(escape($_POST['eventId']));
 					if(!empty($eventId)){
-						return eventParticipants('qahead',$moduleComponentId,$eventId);
+						return lockEvent($moduleComponentId,$eventId);
 					}
 				}
 				else if($_GET['subaction'] == 'unlockEvent'){
@@ -178,118 +253,158 @@ class events implements module,fileuploadable {
 						return unlockEvent($moduleComponentId,$eventId);
 					}
 				}
-				else if($_GET['subaction'] == "viewConfirmed"){
-					$eventId=trim(escape($_POST['eventId']));
-					if(!empty($eventId)){
-						return viewConfirmedParticipants('qahead',$moduleComponentId,$eventId);
+				else if($_GET['subaction'] == "downloadExcel"){
+					//$eventId = escape($_POST['eventId']);
+					//error_log($eventId);
+					//getUserDetailsTable($moduleComponentId,$eventId);
+					getUserDetailsTable($moduleComponentId,escape($_GET['event_id']));
+				}
+				/*else if($_GET['subaction'] == "getDetails"){
+					if(isset($_POST['eventId'])){
+						$eventId = escape($_POST['eventId']);
+						return 
 					}
-				}
-				else if($_GET['subaction'] == "confirmParticipant"){
-					$confirmUserid = trim(escape($_POST['userId']));
-					$confirmEventId = trim(escape($_POST['eventId']));
-					if(!empty($userId)){
-						return confirmParticipation('qahead',$moduleComponentId,$confirmEventId,$confirmUserid);
-					}
-				}
-				else if($_GET['subaction'] == "unconfirmParticipant"){
-					$confirmUserid = trim(escape($_POST['userId']));
-					$confirmEventId = trim(escape($_POST['eventId']));
-					if(!empty($userId)){
-						return unconfirmParticipation('qahead',$moduleComponentId,$confirmEventId,$confirmUserid);
-					}
-				}
-				else if($_GET['subaction'] == "lockEvent"){
-					$eventId = trim(escape($_POST['eventId']));
-					if(!empty($eventId)){
-						return lockEvent('qahead',$moduleComponentId,$eventId);
-					}
-				}
-				else if($_GET['subaction'] == "editParticipant"){
-					$editFormId=trim(escape($_POST['formId']));
-					$editUserId=trim(escape($_POST['userId']));
-					$rowValue = trim(escape($_POST['rowValue']));
-					$rowId = trim(escape($_POST['rowId']));
-					$evnetId = trim(escape($_POST['eventId']));
-					if(!empty($userId)){
-						echo editParticipant('qahead',$moduleComponentId,$eventId,$editFormId,$editUserId,$rowValue,$rowId);
-						die();
-					}
-				}
-				else if($_GET['subaction'] == "editParticipantRank"){
-					$eventId = trim(escape($_POST['eventId']));
-					$userId = trim(escape($_POST['userId']));
-					$newRank = trim(escape($_POST['newRank']));
-					echo editParticipantRank('qahead',$moduleComponentId,$eventId,$userId,$newRank);
-					die();
-				}
+				}*/
 			}
-			return qaHeadOptions($moduleComponentId);
+			else
+				//return displayQa($moduleComponentId);
+				return qaHeadOptions($moduleComponentId);
 		}
 
-		public function actionQa(){
-			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
-			$moduleComponentId=$this->moduleComponentId;
-			$userId=$this->userId;
-			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
-			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
-			if(isset($_GET['subaction'])){
-				if($_GET['subaction']=="viewEvent"){
-					$eventId=trim(escape($_POST['eventId']));
-					if(!empty($eventId)){
-						return eventParticipants('qa',$moduleComponentId,$eventId);
-					}
-				}
-				else if($_GET['subaction'] == "viewConfirmed"){
-					$eventId=trim(escape($_POST['eventId']));
-					if(!empty($eventId)){
-						return viewConfirmedParticipants('qa',$moduleComponentId,$eventId);
-					}
-				}
-				else if($_GET['subaction'] == "confirmParticipant"){
-					$confirmUserid = trim(escape($_POST['userId']));
-					$confirmEventId = trim(escape($_POST['eventId']));
-					if(!empty($userId)){
-						return confirmParticipation('qa',$moduleComponentId,$confirmEventId,$confirmUserid);
-					}
-				}
-				else if($_GET['subaction'] == "editParticipant"){
-					$editFormId=trim(escape($_POST['formId']));
-					$editUserId=trim(escape($_POST['userId']));
-					$rowValue = trim(escape($_POST['rowValue']));
-					$rowId = trim(escape($_POST['rowId']));
-					$evnetId = trim(escape($_POST['eventId']));
-					if(!empty($userId)){
-						echo editParticipant('qa',$moduleComponentId,$eventId,$editFormId,$editUserId,$rowValue,$rowId);
-						die();
-					}
-				}
-				else if($_GET['subaction'] == "editParticipantRank"){
-					$eventId = trim(escape($_POST['eventId']));
-					$userId = trim(escape($_POST['userId']));
-					$newRank = trim(escape($_POST['newRank']));
-					echo editParticipantRank('qa',$moduleComponentId,$eventId,$userId,$newRank);
-					die();
-				}
-				else if($_GET['subaction'] == "lockEvent"){
-					$eventId = trim(escape($_POST['eventId']));
-					if(!empty($eventId)){
-						return lockEvent('qa',$moduleComponentId,$eventId);
-					}
-				}
-			}
-			else{
-				//return smartTableTest($moduleComponentId);
-				return displayQA($moduleComponentId);
-			}
-		}
+
 		public function actionPr(){
 			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
 			$moduleComponentId=$this->moduleComponentId;
 			$userId=$this->userId;
 			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
 			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+			require_once("$sourceFolder/$moduleFolder/events/events.config.php");
+			require_once($sourceFolder."/".$moduleFolder."/qaos1/excel.php");
 			if(isset($_GET['subaction'])){
 				if($_GET['subaction'] == "viewEvent"){
+					$eventId = trim(escape($_POST['eventId']));
+					if(!empty($eventId)){
+						return viewEventResult('pr',$moduleComponentId,$eventId);
+					}
+				}
+				else if($_GET['subaction'] == "printCerti"){
+					if(isset($_POST['eventId'])){
+						$eventId = escape($_POST['eventId']);
+						$action = 'event';
+					}
+					else if(isset($_POST['workshopId'])){
+						$eventId = escape($_POST['workshopId']);
+						$action = 'workshop';
+					}
+					return printCertificates($action,$moduleComponentId,$eventId);
+				}
+				else if($_GET['subaction'] == "downloadExcel"){
+					//$eventId = escape($_POST['eventId']);
+					//error_log($eventId);
+					//getUserDetailsTable($moduleComponentId,$eventId);
+					return getUserDetailsTable('pr',$moduleComponentId,escape($_GET['event_id']));
+				}
+				else if($_GET['subaction'] == "printIndividualCerti"){
+					if(isset($_POST['eventId'])){
+						$action = 'event';
+						$eventId = escape($_POST['eventId']);
+					}
+					else if(isset($_POST['workshopId'])){
+						$eventId = $_POST['workshopId'];
+						$sction = 'workshop';
+					}
+					$userId = escape($_POST['userId']);
+					//error_log($eventId." ".$userId);
+					return printIndividualCerti('pr',$action,$moduleComponentId,$userId,$eventId);
+				}
+			}
+			else{
+				return displayPR('pr',$moduleComponentId);
+			}
+		}
+
+		public function actionPrhead(){
+			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
+			$moduleComponentId=$this->moduleComponentId;
+			$userId=$this->userId;
+			require_once("$sourceFolder/$moduleFolder/events/events_common.php");
+			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
+			require_once("$sourceFolder/$moduleFolder/events/events.config.php");
+			require_once($sourceFolder."/".$moduleFolder."/qaos1/excel.php");
+			require_once($sourceFolder."/upload.lib.php");
+			if(isset($_GET['subaction'])){
+				if($_GET['subaction'] == 'viewEventList'){
+					return displayPr('prhead',$moduleComponentId);
+				}
+				if($_GET['subaction'] == "viewEvent"){
+					$eventId = trim(escape($_POST['eventId']));
+					if(!empty($eventId)){
+						return viewEventResult('prhead',$moduleComponentId,$eventId);
+					}
+				}
+				else if($_GET['subaction'] == "downloadExcel"){
+					//$eventId = escape($_POST['eventId']);
+					//error_log($eventId);
+					//getUserDetailsTable($moduleComponentId,$eventId);
+					return getUserDetailsTable('prhead',$moduleComponentId,escape($_GET['event_id']));
+				}
+				else if($_GET['subaction'] == 'unlockEvent'){
+					$eventId = trim(escape($_POST['eventId']));
+					if(!empty($eventId)){
+						return unlockEvent($moduleComponentId,$eventId);
+					}
+				}
+				else if($_GET['subaction'] == 'viewWorkshopList'){
+					return getWorkshopsList($moduleComponentId);
+				}
+				else if($_GET['subaction'] == 'viewWorkshopDetails'){
+					$workshopId = escape($_POST['workshopId']);
+					return viewWorkshopDetails($workshopId,$moduleComponentId);
+				}
+				else if($_GET['subaction'] == "downloadExcel"){
+					//$eventId = escape($_POST['eventId']);
+					//error_log($eventId);
+					//getUserDetailsTable($moduleComponentId,$eventId);
+					return getWorkshopDetailsTable($moduleComponentId,escape($_GET['workshop_id']));
+				}
+				else if($_GET['subaction'] == "editParticipant"){
+					$editFormId=escape($_POST['formId']);
+					$editUserId=escape($_POST['userId']);
+					$rowValue = escape($_POST['rowValue']);
+					$teamId = escape($_POST['teamId']);
+					$rowId = escape($_POST['rowId']);
+					$workshopId = escape($_POST['eventId']);
+					if(!empty($userId)){
+						//return $rowId;
+						echo editWorkshopParticipant('prhead',$moduleComponentId,$workshopId,$editFormId,$editUserId,$teamId,$rowValue,$rowId);
+						die();
+					}
+				}
+				else if($_GET['subaction'] == "printCerti"){
+					if(isset($_POST['eventId'])){
+						$eventAction = 'event';
+						$eventId = trim(escape($_POST['eventId']));
+					}
+					else if(isset($_POST['workshopId'])){
+						$eventAction = 'workshop';
+						$eventId = trim(escape($_POST['workshopId']));
+					}
+					return printCertificates($eventAction,$moduleComponentId,$eventId);
+				}
+				else if($_GET['subaction'] == "printIndividualCerti"){
+					if(isset($_POST['eventId'])){
+						$action = 'event';
+						$eventId = escape($_POST['eventId']);
+					}
+					else if(isset($_POST['workshopId'])){
+						$eventId = $_POST['workshopId'];
+						$sction = 'workshop';
+					}
+					$userId = escape($_POST['userId']);
+					//error_log($eventId." ".$userId);
+					return printIndividualCerti('prhead',$action,$moduleComponentId,$userId,$eventId);
+				}
+				/*else if($_GET['subaction'] == "viewEvent"){
 					$eventId = trim(escape($_POST['eventId']));
 					if(!empty($eventId)){
 						return viewEventResult($moduleComponentId,$eventId);
@@ -299,10 +414,16 @@ class events implements module,fileuploadable {
 					$eventId = trim(escape($_POST['eventId']));
 					return printCertificates($moduleComponentId,$eventId);
 				}
+
+				else if($_GET['subaction'] == 'unlockEvent'){
+					$eventId = trim(escape($_POST['eventId']));
+					if(!empty($eventId)){
+						return unlockEvent($moduleComponentId,$eventId);
+					}
+				}*/
 			}
-			else{
-				return displayPR($moduleComponentId);
-			}
+			else
+				return getPrHeadOptions($moduleComponentId);
 		}
 
 		public static function getFileAccessPermission($pageId,$moduleComponentId,$userId, $fileName)

@@ -15,14 +15,15 @@ if(!defined('__PRAGYAN_CMS'))
  * For more details, see README
  */
 
-function displayExcelForTable($table="") {
+function displayExcelForTable($table="",$filename="") {
+  if($filename=="") $filename="Events";
   if($table=="") $table="<table><thead></thead></table>";
   header("Pragma: public");
   header("Expires: 0");
   header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
   header("Cache-Control: private",false);
   header("Content-Type: application/vnd.ms-excel");
-  header("Content-Disposition: attachment; filename=\"Event.xls\";" );
+  header("Content-Disposition: attachment; filename=\"$filename.xls\";" );
   header("Content-Transfer-Encoding: binary");
   echo $table;
   exit(1);
@@ -45,7 +46,7 @@ function readExcelSheet($excelFile) {
     }
 
 }
-  print_r($dataArray);
+ // displayinfo(print_r($dataArray,true));
   return $dataArray;
 }
 
