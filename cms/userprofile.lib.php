@@ -8,27 +8,88 @@ if(!defined('__PRAGYAN_CMS'))
 }
 /**
  * @package pragyan
- * @author Boopathi Rajaa
+ * @author Boopathi Rajaa, balanivash
  * @copyright (c) 2011 Pragyan Team
  * @license http://www.gnu.org/licenses/ GNU Public License
  * For more details, see README
  */
 
-class Item {
-	
-	public $visible;
-	
-	function __construct() {
-		$this->visible = false;
-	}
-	
-	public function getField($fieldType) {
-		
-	}
-	
-}
 
-function generatePublicProfile($userId) {
-	$username = getUserName($userId);
+function generatePublicProfile($userProfileId,$accessUserId) {
+	$userId=$userProfileId;
+	global $urlRequestRoot, $moduleFolder, $cmsFolder,$sourceFolder, $templateFolder;
+	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
+	require_once("$sourceFolder/$moduleFolder/form/viewregistrants.php");
+	require_once("$sourceFolder/upload.lib.php");
+	require_once ("$sourceFolder/profile.lib.php");
+	$profileQuery = 'SELECT `user_name`, `user_fullname`, `user_email` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = \'' . $userId."'";
+	$profileResult = mysql_query($profileQuery);
+	if(!$profileResult) {
+		displayerror('An error occurred while trying to process your request.<br />' . mysql_error() . '<br />' . $profileQuery);
+		return '';
+	}
+	if(mysql_num_rows($profileResult)==0){
+		displayerror("The Requested user is not found." );
+		return "Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
+	}
+	$profileRow = mysql_fetch_row($profileResult);
+	$userName = $profileRow[0];
+	$userFullname = $profileRow[1];
+	$userEmail = $profileRow[2];
+	$fakeModuleComponentId=$userId;	
+	$profileimgname = getUploadedFiles($fakeModuleComponentId,'profile');
+	if($profileimgname==NULL) 
+	{ 
+	 	$profileimgname = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images/no-img.jpg";
+	}
+	else
+	{
+		$profileimgname = "./+profile&fileget={$profileimgname[0]['upload_filename']}&mcid={$userId}";
+	}
+
 	
+	$profileimg= "<img id=profileimg src='$profileimgname' alt='Profile Image' title='Profile Image' height=120 width=100><br/>";
+	
+	$dynamicFields = getFormElementsHtmlAsArrayForView(0, $userId);
+	$dynamicFields = join($dynamicFields, "</tr>\n<tr>");
+	if($dynamicFields != '') {
+		$dynamicFields = "<tr>$dynamicFields</tr>";
+	}
+
+	global $ICONS;
+	$profileForm =<<<PREF
+
+
+<div class="cms-profile">
+		<fieldset>
+			<legend>{$ICONS['User Profile']['small']}  User Profile</legend>
+
+			<table style="width:75%;">
+				<tr>
+				<td colspan=2 style="text-align:center">$profileimg</td>
+				</tr>
+				<tr>
+					<td><label for="user_name" class="labelrequired">Name</label></td>
+					<td>$userName</td>
+				</tr>
+				<tr>
+					<td><label for="user_fullname" class="labelrequired">Full Name</label></td>
+					<td>$userFullname</td>
+				</tr>
+
+					$dynamicFields
+PREF;
+	if($userId==$accessUserId){
+		$profileForm .= "<tr>
+					<td colspan=2 style='text-align:center'><a href=./+profile>{$ICONS['Edit']['small']} Edit Profile</a></td>
+				</tr>";
+	}
+		$profileForm .= <<<PREF
+			</table>
+		</fieldset>
+	</form>
+</div>
+PREF;
+
+	return  $profileForm."<br />".getProfileGroupsAndFormsList($userId); 
 }

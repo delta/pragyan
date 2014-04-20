@@ -48,6 +48,16 @@ left:200px;
 .cms-registrationform > form > fieldset > table > tbody >tr:first-child >td{
 background-color:#DEDFDA;
 }
+.cms-profile > fieldset > table {
+text-align :center;
+float:center;
+position:relative;
+margin-left: auto;
+margin-right:auto;
+}
+.cms-profile > fieldset > table > tbody >tr:first-child >td{
+background-color:#DEDFDA;
+}
 .searchBox > tbody > tr > td > table > tbody >  tr > td {
 background-color:#DEDFDA;
 }
