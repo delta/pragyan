@@ -264,7 +264,7 @@ function getFormElementInputField($moduleComponentId, $elementId, $value="", &$j
 		/// PASSWORD
 		function getFormElementPassword($elementName,$value,$isRequired,$elementHelpName,$elementTooltip,$elementSize,$elementTypeOptions,$elementMoreThan,$elementLessThan,$elementCheckInt,&$jsOutput,&$htmlOutput){
 
-			$htmlOutput .= '<input type="password" id="'.$elementName.'" title="'.$elementTooltip.'" />' . $value ;
+			$htmlOutput .= '<input type="password" id="'.$elementName.'" name="'.$elementName.'" title="'.$elementTooltip.'" value="'.$value.'"/>';
 			return true;
 		}
 		/// SELECTBOX

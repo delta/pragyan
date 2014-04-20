@@ -428,4 +428,63 @@ EDITREGISTRANTSVIEW;
 	return $editRegistrantsView;
 }
 
+/**
+ *
+ * @param $moduleCompId
+ * @param $userId
 
+ */
+	function getFormElementsHtmlAsArrayForView($moduleCompId, $userId) {
+		/// Check if the user has already registered to this form,
+		/// If yes, load default values for each field.
+		/// We'll keep this as an associative array, relating element id to value
+		$formValues = array();
+		if(verifyUserRegistered($moduleCompId,$userId)) {
+			$dataQuery = 'SELECT `form_elementid`, `form_elementdata` FROM `form_elementdata` WHERE ' .
+									 "`page_modulecomponentid` = '$moduleCompId' AND `user_id` = '$userId'";
+			$dataResult = mysql_query($dataQuery);
+			
+			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . mysql_error()); 	return false; }
+			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			
+				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdata'];
+			}
+		}
+		else {
+			$dataQuery = 'SELECT `form_elementid`, `form_elementdefaultvalue` FROM `form_elementdesc` WHERE ' .
+									 "`page_modulecomponentid` = '$moduleCompId'";
+			$dataResult = mysql_query($dataQuery);
+			
+			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . mysql_error()); 	return false; }
+			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			
+				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdefaultvalue'];
+			}
+		}
+		$elementQuery = 'SELECT `form_elementid`, `form_elementtype`, `form_elementdisplaytext` FROM `form_elementdesc` WHERE ' .
+										"`page_modulecomponentid` ='$moduleCompId' ORDER BY `form_elementrank`";
+		$elementResult = mysql_query($elementQuery);
+		$formElements = array();
+		while($elementRow = mysql_fetch_assoc($elementResult)) {
+				if($elementRow['form_elementtype']=='file'){
+					global $urlRequestRoot;
+					$fileLink=$formValues[$elementRow['form_elementid']];
+					if($formValues[$elementRow['form_elementid']]!=''){
+						if($moduleCompId!='0'){
+						$fileUrl=$urlRequestRoot.getPagePathFromModule('form',$moduleCompId).'/'.$formValues[$elementRow['form_elementid']]; 
+						$fileLink = "<a href='".$fileUrl."'>".$formValues[$elementRow['form_elementid']]."</a>";
+						}
+					}
+					$htmlOutput = '<td>' . $elementRow['form_elementdisplaytext'];
+					$htmlOutput .='</td><td>'.$fileLink.'</td>';
+					$formElements[] =$htmlOutput;
+				}
+				elseif($elementRow['form_elementtype']!='password'){
+					$htmlOutput = '<td>' . $elementRow['form_elementdisplaytext'];
+					$htmlOutput .='</td><td>'.(isset($formValues[$elementRow['form_elementid']]) ? $formValues[$elementRow['form_elementid']] : '').'</td>';
+					$formElements[] =$htmlOutput;
+			}
+		}
+
+		return $formElements;
+	}

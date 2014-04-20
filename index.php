@@ -144,7 +144,7 @@ if(isset($_GET['page']))
 ///Case 2 : request for a user profile page
 else if(isset($_GET['user'])) {
 	$publicPageRequest = true;
-	$userProfileName = $_GET['user'];
+	$userProfileId = $_GET['user'];
 	//This is just to prevent parsing a NULL url when someone misplaces the code for User profile parser
 	$pageFullPath = "home";
 }
@@ -218,8 +218,9 @@ if($publicPageRequest) {
 	require_once($sourceFolder."/userprofile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));
 	$TITLE = CMS_TITLE . " | User : " .$userProfileName;
-	$CONTENT = generatePublicProfile($userId);
-	//$CONTENT = "You are currently viewing a Public Profile of ". htmlentities($userProfileName);
+	$CONTENT = generatePublicProfile($userProfileId,$userId);
+	$ACTIONBARPAGE = getActionbarPage($userId, $pageId);
+	$BREADCRUMB = breadcrumbs(array(0=>0),"&nbsp;»&nbsp;");
 	$MENUBAR = getMenu($userId, $pageIdArray);
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit(1);

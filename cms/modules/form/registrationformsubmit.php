@@ -454,7 +454,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$submitQuery = 'INSERT INTO `form_elementdata`(`user_id`, `page_modulecomponentid`, `form_elementid`, `form_elementdata`) ' .
 									"VALUES('$userId', '$moduleCompId', '$elementId', '$uploadFileName')";
 		if(!mysql_query($submitQuery) || mysql_affected_rows() != 1) {
-			displayerror('Error updating information in the database.');
+			displayerror('Error updating information in the database.'.mysql_error());
 			return false;
 		}
 		return true;
