@@ -217,7 +217,7 @@ require_once($sourceFolder."/login.lib.php");
 if($publicPageRequest) {
 	require_once($sourceFolder."/userprofile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));
-	$TITLE = CMS_TITLE . " | User : " .$userProfileName;
+	$TITLE = CMS_TITLE . " | User : " . ucfirst(getUserName($userProfileId));
 	$CONTENT = generatePublicProfile($userProfileId,$userId);
 	$ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 	$BREADCRUMB = breadcrumbs(array(0=>0),"&nbsp;»&nbsp;");
