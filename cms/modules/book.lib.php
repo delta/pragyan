@@ -199,6 +199,9 @@ RET;
 		displayinfo('The new copy of book module has to be configured manually');
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Book module administration page. Options coming up soon!!!";
+	}
 	
 	/**
 	 * function tabScript:

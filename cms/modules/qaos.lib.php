@@ -1329,4 +1329,8 @@ SCOREUSER;
 	public function copyModule($moduleComponentId,$newId){
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the QA module administration page. Options coming up soon!!!";
+	}
+	
 }

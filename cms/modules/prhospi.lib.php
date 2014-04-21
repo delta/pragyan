@@ -662,5 +662,9 @@ ex','tiff','txt','chm','mp3','mp2','wave','wav','mpg','ogg','mpeg','wmv','wma','
   public function copyModule($moduleComponentId, $newId) {
     return true;
   }
+  	public function moduleAdmin(){
+		return "This is the PR and Hospi module administration page. Options coming up soon!!!";
+	}
+	
 
 }

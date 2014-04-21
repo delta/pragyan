@@ -371,4 +371,8 @@ IMGFORM;
 		}
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Quiz module administration page. Options coming up soon!!!";
+	}
+	
 }

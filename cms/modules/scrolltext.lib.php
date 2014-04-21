@@ -126,7 +126,10 @@ public function deleteModule($moduleComponentId) {
 		mysql_query($query) or displayerror(mysql_error()."scrolltext.lib L:104");
 		return true;
 	}
-
+	public function moduleAdmin(){
+		return "This is the Scrolltext module administration page. Options coming up soon!!!";
+	}
+	
 
 
 }

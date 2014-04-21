@@ -132,5 +132,9 @@ public function createModule($moduleComponentId) {
 public function copyModule($moduleComponentId, $newId) {
   return true;
 }
+public function moduleAdmin(){
+		return "This is the OC module administration page. Options coming up soon!!!";
+	}
+	
 }
 

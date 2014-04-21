@@ -319,6 +319,7 @@ interface module {
 	public function deleteModule($moduleComponentId);
 	public function copyModule($moduleComponentId,$newModuleComponentId);
 	public function createModule($moduleComponentId);
+	public function moduleAdmin();
 }
 
 interface fileuploadable {

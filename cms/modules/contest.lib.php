@@ -174,6 +174,9 @@ class contest implements module, fileuploadable {
 	        $ret .= "</ul>\n";
 	        return $ret;
 	}
-
+	public function moduleAdmin(){
+		return "This is the Contest module administration page. Options coming up soon!!!";
+	}
+	
 }
 ?>
