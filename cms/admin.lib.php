@@ -409,8 +409,9 @@ function admin($pageid, $userid) {
 	</tr>
 	<tr>
 	
-	<td colspan=2><a href="./+admin&subaction=useradmin"><div>{$ICONS['User Management']['large']}<br/>User Management</div></a></td>
-	<td colspan=2><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
+	<td><a href="./+admin&subaction=useradmin"><div>{$ICONS['User Management']['large']}<br/>User Management</div></a></td>
+	<td><a href="./+admin&subaction=editprofileform"><div>{$ICONS['User Profile']['large']}<br/>User Profiles</div></a></td>
+	<td colspan=2><a href="./+admin&subaction=moduleadmin"><div>{$ICONS['File Manager']['large']}<br/>Module Administration</div></a></td>
 	</tr>
 
 	</table>
@@ -442,6 +443,42 @@ ADMINPAGE;
 		$op = $function();
 		if($op != "") return $op.$quicklinks;
 		return managementForm($type).$quicklinks;
+	}
+	if(isset($_GET['subaction']) && ($_GET['subaction']=='moduleadmin')) {
+		$returnHtml = '';
+		if(isset($_GET['module'])){
+			$type = escape($_GET['module']);
+			$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` = '$type'";
+			$result = mysql_query($query);
+			if(mysql_num_rows($result)==0){
+				displayerror("No such module exists.");
+			}
+			else {
+				global $sourceFolder;
+				global $moduleFolder;
+				require_once($sourceFolder."/".$moduleFolder."/".$type.".lib.php");
+				$page = new $type();
+				if(!($page instanceof module)){echo "hello";die();
+					//displayerror("The module \"$type\" does not implement the inteface module");
+				}
+				else{
+					$returnHtml .="<fieldset><legend>".ucfirst($type)." Administration</legend>";
+					$returnHtml .= $page->moduleAdmin();
+					$returnHtml .= "</fieldset>";
+				}
+			}
+
+		}
+		else{
+			$moduleQuery = "SELECT `module_name` FROM `".MYSQL_DATABASE_PREFIX."modules`";
+			$moduleResult = mysql_query($moduleQuery);
+			$returnHtml .="<fieldset><legend>Module Administration</legend>";
+			while($row=mysql_fetch_array($moduleResult)){
+				$returnHtml .= "<a href=./+admin&subaction=moduleadmin&module=$row[0]>".ucfirst($row[0]) ." Administration</a><br />";
+			}
+			$returnHtml .="</fieldset>";
+		}
+		return $returnHtml.$quicklinks;
 	}
 	global $sourceFolder;	
 	if(!isset($_GET['subaction']) && !isset($_GET['subsubaction'])) 

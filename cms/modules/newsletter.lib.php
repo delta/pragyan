@@ -170,4 +170,8 @@ class newsletter implements module {
 	public function copyModule($moduleComponentId,$newId) {
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Newsletter module administration page. Options coming up soon!!!";
+	}
+	
 }

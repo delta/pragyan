@@ -136,6 +136,10 @@ Script;
 	public function copyModule($mid, $newId){
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Form module administration page. Options coming up soon!!!";
+	}
+	
 }
 
 class Element {

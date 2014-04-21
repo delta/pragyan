@@ -352,6 +352,10 @@ class quiz implements module {
 	public function deleteModule($moduleComponentId) {
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Quiz module administration page. Options coming up soon!!!";
+	}
+	
 
 	/**
 	 * function getNewQuizObject:

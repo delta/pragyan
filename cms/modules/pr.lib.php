@@ -159,5 +159,9 @@ REGISTRATIONFORM;
 	public function copyModule($moduleComponentId,$newId){
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the PR module administration page. Options coming up soon!!!";
+	}
+	
 }
 

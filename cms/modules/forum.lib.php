@@ -1120,5 +1120,9 @@ public function createModule($compId) {
 	public function copyModule($moduleComponentId,$newId) {
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Forum module administration page. Options coming up soon!!!";
+	}
+	
 }
 

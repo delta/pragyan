@@ -379,6 +379,10 @@ EDIT;
 	public function copyModule($moduleComponentId,$newId) {
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Share module administration page. Options coming up soon!!!";
+	}
+	
 }
 
 
