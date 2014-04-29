@@ -167,7 +167,8 @@ INSERT IGNORE INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
 ('sitemap', ''),
 ('quiz', 'quiz_answersubmissions;quiz_descriptions;quiz_objectiveoptions;quiz_questions;quiz_sections;quiz_userattempts;quiz_weightmarks'),
 ('sqlquery', 'sqlquery_desc'),
-('share','share;share_files;share_comments');
+('share','share;share_files;share_comments'),
+('events','events_certificate;events_certificate_details;events_confirmed_participants;events_details;events_edited_form;events_event_procurement;events_event_procurement1;events_form;events_locked;events_notifications;events_participants;events_procurements;events_result;events_workshop_details;events_workshop_participants');
 
 --
 -- Dumping data for table `pragyanV3_external`
@@ -305,7 +306,16 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`,`page_module`, `perm_ac
 (72, 'oc', 'create', 'Create', 0, 'Create'),
 (73, 'oc', 'ochead', 'Ochead', 0, 'OC Head'),
 (74, 'oc', 'octeam', 'OCteam', 0, 'OC Team'),
-(75, 'oc', 'view', 'view', 0, 'OC View');
+(75, 'oc', 'view', 'view', 0, 'OC View'),
+(76, 'events', 'view', 'view', 0, 'View Events'),
+(77, 'events', 'eventshead', 'Events Head', 0, 'Evetns Head.'),
+(78, 'events', 'ochead', 'OC Head', 1, 'OC Head.'),
+(79, 'events', 'octeam', 'OC Team', 2, 'OC Team'),
+(80, 'events', 'qa', 'QA', 3, 'Quality Assurance.'),
+(81, 'events', 'pr', 'PR', 4, 'PR.'),
+(82, 'events', 'csg', 'CSG', 5, 'CSG'),
+(83, 'events', 'qahead', 'QA Head', 6, 'QA Head.'),
+(84, 'events', 'prhead', 'PR Head', 7, 'PR Head');
 
 
 --
@@ -429,4 +439,13 @@ INSERT IGNORE INTO `pragyanV3_widgetsinfo` (`widget_id`, `widget_name`, `widget_
 --
 -- Dumping data for table `sqlquery_desc`
 --
+
+--
+-- Dumping data for table `events_certificate`
+--
+
+INSERT INTO `events_certificate` (`certificate_id`, `user_rank`, `event_id`, `certificate_image`, `page_moduleComponentId`) VALUES
+(1, -2, 0, 'merit.jpg', 2),
+(2, -1, 0, 'participation.jpg', 2),
+(3, -1, 0, 'workshop.jpg', 1);
 
