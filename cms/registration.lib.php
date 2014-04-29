@@ -257,7 +257,7 @@ FORM;
 			$passwd = md5($_POST['user_password']);
 			$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
 					"(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`) " .
-					"VALUES ('".escape($_POST['user_name'])."', '".escape($_POST['user_email'])."', '".escape($_POST['user_fullname'])."', '$passwd', ".ACTIVATE_USER_ON_REG.")";
+					"VALUES ('".escape(htmlentities($_POST['user_name']))."', '".escape(htmlentities($_POST['user_email']))."', '".escape(htmlentities($_POST['user_fullname']))."', '$passwd', ".ACTIVATE_USER_ON_REG.")";
 			$result = mysql_query($query);
 			$query1 = "SELECT `user_id` FROM `". MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` ='".escape($_POST['user_email'])."' LIMIT 1";
 			$result1 = mysql_query($query1);
