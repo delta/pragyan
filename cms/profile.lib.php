@@ -93,12 +93,12 @@ function profile($userId, $forEditRegistrant = false) {
 			$updates = array();
 
 			if (isset($_POST['user_name']) && $_POST['user_name'] != '' && $_POST['user_name'] != $userName) {
-				$updates[] = "`user_name` = '".escape($_POST['user_name'])."'";
 				$newUserName = escape($_POST['user_name']);
+				$updates[] = "`user_name` = '".$newUserName."'";
 			}
 			if (isset($_POST['user_fullname']) && $_POST['user_fullname'] != '' && $_POST['user_fullname'] != $userFullname) {
-				$updates[] = "`user_fullname` = '".escape($_POST['user_fullname'])."'";
 				$newUserFullname = escape($_POST['user_fullname']);
+				$updates[] = "`user_fullname` = '".$newUserFullname."'";
 			}
 			$errors = true;
 			if (!$forEditRegistrant && $_POST['user_newpassword'] != '') {
@@ -245,7 +245,7 @@ $STARTSCRIPTS.="document.getElementsByName('profileimage[]')[0].disabled=true;";
 </script>
 <div class="cms-registrationform">
 	<form id="cms-registrationform" class="fValidator-form" method="POST" name="user_profile_usrFrm" onsubmit="return checkProfileForm(this)" action="$formAction" enctype="multipart/form-data">
-		<fieldset style="width:80%">
+		<fieldset>
 			<legend>{$ICONS['User Profile']['small']}Profile Preferences</legend>
 
 			<table>
@@ -297,8 +297,8 @@ PREF;
 					<td colspan="2">&nbsp;</td>
 				</tr>
 				<tr>
-					<td><input type="submit" name="btnSubmitProfile" id="submitbutton" value="Save Profile"></td>
-					<td></td>
+					<td style="text-align:center;"><input type="submit" name="btnSubmitProfile" id="submitbutton" value="Save Profile"></td>
+					<td style="text-align:center;vertical-align: middle;"><a href="$urlRequestRoot/user:$userId">Go to Public Profile</a></td>
 				</tr>
 			</table>
 PREF;
@@ -444,27 +444,30 @@ function getProfileRegistrantsList($showEditButtons = false) {
 
 function getProfileForms($userId) {
 	global $ICONS,$urlRequestRoot;
-	$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms I Have Registered To</legend>";
-	$regforms .= '<ol>';
-	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = '$userId'";
+	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = '$userId' AND `page_modulecomponentid` != '0'";
 	$result2 = mysql_query($query);
-	while($result = mysql_fetch_row($result2)) {
-		if($result[0]!=0){
-		$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
-		$formPathLink = $urlRequestRoot . $formPath;
-		$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` ='". $result[0]."'";		
-		$result1 = mysql_query($query1);
-		$result1 = mysql_fetch_row($result1);
-		$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
+	$regforms='';
+	if(mysql_num_rows($result2)>0)
+		{
+			$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms I Have Registered To</legend>";
+			$regforms .= '<ol>';
+			while($result = mysql_fetch_row($result2)) {
+				if($result[0]!=0){
+					$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
+					$formPathLink = $urlRequestRoot . $formPath;
+					$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` ='". $result[0]."'";		
+					$result1 = mysql_query($query1);
+					$result1 = mysql_fetch_row($result1);
+					$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
+				}
 		}
-	}
-	$regforms .= '</ol></fieldset> ';
+		$regforms .= '</ol></fieldset> ';
+		}
 	return $regforms;
 }
 function getFormDeadlines($userId) {
 	global $ICONS,$urlRequestRoot;
-	$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms Nearing Deadline</legend>";
-	$regforms .= '<ol>';
+	$regforms="";
 	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."global`";
 	$result = mysql_query($query);
 	while($res = mysql_fetch_row($result)) {
@@ -476,15 +479,19 @@ function getFormDeadlines($userId) {
 	}	
 	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_desc` WHERE HOUR(TIMEDIFF(`form_expirydatetime`,NOW( )))*3600+MINUTE(TIMEDIFF(`form_expirydatetime`,NOW( )))*60+SECOND(TIMEDIFF(`form_expirydatetime`,NOW( )))*60 <= '".$deadline."'";
 	$result2 = mysql_query($query);
-	while($result = mysql_fetch_row($result2)) {
-		if($result[0]!=0){
-		$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
-		$formPathLink = $urlRequestRoot . $formPath;
-		$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` =". $result[0];		
-		$result1 = mysql_query($query1);
-		$result1 = mysql_fetch_row($result1);
-		$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
-		}
+	if(mysql_num_rows($result2)>0){
+			$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms Nearing Deadline</legend>";
+			$regforms .= '<ol>';
+			while($result = mysql_fetch_row($result2)) {
+				if($result[0]!=0){
+				$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
+				$formPathLink = $urlRequestRoot . $formPath;
+				$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` =". $result[0];		
+				$result1 = mysql_query($query1);
+				$result1 = mysql_fetch_row($result1);
+				$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
+				}
+			}
 	}
 	$regforms .= '</ol></fieldset> ';
 	return $regforms;
@@ -514,7 +521,7 @@ function getProfileGroupsAndFormsList($userId) {
 	if(count($associatedGroups) == 0 && count($unassociatedGroups) == 0)
 		return false;
 	global $ICONS;
-	$retVal = "<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Groups I Belong To</legend>";
+	$retVal = "<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}  Groups The User Belongs To</legend>";
 	if(count($associatedGroups) > 0) {
 		$retVal .= '<strong>Groups associated with forms:</strong><br /><br /><table style="margin-left: 8px" border="1" cellpadding="4px" cellspacing="4px">' .
 						'<tr><th>Form Path</th><th>Group Name</th><th>Unregister</th></tr>' .

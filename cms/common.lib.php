@@ -377,6 +377,18 @@ function getUserFullName($userId) {
 	$row = mysql_fetch_row($result);
 	return $row[0];
 }
+/**
+ * Determines the userId , given his/her Username
+ * @param $userName User Name of the user, whose Id is to be determined
+ * @return user Id of the user, null representing failure
+ */
+function getUserIdFromUserName($userName) {
+	if($userName == "") return "0";
+	$query = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_name` = '".$userName."'";
+	$result = mysql_query($query);
+	$row = mysql_fetch_row($result);
+	return $row[0];
+}
 
 /**
  * Determines the Full Name of a user, given his/her Email ID
@@ -482,7 +494,9 @@ function getPagePath($pageid) {
 
 	return "/$pagepath";
 }
-
+function getPagePathFromModule($moduleName,$moduleComponentId) {
+	return getPagePath(getPageIdFromModuleComponentId($moduleName,$moduleComponentId));
+}
 function getPageModule($pageId) {
 	$pagemodule_query = "SELECT `page_module` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
 	$pagemodule_result = mysql_query($pagemodule_query);
@@ -841,4 +855,3 @@ function censor_words($text)
 		$res = preg_replace("/$words[0]/i",$replace,$text);
 	return $res;
 }
-

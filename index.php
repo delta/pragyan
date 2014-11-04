@@ -144,7 +144,7 @@ if(isset($_GET['page']))
 ///Case 2 : request for a user profile page
 else if(isset($_GET['user'])) {
 	$publicPageRequest = true;
-	$userProfileName = $_GET['user'];
+	$userProfileId = $_GET['user'];
 	//This is just to prevent parsing a NULL url when someone misplaces the code for User profile parser
 	$pageFullPath = "home";
 }
@@ -217,12 +217,26 @@ require_once($sourceFolder."/login.lib.php");
 if($publicPageRequest) {
 	require_once($sourceFolder."/userprofile.lib.php");
 	define("TEMPLATE", getPageTemplate(0));
-	$TITLE = CMS_TITLE . " | User : " .$userProfileName;
-	$CONTENT = generatePublicProfile($userId);
-	//$CONTENT = "You are currently viewing a Public Profile of ". htmlentities($userProfileName);
+	$TITLE = CMS_TITLE . " | User : " . ucfirst(getUserName($userProfileId));
+	$CONTENT = generatePublicProfile($userProfileId,$userId);
+	$ACTIONBARPAGE = getActionbarPage($userId, $pageId);
+	$BREADCRUMB = breadcrumbs(array(0=>0),"&nbsp;»&nbsp;");
 	$MENUBAR = getMenu($userId, $pageIdArray);
 	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit(1);
+}
+
+///The URL may contain some harmful GET variables, so filter and block such URLs.
+if(URLSecurityCheck($_GET))
+{
+	define("TEMPLATE", getPageTemplate(0));
+	$pageId = parseUrlReal("home", $pageIdArray);
+	$TITLE = CMS_TITLE;
+	$MENUBAR = '';
+	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
+			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
+	exit();
 }
 
 ///Parse the URL and retrieve the PageID of the request page if its valid
@@ -242,19 +256,6 @@ if ($pageId === false) {
 
 ///If it reaches here, means the page requested is valid. Log the information for future use.
 logInfo (getUserEmail($userId),$userId, $pageId, $pageFullPath, getPageModule($pageId), $action, $_SERVER['REMOTE_ADDR']);
-
-///The URL may contain some harmful GET variables, so filter and block such URLs.
-if(URLSecurityCheck($_GET))
-{
-	define("TEMPLATE", getPageTemplate(0));
-	$pageId = parseUrlReal("home", $pageIdArray);
-	$TITLE = CMS_TITLE;
-	$MENUBAR = '';
-	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
-			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
-	exit();
-}
 
 ///The URL points to a file. Download permissions for the file are handled inside the download() function in download.lib.php
 if(isset($_GET['fileget'])) {

@@ -198,5 +198,9 @@ class pagelist implements module {
 		 */
 		 return true;
 	}
+	public function moduleAdmin(){
+		return "This is the Pagelist module administration page. Options coming up soon!!!";
+	}
+	
 }
 ?>

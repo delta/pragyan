@@ -1002,6 +1002,7 @@ ROOM;
 			if($subaction=='displayvacantrooms')
 			{
 			$room=<<<ROOM
+			
 ROOM;
 				if($_POST['hostels']=="all")
 				{
@@ -1067,5 +1068,8 @@ ROOM;
 	public function copyModule($moduleComponentId, $newId) {
 		return true;
 	}
-
+	public function moduleAdmin(){
+		return "This is the Hospitality module administration page. Options coming up soon!!!";
+	}
+	
 	}

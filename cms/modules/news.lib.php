@@ -267,6 +267,10 @@ END;
 	public function copyModule($moduleComponentId,$newId){
 		return true;
 	}
+	public function moduleAdmin(){
+		return "This is the News module administration page. Options coming up soon!!!";
+	}
+	
 
 	public function actionView()
 	{

@@ -251,6 +251,10 @@ QUERYEDITFORM;
                 $insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, `sqlquery_query`) VALUES('$compId', 'New Query', 'SELECT * FROM `mytable` WHERE 1')";
                 $insertResult = mysql_query($insertQuery);
         }
+	public function moduleAdmin(){
+		return "This is the SQL Query module administration page. Options coming up soon!!!";
+	}
+	
 
 }
 

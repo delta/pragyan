@@ -444,6 +444,55 @@ CREATE TABLE IF NOT EXISTS `news_data` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `oc_config`
+--
+
+CREATE TABLE IF NOT EXISTS `oc_config` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `key` varchar(100) NOT NULL,
+  `value` text NOT NULL,
+  UNIQUE KEY `key` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oc_form_reg`
+--
+
+CREATE TABLE IF NOT EXISTS `oc_form_reg` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_moduleComponentId` int(11) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
+  `name` text NOT NULL,
+  `amount` int(11) NOT NULL,
+  `Tshirt_size` text NOT NULL,
+  `updated_time` datetime NOT NULL,
+  `oc_tshirt_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `oc_food_coupon_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `oc_extra_distributed` enum('Yes','No') NOT NULL DEFAULT 'No',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `oc_valid_emails`
+--
+
+CREATE TABLE IF NOT EXISTS `oc_valid_emails` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `page_moduleComponentId` int(11) NOT NULL,
+  `oc_name` text NOT NULL,
+  `oc_valid_email` varchar(100) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `oc_valid_email` (`oc_valid_email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `news_desc`
 --
 
@@ -855,7 +904,8 @@ CREATE TABLE IF NOT EXISTS `prhospi_accomodation_status` (
   `hospi_checkedin_by` int(11) NOT NULL,
   `hospi_cash_recieved` int(11) NOT NULL DEFAULT '0',
   `hospi_cash_refunded` int(1) NOT NULL,
-  `hospi_printed` int(11) NOT NULL DEFAULT '0'
+  `hospi_printed` int(11) NOT NULL DEFAULT '0',
+  `user_registered_by` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -900,9 +950,9 @@ CREATE TABLE IF NOT EXISTS `prhospi_hostel` (
   `hospi_room_capacity` int(11) NOT NULL DEFAULT '0',
   `hospi_room_no` int(11) NOT NULL DEFAULT '0',
   `hospi_floor` int(1) NOT NULL,
+  `hospi_blocked` int(11) NOT NULL,
   PRIMARY KEY (`hospi_room_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=175 ;
-
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 -- --------------------------------------------------------
 
 --
@@ -915,7 +965,9 @@ CREATE TABLE IF NOT EXISTS `prhospi_pr_status` (
   `hospi_checkin_time` datetime NOT NULL,
   `hospi_checkpout_time` datetime NOT NULL,
   `amount_recieved` int(11) NOT NULL,
-  `amount_refunded` int(11) NOT NULL
+  `amount_refunded` int(11) NOT NULL,
+  `user_registered_by` int(11) NOT NULL DEFAULT '0'
+
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

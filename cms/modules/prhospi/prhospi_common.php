@@ -150,9 +150,9 @@ OPTIONS;
 
 }
 function getAvailableRooms($mcid) {
-    $roomQuery="SELECT `hospi_room_id`,`hospi_hostel_name`,`hospi_room_no`,`hospi_room_capacity` 
+     $roomQuery="SELECT `hospi_room_id`,`hospi_hostel_name`,`hospi_room_no`,`hospi_room_capacity` 
                 FROM `prhospi_hostel` 
-                WHERE `page_modulecomponentid`={$mcid} ORDER BY `hospi_hostel_name`,`hospi_room_no` ASC";
+                WHERE `page_modulecomponentid`={$mcid} AND `hospi_blocked`=0 ORDER BY `hospi_hostel_name`,`hospi_room_no` ASC";
     $roomRes=mysql_query($roomQuery) or displayerror(mysql_error());
     $ret="<option value=''>SELECT ROOM NO</option>";
     while($res=mysql_fetch_array($roomRes)) {
@@ -176,7 +176,7 @@ function getUserDetailsForHospi($userId,$mcid) {
     //   return "";
   }
   if(!is_numeric($userId)|| $userId=="") {
-    displayerror("Invalid format.<br/>Format should be 'name' - 'userid'");
+    displayerror("Invalid format.<br/>Format should be 'userid'");
     return "";
   }
   $checkUserExist=mysql_query("SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(mysql_error());
@@ -353,7 +353,7 @@ TABLEAMOUNT;
 }
 
 
-function displayAccommodationForm($userId,$mcid) {
+function displayAccommodationForm($userId,$mcid,$registeredBy) {
   if(!isset($_POST['continueToAcco'])||!(isset($_GET['userId']))) {
     return getUserDetailsForHospi(escape($_GET['userId']),$mcid);
   }
@@ -393,7 +393,7 @@ TABLE;
       displayinfo("Room Not Available for Pragyan Id : ".$uid.".Please try again ");
       continue;
     }
-    if(!addUserToRoom($uid,$roomNo,$mcid,escape($_GET['userId']))) continue;
+    if(!addUserToRoom($uid,$roomNo,$mcid,escape($_GET['userId']),$registeredBy)) continue;
     $name = getUserName($uid);
     $email = getUserEmail($uid);
     $room = getRoomNoFromRoomId($roomNo,$mcid);
@@ -416,7 +416,7 @@ TROW;
   return $tableForDisclaimer."</table>".displayRooms($mcid,escape($_GET['userId']));
 }
 
-function ajaxSuggestions($mcid,$type=0) {
+function ajaxSuggestions($mcid,$type=0,$registeredBy=0) {
   // 0 is for insert . and 1 for update
   $content="";
   if(!isset($_POST['userid'])||$_POST['userid']=="") {
@@ -451,7 +451,7 @@ function ajaxSuggestions($mcid,$type=0) {
       return $content;
     }
  
-    if($type==0)  return addUserToRoomAjax($uid,$roomNo,$mcid,escape($_POST['user_reg_value']),$stay);
+    if($type==0)  return addUserToRoomAjax($uid,$roomNo,$mcid,escape($_POST['user_reg_value']),$stay,$registeredBy);
     else          return updateUserToRoomAjax($uid,$roomNo,$mcid,escape($_POST['user_reg_value']),$stay);
       /**code doesn't continue from this part"; */
 
@@ -518,15 +518,15 @@ TABLE;
   displayExcelForTable($table);
 }
 
-function getProfileDetailsForPr($userId,$mcid) {
+function submitDetailsForPr($userId,$mcid,$registeredBy) {
   if(!is_numeric($userId)|| $userId=="") {
-    displayerror("Invalid format.<br/>Format should be 'name' - 'userid'");
-    return "";
+    displayerror("Invalid format.<br/>Format should be 'userid'");
+    return '';
   }
   $checkUserExist=mysql_query("SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(mysql_error());
   if(!mysql_num_rows($checkUserExist)) {
     displayerror("Invalid User Id");
-    return "";
+    return '';
   }
 
   $profileDetailQuery = "SELECT descr.form_elementdisplaytext AS dispText,
@@ -545,7 +545,6 @@ function getProfileDetailsForPr($userId,$mcid) {
   }
   $checkRequired=0;
   $userDetails = <<<TABLE
-   <form method = "post" action = "./+prview&subaction=regCompleted">
     <table id="tableUserDetailsHospi" border="1">
        <tr>
          <th>Pr Id</th> 
@@ -571,21 +570,13 @@ TR;
   $userDetails .=<<<TRAMOUNT
 	<tr >
 	  <td colspan="3" style="text-align:center">	    
-		<input type="checkbox" name = "collected" value="1" />&nbsp;&nbsp;&nbsp;Collected Rs $amtToBeCollected from $userName
+		Collected Rs $amtToBeCollected from $userName
 	  </td>	
-
 	</tr>
-	<tr>
-	<td colspan="3">
-	  <input type="hidden" name = "pragyanId" value="{$userId}"/>
-	  <input type="submit"	style="width:100%;font-size:16px;" value = "Finish Registration for {$userId}" />	 
-	</td>
      </table>
-   </form>
 
 TRAMOUNT;
-  
-  return $userDetails;	
+  return $userDetails.checkInPrUser($userId,$mcid,$registeredBy);	
 }
 
 function isRegisteredToPr($userId,$mcId) {
@@ -597,7 +588,7 @@ function isRegisteredToPr($userId,$mcId) {
   return 0;
 }
 
-function checkInPrUser($userId,$mcId) {
+function checkInPrUser($userId,$mcId,$registeredBy) {
   $userId = escape($userId);
   if(!is_numeric($userId)) return 0;
   if(isRegisteredToPr($userId,$mcId)) {
@@ -606,7 +597,7 @@ function checkInPrUser($userId,$mcId) {
   }
   $time = date("Y-m-d H:i:s");
   $amtToBeCollected = getAmount("prhead",$mcId); 
-  $addUserToPrReg = "INSERT INTO `prhospi_pr_status` VALUES ({$mcId},{$userId},'{$time}','0000-00-00 00:00:00',{$amtToBeCollected},0)";
+  $addUserToPrReg = "INSERT INTO `prhospi_pr_status` VALUES ({$mcId},{$userId},'{$time}','0000-00-00 00:00:00',{$amtToBeCollected},0,'{$registeredBy}')";
   $addUserToPrRegQuery = mysql_query($addUserToPrReg) or displayerror(mysql_error());
   if(mysql_affected_rows()>0) {
     displayinfo("Sucessfully Registered for Pragyan");
@@ -694,6 +685,8 @@ function displayUsersRegisteredToPr($mcId) {
           <th>Check Out Time</th>
           <th>Amount Received</th>
           <th>Amount Refunded</th>
+          <th>Registered By</th>
+          <th>Registered By Email</th>
           <th>Disclaimer</th>
           
         </tr>
@@ -702,6 +695,8 @@ TABLE;
   $getRegisteredUserDetailPRQuery = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid`={$mcId}";
   $getRegisteredUserPR = mysql_query($getRegisteredUserDetailPRQuery) or displayerror("Error on viewing registered user".mysql_error());
   while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
+    $registeredByName = getUserName($res['user_registered_by']);
+    $registeredByEmail = getUserEmail($res['user_registered_by']);
     $name = getUserName($res['user_id']);
     $id=$res['user_id'];
     $email = getUserEmail($res['user_id']);
@@ -719,6 +714,8 @@ TABLE;
        <td>{$res['hospi_checkpout_time']}</td>
        <td>{$res['amount_recieved']}</td>
        <td>{$res['amount_refunded']}</td>
+       <td>$registeredByName</td>
+       <td>$registeredByEmail</td>
        <td>
           <form method="POST" target="_blank" action="./+prview">
            <input type="submit" name="printthis" value="PRINT"/>
@@ -811,6 +808,8 @@ function displayUsersRegisteredToAcco($mcId) {
           <th>Amount Refunded</th>
           <th>Hostel</th>
           <th>Room No</th>
+          <th>Registered By</th>
+          <th>Registered By Email</th>
           <th>Disclaimer</th>
         </tr>
     </thead>
@@ -821,7 +820,8 @@ TABLE;
                                        WHERE status.page_modulecomponentid={$mcId}";
   $getRegisteredUserPR = mysql_query($getRegisteredUserDetailAccoQuery) or displayerror("Error on viewing registered user".mysql_error());
   while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
-    
+    $registeredByName = getUserName($res['user_registered_by']);
+    $registeredByEmail = getUserEmail($res['user_registered_by']);
     $name = getUserName($res['user_id']);
     $email = getUserEmail($res['user_id']);
     $printSt = $res['hospi_printed'];
@@ -845,6 +845,8 @@ TABLE;
        <td>{$res['hospi_cash_refunded']}</td>
        <td>{$res['hospi_hostel_name']}</td>
        <td>{$res['hospi_room_no']}</td>
+       <td>$registeredByName</td>
+       <td>$registeredByEmail</td>
        <td>
           <form method="POST" target="_blank" action="./+view">
            <input type="submit" name="printthis" {$val}/>
@@ -926,6 +928,108 @@ TR;
 TABLEEND;
   return $userDetails;
 }
+function blockRoom($mcid) {
+  global $sourceFolder,$moduleFolder;
+  if(isset($_POST['roomId'])&&isset($_POST['block'])) {
+    if($_POST['block']=='BLOCK') blockRoomNo(substr($_POST['roomId'],9),$mcid);
+    if($_POST['block']=='UNBLOCK') unBlockRoomNo(substr($_POST['roomId'],9),$mcid);
+  }
+  $getAvailableRoomQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid}";
+  $getAvailableRoomQueryRes = mysql_query($getAvailableRoomQuery) or displayerror(mysql_error());
+  require_once("$sourceFolder/$moduleFolder/prhospi/accommodation.php");
+  $roomDetails = displayRooms($mcid);
+  $blockRoomForm=<<<FORM
+<h1>Available Room</h1>
+$roomDetails
+<hr/>
+<h1> Block Room</h1>
+     <form action="./+hospihead&subaction=blockRooms" method="post">
+        <select id="blockRoomNo" name="roomAllotted">
+        <option class="blockRoom" id="">Select Room</option>
+FORM;
+  while($details = mysql_fetch_assoc($getAvailableRoomQueryRes)) {
+  $blockRoomForm.=<<<FORM
+    <option class="blockRoom" id="blockRoom{$details['hospi_room_id']}">{$details['hospi_hostel_name']} RoomNo:{$details['hospi_room_no']}</option>
+FORM;
+  }
+  $blockRoomForm.=<<<FORM
+         </select>
+        <input type="hidden" id="roomId" name="roomId" />
+        <input type="submit" name="block" value="BLOCK"/>
+    </form>
+    <script type="text/javascript">
+    $('#blockRoomNo').change(function(){
+	roomIdValue=$('.blockRoom:selected').attr('id');
+	$('#roomId').val(roomIdValue);
+      });
+    </script>
+FORM;
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  $getAvailableRoomQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid}";
+  $getAvailableRoomQueryRes = mysql_query($getAvailableRoomQuery) or displayerror(mysql_error());
+  $blockRoomForm.=<<<FORM
+<hr/>
+<h1> UnBlock Room</h1>
+     <form action="./+hospihead&subaction=blockRooms" method="post">
+        <select id="unblockRoomNo" name="roomAllotted">
+        <option class="unblockRoom" id="">Select Room</option>
+FORM;
+  while($details = mysql_fetch_assoc($getAvailableRoomQueryRes)) {
+  $blockRoomForm.=<<<FORM
+    <option class="unblockRoom" id="blockRoom{$details['hospi_room_id']}">{$details['hospi_hostel_name']} RoomNo:{$details['hospi_room_no']}</option>
+FORM;
+  }
+  $blockRoomForm.=<<<FORM
+         </select>
+        <input type="hidden" id="unblockroomId" name="roomId" />
+        <input type="submit" name="block" value="UNBLOCK"/>
+    </form>
+    <script type="text/javascript">
+    $('#unblockRoomNo').change(function(){
+	roomIdValue=$('.unblockRoom:selected').attr('id');
+	$('#unblockroomId').val(roomIdValue);
+      });
+    </script>
+FORM;
 
+  return $blockRoomForm;
+}
+
+function blockRoomNo($roomId,$mcid) {
+  $roomId = escape($roomId);
+  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if(!mysql_num_rows($blockRoomQueryRes)) {
+    displayerror("Room Does Not exist");
+    return;
+  } 
+  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  if($res['hospi_blocked']!=0) {
+    displaywarning("Room Blocked Already");
+    return;
+  }
+  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if($blockRoomQueryRes) displayinfo("Room Blocked ");
+  else  displayinfo("There is a Error.Please contact System Administrator for Details");
+  return;
+}
+
+function unBlockRoomNo($roomId,$mcid) {
+  $roomId = escape($roomId);
+  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if(!mysql_num_rows($blockRoomQueryRes)) {
+    displayerror("Room Does Not exist");
+    return;
+  } 
+  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=0 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  if($blockRoomQueryRes) displayinfo("Room Unblocked ");
+  else  displayinfo("There is a Error.Please contact System Administrator for Details");
+  
+  return;
+}
 
 ?>

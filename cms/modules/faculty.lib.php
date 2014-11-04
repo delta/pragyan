@@ -365,4 +365,8 @@ facultyName;
 	public function copyModule($moduleComponentId,$newId) {
 	  return true;
 	}
+		public function moduleAdmin(){
+		return "This is the Faculty module administration page. Options coming up soon!!!";
+	}
+	
 }

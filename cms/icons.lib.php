@@ -76,7 +76,8 @@ $ICON_ARRAY=array(
 'Quiz Edit'=>'categories/applications-games.png',
 'Quiz Correct'=>'categories/applications-office.png',
 'Group Associate Form'=>'actions/format-indent-more.png',
-'Help'=>'apps/help-browser.png'
+'Help'=>'apps/help-browser.png',
+'File Manager'=>'apps/system-file-manager.png'
 );
 global $urlRequestRoot,$cmsFolder,$templateFolder;
 foreach($ICON_ARRAY as $action=>$icon)
