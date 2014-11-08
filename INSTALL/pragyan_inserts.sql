@@ -167,8 +167,8 @@ INSERT IGNORE INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
 ('sitemap', ''),
 ('quiz', 'quiz_answersubmissions;quiz_descriptions;quiz_objectiveoptions;quiz_questions;quiz_sections;quiz_userattempts;quiz_weightmarks'),
 ('sqlquery', 'sqlquery_desc'),
-('share','share;share_files;share_comments');
-('events','events_certificate;events_certificate_details;events_confirmed_participants;events_details;events_edited_form;events_event_procurement;events_event_procurement1;events_form;events_locked;events_notifications;events_participants;events_procurements;events_result;events_workshop_details;events_workshop_participants')
+('share','share;share_files;share_comments'),
+('events','events_certificate;events_certificate_details;events_confirmed_participants;events_details;events_edited_form;events_event_procurement;events_event_procurement1;events_form;events_locked;events_notifications;events_participants;events_procurements;events_result;events_workshop_details;events_workshop_participants');
 
 --
 -- Dumping data for table `pragyanV3_external`
