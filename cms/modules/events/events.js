@@ -273,6 +273,7 @@ function unlockConfirm(){
 }
 
 function submitAddProcurementData() {
+
 	var ajx=$.ajax({
 		type: "POST",
 		url: "./+ochead",
