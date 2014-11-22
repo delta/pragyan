@@ -16,7 +16,7 @@ function submitAddEventData() {
 			eventCluster: document.getElementById("eventCluster").value,
 			eventFormId: document.getElementById("eventFormId").value,
 			eventVenue: document.getElementById("eventVenue").value,
-			eventDate: document.getElementById("eventDate").value,
+			eventDate: document.getElementById("eventDate").value.split(".").reverse().join("-"),
 			eventDesc: document.getElementById("eventDesc").value,
 			eventDesc: document.getElementById("eventDesc").value,
 			eventStartTime: document.getElementById("eventStartTime").value,
@@ -52,7 +52,7 @@ function submitEditEventData(event_id) {
 			eventCluster: document.getElementById("eventCluster").value,
 			eventFormId: document.getElementById("eventFormId").value,
 			eventVenue: document.getElementById("eventVenue").value,
-			eventDate: document.getElementById("eventDate").value,
+			eventDate: document.getElementById("eventDate").value.split(".").reverse().join("-"),
 			eventDesc: document.getElementById("eventDesc").value,
 			eventDesc: document.getElementById("eventDesc").value,
 			eventStartTime: document.getElementById("eventStartTime").value,
@@ -132,7 +132,7 @@ function deleteEvent(eventid) {
 		});
 		ajx.done(function(msg) {
 			if(msg=="Success") {
-				window.location = ("./+eventshead&subaction=viewAll");
+				window.location = ("./+eventshead");
 				cmsShow("info", "Event deleted");
 			}
 			else{
@@ -147,6 +147,11 @@ function confirmParticipant(){
 	if(confirm("Are You Sure?") == false){
 		return false;
 	}
+}
+
+function confirmDelete(){
+    if(confirm("Are you Sure?") == false)
+	return false;
 }
 
 
@@ -172,8 +177,8 @@ function updateParticipant(gotoaction,userid,teamid,formid,rowId,eventId){
 	/*for(var i=0;i<rowValues.length;i++)
 		rowValue+=getAllEdits[i]+",";
 	rowValue = */
-	rowValue = rowValue.toString();
-	
+	rowValue = rowValue.join("::");
+	console.log(rowValue,rowId);
 	//rowId = rowId.toString();
 	var actUrl = "./+"+gotoaction+"&subaction=editParticipant";
 	var ajaxRequest = $.ajax({
@@ -380,25 +385,45 @@ function getUpcomingEventsTable(pmcid){
 		url: "./+view&subaction=mobile&ipp=100",
 		data: {}, 
 		dataType: "json"
-	});
+	    });
 	ajx.done(function(msg) {
 		eventsJSON=eval(msg);
 		if(eventsJSON.status=='success'){
-			var d = new Date();
-			var hrs = d.getHours();
-			var mins = d.getMinutes();
-			var cur_timeval=Number(hrs)*60+Number(mins);
-			for(var i=0; i<eventsJSON.data.length; i=i+1){
-				var event_time=eventsJSON.data[i].event_start_time;
-				var event_timeval=Number(event_time.substring(0, 2))*60+Number(event_time.substring(3, 5));
-				if(event_timeval - cur_timeval <=30){
-					var row_string="<tr><td>"+eventsJSON.data[i].event_name+" at "
-						+eventsJSON.data[i].event_venue+" at "
-						+eventsJSON.data[i].event_start_time.substring(0, 5)+"</tr></td>"
-					$("#upcomingEventTable").append(row_string);
-				}
+		    var cdate = new Date();
+		    //console.log(cdate);
+		    for(var i=0; i<eventsJSON.data.length; i=i+1){
+			var event_date=eventsJSON.data[i].event_date;
+			var event_start_time=eventsJSON.data[i].event_start_time;
+			var year=event_date.split("-")[0];
+			var month=event_date.split("-")[1] - 1;
+			var day=event_date.split("-")[2];
+
+			var hour=event_start_time.split(":")[0];
+			var min=event_start_time.split(":")[1];
+			var sec=event_start_time.split(":")[2];
+			    
+			var sdt=new Date(year, month, day, hour, min, sec);
+
+			var event_end_time=eventsJSON.data[i].event_end_time;
+			var hour=event_end_time.split(":")[0];
+			var min=event_end_time.split(":")[1];
+			var sec=event_end_time.split(":")[2];
+
+			var edt=new Date(year, month, day, hour, min, sec);
+
+			//console.log(dt);
+			//console.log(edt-cdate);
+			console.log(edt > cdate && sdt < cdate);
+			//edt > cdate && sdt < cdate
+			if((sdt-cdate)/60000<=30 && (sdt-cdate)/60000>=-30){
+			//if(1){
+			    var row_string="<tr><td style='font-size:2em;border:1px solid #C3AC7A; border-radius: 5px'>"+eventsJSON.data[i].event_name+" at "
+				+eventsJSON.data[i].event_venue+" at "
+				+eventsJSON.data[i].event_start_time.substring(0, 5)+"</tr></td>"
+				$("#upcomingEventTable").append(row_string);
 			}
 		}
-	});
+	    }
+	    });
 
 }
