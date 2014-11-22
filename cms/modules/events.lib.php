@@ -34,6 +34,8 @@ class events implements module,fileuploadable {
 			return $this->actionQahead();
 		if ($gotaction == 'pr')
 			return $this->actionPr();
+		if ($gotaction == 'prhead')
+			return $this->actionPrhead();
 		if ($gotaction == 'view')
 			return $this->actionView();
 	/*    if ($gotaction == '')
@@ -83,6 +85,13 @@ class events implements module,fileuploadable {
 				else if($_POST['type']=='edit'){
 					validateEditEventData($moduleComponentId);
 				}
+				else if($_POST['type']=="notif"){
+				  $query="INSERT INTO `events_notifications` VALUES (NULL, '{$_POST['content']}', CURRENT_TIMESTAMP);";
+				  //echo NOW();
+				  mysql_query($query);
+				  //				  header('Location: ./+eventsHead');
+				  //
+				}
 				exit();
 			}
 			if(isset($_GET['subaction'])){
@@ -95,6 +104,10 @@ class events implements module,fileuploadable {
 				}
 				if($_GET['subaction']=="editEvent"){
 					return editEvent($_GET['eventId'], $moduleComponentId);
+				}
+				if($_GET['subaction']=="notif"){
+				  //return ":LL";
+				  return getEventsForm();
 				}
 			}
 			else{
@@ -175,6 +188,126 @@ public function actionQa(){
 						$eventId=escape($_POST['eventId']);
 						return displayEventOptions('qa',$moduleComponentId,$eventId);
 					}
+                }
+                 else if($_GET['subaction']=='getParticipant')
+                    {
+                                        
+                   if(isset($_POST['eventId'])){
+                    $eventId = escape($_POST['eventId']);
+                    $userId=escape($_POST['userId']);
+                      $eventAdd="<p>SEARCH RESULTS </p>";
+                 if($userId[0]=='F' || $userId[1]=='f'){
+                     $bookletId=$userId;
+                     $userId=getUserIdFromBookletId($moduleComponentId,$userId);  
+                 }
+                 else{
+                     if($userId > 200000 && $userId < 30000)
+                         $userId -= 180000;
+                     $bookletId = getBookletIdFromUserId($userId,$moduleComponentId);
+                }
+  $eventAdd.=searchParticipant('qa',$pmcId,1);
+    $eventAdd.="<h2>Profile</h2>";
+    $eventAdd.=returnUserProfileDetails($userId);
+    $eventAdd.="<h2>PR & Hospi Details</h2>";
+    $eventAdd.="<table><tr style='font-size:10px'>"; 
+    $eventAdd.="<th>PR CHECK IN TIME</th>";
+    $eventAdd.="<th>PR CHECK OUT TIME</th>";
+    $eventAdd.="<th>AMOUNT RECIEVED AT PR</th>";
+    $eventAdd.="<th>AMOUNT REFUNDED AT PR</th>";
+    $eventAdd.="<th>HOSPI CHECK IN TIME</th>";
+    $eventAdd.="<th>HOSPI CHECK OUT TIME</th>";
+    $eventAdd.="<th>AMOUNT RECIEVED AT HOSPI</th>";
+    $eventAdd.="<th>AMOUNT REFUNDED AT HOSPI</th>";
+    $eventAdd.="<th>No. of days of stay</th></tr>";
+ $prStatus="SELECT * FROM `prhospi_pr_status` WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
+$prQuery=mysql_query($prStatus) or displayerror(mysql_error());
+$prRows=mysql_fetch_array($prQuery);
+$checkintime_pr=$prRows['hospi_checkin_time'];
+$checkoutime_pr=$prRows['hospi_checkpout_time'];
+$amount_recieved_pr=$prRows['amount_recieved'];
+$amount_refunded_pr=$prRows['amount_refunded'];
+ $HospiStatus="SELECT * FROM `prhospi_accomodation_status` WHERE `user_id`='{$userId}' and `page_modulecomponentid`={$moduleComponentId}";
+$HospiQuery=mysql_query($HospiStatus) or displayerror(mysql_error());
+$HospiRows=mysql_fetch_array($HospiQuery);
+$checkintime_hospi=$HospiRows['hospi_actual_checkin'];
+$checkoutime_hospi=$HospiRows['hospi_actual_checkout'];
+$amount_recieved_hospi=$HospiRows['hospi_cash_recieved'];
+$amount_refunded_hospi=$HospiRows['hospi_cash_refunded'];
+$no_of_days=$HospiRows['no_of_days'];
+$hospi_room_id=$HospiRows['hospi_room_id'];
+$eventAdd.="<td>".$checkintime_pr."</td>";
+$eventAdd.="<td>".$checkoutime_pr."</td>";
+$eventAdd.="<td>".$amount_recieved_pr."</td>";
+$eventAdd.="<td>".$amount_refunded_pr."</td>";
+$eventAdd.="<td>".$checkintime_hospi."</td>";
+$eventAdd.="<td>".$checkoutime_hospi."</td>";
+$eventAdd.="<td>".$amount_recieved_hospi."</td>";
+$eventAdd.="<td>".$amount_refunded_hospi."</td>";
+$eventAdd.="<td>{$no_of_days}</td>";
+    $eventAdd.="</tr></table>";
+    $hostelQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_room_id`={$hospi_room_id} and `page_modulecomponentid`={$moduleComponentId}";
+    $hostelQueryResult = mysql_query($hostelQuery) or displayerror(mysql_error());
+    $hostelDetails=mysql_fetch_array($hostelQueryResult);
+    $eventAdd.="<h2>Hostel Details</h2>";
+    $eventAdd.="<table>";
+    $eventAdd.="<th>HOSTEL</th>";
+    $eventAdd.="<th>FLOOR</th>";
+    $eventAdd.="<th>ROOM</th>";
+    $eventAdd.="<tr>";
+    $eventAdd.="<td>{$hostelDetails['hospi_hostel_name']}</td>";
+    $eventAdd.="<td>{$hostelDetails['hospi_floor']}</td>";
+    $eventAdd.="<td>{$hostelDetails['hospi_room_no']}</td>";
+    $eventAdd.="</tr>";
+    $eventAdd.="</table>";
+    $eventAdd.="<h2>Event Details</h2>";
+    
+    $eventAdd.="<table><tr>";
+    $eventAdd.="<th>EVENT</th>";
+    $eventAdd.="<th>EVENT RANK</th>";
+    $eventAdd.="<th>PRIZE MONEY</th>";
+
+$userDetails = "SELECT * FROM `events_result`  WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
+    $userDetailsRows= mysql_query($userDetails) or displayerror(mysql_error());
+while($row=mysql_fetch_array($userDetailsRows))
+    {
+    $eventAdd.="<tr>";
+    $eventDetails="SELECT * FROM `events_details` WHERE `event_id`='{$row['event_id']}'";
+    $eventResults=mysql_query($eventDetails)  or displayerror(mysql_error());
+    $eventsResults=mysql_fetch_array($eventResults);
+  $eventAdd.="<td>".$eventsResults['event_name']."</td>";
+    $eventAdd.="<td>".$row['user_rank']."</td>";
+    $userPrizeDetails = "SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' ";
+    $userPrizeQuery= mysql_query($userPrizeDetails) or displayerror(mysql_error());
+   $userPrizeRows=mysql_fetch_array($userPrizeQuery);
+    $eventAdd.="<td>".$userPrizeRows['prize_money']."</td>";
+ //   $eventAdd.="<td>".$eventsResults['
+    
+
+
+   }
+
+    $eventAdd.="</table>";
+
+
+                   return $eventAdd;
+                    }
+                     }
+
+                else if($_GET['subaction']=='addParticipant')
+                    {
+                    if(isset($_POST['eventId'])){
+                    $eventId = escape($_POST['eventId']);
+                    $fileUploadableField=getFileUploadField('fileUploadFieldPart',"events");
+                    $eventAdd=<<<FORM
+                        <p>Upload Event Excel File:</p>
+           <form action="./+qa&subaction=viewEvent" method="post" enctype='multipart/form-data'>
+           $fileUploadableField
+           <input type='hidden' name='eventId' value='{$eventId}'>
+           <input type='submit' name='submit' value='Upload'>
+           </form>
+FORM;
+                return $eventAdd;
+                    }
 				}
 				else if($_GET['subaction'] == "editParticipant"){
 					$editFormId=escape($_POST['formId']);
@@ -199,7 +332,8 @@ public function actionQa(){
 					//$eventId = escape($_POST['eventId']);
 					//error_log($eventId);
 					//getUserDetailsTable($moduleComponentId,$eventId);
-					getUserDetailsTable($moduleComponentId,escape($_GET['event_id']));
+
+					getUserDetailsTable('qa',$moduleComponentId,escape($_GET['event_id']));
 				}
 				/*else if($_GET['subaction'] == "getDetails"){
 					if(isset($_POST['eventId'])){
@@ -207,7 +341,7 @@ public function actionQa(){
 						return 
 					}
 				}*/
-			}hitl
+			}
 			else
 				return displayQa($moduleComponentId);
 		}
@@ -227,8 +361,173 @@ public function actionQa(){
 						$eventId=escape($_POST['eventId']);
 						return displayEventOptions('qahead',$moduleComponentId,$eventId);
 					}
+               
 				}
+               else if($_GET['subaction']=='getParticipant')
+		{
+	  				
+                                        
+                   if(isset($_POST['eventId'])){
+                    $eventId = escape($_POST['eventId']);
+                    $userId=escape($_POST['userId']);
+                      $eventAdd="<p>SEARCH RESULTS </p>";
+                 if($userId[0]=='F' || $userId[1]=='f'){
+                     $bookletId=$userId;
+                     $userId=getUserIdFromBookletId($moduleComponentId,$userId);  
+                 }
+                 else{
+                     if($userId > 200000 && $userId < 30000)
+                         $userId -= 180000;
+                     $bookletId = getBookletIdFromUserId($userId,$moduleComponentId);
+                }
+ $eventAdd.=searchParticipant('qahead',$pmcId,1);
+    $eventAdd.="<h2>Profile</h2>";
+    $eventAdd.=returnUserProfileDetails($userId);
+    $eventAdd.="<h2>PR & Hospi Details</h2>";
+    $eventAdd.="<table><tr style='font-size:10px'>"; 
+    $eventAdd.="<th>PR CHECK IN TIME</th>";
+    $eventAdd.="<th>PR CHECK OUT TIME</th>";
+    $eventAdd.="<th>AMOUNT RECIEVED AT PR</th>";
+    $eventAdd.="<th>AMOUNT REFUNDED AT PR</th>";
+    $eventAdd.="<th>HOSPI CHECK IN TIME</th>";
+    $eventAdd.="<th>HOSPI CHECK OUT TIME</th>";
+    $eventAdd.="<th>AMOUNT RECIEVED AT HOSPI</th>";
+    $eventAdd.="<th>AMOUNT REFUNDED AT HOSPI</th>";
+    $eventAdd.="<th>No. of days of stay</th></tr>";
+ $prStatus="SELECT * FROM `prhospi_pr_status` WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
+$prQuery=mysql_query($prStatus) or displayerror(mysql_error());
+$prRows=mysql_fetch_array($prQuery);
+$checkintime_pr=$prRows['hospi_checkin_time'];
+$checkoutime_pr=$prRows['hospi_checkpout_time'];
+$amount_recieved_pr=$prRows['amount_recieved'];
+$amount_refunded_pr=$prRows['amount_refunded'];
+ $HospiStatus="SELECT * FROM `prhospi_accomodation_status` WHERE `user_id`='{$userId}' and `page_modulecomponentid`={$moduleComponentId}";
+$HospiQuery=mysql_query($HospiStatus) or displayerror(mysql_error());
+$HospiRows=mysql_fetch_array($HospiQuery);
+$checkintime_hospi=$HospiRows['hospi_actual_checkin'];
+$checkoutime_hospi=$HospiRows['hospi_actual_checkout'];
+$amount_recieved_hospi=$HospiRows['hospi_cash_recieved'];
+$amount_refunded_hospi=$HospiRows['hospi_cash_refunded'];
+$no_of_days=$HospiRows['no_of_days'];
+$hospi_room_id=$HospiRows['hospi_room_id'];
+$eventAdd.="<td>".$checkintime_pr."</td>";
+$eventAdd.="<td>".$checkoutime_pr."</td>";
+$eventAdd.="<td>".$amount_recieved_pr."</td>";
+$eventAdd.="<td>".$amount_refunded_pr."</td>";
+$eventAdd.="<td>".$checkintime_hospi."</td>";
+$eventAdd.="<td>".$checkoutime_hospi."</td>";
+$eventAdd.="<td>".$amount_recieved_hospi."</td>";
+$eventAdd.="<td>".$amount_refunded_hospi."</td>";
+$eventAdd.="<td>{$no_of_days}</td>";
+    $eventAdd.="</tr></table>";
+    $hostelQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_room_id`={$hospi_room_id} and `page_modulecomponentid`={$moduleComponentId}";
+    $hostelQueryResult = mysql_query($hostelQuery) or displayerror(mysql_error());
+    $hostelDetails=mysql_fetch_array($hostelQueryResult);
+    $eventAdd.="<h2>Hostel Details</h2>";
+    $eventAdd.="<table>";
+    $eventAdd.="<th>HOSTEL</th>";
+    $eventAdd.="<th>FLOOR</th>";
+    $eventAdd.="<th>ROOM</th>";
+    $eventAdd.="<tr>";
+    $eventAdd.="<td>{$hostelDetails['hospi_hostel_name']}</td>";
+    $eventAdd.="<td>{$hostelDetails['hospi_floor']}</td>";
+    $eventAdd.="<td>{$hostelDetails['hospi_room_no']}</td>";
+    $eventAdd.="</tr>";
+    $eventAdd.="</table>";
+    $eventAdd.="<h2>Event Details</h2>";
+    
+
+ $eventAdd.="<table><tr>";
+    $eventAdd.="<th>EVENT</th>";
+    $eventAdd.="<th>EVENT RANK</th>";
+    $eventAdd.="<th>PRIZE MONEY</th>";
+   $eventAdd.="<th>TEAMMATES </th>";
+
+$userDetails = "SELECT * FROM `events_result`  WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
+    $userDetailsRows= mysql_query($userDetails) or displayerror(mysql_error());
+ while($row=mysql_fetch_array($userDetailsRows))
+
+    {
+    $eventAdd.="<tr>";
+    $eventDetails="SELECT * FROM `events_details` WHERE `event_id`='{$row['event_id']}'";
+    $eventResults=mysql_query($eventDetails)  or displayerror(mysql_error());
+    $eventsResults=mysql_fetch_array($eventResults);
+  $eventAdd.="<td>".$eventsResults['event_name']."</td>";
+    $eventAdd.="<td>".$row['user_rank']."</td>";
+    $userPrizeDetails = "SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' ";
+    $userPrizeQuery= mysql_query($userPrizeDetails) or displayerror(mysql_error());
+   $userPrizeRows=mysql_fetch_array($userPrizeQuery);
+    $eventAdd.="<td>".$userPrizeRows['prize_money']."</td>";
+
+    $teamMateDetails="SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' and `event_id` ='{$row['event_id']}'";
+   displayerror($teamMateDetails);
+   $teamMateQuery=mysql_query($teamMateDetails) or displayerror(mysql_error);
+   $teamMateDetails=mysql_fetch_assoc($teamMateQuery);
+  $teamMates=$teamMateDetails['user_team_id'];
+ $teamMateDetails="SELECT * FROM `events_participants` WHERE `user_team_id`=$teamMates  and `event_id` ='{$row['event_id']}'";
+ $teamMateQuery=mysql_query($teamMateDetails) or displayerror(mysql_error);
+ $eventAdd.="<td>";
+while($newRow=mysql_fetch_array($teamMateQuery))
+ {
+ $eventAdd.=$newRow['user_pid']."  ";
+ }  
+
+  $eventAdd.="</td>";
+
+   }
+
+
+
+
+    $eventAdd.="</table>";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   return $eventAdd;
+                    }
+	}	
+                    else if($_GET['subaction']=='addParticipant')
+                    {
+                    if(isset($_POST['eventId'])){
+                    $eventId = escape($_POST['eventId']);
+                    $fileUploadableField=getFileUploadField('fileUploadFieldPart',"events");
+                    $eventAdd=<<<FORM
+                        <p>Upload Event Excel File:</p>
+           <form action="./+qahead&subaction=viewEvent" method="post" enctype='multipart/form-data'>
+           $fileUploadableField
+           <input type='hidden' name='eventId' value='{$eventId}'>
+           <input type='submit' name='submit' value='Upload'>
+           </form>
+FORM;
+                return $eventAdd;
+                }
+                    }
 				else if($_GET['subaction'] == "editParticipant"){
+
 					$editFormId=escape($_POST['formId']);
 					$editUserId=escape($_POST['userId']);
 					$teamId = escape($_POST['teamId']);
@@ -257,7 +556,16 @@ public function actionQa(){
 					//$eventId = escape($_POST['eventId']);
 					//error_log($eventId);
 					//getUserDetailsTable($moduleComponentId,$eventId);
-					getUserDetailsTable($moduleComponentId,escape($_GET['event_id']));
+				  getUserDetailsTable('qahead',$moduleComponentId,escape($_GET['event_id']));
+				}
+				else if($_GET['subaction'] == "deleteParticipant"){
+				  $userId = escape($_POST['userId']);
+				  $eventId = escape($_POST['eventId']);
+				  return deleteParticipant($moduleComponentId,$userId,$eventId);
+				}
+				else if($_GET['subaction'] == "deleteEvent"){
+				  $eventId = escape($_POST['eventId']);
+				  return deleteEventQa($moduleComponentId,$eventId);
 				}
 				/*else if($_GET['subaction'] == "getDetails"){
 					if(isset($_POST['eventId'])){
@@ -267,8 +575,8 @@ public function actionQa(){
 				}*/
 			}
 			else
-				//return displayQa($moduleComponentId);
-				return qaHeadOptions($moduleComponentId);
+			  //return displayQa($moduleComponentId);
+			  				return qaHeadOptions($moduleComponentId);
 		}
 
 
@@ -280,6 +588,7 @@ public function actionQa(){
 			require_once("$sourceFolder/$moduleFolder/events/events_forms.php");
 			require_once("$sourceFolder/$moduleFolder/events/events.config.php");
 			require_once($sourceFolder."/".$moduleFolder."/qaos1/excel.php");
+			
 			if(isset($_GET['subaction'])){
 				if($_GET['subaction'] == "viewEvent"){
 					$eventId = trim(escape($_POST['eventId']));
@@ -311,15 +620,30 @@ public function actionQa(){
 					}
 					else if(isset($_POST['workshopId'])){
 						$eventId = $_POST['workshopId'];
-						$sction = 'workshop';
+						$action = 'workshop';
 					}
 					$userId = escape($_POST['userId']);
 					//error_log($eventId." ".$userId);
 					return printIndividualCerti('pr',$action,$moduleComponentId,$userId,$eventId);
 				}
+				else if($_GET['subaction'] == "userDetailForm"){
+					return searchByUserId('pr',$moduleComponentId);
+				}
+				else if($_GET['subaction'] == "userEventDetails"){
+					$userBookletId = escape($_POST['userId']);
+					return getUserDetails('pr',$moduleComponentId,$userBookletId);
+				}
+				else if($_GET['subaction'] == "printUserCerti"){
+					$userId = escape($_POST['userId']);
+					printUserCerti($moduleComponentId,$userId);
+				}
+				else if($_GET['subaction'] == "viewEventOptions"){
+					return displayPR('pr',$moduleComponentId);
+				}
 			}
 			else{
-				return displayPR('pr',$moduleComponentId);
+				return prMain('pr',$moduleComponentId);
+				//return displayPR('pr',$moduleComponentId);
 			}
 		}
 
@@ -397,12 +721,28 @@ public function actionQa(){
 						$eventId = escape($_POST['eventId']);
 					}
 					else if(isset($_POST['workshopId'])){
+					  if(isset($_POST['workshopId']))
+					    //return "sadasd";
 						$eventId = $_POST['workshopId'];
-						$sction = 'workshop';
+						$action = 'workshop';
 					}
 					$userId = escape($_POST['userId']);
 					//error_log($eventId." ".$userId);
 					return printIndividualCerti('prhead',$action,$moduleComponentId,$userId,$eventId);
+				}
+				else if($_GET['subaction'] == "userDetailForm"){
+					return searchByUserId('prhead',$moduleComponentId);
+				}
+				else if($_GET['subaction'] == "userEventDetails"){
+					$userBookletId = escape($_POST['userId']);
+					return getUserDetails('prhead',$moduleComponentId,$userBookletId);
+				}
+				else if($_GET['subaction'] == "printUserCerti"){
+					$userId = escape($_POST['userId']);
+					printUserCerti($moduleComponentId,$userId);
+				}
+				else if($_GET['subaction'] == "viewEventOptions"){
+					return getPrHeadOptions($moduleComponentId);
 				}
 				/*else if($_GET['subaction'] == "viewEvent"){
 					$eventId = trim(escape($_POST['eventId']));
@@ -423,7 +763,7 @@ public function actionQa(){
 				}*/
 			}
 			else
-				return getPrHeadOptions($moduleComponentId);
+				return prMain('prhead',$moduleComponentId);
 		}
 
 		public static function getFileAccessPermission($pageId,$moduleComponentId,$userId, $fileName)
@@ -445,5 +785,7 @@ public function actionQa(){
 		public function copyModule($moduleComponentId, $newId) {
 			return true;
 		}
-
+public function moduleAdmin(){
+        return "This is the Article module administration page. Options coming up soon!!!";
+    }
 	}
