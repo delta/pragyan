@@ -1364,6 +1364,200 @@ CREATE TABLE IF NOT EXISTS `sqlquery_desc` (
   UNIQUE KEY `page_modulecomponentid` (`page_modulecomponentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+--
+-- Table structure for table `events_certificate`
+--
+
+CREATE TABLE IF NOT EXISTS `events_certificate` (
+`certificate_id` int(11) NOT NULL,
+  `user_rank` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `certificate_image` varchar(100) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `events_certificate_details`
+--
+
+CREATE TABLE IF NOT EXISTS `events_certificate_details` (
+`id` int(11) NOT NULL,
+  `certificate_id` int(11) NOT NULL,
+  `certificate_posx` int(11) NOT NULL,
+  `certificate_posy` int(11) NOT NULL,
+  `certificate_posx2` int(11) NOT NULL,
+  `certificate_posy2` int(11) NOT NULL,
+  `form_value_id` int(11) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `events_confirmed_participants`
+--
+
+CREATE TABLE IF NOT EXISTS `events_confirmed_participants` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `events_details`
+--
+
+CREATE TABLE IF NOT EXISTS `events_details` (
+`event_id` int(10) NOT NULL,
+  `event_name` varchar(100) NOT NULL,
+  `event_start_time` time NOT NULL,
+  `event_end_time` time NOT NULL,
+  `event_venue` varchar(100) NOT NULL,
+  `event_desc` text NOT NULL,
+  `event_last_update_time` time NOT NULL,
+  `event_image` varchar(200) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL,
+  `event_loc_x` float NOT NULL,
+  `event_loc_y` float NOT NULL,
+  `event_max_limit` int(11) NOT NULL,
+  `event_cluster` text NOT NULL,
+  `event_date` date NOT NULL,
+  `event_form_id` int(11) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `events_edited_form`
+--
+
+CREATE TABLE IF NOT EXISTS `events_edited_form` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `form_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `form_elementid` int(11) NOT NULL,
+  `form_elementdata` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events_event_procurement`
+--
+
+CREATE TABLE IF NOT EXISTS `events_event_procurement` (
+  `event_name` varchar(25) NOT NULL,
+  `procurement_name` varchar(25) NOT NULL,
+  `quantity` int(4) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events_event_procurement1`
+--
+
+CREATE TABLE IF NOT EXISTS `events_event_procurement1` (
+  `event_id` int(11) NOT NULL,
+  `procurement_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events_form`
+--
+
+CREATE TABLE IF NOT EXISTS `events_form` (
+  `event_id` int(11) NOT NULL,
+  `form_id` int(11) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events_locked`
+--
+
+CREATE TABLE IF NOT EXISTS `events_locked` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `events_notifications`
+--
+
+CREATE TABLE IF NOT EXISTS `events_notifications` (
+`notif_id` int(11) NOT NULL,
+  `notif_content` text NOT NULL,
+  `timeadded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events_participants`
+--
+
+CREATE TABLE IF NOT EXISTS `events_participants` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `event_id` int(11) NOT NULL,
+  `user_pid` int(11) NOT NULL,
+  `user_team_id` int(11) NOT NULL,
+  `prize_money` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+--
+-- Table structure for table `events_procurements`
+--
+
+CREATE TABLE IF NOT EXISTS `events_procurements` (
+`procurement_id` int(10) NOT NULL,
+  `procurement_name` varchar(100) NOT NULL,
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `events_result`
+--
+
+CREATE TABLE IF NOT EXISTS `events_result` (
+  `event_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_rank` int(11) NOT NULL DEFAULT '-1',
+  `printed_certificate` int(11) NOT NULL DEFAULT '0',
+  `page_moduleComponentId` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+--
+-- Table structure for table `events_workshop_details`
+--
+
+CREATE TABLE IF NOT EXISTS `events_workshop_details` (
+  `page_moduleComponentId` int(11) NOT NULL,
+`workshop_id` int(11) NOT NULL,
+  `workshop_name` varchar(100) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Table structure for table `events_workshop_participants`
+--
+
+CREATE TABLE IF NOT EXISTS `events_workshop_participants` (
+  `page_moduleComponentId` int(11) NOT NULL,
+  `workshop_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_team_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
