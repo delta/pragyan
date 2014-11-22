@@ -1784,12 +1784,6 @@ PRINTTABLE;
 	return $workshopDetails;	
 }
 
-function validateNewProcurement($pageModuleComponentId){
-		$isValid=true;
-
-		if($_POST['newProc']==""){
-				$isValid=false;
-				exit();
 function displayWorkshopParticipants($pmcId,$workshopId){
 	global $STARTSCRIPTS;
 	$smarttable = smarttable::render(array('participants_table'),null);
@@ -1885,7 +1879,6 @@ function syncExcelFileWorkshop($pmcId,$workshopId,$fileLoc){
 					$saveUserIdRes = mysql_query($saveUserIdQuery) or displayerror(mysql_error());
 				}
 			}
->>>>>>> 2a99033... added workshop details
 		}
 	}
 }
@@ -1931,71 +1924,6 @@ BUTTON;
 }
 
 
-$procurementDetails =<<<TABLE
-
-		<script src="$scriptFolder/events.js"></script>
-		<script src="$scriptFolder/jquery.js"></script>
-		$smarttablestuff
-		<table class="display" id="table_procurement_details" width="100%" border="1">
-		<thead>
-				<tr>
-				<th>Serial no.</th>
-				<th>Event Name</th>
-				<th>Procurement</th>
-				<th>Quantity</th>
-				<th>Date</th>
-				<th>Start time</th>
-				<th>End time</th>  
-				<th></th>
-				</tr>
-		</thead>
-TABLE;
-$cnt=1;
-while($res = mysql_fetch_assoc($selectRes)) {
-$selQuery="SELECT * FROM `events_details` WHERE `event_name`='{$res['event_name']}'";
-$selRes=mysql_query($selQuery) or displayerror(mysql_error());
-$selRes = mysql_fetch_assoc($selRes);
-$procurementDetails .=<<<TR
-<<<<<<< HEAD
-<<<<<<< HEAD
-	  <tr>        
-	   <td>{$cnt}</td>
-	   <td>{$res['event_name']}</td>
-	   <td>{$res['procurement_name']}</td>
-	   <td>{$res['quantity']}</td>
-	   <td>
-			<button onclick="deleteProcurement({$cnt});" value="DELETE" />DELETE</button>
-			
-			<form method="POST"  action="./+ochead&subaction=editProcurement">
-			<input type="submit" name="" value="EDIT"/>
-			</form>
-	   </td>
-	  </tr>
-
-		  <tr>        
-		   <td>{$cnt}</td>
-		   <td>{$res['event_name']}</td>
-		   <td>{$res['procurement_name']}</td>
-		   <td>{$res['quantity']}</td>
-		   <td>{$selRes['event_date']}</td>
-		   <td>{$selRes['event_start_time']}</td>
-		   <td>{$selRes['event_end_time']}</td>
-		   <td>
-				<button onclick="deleteProcurement({$cnt});" value="DELETE">DELETE</button>
-				
-				<form method="POST"  action="./+ochead">
-				<input type="submit" name="" value="EDIT"/>
-				<input style="visibility:hidden;" name="eventnum" id="eventnum" value="{$cnt}" />
-				</form> 
-           </td>
-          </tr>
-TR;
-  $cnt++;
-  }
-$procurementDetails .=<<<TABLEEND
-		</table>
-TABLEEND;
-  return $procurementDetails;
 
 function displayQA($pmcid){
 	$selectEventQuery = "SELECT DISTINCT `event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' AND `event_id` NOT IN (SELECT `event_id` FROM `events_locked` WHERE `page_moduleComponentId` = '{$pmcid}') ORDER BY `event_name`";
@@ -2095,8 +2023,6 @@ DROPDOWN;
 	return $selectEvent;
 }
 
-<<<<<<< HEAD
-=======
 function searchByUserId($gotoaction,$pmcId){
 	$searchForm = <<<FORM
 		<h2>Enter FID:</h2>
@@ -2333,5 +2259,4 @@ function ucwords_specific ($string, $delimiters = '', $encoding = NULL)
 
  
 
->>>>>>> f1d800e... Added events module completely.
 ?>
