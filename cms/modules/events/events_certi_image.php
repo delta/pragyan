@@ -1,8 +1,8 @@
 <?php
-	$eventId = trim(mysql_real_escape_string($_GET['eventId']));
-	$pmcId = trim(mysql_real_escape_string($_GET['pmcId']));
-	$userId = trim(mysql_real_escape_string($_GET['userId']));
-	$userRank = trim(mysql_real_escape_string($_GET['userRank']));
+	$eventId = trim(escape($_GET['eventId']));
+	$pmcId = trim(escape($_GET['pmcId']));
+	$userId = trim(escape($_GET['userId']));
+	$userRank = trim(escape($_GET['userRank']));
 
 	$certiImage = imagecreatefromjpeg('certi.jpg');
 	$color = imagecolorallocate($certiImage, 0, 0, 0);	//black
