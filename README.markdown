@@ -27,7 +27,7 @@ Contributors
 - Balanivash (balanivash)
 - Boopathi Rajaa (boopathi)
 - Shiva Nandhan (seekshiva)
-- Dinesh Prashanth
+- Dinesh Prasanth (dineshnitt)
 - Siddhanth Sanyam
 - Shriram Venkataramana (vshriram93)
 - Sriram Sundarraj (srirams6)
