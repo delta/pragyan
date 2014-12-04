@@ -13,7 +13,7 @@ Installation
 Contributing
 ------------
 
-- Install, Modify and Send pull requests to git://github.com/Integriti/pragyan.git
+- Install, Modify and Send pull requests to git://github.com/delta/pragyan.git
 
 Contributors
 ------------
