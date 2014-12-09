@@ -64,6 +64,10 @@ function getSearchbar($userId, $pageId){
 				    		document.getElementById("tagSuggestions").innerHTML=xmlhttp.responseText;
 				    		document.getElementById("tagSuggestions").style.border="1px solid #A5ACB2";
 				    	}
+				    	else{
+					    	document.getElementById("tagSuggestions").innerHTML="";
+					    	document.getElementById("tagSuggestions").style.border="0px";
+				    	}
 					}
 				}
 				xmlhttp.open("GET","./&searchbar=1&searchContents="+searchstr,true);
