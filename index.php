@@ -206,6 +206,7 @@ require_once($sourceFolder."/permission.lib.php");
 require_once($sourceFolder."/content.lib.php");
 require_once($sourceFolder."/inheritedinfo.lib.php");
 require_once($sourceFolder."/actionbar.lib.php");
+require_once($sourceFolder."/searchbar.lib.php");
 require_once($sourceFolder."/registration.lib.php");
 require_once($sourceFolder."/widget.lib.php");
 require_once($sourceFolder."/login.lib.php");
@@ -222,7 +223,8 @@ if($publicPageRequest) {
 	$ACTIONBARPAGE = getActionbarPage($userId, $pageId);
 	$BREADCRUMB = breadcrumbs(array(0=>0),"&nbsp;»&nbsp;");
 	$MENUBAR = getMenu($userId, $pageIdArray);
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
+	$SEARCHBAR = getSearchbar($userId, $pageId);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$SEARCHBAR,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit(1);
 }
 
@@ -235,7 +237,7 @@ if(URLSecurityCheck($_GET))
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was found to have invalid syntax and cannot be processed for security reasons.<br/> If you believe its a". 				"correct URL, please contact the administrator immediately..<br />$_SERVER[SERVER_SIGNATURE]".
 			"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$SEARCHBAR,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();
 }
 
@@ -250,7 +252,7 @@ if ($pageId === false) {
 	$MENUBAR = '';
 	$CONTENT = "The requested URL was not found on this server.<br />$_SERVER[SERVER_SIGNATURE]".
 		"<br /><br />Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
-	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
+	templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$SEARCHBAR,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 	exit();
 }
 
@@ -287,6 +289,9 @@ $INHERITEDINFO = inheritedinfo($pageIdArray);
 
 ///Gets the breadcrumb
 $BREADCRUMB = breadcrumbs($pageIdArray,"&nbsp;»&nbsp;");
+
+//Gets the searchbar
+$SEARCHBAR = getSearchbar($userId, $pageId);
 
 ///Gets the menubar consisting of the child pages from the current location upto a certain depth
 $MENUBAR = getMenu($userId, $pageIdArray); 
@@ -346,7 +351,7 @@ if($debugSet == "on") {
 setcookie("cookie_support", "enabled", 0, "/"); 
 	
 ///Apply the template on the generated content and display the page
-templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
+templateReplace($TITLE,$MENUBAR,$ACTIONBARMODULE,$ACTIONBARPAGE,$BREADCRUMB,$SEARCHBAR,$INHERITEDINFO,$CONTENT,$FOOTER,$DEBUGINFO,$ERRORSTRING,$WARNINGSTRING,$INFOSTRING,$STARTSCRIPTS,$LOGINFORM);
 
 disconnect();
 exit();
