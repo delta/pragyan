@@ -339,6 +339,46 @@ CREATE;
 MOVECOPY;
 /* PAGE MOVE COPY TEXT ENDS */
 
+/*TAGS TEXT BEGINS */
+	
+	$pageTagsQuery="SELECT `tag_text`, `tag_id` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `page_id` = '{$pageId}' ORDER BY `tag_text`;";
+	$pageTagsResult = mysql_query($pageTagsQuery);
+	if(!$pageTagsResult) { displayerror(mysql_error());}//Error handling
+	if(mysql_num_rows($pageTagsResult)){//Checking if the page has tags
+		$pageTags="<table><tr>";
+		$pageTags.="<th> Tag Name </th>";
+		$pageTags.="<th> Delete </th></tr>";
+		while($pagetagrow = mysql_fetch_assoc($pageTagsResult)) {
+			$pageTags.="<tr>";
+			$pageTags.="<td>".$pagetagrow['tag_text']."</td>";
+			$pageTags.="<td><a href='./+settings&subaction=tags&delTag={$pagetagrow[tag_id]}'>".$ICONS['Delete']['small']."</a></td>";
+			$pageTags.="</tr>";
+		}
+		$pageTags.="</table>";
+	}
+	else{
+		$pageTags="There are no tags yet.";
+	}
+	$allTagsQuery="SELECT DISTINCT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` ORDER BY `tag_text;";
+	$allTagsResult = mysql_query($allTagsQuery);
+	if(!$allTagsResult) { displayerror(mysql_error());}//Error handling
+	while($alltagrow = mysql_fetch_assoc($allTagsResult)) {
+		$allTags.="<option value='{$alltagrow[tag_text]}'>"; //dataset option for newTag input
+	}
+	
+	$tagsPageSettingsText="<fieldset><legend><a name='tags'>Page Tags</a></legend>";
+	$tagsPageSettingsText.=$pageTags;
+	$tagsPageSettingsText.="<div><form action='./+settings&subaction=tags' method='post'>";
+	$tagsPageSettingsText.="<label for='newTag'>Add a tag:</label>";
+	$tagsPageSettingsText.="<input id='newTag' name='newTag' list='existingTags'></input>";
+	$tagsPageSettingsText.="<datalist id='existingTags'>";
+	$tagsPageSettingsText.=$allTags;
+	$tagsPageSettingsText.="</datalist>";
+	$tagsPageSettingsText.="<input type='submit'></input></form></div>";
+	$tagsPageSettingsText.="</fieldset>";
+
+/* TAGS TEXT ENDS */
+
 	global $pageFullPath;
 	global $STARTSCRIPTS;
 	$STARTSCRIPTS.="toggleMenuType();";
@@ -529,8 +569,11 @@ FORMDISPLAY;
 	<br/><br/>
 		$movecopyPageSettingsText
 		<a href="#topquicklinks">Top</a>
-<br/><br/>
+	<br/><br/>
     	$inheritedInfoText
+    	<a href="#topquicklinks">Top</a>
+    <br/><br/>
+    	$tagsPageSettingsText
     	<a href="#topquicklinks">Top</a>
 	</div>
 FORMDISPLAY;
@@ -1015,6 +1058,23 @@ function pagesettings($pageId, $userId) {
 		}
 		else if($_GET['subaction'] == 'editinheritedinfo') {
 			updatePageInheritedInfo($pageId, escape($_POST['txtInheritedInfo']));
+		}
+		else if($_GET['subaction'] == 'tags') {
+			if(isset($_GET['delTag']) && $_GET['delTag']!=""){ //DELETING THE TAG
+				mysql_query("DELETE FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `tag_id` = '".escape($_GET['delTag'])."'");
+				if(mysql_affected_rows())
+					displayinfo("Tag deleted!");
+				else
+					displayerror("Error in deleting tag.");
+			}
+			if(isset($_POST[newTag]) && $_POST[newTag]!=""){ //INSERTING THE TAG
+				$newTagQuery="INSERT INTO `". MYSQL_DATABASE_PREFIX ."pagetags` (`tag_id`, `page_id`, `tag_text`) VALUES (NULL, ".$pageId.", '".escape($_POST[newTag])."');";
+				$newTagResult=mysql_query($newTagQuery);
+				if($newTagResult)
+					displayinfo("Tag added!");
+				else
+					displayerror("Error in adding tag.");
+			}
 		}
 	}
 	if ($settingsForm = getSettingsForm($pageId, $userId))

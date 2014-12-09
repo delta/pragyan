@@ -701,6 +701,19 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_pages` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pragyanV3_pagetags`
+--
+
+CREATE TABLE IF NOT EXISTS `pragyanV3_pagetags` (
+  `tag_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tag identification number',
+  `page_id` int(11) NOT NULL COMMENT 'To identifu the page to which the tag corresponds',
+  `tag_text` varchar(128) NOT NULL COMMENT 'The text of the tag',
+  PRIMARY KEY (`tag_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pragyanV3_permissionlist`
 --
 
