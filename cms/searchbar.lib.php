@@ -34,7 +34,7 @@ function getSearchbar($userId, $pageId){
 	$allPageResult=mysql_query($allPageQuery);
 	$pagesIdList=array();
 	while ($row=mysql_fetch_assoc($allPageResult)){
-		if(getPermissions($userid, $row['page_id'], $action="view", $module=$row['page_module']))
+		if(getPermissions($userId, $row['page_id'], $action="view", $module=$row['page_module']))
 			array_push($pagesIdList, intval($row['page_id']));
 	}
 	$tagsWithPermsQuery="SELECT * FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `page_id` IN (";
