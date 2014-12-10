@@ -60,7 +60,7 @@ function getFundReq($fundReqId,$mcId) {
     global $moduleFolder;
     global $urlRequestRoot;
     global $ICONS;
-    require_once ("$sourceFolder/$moduleFolder/article/ckeditor3.5/ckeditor.php");
+    require_once ("$sourceFolder/$moduleFolder/article/ckeditor4.4/ckeditor.php");
     $editor='ckeditor';
     $CkForm =<<<Ck
       <form action="./+{$team}" method="post">
@@ -73,7 +73,7 @@ function getFundReq($fundReqId,$mcId) {
 Ck;
     $top ="<a href='#topquicklinks'>Top</a>";
     $oCKEditor = new CKeditor();
-    $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor3.5/";
+    $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor4.4/";
     $oCKEditor->config['width'] = '100%';
     $oCKEditor->config['height'] = '300';
     $oCKEditor->returnOutput = true;
