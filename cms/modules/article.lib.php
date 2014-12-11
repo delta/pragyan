@@ -397,7 +397,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			global $moduleFolder;
 			global $urlRequestRoot;
 			global $ICONS;
-			require_once ("$sourceFolder/$moduleFolder/article/ckeditor3.5/ckeditor.php");
+			require_once ("$sourceFolder/$moduleFolder/article/ckeditor4.4/ckeditor.php");
 			$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`= '$this->moduleComponentId'";
 			$result = mysql_query($query);
 			$temp = mysql_fetch_assoc($result);
@@ -421,7 +421,7 @@ Ck;
 
 
 			  $oCKEditor = new CKeditor();
-			  $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor3.5/";
+			  $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor4.4/";
 			  $oCKEditor->config['width'] = '100%';
 			  $oCKEditor->config['height'] = '300';
 			  $oCKEditor->returnOutput = true;
