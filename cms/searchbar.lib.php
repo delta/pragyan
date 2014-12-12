@@ -25,7 +25,9 @@ function getSearchbar($userId, $pageId){
 		$searchResult=mysql_query($searchQuery);
 		$suggestions="";
 		while($row=mysql_fetch_assoc($searchResult)){
-			$suggestions.="<a href=".hostURL().getPagePath($row['page_id']).">".getPageInfo($row['page_id'])['page_title']."</a><br/>";
+			$suggestions.="<a href=".hostURL().getPagePath($row['page_id']).">";
+			$pageInfo=getPageInfo($row['page_id']);
+			$suggestions.=$pageInfo['page_title']."</a><br/>";
 		}
 		echo $suggestions;
 		exit(0);
