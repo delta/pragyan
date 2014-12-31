@@ -99,7 +99,7 @@ class pdodb
                     }
 
 
-                    public function query($query,$params=null,$fetchmode=PDO::FETCH_ASSOC) # returns for SELECT and SHOW, returns number of affected rows for DELETE, INSERT and UPDATE
+                    public function query($query,$params=null,$fetchmode=PDO::FETCH_ASSOC) # returns array for SELECT and SHOW, returns number of affected rows for DELETE, INSERT and UPDATE
                     {
                         $query=trim($query);
                         $this->Init($query,$params);
