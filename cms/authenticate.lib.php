@@ -139,9 +139,9 @@ function getGroupIds($userId) {
 	else
 		$groups[] = 1;
 	$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . escape($userId)."'";
-	$groupQueryResult = $pdb->query($groupQuery);
-	foreach ($groupQueryResult as $groupQueryResultRow)
-		$groups[] = $groupQueryResultRow[0];
+    $groupQueryResult = $pdb->query($groupQuery);
+    foreach($groupQueryResult as $groupQueryResultRow)
+        $groups[] = $groupQueryResultRow['group_id'];
 	return $groups;
 }
 
