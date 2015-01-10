@@ -1569,6 +1569,16 @@ CREATE TABLE IF NOT EXISTS `events_workshop_participants` (
   `user_team_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Table structure for table `gcm_users`
+--
+
+CREATE TABLE IF NOT EXISTS `gcm_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gcm_regid` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
