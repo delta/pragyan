@@ -24,7 +24,7 @@ if(!defined('__PRAGYAN_CMS'))
  *
  */
 function getSessionData($user_id) {
-    global $pdb;
+	global $pdb;
 	$user_id=escape($user_id);
 	$query = "SELECT `user_name`,`user_email`,`user_lastlogin` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id`='$user_id'";
 	$data = $pdb->query($query);
@@ -130,7 +130,7 @@ function firstTimeGetUserId() {
  *
  */
 function getGroupIds($userId) {
-    global $pdb;
+	global $pdb;
 	$groups = array (
 		0
 	);
@@ -139,9 +139,9 @@ function getGroupIds($userId) {
 	else
 		$groups[] = 1;
 	$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . escape($userId)."'";
-    $groupQueryResult = $pdb->query($groupQuery);
-    foreach($groupQueryResult as $groupQueryResultRow)
-        $groups[] = $groupQueryResultRow['group_id'];
+	$groupQueryResult = $pdb->query($groupQuery);
+	foreach($groupQueryResult as $groupQueryResultRow)
+		$groups[] = $groupQueryResultRow['group_id'];
 	return $groups;
 }
 
