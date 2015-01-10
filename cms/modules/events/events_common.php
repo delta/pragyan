@@ -56,7 +56,7 @@ TR;
     $count ++;
 
     $userDetails .=<<<TR
-      <tr>
+      <tr>
         <td>$userId</td>
         <td>{$dispText}</td>
         <td>{$dispData}</td>
@@ -313,10 +313,25 @@ function gcmupdate(){
     	}
     
     	$message = array();
-    	$eventsRes=mysql_query("SELECT * FROM events_details");
-    	while($row=mysql_fetch_assoc($eventsRes)){
-            $message[] = $row;
-	}
+    	$eventsRes=mysql_query("SELECT * FROM `events_details`");
+    	while($row=mysql_fetch_array($eventsRes)){
+        $event=array(
+                    "event_id"=> $row['event_id'], 
+                    "event_name"=> $row['event_name'],
+                    "event_cluster"=> $row['event_cluster'],
+                    "event_form_id"=> $row['event_form_id'],
+                    "event_date"=> $row['event_date'], 
+                    "event_start_time"=>$row['event_start_time'], 
+                    "event_end_time"=>$row['event_end_time'],
+                    "event_venue"=>$row['event_venue'],
+                    "event_desc"=>$row['event_desc'],
+                    "event_last_update_time"=>$row['event_last_update_time'], 
+                    "event_image"=>$row['event_image'], 
+                    "event_loc_x"=>$row['event_loc_x'],
+                    "event_loc_y"=>$row['event_loc_y'], 
+            );
+            array_push($message, $event);
+    	}
 
     	$url = 'https://android.googleapis.com/gcm/send';
  
