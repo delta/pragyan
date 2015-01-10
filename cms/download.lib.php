@@ -25,7 +25,7 @@ if(!defined('__PRAGYAN_CMS'))
  */
 
 function download($pageId, $userId, $fileName,$action="") {
-    global $pdb;
+	global $pdb;
         /// If page not found display error  
 	if($pageId===false) {
 		header("http/1.0 404 Not Found" );
@@ -76,7 +76,7 @@ function download($pageId, $userId, $fileName,$action="") {
 	
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
 	$rows = $pdb->query($query);
-    $row = $rows[0];
+	$row = $rows[0];
 
 	$fileType = $row['upload_filetype'];
 	/**

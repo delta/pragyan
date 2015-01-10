@@ -22,7 +22,7 @@ if(!defined('__PRAGYAN_CMS'))
  * @return HTML of the FORM
  */
 function handleIconManagement() {
-    global $pdb;
+	global $pdb;
 	/*
 	*	Upload a new icon
 	*/
