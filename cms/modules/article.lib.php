@@ -42,12 +42,14 @@ class article implements module, fileuploadable {
 	}
 	
 	function isCommentsEnabled() {
-		$result = mysql_fetch_array(mysql_query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
-		return $result['allowComments'];
+		global $pdb;
+		$result = $pdb->query("SELECT `allowComments` FROM `article_content` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'");
+		return $result[0]['allowComments'];
 	}
 	
 	function setCommentEnable($val) {
-		mysql_query("UPDATE `article_content` SET `allowComments` ='$val' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'");
+		global $pdb;
+		$result = $pdb->query("UPDATE `article_content` SET `allowComments` ='$val' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'");
 	}
 	
 	function renderComment($id,$user,$timestamp,$comment,$delete=0) {
@@ -93,40 +95,41 @@ RET;
 	
 	public function actionView($text="") {
 	
+	global $pdb;
 	if (isset($_GET['draft']) && isset ($_POST['CKEditor1'])){
 				
 				//$query = "UPDATE `article_draft` SET `draft_content` = '" . $_POST["CKEditor1"] . "' WHERE `page_modulecomponentid` =".$this->moduleComponentId;
 				$query="SELECT MAX(draft_number) AS MAX FROM `article_draft` WHERE page_modulecomponentid ='$this->moduleComponentId'";
-			$result = mysql_query($query);
-			if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
-			if(mysql_num_rows($result))
+				$result = $pdb->query($query);
+			//if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
+			if(count($result))
 			{
-				$drow = mysql_fetch_assoc($result);
+				$drow = $result[0];
 				$draftId = $drow['MAX'] + 1;
 			}
 			else $draftId=1;
 			
 				$query = "INSERT INTO `article_draft` (`page_modulecomponentid`,`draft_number`,`draft_content`,`draft_lastsaved`,`user_id`) VALUES ('".$this->moduleComponentId."','".$draftId."','".$_POST['CKEditor1']."',now(),'".$this->userId."')";
-				$result = mysql_query($query) or die(mysql_error());
-					if(mysql_affected_rows() < 1)
+				$result = $pdb->query($query);
+					if($result < 1)
 					displayerror("Unable to draft the article");
 				
 	}
 		if($this->isCommentsEnabled() && isset($_POST['btnSubmit'])) {
-			$id = mysql_fetch_array(mysql_query("SELECT MAX(`comment_id`) AS MAX FROM `article_comments`"));
-			$id = $id['MAX'] + 1;
+			$id = $pdb->query("SELECT MAX(`comment_id`) AS MAX FROM `article_comments`");
+			$id = $id[0]['MAX'] + 1;
 			$user = getUserName($this->userId);
 			$comment = escape(safe_html($_POST['comment']));
-			mysql_query("INSERT INTO `article_comments`(`comment_id`,`page_modulecomponentid`,`user`,`comment`) VALUES('$id','{$this->moduleComponentId}','$user','$comment')");
-			if(mysql_affected_rows())
+			$result = $pdb->query("INSERT INTO `article_comments`(`comment_id`,`page_modulecomponentid`,`user`,`comment`) VALUES('$id','{$this->moduleComponentId}','$user','$comment')");
+			if($result)
 				displayinfo("Post successful");
 			else
 				displayerror("Error in posting comment");
 		}
 		if($text==""){
 			$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
-			$result = mysql_query($query);
-			if($row = mysql_fetch_assoc($result)) {
+			$result = $pdb->query($query);
+			if($row = $result[0]) {
 				$text = $row['article_content'];
 				$text = censor_words($text);
 				global $PAGELASTUPDATED;
@@ -148,12 +151,12 @@ RET;
 		
 		
 		if($this->isCommentsEnabled()) {
-			$comments = mysql_query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
-			if(mysql_num_rows($comments)>0)
+			$comments = $pdb->query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
+			if(count($comments)>0)
 				$ret .= "<fieldset><legend>Comments</legend>";
-			while($row = mysql_fetch_array($comments))
+			foreach($comments as $row)
 				$ret .= $this->renderComment($row['comment_id'],$row['user'],$row['timestamp'],censor_words($row['comment']));
-			if(mysql_num_rows($comments)>0)
+			if(count($comments)>0)
 				$ret .= "</fieldset>";
 			$ret .= $this->commentBox();
 		}
@@ -162,7 +165,7 @@ RET;
 	
 	
 	public function actionEdit() {
-		global $sourceFolder,$ICONS;
+		global $sourceFolder,$ICONS,$pdb;
 		//require_once("$sourceFolder/diff.lib.php");
 		require_once($sourceFolder."/upload.lib.php");
 		
@@ -170,7 +173,7 @@ RET;
 		{
 		$dno = escape($_GET['dno']);
 		$query = "DELETE FROM `article_draft` WHERE `page_modulecomponentid`='". $this->moduleComponentId."' AND `draft_number`=".$dno;
-		$result = mysql_query($query) or die(mysql_error());
+		$result = $pdb->query($query);
 		}
 		
 		global $ICONS;
@@ -192,8 +195,8 @@ HEADER;
 		
 		submitFileUploadForm($this->moduleComponentId,"article",$this->userId,UPLOAD_SIZE_LIMIT);
 		if(isset($_GET['delComment']) && $this->userId == 1) {
-			mysql_query("DELETE FROM `article_comments` WHERE `comment_id` = '".escape($_GET['delComment'])."'");
-			if(mysql_affected_rows())
+			$result = $pdb->query("DELETE FROM `article_comments` WHERE `comment_id` = '".escape($_GET['delComment'])."'");
+			if($result)
 				displayinfo("Comment deleted!");
 			else
 				displayerror("Error in deleting comment");
@@ -217,15 +220,15 @@ HEADER;
 
 			/*Save the diff :-*/
 			$query = "SELECT article_content FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
-			$result = mysql_query($query);
-			$row = mysql_fetch_assoc($result);
-			$diff = mysql_escape_string($this->diff($_POST['CKEditor1'],$row['article_content']));
+			$result = $pdb->query($query);
+			$row = $result[0];
+			$diff = $this->diff($_POST['CKEditor1'],$row['article_content']);
 			$query="SELECT MAX(article_revision) AS MAX FROM `article_contentbak` WHERE page_modulecomponentid ='" . $this->moduleComponentId."'";
-			$result = mysql_query($query);
-			if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
-			if(mysql_num_rows($result))
+			$result = $pdb->query($query);
+			//if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
+			if(count($result))
 			{
-				$row = mysql_fetch_assoc($result);
+				$row = $result[0];
 				$revId = $row['MAX'] + 1;
 			}
 			else $revId=1;
@@ -233,14 +236,14 @@ HEADER;
 
 			$query = "INSERT INTO `article_contentbak` (`page_modulecomponentid` ,`article_revision` ,`article_diff`,`user_id`)
 VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
-			$result = mysql_query($query);
-			if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
+			$result = $pdb->query($query);
+			//if(!$result) { displayerror(mysql_error() . "article.lib L:44"); return; }
 
 		/*Save the diff end.*/
 
 			$query = "UPDATE `article_content` SET `article_content` = '" . escape($_POST["CKEditor1"]) . "' WHERE `page_modulecomponentid` ='$this->moduleComponentId' ";
-			$result = mysql_query($query);
-			if(mysql_affected_rows() < 0)
+			$result = $pdb->query($query);
+			if(count($result) <= 0)
 				displayerror("Unable to update the article content");
 			else {
 				
@@ -254,8 +257,8 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			if(isset($_POST['editor'])){
 			  $editor=escape($_POST['editor']);
 			  $query = "UPDATE `article_content` SET `default_editor` = '" . $editor . "' WHERE `page_modulecomponentid` ='$this->moduleComponentId' ";
-			  $result = mysql_query($query);
-			  if(mysql_affected_rows() < 0)
+			  $result = $pdb->query($query);
+			  if(count($result) < 0)
 			    displayerror("Unable to update the article Editor");
 			}
 			return $this->actionView();
@@ -265,12 +268,12 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		$commentsedit = "<fieldset><legend><a name='comments'>{$ICONS['Page Comments']['small']}Comments</a></legend>";
 		
 		if($this->isCommentsEnabled()) {
-			$comments = mysql_query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
-			if(mysql_num_rows($comments)==0)
+			$comments = $pdb->query("SELECT `comment_id`,`user`,`timestamp`,`comment` FROM `article_comments` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}' ORDER BY `timestamp`");
+			if(count($comments)==0)
 				$commentsedit.= "No comments have been posted !";
 			
 			
-			while($row = mysql_fetch_array($comments))
+			foreach($comments as $row)
 			{
 				$commentsedit .= $this->renderComment($row['comment_id'],$row['user'],$row['timestamp'],$row['comment'],1);
 				
@@ -366,13 +369,14 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		return $patch;
 	}
 	public function getRevision($revisionNo) {
+		global $pdb;
 		$currentquery = "SELECT article_content FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
-		$currentresult = mysql_query($currentquery);
-		$currentrow = mysql_fetch_assoc($currentresult);
+		$currentresult = $pdb->query($currentquery);
+		$currentrow = $currentresult[0];
 		$revision = $currentrow['article_content'];
 		$diffquery = "SELECT * FROM `article_contentbak` WHERE `page_modulecomponentid`='$this->moduleComponentId' AND article_revision >= '$revisionNo' ORDER BY article_revision DESC";
-		$diffresult = mysql_query($diffquery);
-		while($diffrow = mysql_fetch_assoc($diffresult)) {
+		$diffresult = $pdb->query($diffquery);
+		foreach($diffresult as $diffrow) {
 			$revision = $this->patch($revision,$diffrow['article_diff']);
 		}
 		return $revision;
