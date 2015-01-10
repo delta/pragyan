@@ -289,6 +289,63 @@ echo $maps;
 exit();
 }
 
+function register(){
+	$gcm_regid = $_POST["regId"];
+	$gcm_regid = mysql_real_escape_string($gcm_regid);
+	$result = mysql_query("INSERT INTO gcm_users(gcm_regid) VALUES('$gcm_regid')");
+		if ($result) {
+			$id = mysql_insert_id();
+			$result = mysql_query("SELECT * FROM gcm_users WHERE id = $id") or die(mysql_error());
+			       if (mysql_num_rows($result) > 0) {
+				       echo "Successfully Registered.";
+				}
+	       }
+	       else {
+	            return false;
+	        }
+}
+
+function gcmupdate(){
+	$result = mysql_query("SELECT * FROM gcm_users");
+	$registration_ids = array();
+    	while ($row = mysql_fetch_array($result)) {
+        	$registration_ids[] = $row['gcm_regid'];
+    	}
+    
+    	$message = array();
+    	$eventsRes=mysql_query("SELECT * FROM events_details");
+    	while($row=mysql_fetch_assoc($eventsRes)){
+            $message[] = $row;
+	}
+
+    	$url = 'https://android.googleapis.com/gcm/send';
+ 
+        $fields = array(
+            'registration_ids' => $registration_ids,
+            'data' => $message,
+        );
+ 
+        $headers = array(
+            'Authorization: key=' . GOOGLE_API_KEY,
+            'Content-Type: application/json'
+        );
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+ 
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+                 echo "Updates not sent";
+            die('Curl failed: ' . curl_error($ch));
+        }
+
+}
+
 function getEventsJSON($pmcid){
     date_default_timezone_set('Asia/Calcutta');
     $date1=date("Y-m-d");
