@@ -294,12 +294,8 @@ function register(){
 	$gcm_regid = mysql_real_escape_string($gcm_regid);
 	$result = mysql_query("INSERT INTO gcm_users(gcm_regid) VALUES('$gcm_regid')");
 		if ($result) {
-			$id = mysql_insert_id();
-			$result = mysql_query("SELECT * FROM gcm_users WHERE id = $id") or die(mysql_error());
-			       if (mysql_num_rows($result) > 0) {
-				       echo "Successfully Registered.";
-				}
-	       }
+		       echo "Successfully Registered.";
+		}
 	       else {
 	            return false;
 	        }
