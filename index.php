@@ -117,7 +117,8 @@ if(!defined("ADMIN_USERID") )
 	<b>NOTE:</b>If you're not using the <a href='http://sourceforge.net/projects/pragyan'>official package</a> of the Pragyan CMS or you're installing for the second time, then please make sure that the 'RewriteEngine' property is set to 'Off' in the .htaccess file present in the root folder of Pragyan for the above link to work correctly.";
 	exit();
 }
-
+require_once($sourceFolder."/pdo.class.php");
+$pdb = new pdodb();
 ///Contains functions which are common to many tasks and very frequently used.
 require_once($sourceFolder."/common.lib.php");
 
