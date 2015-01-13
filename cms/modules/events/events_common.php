@@ -155,6 +155,7 @@ function validateEditEventData($pageModuleComponentId){
                         ."AND `event_id`={$_POST['eventId']}";
             $editRes=mysql_query($editQuery) or displayerror(mysql_error());
             echo "Valid";
+            gcmupdate();
     }
     else echo "Invalid";
     exit();
