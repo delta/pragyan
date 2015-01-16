@@ -15,7 +15,7 @@ if(!defined('__PRAGYAN_CMS'))
 	<link rel="shortcut icon" href="<?php echo $TEMPLATEBROWSERPATH; ?>/images/logo_16.png" >
 	<link rel="stylesheet" type="text/css" href="<?php echo $TEMPLATEBROWSERPATH; ?>/styles/main.css" />
     <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
-    <meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
+    <meta name="keywords" content="<?php echo $SITEKEYWORDS.', '.$PAGEKEYWORDS ?>" /> 
 	<?php global $urlRequestRoot;	global $PAGELASTUPDATED;
 	if($PAGELASTUPDATED!="")
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
