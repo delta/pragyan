@@ -21,8 +21,8 @@ if (!defined('__PRAGYAN_CMS')) {
  */
 function getSearchbar($userId, $pageId) {
     if(isset($_GET['searchbar']) && isset($_GET['searchContents'])) {
-        escape($_GET['searchbar']);
-        escape($_GET['searchContents']);
+        $_GET['searchbar'] = escape($_GET['searchbar']);
+        $_GET['searchContents'] = escape($_GET['searchContents']);
 
         $allPageQuery="SELECT `page_id`, `page_module` FROM `". MYSQL_DATABASE_PREFIX ."pages`";
         $allPageResult=mysql_query($allPageQuery);

@@ -13,7 +13,7 @@ if(!defined('__PRAGYAN_CMS'))
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title><?php echo  $TITLE; ?></title>
     <meta name="description" content="<?php echo $SITEDESCRIPTION ?>" />
-    <meta name="keywords" content="<?php echo $SITEKEYWORDS ?>" /> 
+    <meta name="keywords" content="<?php echo $SITEKEYWORDS.', '.$PAGEKEYWORDS ?>" /> 
 	<?php global $urlRequestRoot;	global $PAGELASTUPDATED;
 	if($PAGELASTUPDATED!="")
 		echo '<meta http-equiv="Last-Update" content="'.substr($PAGELASTUPDATED,0,10).'" />'."\n";
