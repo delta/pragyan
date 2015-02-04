@@ -144,7 +144,7 @@ if(isset($_GET['page']))
 ///Case 2 : request for a user profile page
 else if(isset($_GET['user'])) {
 	$publicPageRequest = true;
-	$userProfileId = $_GET['user'];
+	$userProfileId = safe_html(escape($_GET['user']));
 	//This is just to prevent parsing a NULL url when someone misplaces the code for User profile parser
 	$pageFullPath = "home";
 }
