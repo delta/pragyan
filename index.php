@@ -140,6 +140,7 @@ if($cookieSupported==true)	session_start();
 $userId=firstTimeGetUserId();
 ///Case 1 : request a page
 if(isset($_GET['page']))
+	$_GET['page'] = escape($_GET['page']);
 	$pageFullPath = strtolower($_GET['page']);
 ///Case 2 : request for a user profile page
 else if(isset($_GET['user'])) {
