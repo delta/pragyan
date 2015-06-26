@@ -56,7 +56,7 @@ TR;
     $count ++;
 
     $userDetails .=<<<TR
-      <tr>
+      <tr>
         <td>$userId</td>
         <td>{$dispText}</td>
         <td>{$dispData}</td>
@@ -155,6 +155,7 @@ function validateEditEventData($pageModuleComponentId){
                         ."AND `event_id`={$_POST['eventId']}";
             $editRes=mysql_query($editQuery) or displayerror(mysql_error());
             echo "Valid";
+            gcmupdate();
     }
     else echo "Invalid";
     exit();
@@ -287,6 +288,74 @@ $maps.=<<<MAP2
 MAP2;
 echo $maps;
 exit();
+}
+
+function register(){
+	$gcm_regid = $_POST["regId"];
+	$gcm_regid = mysql_real_escape_string($gcm_regid);
+	$result = mysql_query("INSERT INTO gcm_users(gcm_regid) VALUES('$gcm_regid')");
+		if ($result) {
+		       echo "Successfully Registered.";
+		}
+	       else {
+	            return false;
+	        }
+}
+
+function gcmupdate(){
+	$result = mysql_query("SELECT * FROM gcm_users");
+	$registration_ids = array();
+    	while ($row = mysql_fetch_array($result)) {
+        	$registration_ids[] = $row['gcm_regid'];
+    	}
+    
+    	$message = array();
+    	$eventsRes=mysql_query("SELECT * FROM `events_details`");
+    	while($row=mysql_fetch_array($eventsRes)){
+        $event=array(
+                    "event_id"=> $row['event_id'], 
+                    "event_name"=> $row['event_name'],
+                    "event_cluster"=> $row['event_cluster'],
+                    "event_form_id"=> $row['event_form_id'],
+                    "event_date"=> $row['event_date'], 
+                    "event_start_time"=>$row['event_start_time'], 
+                    "event_end_time"=>$row['event_end_time'],
+                    "event_venue"=>$row['event_venue'],
+                    "event_desc"=>$row['event_desc'],
+                    "event_last_update_time"=>$row['event_last_update_time'], 
+                    "event_image"=>$row['event_image'], 
+                    "event_loc_x"=>$row['event_loc_x'],
+                    "event_loc_y"=>$row['event_loc_y'], 
+            );
+            array_push($message, $event);
+    	}
+
+    	$url = 'https://android.googleapis.com/gcm/send';
+ 
+        $fields = array(
+            'registration_ids' => $registration_ids,
+            'data' => $message,
+        );
+ 
+        $headers = array(
+            'Authorization: key=' . GOOGLE_API_KEY,
+            'Content-Type: application/json'
+        );
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+ 
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+                 echo "Updates not sent";
+            die('Curl failed: ' . curl_error($ch));
+        }
+
 }
 
 function getEventsJSON($pmcid){

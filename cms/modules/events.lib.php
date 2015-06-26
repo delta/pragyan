@@ -65,6 +65,11 @@ class events implements module,fileuploadable {
 			else{
 				return selectViewSubaction();
 			}
+			
+			
+			if (isset($_POST['regId']) {
+					return register();
+			}
 		}
 		public function actionCsg(){
 			global $urlRequestRoot,$sourceFolder,$templateFolder,$cmsFolder,$moduleFolder;
