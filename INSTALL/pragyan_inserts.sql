@@ -308,7 +308,7 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`,`page_module`, `perm_ac
 (74, 'oc', 'octeam', 'OCteam', 0, 'OC Team'),
 (75, 'oc', 'view', 'view', 0, 'OC View'),
 (76, 'events', 'view', 'view', 0, 'View Events'),
-(77, 'events', 'eventshead', 'Events Head', 0, 'Evetns Head.'),
+(77, 'events', 'eventshead', 'Events Head', 0, 'Events Head.'),
 (78, 'events', 'ochead', 'OC Head', 1, 'OC Head.'),
 (79, 'events', 'octeam', 'OC Team', 2, 'OC Team'),
 (80, 'events', 'qa', 'QA', 3, 'Quality Assurance.'),
@@ -316,7 +316,7 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`,`page_module`, `perm_ac
 (82, 'events', 'csg', 'CSG', 5, 'CSG'),
 (83, 'events', 'qahead', 'QA Head', 6, 'QA Head.'),
 (84, 'events', 'prhead', 'PR Head', 7, 'PR Head'),
-(72, 'events', 'create', 'Create', 0, 'Create');
+(85, 'events', 'create', 'Create', 8, 'Create Events');
 
 
 --
