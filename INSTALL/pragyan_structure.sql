@@ -1437,6 +1437,18 @@ CREATE TABLE IF NOT EXISTS `events_details` (
 ) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=latin1;
 
 --
+-- Indexes for table `events_details`
+--
+ALTER TABLE `events_details`
+  ADD PRIMARY KEY (`event_id`);
+  
+--
+-- AUTO_INCREMENT for table `events_details`
+--
+ALTER TABLE `events_details`
+  MODIFY `event_id` int(10) NOT NULL AUTO_INCREMENT;
+
+--
 -- Table structure for table `events_edited_form`
 --
 
