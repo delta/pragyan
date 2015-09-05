@@ -164,7 +164,7 @@ function getAllEvents($pmcid){
     //Query to select all entries
     global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
     $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
-    displaywarning($scriptFolder);
+    //displaywarning($scriptFolder);
     $selectQuery="SELECT * FROM `events_details` WHERE `page_moduleComponentId`={$pmcid};";
     $insertRes=mysql_query($selectQuery) or displayerror(mysql_error());
     global $STARTSCRIPTS;
