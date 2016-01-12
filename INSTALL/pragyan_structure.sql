@@ -1581,6 +1581,16 @@ CREATE TABLE IF NOT EXISTS `events_workshop_participants` (
   `user_team_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Table structure for table `publication_details`
+--
+
+CREATE TABLE IF NOT EXISTS `publication_details` (
+  `sl_no` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT , 
+  `publication` text , 
+  `saved_time` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  `created_time` TIMESTAMP , 
+  `module_component_id` int(11));
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
