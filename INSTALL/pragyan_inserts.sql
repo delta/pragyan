@@ -168,7 +168,9 @@ INSERT IGNORE INTO `pragyanV3_modules` (`module_name`, `module_tables`) VALUES
 ('quiz', 'quiz_answersubmissions;quiz_descriptions;quiz_objectiveoptions;quiz_questions;quiz_sections;quiz_userattempts;quiz_weightmarks'),
 ('sqlquery', 'sqlquery_desc'),
 ('share','share;share_files;share_comments'),
-('events','events_certificate;events_certificate_details;events_confirmed_participants;events_details;events_edited_form;events_event_procurement;events_event_procurement1;events_form;events_locked;events_notifications;events_participants;events_procurements;events_result;events_workshop_details;events_workshop_participants');
+('events','events_certificate;events_certificate_details;events_confirmed_participants;events_details;events_edited_form;events_event_procurement;events_event_procurement1;events_form;events_locked;events_notifications;events_participants;events_procurements;events_result;events_workshop_details;events_workshop_participants') ,
+('publication' , 'publication_details');
+
 
 --
 -- Dumping data for table `pragyanV3_external`
@@ -316,7 +318,10 @@ INSERT IGNORE INTO `pragyanV3_permissionlist` (`perm_id`,`page_module`, `perm_ac
 (82, 'events', 'csg', 'CSG', 5, 'CSG'),
 (83, 'events', 'qahead', 'QA Head', 6, 'QA Head.'),
 (84, 'events', 'prhead', 'PR Head', 7, 'PR Head'),
-(85, 'events', 'create', 'Create', 8, 'Create Events');
+(85, 'events', 'create', 'Create', 8, 'Create Events'),
+(86, 'publication', 'edit', 'Edit', 0, 'Edit Publications'),
+(87, 'publication', 'view', 'View', 0, 'View Publications') ,
+(88, 'publication', 'create', 'create', 0, 'create publications');
 
 
 --
