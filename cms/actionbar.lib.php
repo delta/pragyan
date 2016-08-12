@@ -24,19 +24,19 @@ if(!defined('__PRAGYAN_CMS'))
  * @return $actionbar The list of permitted actions for the 'user' of 'page'. 
  */
 function getActionbarPage($userId, $pageId) {
-
+    global $pdb;
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE page_module = 'page'";
-	$action_result = mysql_query($action_query);
+	$action_result = $pdb->query($action_query);
 	$allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
-	$allow_login_result = mysql_query($allow_login_query);
-	$allow_login_result = mysql_fetch_array($allow_login_result);
+	$allow_login_result = $pdb->query($allow_login_query);
+	$allow_login_result = $allow_login_result[0];
 	$actionbarPage=array();
-	while($action_row = mysql_fetch_assoc($action_result)) {
+	foreach($action_result as $action_row) {
 		if(getPermissions($userId, $pageId, $action_row['perm_action']))
 			$actionbarPage[$action_row['perm_action']]=$action_row['perm_text'];
 	}
 	if($userId==0) {
-	if($allow_login_result[0]) {
+	if($allow_login_result['value']) {
 		$actionbarPage["login"]="Login";
 		$actionbarPage["login&subaction=register"]="Register";
 		}
@@ -75,19 +75,20 @@ function getActionbarPage($userId, $pageId) {
  * @return $actionbar The list of permitted module specific actions for the 'user' of 'page'.
  */
 function getActionbarModule($userId, $pageId) {
+    global $pdb;
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE perm_action != 'create' AND page_module = '".getEffectivePageModule($pageId)."'";
-	$action_result = mysql_query($action_query);
+	$action_result = $pdb->query($action_query);
 	$allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
-	$allow_login_result = mysql_query($allow_login_query);
-	$allow_login_result = mysql_fetch_array($allow_login_result);
+	$allow_login_result = $pdb->query($allow_login_query);
+	$allow_login_result = $allow_login_result[0];
 	$actionbarPage = array();
-	while($action_row = mysql_fetch_assoc($action_result))
+	foreach($action_result as $action_row)
 		if(getPermissions($userId, $pageId, $action_row['perm_action']))
 			$actionbarPage[$action_row['perm_action']]=$action_row['perm_text'];
 	$actionbar="<div id=\"cms-actionbarModule\">";
 	if(is_array($actionbarPage)>0)
 	foreach($actionbarPage as $action=>$actionname) {
-		if((!$allow_login_result[0])&&($actionname=="View")&&!($userId))
+		if((!$allow_login_result['value'])&&($actionname=="View")&&!($userId))
 			continue;		
 		$actionbar.="<span class=\"cms-actionbarModuleItem\"><a class=\"robots-nofollow\" rel=\"nofollow\" href=\"./+$action\">$actionname</a></span>\n";
 	}
