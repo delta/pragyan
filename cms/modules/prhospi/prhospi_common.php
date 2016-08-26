@@ -1016,25 +1016,25 @@ function blockRoomNo($roomId,$mcid) {
 }
 
 
-function blockRoomNo($roomId,$mcid) {
-  $roomId = escape($roomId);
-  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-  if(!mysqli_num_rows($blockRoomQueryRes)) {
-    displayerror("Room Does Not exist");
-    return;
-  } 
-  $res = mysqli_fetch_assoc($blockRoomQueryRes);
-  if($res['hospi_blocked']!=0) {
-    displaywarning("Room Blocked Already");
-    return;
-  }
-  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
-  if($blockRoomQueryRes) displayinfo("Room Blocked ");
-  else  displayinfo("There is a Error.Please contact System Administrator for Details");
-  return;
-}
+//function blockRoomNo($roomId,$mcid) {
+//  $roomId = escape($roomId);
+//  $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+//  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+//  if(!mysqli_num_rows($blockRoomQueryRes)) {
+//    displayerror("Room Does Not exist");
+//    return;
+//  } 
+//  $res = mysqli_fetch_assoc($blockRoomQueryRes);
+//  if($res['hospi_blocked']!=0) {
+//    displaywarning("Room Blocked Already");
+//    return;
+//  }
+//  $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
+//  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+//  if($blockRoomQueryRes) displayinfo("Room Blocked ");
+//  else  displayinfo("There is a Error.Please contact System Administrator for Details");
+//  return;
+//}
 
 function unBlockRoomNo($roomId,$mcid) {
   $roomId = escape($roomId);

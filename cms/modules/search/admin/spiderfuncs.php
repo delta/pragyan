@@ -736,7 +736,7 @@ function check_include($link, $inc, $not_inc) {
 				if (substr($str, 0, 1) == '*') {
 					if (preg_match(substr($str, 1), $link)) {
 						$include = true;
-						break 2;
+						break;
 					}
 				} else {
 					if (strpos($link, $str) !== false) {
