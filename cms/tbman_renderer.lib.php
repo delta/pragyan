@@ -28,9 +28,9 @@ class tbman
     $this->tablename=$this->get_tablename_from_query($querystring);
     $this->querystring=$querystring;
   //  echo "<br/>querystring in tbman_renderer.lib.php: ".$querystring;
-    @ $result=mysql_query($querystring);//@suppresses error messages
+    @ $result=mysqli_query($GLOBALS["___mysqli_ston"], $querystring);//@suppresses error messages
     if(!$result) {                             // and allows to put custom error messages like this one - Error: (used here)
-    	displayerror("Error(tbman_renderer.lib.php): ".mysql_error());
+    	displayerror("Error(tbman_renderer.lib.php): ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     	return;
     }
 	  else
@@ -59,9 +59,9 @@ STR;
 	$str.="\n<form id='f1' name='f1' method='post' action='".$this->formaction."'>";
     $str.="\n<table id=resultTable cellpadding=2 cellspacing=1>";
 	
-    for($i=0;$i<mysql_num_rows($result);$i++)
+    for($i=0;$i<mysqli_num_rows($result);$i++)
       {
-	$a_rows=mysql_fetch_assoc($result);
+	$a_rows=mysqli_fetch_assoc($result);
 
 #Field name row and add row-
 	if($i==0)//ie run only once
@@ -195,7 +195,7 @@ STR;
 
     //making query to get info about the column named $key-
 		/*mysql_field_len($result,$key).*/    
-    $b=mysql_fetch_assoc(mysql_query("explain ".$this->tablename." '".$fieldname."'"));
+    $b=mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "explain ".$this->tablename." '".$fieldname."'"));
 
     $a=$b['Type'];//gives datatype of this format - varchar(20)
 	if($a=="text") return "text_type";

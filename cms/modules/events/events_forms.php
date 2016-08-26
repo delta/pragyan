@@ -82,11 +82,11 @@ require_once("$sourceFolder/$moduleFolder/events/googleMapsConfig.php");
 
 //query to find event
 $findQuery="SELECT * FROM `events_details` WHERE `event_id`={$eid} AND `page_moduleComponentId`={$pmcid};";
-$insertRes=mysql_query($findQuery) or displayerror(mysql_error());
-$row=mysql_fetch_array($insertRes);
+$insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $findQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$row=mysqli_fetch_array($insertRes);
 
 $query="SELECT * FROM `events_details` WHERE `event_Id`={$eid} AND `page_moduleComponentId={$pcmid}";
-mysql_query($query);
+mysqli_query($GLOBALS["___mysqli_ston"], $query);
 
 $startTime=substr($row[event_start_time], 0, 5);
 $endTime=substr($row[event_end_time], 0, 5);
@@ -174,8 +174,8 @@ $addForm=<<<FORM
 				<tr><th><label for="eventName">Event name</label></th>        
 				<td><select id="eventName">
 FORM;
-				$array=mysql_query("SELECT `event_name` FROM `events_details`");                
-				while($row = mysql_fetch_assoc($array)) {
+				$array=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `event_name` FROM `events_details`");                
+				while($row = mysqli_fetch_assoc($array)) {
 				$addForm.="<option value={$row['event_name']}>{$row['event_name']}</option>";
 				}
 $addForm.=<<<FORM
@@ -184,8 +184,8 @@ $addForm.=<<<FORM
 				<tr><th><label for="procurementName">Procurement name</label></th>        
 				<td><select id="procurementName">
 FORM;
-				$array=mysql_query("SELECT `procurement_name` FROM `events_procurements`");
-				while($row = mysql_fetch_assoc($array)) {
+				$array=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `procurement_name` FROM `events_procurements`");
+				while($row = mysqli_fetch_assoc($array)) {
 				$addForm.="<option value={$row['procurement_name']}>{$row['procurement_name']}</option>";
 				}
 $addForm.=<<<FORM
@@ -241,8 +241,8 @@ $addForm=<<<FORM
                 <tr><th><label for="eventName">Event name</label></th>        
                 <td><select id="eventName">
 FORM;
-                $array=mysql_query("SELECT `event_name` FROM `events_details`");                
-                while($row = mysql_fetch_assoc($array)) {
+                $array=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `event_name` FROM `events_details`");                
+                while($row = mysqli_fetch_assoc($array)) {
                 $addForm.="<option value={$row['event_name']}>{$row['event_name']}</option>";
                 }
 $addForm.=<<<FORM
@@ -251,8 +251,8 @@ $addForm.=<<<FORM
                 <tr><th><label for="procurementName">Procurement name</label></th>        
                 <td><select id="procurementName">
 FORM;
-                $array=mysql_query("SELECT `procurement_name` FROM `events_procurements`");
-                while($row = mysql_fetch_assoc($array)) {
+                $array=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `procurement_name` FROM `events_procurements`");
+                while($row = mysqli_fetch_assoc($array)) {
                 $addForm.="<option value={$row['procurement_name']}>{$row['procurement_name']}</option>";
                 }
 $addForm.=<<<FORM

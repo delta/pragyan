@@ -68,26 +68,26 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 	$groupNames = array('0' => 'Everyone', '1' => 'Logged In Users'); ///< Associative array relative group ids to group names
 	$groupCount = 2;
 	$groupsQuery = 'SELECT `group_id`, `group_name` FROM `' . MYSQL_DATABASE_PREFIX . 'groups`';
-	$groupsResult = mysql_query($groupsQuery);
-	while($groupsRow = mysql_fetch_row($groupsResult)) {
+	$groupsResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupsQuery);
+	while($groupsRow = mysqli_fetch_row($groupsResult)) {
 		$groupIds[] = $groupsRow[0];
 		$groupNames[$groupsRow[0]] = $groupsRow[1];
 		$groupCount++;
 	}
-	mysql_free_result($groupsResult);
+	((mysqli_free_result($groupsResult) || (is_object($groupsResult) && (get_class($groupsResult) == "mysqli_result"))) ? true : false);
 
 	/// Retrieve Ids and Names of all users
 	$userIds = array(0);
 	$userNames = array('0' => 'Anonymous');
 	$userCount = 1;
 	$usersQuery = 'SELECT `user_id`, `user_name` FROM `' . MYSQL_DATABASE_PREFIX . 'users`';
-	$usersResult = mysql_query($usersQuery);
-	while($usersRow = mysql_fetch_row($usersResult)) {
+	$usersResult = mysqli_query($GLOBALS["___mysqli_ston"], $usersQuery);
+	while($usersRow = mysqli_fetch_row($usersResult)) {
 		$userNames[$usersRow[0]] = $usersRow[1];
 		$userIds[] = $usersRow[0];
 		$userCount++;
 	}
-	mysql_free_result($usersResult);
+	((mysqli_free_result($usersResult) || (is_object($usersResult) && (get_class($usersResult) == "mysqli_result"))) ? true : false);
 
 	/// $permList: Array of the form
 	///		$permList[$permId] = array($moduleName, $actionName, $actionDescription)
@@ -122,9 +122,9 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 	             "FROM $userPermTable, $permListTable WHERE `page_id` IN (" . join($pagepath, ', ') . ") AND " .
 	             "$userPermTable.`perm_id` IN (" . join($permIds, ', ') .
 	             ") AND $userPermTable.`perm_id` = $permListTable.`perm_id`";
-	$permResult = mysql_query($permQuery);
+	$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
-	while($permRow = mysql_fetch_assoc($permResult)) {
+	while($permRow = mysqli_fetch_assoc($permResult)) {
 		$pageId = $permRow['page_id'];
 		$permId = $permRow['perm_id'];
 		$usergroupId = $permRow['usergroup_id'];
@@ -210,12 +210,12 @@ function getAllPermissionsOnPage($pagepath, $modifiableGroups, $grantableActions
 	$userGroups = array();
 	$groupsQuery = 'SELECT `user_id`, `group_id` FROM `'.MYSQL_DATABASE_PREFIX.'usergroup` ' .
 	               'ORDER BY `user_id`';
-	$groupsResult = mysql_query($groupsQuery);
-	while($groupsRow = mysql_fetch_row($groupsResult)) {
+	$groupsResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupsQuery);
+	while($groupsRow = mysqli_fetch_row($groupsResult)) {
 		if(!isset($userGroups[$groupsRow[0]])) $userGroups[$groupsRow[0]] = array();
 		$userGroups[$groupsRow[0]][] = $groupsRow[1];
 	}
-	mysql_free_result($groupsResult);
+	((mysqli_free_result($groupsResult) || (is_object($groupsResult) && (get_class($groupsResult) == "mysqli_result"))) ? true : false);
 
 
 	/// Calculate permissions as far as groups are concerned.
@@ -301,9 +301,9 @@ RET;
 function getPermissionId($module, $action) {
 	$permQuery = "SELECT `perm_id` FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE " .
 								"`page_module` = '$module' AND `perm_action` = '$action'";
-	$permResult = mysql_query($permQuery);
+	$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
-	if($permResult && ($permResultRow = mysql_fetch_array($permResult))) {
+	if($permResult && ($permResultRow = mysqli_fetch_array($permResult))) {
 		return $permResultRow[0];
 	}
 	else {
@@ -333,8 +333,8 @@ function getPagePermission(array $pagePath, $usergroupid, $action, $module, $per
 	$permQuery .= "$userpermTable.usergroup_id = $usergroupid AND $permissionlistTable.page_module = '$module' AND ";
 	$permQuery .= "$permissionlistTable.perm_action = '$action' AND $permissionlistTable.perm_id = $userpermTable.perm_id";
 	$permissionsArray = array ();
-	if ($permQueryResult = mysql_query($permQuery)) {
-		while ($permQueryResultRow = mysql_fetch_assoc($permQueryResult)) {
+	if ($permQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery)) {
+		while ($permQueryResultRow = mysqli_fetch_assoc($permQueryResult)) {
 			$permissionsArray[$permQueryResultRow['page_id']] = $permQueryResultRow['perm_permission'] == 'Y' ? true : false;
 		}
 	}
@@ -374,8 +374,8 @@ function getPermissions($userid, $pageid, $action, $module="") {
 		return true;
 	if($module=="") {
 		$query = "SELECT 1 FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE page_module=\"page\" AND perm_action=\"$action\"";
-		$result = mysql_query($query);
-		if(mysql_num_rows($result)>=1)
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if(mysqli_num_rows($result)>=1)
 			$module = 'page';
 		else
 			$module = getEffectivePageModule($pageid);
@@ -438,10 +438,10 @@ function determineGrantTargetId(&$targettype) {
 	}
 
 	if($targetId == -1 && $idQuery != '') {
-		$idResult = mysql_query($idQuery);
+		$idResult = mysqli_query($GLOBALS["___mysqli_ston"], $idQuery);
 
 		if($idResult) {
-			if($idResultRow = mysql_fetch_row($idResult)) {
+			if($idResultRow = mysqli_fetch_row($idResult)) {
 				$targetId = $idResultRow[0];
 			}
 		}
@@ -470,21 +470,21 @@ function grantPermissions($userid, $pageid) {
 		$perm = escape($_GET['perm']);
 		$flag = true;
 		if($perm == 'Y' || $perm == 'N') {
-			if($permission = mysql_fetch_array(mysql_query("SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
+			if($permission = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
 				if($permission['perm_permission'] != $perm) {
-					mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "userpageperm` SET `perm_permission` = '{$perm}' WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
-					if(mysql_affected_rows() == 0)
+					mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `" . MYSQL_DATABASE_PREFIX . "userpageperm` SET `perm_permission` = '{$perm}' WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
+					if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]) == 0)
 						$flag = false;
 				}
 			} else {
-				mysql_query("INSERT `" . MYSQL_DATABASE_PREFIX . "userpageperm`(`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) VALUES('$permtype','$pageid','$usergroupid','$permid','$perm')");
-				if(mysql_affected_rows() == 0)
+				mysqli_query($GLOBALS["___mysqli_ston"], "INSERT `" . MYSQL_DATABASE_PREFIX . "userpageperm`(`perm_type`, `page_id`, `usergroup_id`, `perm_id`, `perm_permission`) VALUES('$permtype','$pageid','$usergroupid','$permid','$perm')");
+				if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]) == 0)
 					$flag = false;
 			}
 		} else {
-			if($permission = mysql_fetch_array(mysql_query("SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
-				mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
-				if(mysql_affected_rows() == 0)
+			if($permission = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `perm_permission` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'"))) {
+				mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type` = '{$permtype}' AND `page_id` = '{$pageid}' AND `usergroup_id` = '{$usergroupid}' AND `perm_id` = '{$permid}'");
+				if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]) == 0)
 					$flag = false;
 			}
 		}
@@ -500,7 +500,7 @@ function grantPermissions($userid, $pageid) {
 	if(isset($_GET['doaction']) && $_GET['doaction'] == 'getpermvars' && isset($_GET['pageid'])) {
 		global $cmsFolder,$urlRequestRoot, $templateFolder;
 		$pageid = escape($_GET['pageid']);
-		if(mysql_fetch_array(mysql_query("SELECT `page_name` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageid}'"))) {
+		if(mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `page_name` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$pageid}'"))) {
 		$pagepath = array();
 		parseUrlDereferenced($pageid, $pagepath);
 		$pageid = $pagepath[count($pagepath) - 1];
@@ -751,8 +751,8 @@ RET;
 
 function getPerms($pageId, $groupuser, $yesno) {
 	$ret = "";
-	$result = mysql_query("SELECT `usergroup_id`, `perm_id` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `page_id` = '{$pageId}' AND `perm_type` = '{$groupuser}' AND `perm_permission` = '{$yesno}'");
-	while($row = mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `usergroup_id`, `perm_id` FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `page_id` = '{$pageId}' AND `perm_type` = '{$groupuser}' AND `perm_permission` = '{$yesno}'");
+	while($row = mysqli_fetch_array($result))
 		$perms[$row['usergroup_id']][] = $row['perm_id'];
 	if(isset($perms)) 
 		foreach($perms as $group => $values) {
@@ -768,8 +768,8 @@ function getPerms($pageId, $groupuser, $yesno) {
 
 function customGetAllUsers() {
 	$ret = "";
-	$result = mysql_query("SELECT `user_email`, `user_name`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
-	while($row = mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_email`, `user_name`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+	while($row = mysqli_fetch_array($result))
 		$ret .= "'{$row['user_id']}' : '{$row['user_name']} &lt;{$row['user_email']}&gt;', ";
 	$ret = rtrim($ret,", ");
 	return $ret;	
@@ -777,8 +777,8 @@ function customGetAllUsers() {
 
 function customGetGroups($priority) {
 	$ret = "'0' : 'Everyone', '1' : 'Logged in Users', ";
-	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
-	while($row = mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
+	while($row = mysqli_fetch_array($result))
 		$ret .= "'{$row['group_id']}' : '{$row['group_name']}', ";
 	$ret = rtrim($ret,", ");
 	return $ret;
@@ -786,8 +786,8 @@ function customGetGroups($priority) {
 
 function filterByPriority($priority,$groups) {
 	$return = array();
-	$result = mysql_query("SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
-	while($row = mysql_fetch_assoc($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` < '{$priority}'");
+	while($row = mysqli_fetch_assoc($result))
 		foreach($groups as $group)
 			if($group == $row['group_id'])
 				$return[] = $group;
@@ -796,8 +796,8 @@ function filterByPriority($priority,$groups) {
 
 function getAllPermissions() {
 	$ret = "";
-	$result = mysql_query("SELECT `perm_id`,`page_module`,`perm_action` FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist`");
-	while($row = mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `perm_id`,`page_module`,`perm_action` FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist`");
+	while($row = mysqli_fetch_array($result))
 		$ret .= "'{$row['perm_id']}' : '{$row['page_module']} - {$row['perm_action']}', ";
 	$ret = rtrim($ret,", ");
 	return $ret;
@@ -824,9 +824,9 @@ function formatPermissions($perms) {
 function unsetPagePermission($usergroupid, $pageid, $action, $module, $permtype = 'group') {
 	$permQuery = "SELECT `perm_id` FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE " .
 							 "`perm_action` = '$action' AND `page_module` = '$module'";
-	$permQueryResult = mysql_query($permQuery);
+	$permQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
-	if(!$permQueryResult || !($permQueryResultRow = mysql_fetch_assoc($permQueryResult))) {
+	if(!$permQueryResult || !($permQueryResultRow = mysqli_fetch_assoc($permQueryResult))) {
 		return false;
 	}
 
@@ -835,7 +835,7 @@ function unsetPagePermission($usergroupid, $pageid, $action, $module, $permtype 
 	$removeQuery = "DELETE FROM `".MYSQL_DATABASE_PREFIX."userpageperm` " .
 								 "WHERE `usergroup_id` = '$usergroupid' AND `page_id` = '$pageid' AND `perm_id` = '$permid' AND " .
 								 "`perm_type` = '$permtype' LIMIT 1";
-	if(mysql_query($removeQuery)) {
+	if(mysqli_query($GLOBALS["___mysqli_ston"], $removeQuery)) {
 		return true;
 	}
 	else {
@@ -858,9 +858,9 @@ function unsetPagePermission($usergroupid, $pageid, $action, $module, $permtype 
 function setPagePermission($usergroupid, $pageid, $action, $module, $permission, $permtype = 'group') {
 	$permQuery = "SELECT `perm_id` FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE " .
 								 "`perm_action` = '$action' AND `page_module` = '$module'";
-	$permQueryResult = mysql_query($permQuery);
+	$permQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
-	if(!$permQueryResult || !($permQueryResultRow = mysql_fetch_assoc($permQueryResult))) {
+	if(!$permQueryResult || !($permQueryResultRow = mysqli_fetch_assoc($permQueryResult))) {
 		return false;
 	}
 
@@ -871,9 +871,9 @@ function setPagePermission($usergroupid, $pageid, $action, $module, $permission,
 	$permQuery = "SELECT `perm_permission` FROM `".MYSQL_DATABASE_PREFIX."userpageperm` WHERE " .
 							 "`usergroup_id` = '$usergroupid' AND `page_id` = '$pageid' AND `perm_id` = '$permid' AND " .
 							 "`perm_type` = '$permtype'";
-	$permQueryResult = mysql_query($permQuery);
+	$permQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 
-	if($permQueryResultRow = mysql_fetch_assoc($permQueryResult)) {
+	if($permQueryResultRow = mysqli_fetch_assoc($permQueryResult)) {
 		if($permission != $permQueryResultRow['perm_permission']) {
 			$updateQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."userpageperm` SET `perm_permission` = '$permission' " .
 										 "WHERE `usergroup_id` = '$usergroupid' AND `page_id` = '$pageid' AND `perm_id` = '$permid' AND " .
@@ -886,7 +886,7 @@ function setPagePermission($usergroupid, $pageid, $action, $module, $permission,
 	}
 
 	if($updateQuery != '') {
-		$updateResult = mysql_query($updateQuery);
+		$updateResult = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 		if(!$updateResult) {
 			return false;
 		}
@@ -947,9 +947,9 @@ function getModifiableGroups($userId, $maxPriorityGroup, $ordering = 'asc') {
 			"(SELECT `group_priority` FROM `$groupsTable` WHERE `group_id` = $maxPriorityGroup) " .
 			"ORDER BY `$groupsTable`.`group_priority` $ordering";
 	*/
-	$groupsResult = mysql_query($groupsQuery) or die($groupsQuery . '<br />' . mysql_error());
+	$groupsResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupsQuery) or die($groupsQuery . '<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-	while($groupsRow = mysql_fetch_assoc($groupsResult)) {
+	while($groupsRow = mysqli_fetch_assoc($groupsResult)) {
 		$modifiableGroups[] = $groupsRow;
 	}
 
@@ -965,7 +965,7 @@ function getModifiableGroups($userId, $maxPriorityGroup, $ordering = 'asc') {
 function getGroupPermissions($groupids, $pagepath, $userid = -1) {
 	// For a given user, return the set of modules and actions he has at that level
 	$permQuery = "SELECT `perm_id`, `perm_action`, `page_module`, `perm_description` FROM `".MYSQL_DATABASE_PREFIX."permissionlist`";
-	$permResult = mysql_query($permQuery);
+	$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
 	if(!$permResult) {
 		return '';
 	}
@@ -973,7 +973,7 @@ function getGroupPermissions($groupids, $pagepath, $userid = -1) {
 	$permList = array();
 	$groupCount = count($groupids);
 
-	while($permResultRow = mysql_fetch_assoc($permResult)) {
+	while($permResultRow = mysqli_fetch_assoc($permResult)) {
 		$moduleName = $permResultRow['page_module'];
 		$actionName = $permResultRow['perm_action'];
 		$actionDescription = $permResultRow['perm_description'];

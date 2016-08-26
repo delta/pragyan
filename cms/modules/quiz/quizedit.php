@@ -58,12 +58,12 @@ function getQuestionTypeBox($questionType) {
 function getTableRow($tableName, $condition) {
 	$query = "SELECT * FROM `$tableName` WHERE $condition";
 	echo $query;
-	$result = mysql_query($query);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	if (!$result) {
 		displayerror('Database error. Could not retrieve information from the database.');
 		return null;
 	}
-	return mysql_fetch_assoc($result);
+	return mysqli_fetch_assoc($result);
 }
 
 function getQuizRow($quizId) {
@@ -129,12 +129,12 @@ function getQuestionEditFormFieldMap() {
 function addItems($insertQuery, $count) {
 	$idArray = array();
 	for ($i = 0; $i < $count; ++$i) {
-		$result = mysql_query($insertQuery);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery);
 		if (!$result) {
 			displayerror('Database Error. Could not create new item.');
 			return false;
 		}
-		$idArray[] = mysql_insert_id();
+		$idArray[] = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 	}
 	return $idArray;
 }
@@ -163,13 +163,13 @@ function deleteItem($tableNames, $conditions, &$affectedRows) {
 	$allOk = true;
 	for ($i = 0; $i < count($tableNames); ++$i) {
 		$deleteQuery = "DELETE FROM `{$tableNames[$i]}` WHERE $conditions";
-		if (!mysql_query($deleteQuery)) {
+		if (!mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery)) {
 			displayerror("Database Error. Could not remove information from table `{$tableNames[$i]}`.");
 			$allOk = false;
 			$affectedRows[] = false;
 		}
 		else
-			$affectedRows[] = mysql_affected_rows();
+			$affectedRows[] = mysqli_affected_rows($GLOBALS["___mysqli_ston"]);
 	}
 	return $allOk;
 }
@@ -201,24 +201,24 @@ function moveItem($itemId, $itemRank, $tableName, $idFieldName, $rankFieldName, 
 	$operator = $direction == 'up' ? '<' : '>';
 
 	$neighbourQuery = "SELECT `$idFieldName`, `$rankFieldName` FROM `$tableName` WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$rankFieldName` $operator $itemRank ORDER BY `$rankFieldName` $function LIMIT 1";
-	$neighbourResult = mysql_query($neighbourQuery);
+	$neighbourResult = mysqli_query($GLOBALS["___mysqli_ston"], $neighbourQuery);
 	if (!$neighbourResult) {
 		displayerror('Database Error. Could not fetch information about the given item.');
 		return false;
 	}
 
-	if (mysql_num_rows($neighbourResult) == 0) {
+	if (mysqli_num_rows($neighbourResult) == 0) {
 		displaywarning('The item that you tried to move ' . $direction . ' is already at the ' . ($direction == 'up' ? 'top' : 'bottom') . ' of the list.');
 		return true;
 	}
-	$neighbourRow = mysql_fetch_assoc($neighbourResult);
+	$neighbourRow = mysqli_fetch_assoc($neighbourResult);
 	$itemId2 = $neighbourRow[$idFieldName];
 	$itemRank2 = $neighbourRow[$rankFieldName];
 
 	$updateQuery1 = "UPDATE `$tableName` SET `$rankFieldName` = $itemRank2 WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$idFieldName` = '$itemId'";
 	$updateQuery2 = "UPDATE `$tableName` SET `$rankFieldName` = $itemRank WHERE " . $conditions . ($conditions == '' ? '' : ' AND') . " `$idFieldName` = '$itemId2'";
 
-	if (!mysql_query($updateQuery1) || !mysql_query($updateQuery2)) {
+	if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery1) || !mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery2)) {
 		displayerror('Database Error. Could not move the specified item.');
 		return false;
 	}
@@ -251,11 +251,11 @@ function moveQuestion($quizId, $sectionId, $questionId, $direction) {
  */
 function getItemList($tableName, $conditions = '1') {
 	$itemQuery = "SELECT * FROM `$tableName` WHERE $conditions";
-	$itemResult = mysql_query($itemQuery);
+	$itemResult = mysqli_query($GLOBALS["___mysqli_ston"], $itemQuery);
 	if (!$itemResult)
 		return false;
 	$itemList = array();
-	while ($itemList[] = mysql_fetch_assoc($itemResult));
+	while ($itemList[] = mysqli_fetch_assoc($itemResult));
 	array_pop($itemList);
 	return $itemList;
 }
@@ -277,20 +277,20 @@ function getQuestionTableHtml($quizId, $sectionId) {
 	$moveDownImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/go-down.png\" alt=\"Move Section Down\" />";	
 
 	$questionQuery = "SELECT * FROM `quiz_questions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' ORDER BY `quiz_questionrank`";
-	$questionResult = mysql_query($questionQuery);
+	$questionResult = mysqli_query($GLOBALS["___mysqli_ston"], $questionQuery);
 
 	$questionListHtml = '<table border="1"><tr><th>Question</th><th>Type</th><th></th></tr>';
-	$questionCount = mysql_num_rows($questionResult);
+	$questionCount = mysqli_num_rows($questionResult);
 	$i = 0;
-	while ($questionRow = mysql_fetch_assoc($questionResult)) {
+	while ($questionRow = mysqli_fetch_assoc($questionResult)) {
 		$questionId = $questionRow['quiz_questionid'];
 		$rightAnswer = $questionRow['quiz_rightanswer'];
 
 		$optionsText = '';
 		$optionsQuery = "SELECT * FROM `quiz_objectiveoptions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId' ORDER BY `quiz_optionrank";
-		$optionsResult = mysql_query($optionsQuery);
+		$optionsResult = mysqli_query($GLOBALS["___mysqli_ston"], $optionsQuery);
 		$j = 1;
-		while ($optionsRow = mysql_fetch_assoc($optionsResult)) {
+		while ($optionsRow = mysqli_fetch_assoc($optionsResult)) {
 			$style = '';
 			if ($j == $rightAnswer)
 				$style = 'font-weight: bold;';
@@ -404,12 +404,12 @@ function getSubmittedQuestionOptionListHtml($questionType) {
  * Otherwise inserts a new record for the current weight with the speicified marks
  */
 function setWeightMark($quizId, $weight, $positive, $negative) {
-	$result = mysql_query("SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizId' AND `question_weight` = '$weight'");
-	if(mysql_fetch_assoc($result))
-		mysql_query("UPDATE `quiz_weightmarks` SET `question_positivemarks` = '$positive', `question_negativemarks` = '$negative' WHERE `page_modulecomponentid` = '$quizId' AND `question_weight` = '$weight'");
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `question_weight` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizId' AND `question_weight` = '$weight'");
+	if(mysqli_fetch_assoc($result))
+		mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `quiz_weightmarks` SET `question_positivemarks` = '$positive', `question_negativemarks` = '$negative' WHERE `page_modulecomponentid` = '$quizId' AND `question_weight` = '$weight'");
 	else
-		mysql_query("INSERT INTO `quiz_weightmarks`(`page_modulecomponentid`, `question_weight`, `question_positivemarks`, `question_negativemarks`) VALUES ('$quizId', '$weight', '$positive', '$negative')");
-	return mysql_affected_rows();
+		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `quiz_weightmarks`(`page_modulecomponentid`, `question_weight`, `question_positivemarks`, `question_negativemarks`) VALUES ('$quizId', '$weight', '$positive', '$negative')");
+	return mysqli_affected_rows($GLOBALS["___mysqli_ston"]);
 }
 
 /**
@@ -417,23 +417,23 @@ function setWeightMark($quizId, $weight, $positive, $negative) {
  * generates form which is used to set marks for each weight used in this quiz
  */
 function weightMarksForm($quizId) {
-	$result = mysql_query("SELECT DISTINCT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId");
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT DISTINCT `quiz_questionweight` FROM `quiz_questions` WHERE `page_modulecomponentid` = $quizId");
 	
 	$ret = "<table><thead><th>Weight</th><th>Marks</th></thead>";
 	$pmarks="";
 	$nmarks="";
-	while($row = mysql_fetch_assoc($result))
+	while($row = mysqli_fetch_assoc($result))
 	{
-		$result2= mysql_query("SELECT `question_positivemarks`,`question_negativemarks` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizId' AND `question_weight`='{$row['quiz_questionweight']}'");
+		$result2= mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `question_positivemarks`,`question_negativemarks` FROM `quiz_weightmarks` WHERE `page_modulecomponentid` = '$quizId' AND `question_weight`='{$row['quiz_questionweight']}'");
 		
-		if(mysql_num_rows($result2)==0)
+		if(mysqli_num_rows($result2)==0)
 		{
 			$pmarks=$row['quiz_questionweight'];
 			$nmarks=$row['quiz_questionweight'];
 		}
 		else
 		{
-			$row2=mysql_fetch_assoc($result2);
+			$row2=mysqli_fetch_assoc($result2);
 			$pmarks=$row2["question_positivemarks"];
 			$nmarks=$row2["question_negativemarks"];
 		}
@@ -880,8 +880,8 @@ function submitQuizEditForm($quizId) {
 		return true;
 
 	$updateQuery = 'UPDATE `quiz_descriptions` SET ' . implode(', ', $updates) . " WHERE `page_modulecomponentid` = '$quizId'";
-	if (!mysql_query($updateQuery)) {
-		displayerror('Database Error. Could not save quiz form. ' . $updateQuery . ' ' . mysql_error());
+	if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
+		displayerror('Database Error. Could not save quiz form. ' . $updateQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		return false;
 	}
 
@@ -913,7 +913,7 @@ function submitSectionEditForm($quizId, $sectionId) {
 
 	$updateQuery = "UPDATE `quiz_sections` SET " . implode(', ', $updates) . " WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = '$sectionId'";
 
-	if (!mysql_query($updateQuery)) {
+	if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 		displayerror('Database Error. Could not save section details.');
 		return false;
 	}
@@ -952,11 +952,11 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 			$optionText = escape($_POST['txtOptionText' . $i]);
 			$insertQuery = "INSERT INTO `quiz_objectiveoptions`(`page_modulecomponentid`, `quiz_sectionid`, `quiz_questionid`, `quiz_optiontext`, `quiz_optionrank`) " .
 					"SELECT '$quizId', '$sectionId', '$questionId', '{$optionText}', IFNULL(MAX(`quiz_optionrank`), 0) + 1 FROM `quiz_objectiveoptions` WHERE `page_modulecomponentid` = '$quizId' AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId' LIMIT 1";
-			if (!mysql_query($insertQuery)) {
+			if (!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
 				displayerror('Database Error. Could not insert options.');
 				return false;
 			}
-			$optionId = mysql_insert_id();
+			$optionId = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 
 			if (
 				($questionType == 'sso' && isset($_POST['optOption']) && $_POST['optOption'] == $i) ||
@@ -977,8 +977,8 @@ function submitQuestionEditForm($quizId, $sectionId, $questionId) {
 	$updates[] = "`quiz_rightanswer` = '{$rightAnswer}'";
 
 	$updateQuery = "UPDATE `quiz_questions` SET " . implode(', ', $updates) . " WHERE `page_modulecomponentid` = $quizId AND `quiz_sectionid` = '$sectionId' AND `quiz_questionid` = '$questionId'";
-	if (!mysql_query($updateQuery)) {
-		displayerror('Database Error. Could not save section details. ' . $updateQuery . ' ' . mysql_error());
+	if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
+		displayerror('Database Error. Could not save section details. ' . $updateQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		return false;
 	}
 

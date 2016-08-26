@@ -63,7 +63,7 @@ function handleIconManagement() {
 			 * Save the Icon in Database - The following entries are saved
 			 * icon URL - path relative to the website installation folder on the server
 			 */
-			mysql_query("UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_image`='$iconURL' WHERE `page_id`='$target'");
+			mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `".MYSQL_DATABASE_PREFIX."pages` SET `page_image`='$iconURL' WHERE `page_id`='$target'");
 			$pageDetails = getPageInfo($target);
 			if($pageDetails['page_image'] != NULL)
 				echo "<img src=\"$rootUri/$cmsFolder/$templateFolder/common/icons/16x16/status/weather-clear.png\" /> ";

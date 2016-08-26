@@ -12,11 +12,11 @@
 	* @return array|null massiiv
 	 */
 	function sql_fetch_all($query) {
-		$result = mysql_query($query);
-		if($mysql_err = mysql_errno()) {
-			print $query.'<br>'.mysql_error();
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if($mysql_err = ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false))) {
+			print $query.'<br>'.((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		} else {
-			while($row=mysql_fetch_array($result)) {
+			while($row=mysqli_fetch_array($result)) {
 				$data[]=$row;
 			}	
 		}		
@@ -49,11 +49,11 @@
 	function get_cats($parent) {
 		global $mysql_table_prefix;
 		$query = "SELECT * FROM ".$mysql_table_prefix."categories WHERE parent_num=$parent";
-		echo mysql_error();
-		$result = mysql_query($query);
+		echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		$arr[] = $parent;
-		if (mysql_num_rows($result) <> '') {
-			while ($row = mysql_fetch_array($result)) {
+		if (mysqli_num_rows($result) <> '') {
+			while ($row = mysqli_fetch_array($result)) {
 				$id = $row[category_id];
 				$arr = add_arrays($arr, get_cats($id));
 			}

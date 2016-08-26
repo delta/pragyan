@@ -88,7 +88,7 @@ class events implements module,fileuploadable {
 				else if($_POST['type']=="notif"){
 				  $query="INSERT INTO `events_notifications` VALUES (NULL, '{$_POST['content']}', CURRENT_TIMESTAMP);";
 				  //echo NOW();
-				  mysql_query($query);
+				  mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				  //				  header('Location: ./+eventsHead');
 				  //
 				}
@@ -220,15 +220,15 @@ public function actionQa(){
     $eventAdd.="<th>AMOUNT REFUNDED AT HOSPI</th>";
     $eventAdd.="<th>No. of days of stay</th></tr>";
  $prStatus="SELECT * FROM `prhospi_pr_status` WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
-$prQuery=mysql_query($prStatus) or displayerror(mysql_error());
-$prRows=mysql_fetch_array($prQuery);
+$prQuery=mysqli_query($GLOBALS["___mysqli_ston"], $prStatus) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$prRows=mysqli_fetch_array($prQuery);
 $checkintime_pr=$prRows['hospi_checkin_time'];
 $checkoutime_pr=$prRows['hospi_checkpout_time'];
 $amount_recieved_pr=$prRows['amount_recieved'];
 $amount_refunded_pr=$prRows['amount_refunded'];
  $HospiStatus="SELECT * FROM `prhospi_accomodation_status` WHERE `user_id`='{$userId}' and `page_modulecomponentid`={$moduleComponentId}";
-$HospiQuery=mysql_query($HospiStatus) or displayerror(mysql_error());
-$HospiRows=mysql_fetch_array($HospiQuery);
+$HospiQuery=mysqli_query($GLOBALS["___mysqli_ston"], $HospiStatus) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$HospiRows=mysqli_fetch_array($HospiQuery);
 $checkintime_hospi=$HospiRows['hospi_actual_checkin'];
 $checkoutime_hospi=$HospiRows['hospi_actual_checkout'];
 $amount_recieved_hospi=$HospiRows['hospi_cash_recieved'];
@@ -246,8 +246,8 @@ $eventAdd.="<td>".$amount_refunded_hospi."</td>";
 $eventAdd.="<td>{$no_of_days}</td>";
     $eventAdd.="</tr></table>";
     $hostelQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_room_id`={$hospi_room_id} and `page_modulecomponentid`={$moduleComponentId}";
-    $hostelQueryResult = mysql_query($hostelQuery) or displayerror(mysql_error());
-    $hostelDetails=mysql_fetch_array($hostelQueryResult);
+    $hostelQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $hostelQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $hostelDetails=mysqli_fetch_array($hostelQueryResult);
     $eventAdd.="<h2>Hostel Details</h2>";
     $eventAdd.="<table>";
     $eventAdd.="<th>HOSTEL</th>";
@@ -267,18 +267,18 @@ $eventAdd.="<td>{$no_of_days}</td>";
     $eventAdd.="<th>PRIZE MONEY</th>";
 
 $userDetails = "SELECT * FROM `events_result`  WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
-    $userDetailsRows= mysql_query($userDetails) or displayerror(mysql_error());
-while($row=mysql_fetch_array($userDetailsRows))
+    $userDetailsRows= mysqli_query($GLOBALS["___mysqli_ston"], $userDetails) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+while($row=mysqli_fetch_array($userDetailsRows))
     {
     $eventAdd.="<tr>";
     $eventDetails="SELECT * FROM `events_details` WHERE `event_id`='{$row['event_id']}'";
-    $eventResults=mysql_query($eventDetails)  or displayerror(mysql_error());
-    $eventsResults=mysql_fetch_array($eventResults);
+    $eventResults=mysqli_query($GLOBALS["___mysqli_ston"], $eventDetails)  or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $eventsResults=mysqli_fetch_array($eventResults);
   $eventAdd.="<td>".$eventsResults['event_name']."</td>";
     $eventAdd.="<td>".$row['user_rank']."</td>";
     $userPrizeDetails = "SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' ";
-    $userPrizeQuery= mysql_query($userPrizeDetails) or displayerror(mysql_error());
-   $userPrizeRows=mysql_fetch_array($userPrizeQuery);
+    $userPrizeQuery= mysqli_query($GLOBALS["___mysqli_ston"], $userPrizeDetails) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+   $userPrizeRows=mysqli_fetch_array($userPrizeQuery);
     $eventAdd.="<td>".$userPrizeRows['prize_money']."</td>";
  //   $eventAdd.="<td>".$eventsResults['
     
@@ -395,15 +395,15 @@ FORM;
     $eventAdd.="<th>AMOUNT REFUNDED AT HOSPI</th>";
     $eventAdd.="<th>No. of days of stay</th></tr>";
  $prStatus="SELECT * FROM `prhospi_pr_status` WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
-$prQuery=mysql_query($prStatus) or displayerror(mysql_error());
-$prRows=mysql_fetch_array($prQuery);
+$prQuery=mysqli_query($GLOBALS["___mysqli_ston"], $prStatus) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$prRows=mysqli_fetch_array($prQuery);
 $checkintime_pr=$prRows['hospi_checkin_time'];
 $checkoutime_pr=$prRows['hospi_checkpout_time'];
 $amount_recieved_pr=$prRows['amount_recieved'];
 $amount_refunded_pr=$prRows['amount_refunded'];
  $HospiStatus="SELECT * FROM `prhospi_accomodation_status` WHERE `user_id`='{$userId}' and `page_modulecomponentid`={$moduleComponentId}";
-$HospiQuery=mysql_query($HospiStatus) or displayerror(mysql_error());
-$HospiRows=mysql_fetch_array($HospiQuery);
+$HospiQuery=mysqli_query($GLOBALS["___mysqli_ston"], $HospiStatus) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$HospiRows=mysqli_fetch_array($HospiQuery);
 $checkintime_hospi=$HospiRows['hospi_actual_checkin'];
 $checkoutime_hospi=$HospiRows['hospi_actual_checkout'];
 $amount_recieved_hospi=$HospiRows['hospi_cash_recieved'];
@@ -421,8 +421,8 @@ $eventAdd.="<td>".$amount_refunded_hospi."</td>";
 $eventAdd.="<td>{$no_of_days}</td>";
     $eventAdd.="</tr></table>";
     $hostelQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_room_id`={$hospi_room_id} and `page_modulecomponentid`={$moduleComponentId}";
-    $hostelQueryResult = mysql_query($hostelQuery) or displayerror(mysql_error());
-    $hostelDetails=mysql_fetch_array($hostelQueryResult);
+    $hostelQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $hostelQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $hostelDetails=mysqli_fetch_array($hostelQueryResult);
     $eventAdd.="<h2>Hostel Details</h2>";
     $eventAdd.="<table>";
     $eventAdd.="<th>HOSTEL</th>";
@@ -444,30 +444,30 @@ $eventAdd.="<td>{$no_of_days}</td>";
    $eventAdd.="<th>TEAMMATES </th>";
 
 $userDetails = "SELECT * FROM `events_result`  WHERE `user_id`='{$userId}' and `page_moduleComponentId`={$moduleComponentId}";
-    $userDetailsRows= mysql_query($userDetails) or displayerror(mysql_error());
- while($row=mysql_fetch_array($userDetailsRows))
+    $userDetailsRows= mysqli_query($GLOBALS["___mysqli_ston"], $userDetails) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+ while($row=mysqli_fetch_array($userDetailsRows))
 
     {
     $eventAdd.="<tr>";
     $eventDetails="SELECT * FROM `events_details` WHERE `event_id`='{$row['event_id']}'";
-    $eventResults=mysql_query($eventDetails)  or displayerror(mysql_error());
-    $eventsResults=mysql_fetch_array($eventResults);
+    $eventResults=mysqli_query($GLOBALS["___mysqli_ston"], $eventDetails)  or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    $eventsResults=mysqli_fetch_array($eventResults);
   $eventAdd.="<td>".$eventsResults['event_name']."</td>";
     $eventAdd.="<td>".$row['user_rank']."</td>";
     $userPrizeDetails = "SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' ";
-    $userPrizeQuery= mysql_query($userPrizeDetails) or displayerror(mysql_error());
-   $userPrizeRows=mysql_fetch_array($userPrizeQuery);
+    $userPrizeQuery= mysqli_query($GLOBALS["___mysqli_ston"], $userPrizeDetails) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+   $userPrizeRows=mysqli_fetch_array($userPrizeQuery);
     $eventAdd.="<td>".$userPrizeRows['prize_money']."</td>";
 
     $teamMateDetails="SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' and `event_id` ='{$row['event_id']}'";
    displayerror($teamMateDetails);
-   $teamMateQuery=mysql_query($teamMateDetails) or displayerror(mysql_error);
-   $teamMateDetails=mysql_fetch_assoc($teamMateQuery);
+   $teamMateQuery=mysqli_query($GLOBALS["___mysqli_ston"], $teamMateDetails) or displayerror(mysql_error);
+   $teamMateDetails=mysqli_fetch_assoc($teamMateQuery);
   $teamMates=$teamMateDetails['user_team_id'];
  $teamMateDetails="SELECT * FROM `events_participants` WHERE `user_team_id`=$teamMates  and `event_id` ='{$row['event_id']}'";
- $teamMateQuery=mysql_query($teamMateDetails) or displayerror(mysql_error);
+ $teamMateQuery=mysqli_query($GLOBALS["___mysqli_ston"], $teamMateDetails) or displayerror(mysql_error);
  $eventAdd.="<td>";
-while($newRow=mysql_fetch_array($teamMateQuery))
+while($newRow=mysqli_fetch_array($teamMateQuery))
  {
  $eventAdd.=$newRow['user_pid']."  ";
  }  

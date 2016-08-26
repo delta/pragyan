@@ -60,14 +60,14 @@ function processUploaded($type) {
 			$colName = "template_name";
 			$tableName = "templates";
 		}
-		if(mysql_fetch_array(mysql_query("SELECT `{$colName}` FROM `".MYSQL_DATABASE_PREFIX."{$tableName}` WHERE `{$colName}` = '{$moduleName}'"))) {
+		if(mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `{$colName}` FROM `".MYSQL_DATABASE_PREFIX."{$tableName}` WHERE `{$colName}` = '{$moduleName}'"))) {
 			displayerror("A {$type} with name '{$moduleName}' already exist, Installation aborted");
 			delDir($extractedPath);
 			unlink($zipFile);
 			return -1;
 		}
-		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "tempuploads`(`filePath`,`info`) VALUES('{$zipFile}','{$extractedPath};{$moduleActualPath};{$moduleName}')");
-		$result = mysql_fetch_assoc(mysql_query("SELECT `id` FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `filePath` = '{$zipFile}'"));
+		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "tempuploads`(`filePath`,`info`) VALUES('{$zipFile}','{$extractedPath};{$moduleActualPath};{$moduleName}')");
+		$result = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `id` FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `filePath` = '{$zipFile}'"));
 		return $result['id'];
 	}
 	
@@ -80,7 +80,7 @@ function processUploaded($type) {
 
 function finalizeInstallation($uploadId,$type) {
 	global $sourceFolder, $widgetFolder, $templateFolder;
-	$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
+	$result = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
 	if($result != NULL) {
 		$zipFile = $result['filePath'];
 		$temp = explode(";",$result['info']);
@@ -98,7 +98,7 @@ function finalizeInstallation($uploadId,$type) {
 		displayerror("Your {$type} is still not compatible with Pragyan CMS. Please fix the reported issues during installation.");
 		delDir($extractedPath);
 		unlink($zipFile);
-		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
+		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		return "";
 	}
 	
@@ -113,12 +113,12 @@ function finalizeInstallation($uploadId,$type) {
  		$tableName = "templates";
  	}
  	
- 	if(mysql_fetch_array(mysql_query("SELECT `{$colName}` FROM `" . MYSQL_DATABASE_PREFIX . "{$tableName}` WHERE `{$colName}` = '{$moduleName}'"))) 
+ 	if(mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `{$colName}` FROM `" . MYSQL_DATABASE_PREFIX . "{$tableName}` WHERE `{$colName}` = '{$moduleName}'"))) 
 	{
 		displayerror("{$type} Installation failed : {$type} already exist");
 		delDir($extractedPath);
 		unlink($zipFile);
-		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
+		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		return "";
 	}
 
@@ -152,13 +152,13 @@ function finalizeInstallation($uploadId,$type) {
 		$singlequeries = explode(";\n",$query);
 		foreach ($singlequeries as $singlequery) {
 			if (trim($singlequery)!="") {
-				$result1 = mysql_query($singlequery);
+				$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $singlequery);
 				if (!$result1) {
-		  			displayerror("<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to execute query. " . mysql_error());
+		  			displayerror("<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to execute query. " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				}
 			}
 		}
-		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "modules`(`module_name`,`module_tables`) VALUES('{$moduleName}','" . escape(file_get_contents($moduleActualPath . "moduleTables.txt")) . "')") or displayerror(mysql_error());
+		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "modules`(`module_name`,`module_tables`) VALUES('{$moduleName}','" . escape(file_get_contents($moduleActualPath . "moduleTables.txt")) . "')") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$notice = "";
 		if(file_exists($moduleActualPath . "moduleNotice.txt"))
 			$notice = ", New module samoduleTablesys:<br>" . file_get_contents($moduleActualPath . "moduleNotice.txt");
@@ -179,19 +179,19 @@ function finalizeInstallation($uploadId,$type) {
  			$widgetAuthor = escape($content[4]);
  		} else
  			displaywarning("Widget information could not be read properly");
- 		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "widgetsinfo`(`widget_name`,`widget_classname`,`widget_description`,`widget_version`,`widget_author`,`widget_foldername`) VALUES ('{$widgetName}','{$widgetClassName}','{$widgetDescription}','{$widgetVersion}','{$widgetAuthor}','{$widgetFolder}')");
- 		if(!mysql_affected_rows()) {
+ 		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "widgetsinfo`(`widget_name`,`widget_classname`,`widget_description`,`widget_version`,`widget_author`,`widget_foldername`) VALUES ('{$widgetName}','{$widgetClassName}','{$widgetDescription}','{$widgetVersion}','{$widgetAuthor}','{$widgetFolder}')");
+ 		if(!mysqli_affected_rows($GLOBALS["___mysqli_ston"])) {
  			displayerror("Installation error, try again later");
  			delDir($sourceFolder . "/widgets/" . $moduleName);
  		}
 	} else if($type=="Template") {
-		mysql_query("INSERT INTO `" . MYSQL_DATABASE_PREFIX . "templates`(`template_name`) VALUES('{$moduleName}')");
-		if(!mysql_affected_rows())
+		mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "templates`(`template_name`) VALUES('{$moduleName}')");
+		if(!mysqli_affected_rows($GLOBALS["___mysqli_ston"]))
 			displayerrro("Problem including uploaded template to database, try <a href='./+admin&subaction=reloadtemplates'>reload templates</a>");
 	}
 	delDir($extractedPath);
 	unlink($zipFile);
-	mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
+	mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	displayinfo("{$type} installation complete" . $notice);
 	return "";
 }
@@ -211,8 +211,8 @@ function handleModuleManagement() {
 		}
 		$toDelete = escape($_POST['Module']);
 		$query = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '{$toDelete}' LIMIT 10";
-		$result = mysql_query($query) or displayerror(mysql_error());
-		if(mysql_num_rows($result)==0||isset($_POST['confirm']))
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		if(mysqli_num_rows($result)==0||isset($_POST['confirm']))
 			if(deleteModule($toDelete)) {
 				displayinfo("Module ".safe_html($_POST['Module'])." uninstalled!");
 				return "";
@@ -222,11 +222,11 @@ function handleModuleManagement() {
 			}
 		if(isset($_POST['confirm'])) {
 			$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '" . $toDelete . "'";
-			mysql_query($query) or displayerror(mysql_error());
+			mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		}
 		
 		$pageList = "";
-		while($row = mysql_fetch_assoc($result))
+		while($row = mysqli_fetch_assoc($result))
 			$pageList .= "/home" . getPagePath($row['page_id']) . "<br>";
 		
 		$modulename = safe_html($_POST['Module']);
@@ -250,7 +250,7 @@ RET;
 	else if(isset($_GET['subsubaction']) && $_GET['subsubaction'] == 'cancel') 
 	{
 		$uploadId = escape($_POST['id']);
-		$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
+		$result = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
 		if($result != NULL) {
 			$zipFile = $result['filePath'];
 			$temp = explode(";",$result['info']);
@@ -260,28 +260,28 @@ RET;
 		}
 		delDir($extractedPath);
 		unlink($zipFile);
-		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
+		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		return "";
 	}
 }
 
 function deleteModule($module) {
-	$result = mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "modules` WHERE `module_name` = '" . $module . "'") or displayerror(mysql_error());
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "modules` WHERE `module_name` = '" . $module . "'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	global $sourceFolder;
-	if($row = mysql_fetch_array($result)) {
+	if($row = mysqli_fetch_array($result)) {
 		$tables = preg_split("/[\s,;]+/",$row['module_tables']);
 		$i = 1;
 		foreach($tables as $table)
 			if($table != "")
-				mysql_query("DROP TABLE `{$table}`") or displayerror(mysql_error());
-		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "modules` WHERE `module_name` = '" . $module . "'") or displayerror(mysql_error());
-		$result = mysql_query("SELECT `perm_id` FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module` = '{$module}'") or displayerror(mysql_error());
+				mysqli_query($GLOBALS["___mysqli_ston"], "DROP TABLE `{$table}`") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "modules` WHERE `module_name` = '" . $module . "'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `perm_id` FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module` = '{$module}'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$perms = "";
-		while($row = mysql_fetch_assoc($result))
+		while($row = mysqli_fetch_assoc($result))
 			$perms .= $row['perm_id'] . ",";
 		$perms = rtrim($perms, ",");
-		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_id` IN ({$perms})") or displayerror(mysql_error());
-		mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module` = '" . $module . "'") or displayerror(mysql_error());
+		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_id` IN ({$perms})") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module` = '" . $module . "'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$moduleDir = $sourceFolder . "/modules/" . $module . "/";
 		if(file_exists($moduleDir))
 			delDir($moduleDir);
@@ -303,7 +303,7 @@ function installModuleFiles($from, $to, $module) {
 
 function installModule($uploadId,$type) {
 	global $sourceFolder;
-	$result = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
+	$result = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `" . MYSQL_DATABASE_PREFIX. "tempuploads` WHERE `id` = '{$uploadId}'"));
 	if($result != NULL) {
 		$zipFile = $result['filePath'];
 		$temp = explode(";",$result['info']);
@@ -324,7 +324,7 @@ function installModule($uploadId,$type) {
 	<b>Installation cannot proceed for the above mentioned issues, fix them and <a href='./+admin&subaction=widgets&subsubaction=installwidget'>try again</a>.</b>";
 	delDir($extractedPath);
 	unlink($zipFile);
-	mysql_query("DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(mysql_error());
+	mysqli_query($GLOBALS["___mysqli_ston"], "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "tempuploads` WHERE `id` = '{$uploadId}'") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	return $issues;
 }
 

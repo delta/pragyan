@@ -35,12 +35,12 @@ class scrolltext implements module{
 	public function actionScrollview($text="") {
 			if($text=="") {
 				$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid=". $this->moduleComponentId;
-				$result = mysql_query($query);
-				$row = mysql_fetch_assoc($result);
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				$row = mysqli_fetch_assoc($result);
 				$articleid=$row['article_modulecomponentid'];
 				$query = "SELECT article_content,article_lastupdated FROM article_content WHERE page_modulecomponentid=" . $articleid;
-				$result = mysql_query($query);
-				if($row = mysql_fetch_assoc($result)) {
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				if($row = mysqli_fetch_assoc($result)) {
 					$text = $row['article_content'];
 					global $PAGELASTUPDATED;
 					$PAGELASTUPDATED = $row['article_lastupdated'];
@@ -62,16 +62,16 @@ class scrolltext implements module{
 public function actionEdit(){
 
 			$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid=". $this->moduleComponentId;
-			$result = mysql_query($query);
-			$row = mysql_fetch_assoc($result);
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$row = mysqli_fetch_assoc($result);
 			$articleId=$row['article_modulecomponentid'];
 			return $this->scrollarticle->getHtml($this->userId,$articleId,"edit");
 }
 public function actionView(){
 
 			$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid=". $this->moduleComponentId;
-			$result = mysql_query($query);
-			$row = mysql_fetch_assoc($result);
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$row = mysqli_fetch_assoc($result);
 			$articleId=$row['article_modulecomponentid'];
 			return $this->scrollarticle->getHtml($this->userId,$articleId,"view");
 }
@@ -82,19 +82,19 @@ public function createModule($scrollId) {
 		$articleId = createInstance('article');
 		$article->createModule($articleId);
 		$query=  "INSERT INTO `scrolltext` (`page_modulecomponentid` ,`article_modulecomponentid`)VALUES ('$scrollId','$articleId')";
-		$result = mysql_query($query) or die(mysql_error());
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		return true;
 	}
 
 public function deleteModule($moduleComponentId) {
 		$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid=". $moduleComponentId;
-		$result = mysql_query($query);
-		$row = mysql_fetch_assoc($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$row = mysqli_fetch_assoc($result);
 		$articleId=$row['article_modulecomponentid'];
 
 		$query = "DELETE FROM `article_content` WHERE `page_modulecomponentid`=$articleId";
-		$result = mysql_query($query);
-		if ((mysql_affected_rows()) >= 1)
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if ((mysqli_affected_rows($GLOBALS["___mysqli_ston"])) >= 1)
 			return true;
 		else
 			return false;
@@ -106,24 +106,24 @@ public function deleteModule($moduleComponentId) {
 		$articleId = createInstance('article');
 		$article->createModule($articleId);
 		$query=  "INSERT INTO `scrolltext` (`page_modulecomponentid` ,`article_modulecomponentid`)VALUES ('$newId','$articleId')";
-		$result = mysql_query($query) or die(mysql_error());
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		
 		$query = "SELECT article_modulecomponentid FROM scrolltext WHERE page_modulecomponentid='{$moduleComponentId}'";
-		$result = mysql_query($query);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		if(!$result)
 			return false;
-		$row = mysql_fetch_assoc($result);
+		$row = mysqli_fetch_assoc($result);
 		$fromId=$row['article_modulecomponentid'];
 
 		$query = "SELECT * FROM `article_content` WHERE `page_modulecomponentid`='$fromId'";
-		$result = mysql_query($query);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		if(!$result)
 			return false;
 		
-		$content = mysql_fetch_assoc($result);
+		$content = mysqli_fetch_assoc($result);
 		
-		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$articleId', '".mysql_escape_string($content['article_content'])."')";
-		mysql_query($query) or displayerror(mysql_error()."scrolltext.lib L:104");
+		$query = "INSERT INTO `article_content` (`page_modulecomponentid` ,`article_content`)VALUES ('$articleId', '".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $content['article_content']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."')";
+		mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."scrolltext.lib L:104");
 		return true;
 	}
 	public function moduleAdmin(){

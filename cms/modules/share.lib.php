@@ -118,8 +118,8 @@ RET;
 		displayerror("No File Uploaded");
 	else{
 	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$result = mysql_query($query) or displayerror("Error in view");
-	$result = mysql_fetch_array($result) or displayerror("Error in view");
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror("Error in view");
+	$result = mysqli_fetch_array($result) or displayerror("Error in view");
 	$maxFileSizeInBytes = $result[3];
 	if(trim($result[2])=="") $uploadableFileTypes = false;
 		else {
@@ -135,8 +135,8 @@ RET;
 				$file_desc = safe_html($_POST['file_desc']);
 
 				$uploadQuery = "INSERT INTO `share_files` (`page_modulecomponentid`, `upload_filename`, `file_name`, `file_desc`, `upload_userid`) VALUES('$module_ComponentId', '$uploadFileName[0]','$file_name','$file_desc','{$this->userId}')";
-				$uploadResult = mysql_query($uploadQuery);
-		if(mysql_affected_rows()>0)
+				$uploadResult = mysqli_query($GLOBALS["___mysqli_ston"], $uploadQuery);
+		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
 			displayinfo("Successfully Uploaded ".$file_name);
 		else
 			displayerror("File Not Uploaded");
@@ -146,13 +146,13 @@ RET;
 	}
 	}
 	if(isset($_POST['btnSubmit'])) {
-			$id = mysql_fetch_array(mysql_query("SELECT MAX(`comment_id`) AS MAX FROM `share_comments`"));
+			$id = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT MAX(`comment_id`) AS MAX FROM `share_comments`"));
 			$id = $id['MAX'] + 1;
 			$user = $this->userId;
 			$comment = escape(safe_html($_POST['comment']));
 			$file_id = escape($_POST['file_id']);
-			mysql_query("INSERT INTO `share_comments`(`comment_id`,`file_id`,`page_modulecomponentid`,`comment`,`userid`) VALUES('$id','$file_id','{$module_ComponentId}','$comment','$user')") or die(mysql_error());
-			if(mysql_affected_rows())
+			mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `share_comments`(`comment_id`,`file_id`,`page_modulecomponentid`,`comment`,`userid`) VALUES('$id','$file_id','{$module_ComponentId}','$comment','$user')") or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]))
 				displayinfo("Post successful");
 			else
 				displayerror("Error in posting comment");
@@ -161,32 +161,32 @@ RET;
 	{
 		$file_id = escape($_GET['file']);
 		$query = "SELECT * FROM `share_files` WHERE `file_id` = '$file_id'";
-		$result = mysql_query($query);
-		if(mysql_num_rows($result)<0)
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if(mysqli_num_rows($result)<0)
 			{
 			displayerror("Sorry!!! No such file found");
 			}
 		else
 			{
-			$result = mysql_fetch_array($result);
+			$result = mysqli_fetch_array($result);
 			$username = getUserFullName($this->userId);
 			$content = "<script type=\"text/javascript\" languauge=\"javascript\" src=\"$temp/textarea_resize.js\"></script>";
 			$content .= "<div id='file'><b>{$result[3]}</b><br/>{$result[4]}<br /><br />Uploaded by: $username<br /><br /><a href=\"./{$result[2]}\" target='_blank'><input type='submit' value='Download'></a></div> ";
 			$comment_query = "SELECT * FROM `share_comments` WHERE `page_modulecomponentid` = '$module_ComponentId' AND `file_id` = '{$result[0]}'";
-			$comment_result = mysql_query($comment_query);
-			if(mysql_num_rows($comment_result)>0)
+			$comment_result = mysqli_query($GLOBALS["___mysqli_ston"], $comment_query);
+			if(mysqli_num_rows($comment_result)>0)
 			$content .= "<fieldset><legend>Comments</legend>";
-			while($row = mysql_fetch_array($comment_result))
+			while($row = mysqli_fetch_array($comment_result))
 				$content .= $this->renderComment($row['comment_id'],$row['userid'],$row['comment_datetime'],$row['comment'],$file_id);
-			if(mysql_num_rows($comment_result)>0)
+			if(mysqli_num_rows($comment_result)>0)
 				$content .= "</fieldset>";
 			$content .= $this->commentBox($file_id);
 			return $content;
 			}	
 	}
 	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$result = mysql_query($query) or displayerror(mysql_error()." Error in share.lib.php L:187");
-	$result = mysql_fetch_array($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." Error in share.lib.php L:187");
+	$result = mysqli_fetch_array($result);
 	$file_types = preg_replace('/\|/',', ',$result['file_type']);
 	$upload_form =<<<FORM
 <script type="text/javascript" language="javascript">
@@ -218,13 +218,13 @@ FORM;
 	$content = "<table width=100%><tr><td colspan='2'><b>{$result['page_desc']}</b><br /></td></tr><tr><td width=150px>Uploadable File Typles </td><td>{$file_types}</td></tr><tr><td>Max. file size </td><td> {$result['maxfile_size']} bytes</td></tr></table>";
 	$content .= $upload_form;
 	$content_query = "SELECT * FROM `share_files` WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$content_result = mysql_query($content_query) or displayerror("Error is retriving info from database. Please try later..");
-	if(mysql_num_rows($content_result)<=0)
+	$content_result = mysqli_query($GLOBALS["___mysqli_ston"], $content_query) or displayerror("Error is retriving info from database. Please try later..");
+	if(mysqli_num_rows($content_result)<=0)
 		$content .= "No Files found..";
 	else{
 
 		$content .= "<div id='file_container'>";
-		while($row = mysql_fetch_array($content_result))
+		while($row = mysqli_fetch_array($content_result))
 			$content .= $this->renderField($row);		
 		$content .= "</div>";
 	}
@@ -239,14 +239,14 @@ FORM;
 	{
 		$file_id = escape($_GET['delfile']);
 		$query = "SELECT * FROM `share_files` WHERE `file_id` = '$file_id'";
-		$result = mysql_query($query);
-		$result = mysql_fetch_array($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$result = mysqli_fetch_array($result);
 		if(deleteFile($module_ComponentId,"share",$result['upload_filename']))
 			{
 			$del_query = "DELETE FROM `share_files` WHERE `file_id` = '$file_id'";
-			$del_result = mysql_query($del_query) or displayerror(mysql_error()."Error in share.lib.php L:240");
+			$del_result = mysqli_query($GLOBALS["___mysqli_ston"], $del_query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."Error in share.lib.php L:240");
 			$del_comment = "DELETE FROM `share_comments` WHERE `file_id` = '$file_id'";
-			$del_comment_result = mysql_query($del_comment) or displayerror(mysql_error()."error in  L:242");
+			$del_comment_result = mysqli_query($GLOBALS["___mysqli_ston"], $del_comment) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."error in  L:242");
 			if(!$del_result||!$del_comment_result)
 				displayerror("Some data has not been deleted properly!!!");
 			else
@@ -259,8 +259,8 @@ FORM;
 	{
 		$commentid = escape($_GET['delComment']);
 		$query = "DELETE FROM `share_comments` WHERE `comment_id` = $commentid";
-		$result = mysql_query($query);
-		if(mysql_affected_rows()<0)
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])<0)
 			displayerror("Error in deleting the comment");
 		else
 			displayinfo("Succesfully deleted comment");	
@@ -269,40 +269,40 @@ FORM;
 	{
 		$file_id = escape($_GET['file']);
 		$query = "SELECT * FROM `share_files` WHERE `file_id` = '$file_id'";
-		$result = mysql_query($query);
-		if(mysql_num_rows($result)<0)
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if(mysqli_num_rows($result)<0)
 			{
 			displayerror("Sorry!!! No such file found");
 			}
 		else
 			{
-			$result = mysql_fetch_array($result);
+			$result = mysqli_fetch_array($result);
 			$username = getUserFullName($this->userId);
 			$content = "<div id='file'><b>{$result[3]}</b><br/>{$result[4]}<br /><br />Uploaded by: $username<br /><br /><a href=\"./{$result[2]}\" target='_blank'><input type='submit' value='Download'></a></div> ";
 			$comment_query = "SELECT * FROM `share_comments` WHERE `page_modulecomponentid` = '$module_ComponentId' AND `file_id` = '{$result[0]}'";
-			$comment_result = mysql_query($comment_query) or die(mysql_error());
-			if(mysql_num_rows($comment_result)>0)
+			$comment_result = mysqli_query($GLOBALS["___mysqli_ston"], $comment_query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			if(mysqli_num_rows($comment_result)>0)
 			$content .= "<fieldset><legend>Comments</legend>";
-			while($row = mysql_fetch_array($comment_result))
+			while($row = mysqli_fetch_array($comment_result))
 				$content .= $this->renderComment($row['comment_id'],$row['userid'],$row['comment_datetime'],$row['comment'],$file_id,'moderate');
-			if(mysql_num_rows($comment_result)>0)
+			if(mysqli_num_rows($comment_result)>0)
 				$content .= "</fieldset>";
 			return $content;
 			}	
 	}
 	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$result = mysql_query($query) or displayerror(mysql_error()." Error in share.lib.php L:187");
-	$result = mysql_fetch_array($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." Error in share.lib.php L:187");
+	$result = mysqli_fetch_array($result);
 	$file_types = preg_replace('/\|/',', ',$result['file_type']);
 	$content = "<table width=100%><tr><td colspan='2'><b>{$result['page_desc']}</b><br /></td></tr><tr><td width=150px>Uploadable File Typles </td><td>{$file_types}</td></tr><tr><td>Max. file size </td><td> {$result['maxfile_size']} bytes</td></tr></table>";
 	$content_query = "SELECT * FROM `share_files` WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$content_result = mysql_query($content_query) or displayerror("Error is retriving info from database. Please try later..");
-	if(mysql_num_rows($content_result)<=0)
+	$content_result = mysqli_query($GLOBALS["___mysqli_ston"], $content_query) or displayerror("Error is retriving info from database. Please try later..");
+	if(mysqli_num_rows($content_result)<=0)
 		$content .= "No Files found..";
 	else{
 
 		$content .= "<div id='file_container'>";
-		while($row = mysql_fetch_array($content_result))
+		while($row = mysqli_fetch_array($content_result))
 			$content .= $this->renderField($row,"moderate");		
 		$content .= "</div>";
 	}
@@ -321,16 +321,16 @@ FORM;
 	else {	
 	$max_size = escape($_POST['file_size']);
 	$query = "UPDATE `share` SET `page_desc` = '$desc', `file_type` = '$ftype', `maxfile_size` = '$max_size' WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$result = mysql_query($query);
-	if(mysql_affected_rows()<0)
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])<0)
 		displayerror("Error in updating the database. Please Try again later");
 	else
 		displayinfo("All settings updated successfully");
 		}
 	}
 	$query = "SELECT * FROM `share` WHERE `page_modulecomponentid` = '$module_ComponentId'";
-	$result = mysql_query($query) or displayerror(mysql_error()." Error in share.lib.php L:322");
-	$result = mysql_fetch_array($result) or displayerror(mysql_error()."Error in share.lib.php L:323");
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." Error in share.lib.php L:322");
+	$result = mysqli_fetch_array($result) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."Error in share.lib.php L:323");
 	$edit_form =<<<EDIT
 <script type="text/javascript" language="javascript">
 function checkForm()
@@ -369,7 +369,7 @@ EDIT;
 	}
 	public function createModule($compId) {
 		$query = "INSERT INTO `share` (`page_modulecomponentid`,`page_desc`,`file_type`,`maxfile_size` )VALUES ('$compId','Coming Soon!!!','doc|docx','2000000')";
-		$result = mysql_query($query) or die(mysql_error() . " share.lib.php L:372");
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " share.lib.php L:372");
 	}
 
 	public function deleteModule($moduleComponentId) {

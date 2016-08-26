@@ -24,14 +24,14 @@ require_once("smarttable.class.php");
 
 /** To connect to the database*/
 function connect() {
-	$dbase = mysql_connect(MYSQL_SERVER, MYSQL_USERNAME, MYSQL_PASSWORD) or die("Could not connect to server");
-	mysql_select_db(MYSQL_DATABASE) or die("Could not connect to database");
+	$dbase = ($GLOBALS["___mysqli_ston"] = mysqli_connect(MYSQL_SERVER,  MYSQL_USERNAME,  MYSQL_PASSWORD)) or die("Could not connect to server");
+	((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . constant('MYSQL_DATABASE'))) or die("Could not connect to database");
 	return $dbase;
 }
 
 /** To disconnect from the database once query is over*/
 function disconnect() {
-	mysql_close();
+	((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 }
 function prettyurl($str) {
 	global $urlRequestRoot;
@@ -115,7 +115,7 @@ function convertUri($x) {
 function escape($query)
 {
 	if (!get_magic_quotes_gpc()) {
-	    $xquery = mysql_real_escape_string($query);
+	    $xquery = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $query) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
 	    /// If there's no mysql connection, then the xquery will be false
 	    if($xquery===false)
 	    {
@@ -210,8 +210,8 @@ function reloadTemplates()
 		if(is_dir($sourceFolder.'/'.$templateFolder.'/'.$tdir) && $tdir[0]!='.' && $tdir!="common")
 		{
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."templates` (`template_name`) VALUES ('$tdir')";
-			mysql_query($query);
-			if(mysql_affected_rows())
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]))
 				$res.="<tr><td>$tdir</td><td><b>Found new template! Installed.</b></td></tr>";
 			else $res.="<tr><td>$tdir</td><td>OK</td></tr>";
 			$temparr[]=$tdir;
@@ -220,8 +220,8 @@ function reloadTemplates()
 	}
 	$templist=join("','",$temparr);	
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."templates` WHERE `template_name` NOT IN ('$templist')";
-	mysql_query($query);
-	if($delc=mysql_affected_rows()>0)
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if($delc=mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
 		$res.="<tr><td colspan=2>$delc template(s) removed from database</td></tr>";
 	return $res."</table>";
 }
@@ -241,8 +241,8 @@ function reloadModules()
 		if($ext==".lib.php")
 		{
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."modules` (`module_name`) VALUES ('$module')";
-			mysql_query($query);
-			if(mysql_affected_rows())
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]))
 				$res.="<tr><td>$module</td><td><b>Found new module! Installed.</b></td></tr>";
 			else $res.="<tr><td>$module</td><td>OK</td></tr>";
 			$modarr[]=$module;
@@ -251,8 +251,8 @@ function reloadModules()
 	}
 	$modlist=join("','",$modarr);	
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` NOT IN ('$modlist')";
-	mysql_query($query);
-	if($delc=mysql_affected_rows()>0)
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if($delc=mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
 		$res.="<tr><td colspan=2>$delc module(s) removed from database</td></tr>";
 	return $res."</table>";
 }
@@ -263,9 +263,9 @@ function reloadModules()
 function getGlobalSettings()
 {
 	$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."global`";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$globals=array();
-	while($row=mysql_fetch_array($result))
+	while($row=mysqli_fetch_array($result))
 		$globals[$row['attribute']]=$row['value'];
 	return $globals;
 }
@@ -287,8 +287,8 @@ function check_email($mail)
 	$domain = substr(strstr($mail,'@'),1);
 	$ip = gethostbyname($domain);
 	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `domain` = '$domain' OR `ip`= '$ip'";
-	$result = mysql_query($query);
-	$num_rows = mysql_num_rows($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$num_rows = mysqli_num_rows($result);
 	if($num_rows)
 		return 0;
 	return 1;
@@ -297,11 +297,11 @@ function check_email($mail)
 
 function setGlobalSettingByAttribute($attribute,$value)
 {
-	if(mysql_num_rows(mysql_query("SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = '$attribute'")) != 0)
+	if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = '$attribute'")) != 0)
 		$query="UPDATE `".MYSQL_DATABASE_PREFIX."global` SET `value`='$value' WHERE `attribute`='$attribute'";
 	else
 		$query="INSERT INTO `" . MYSQL_DATABASE_PREFIX . "global`(`attribute`,`value`) VALUES('{$attribute}','{$value}')";
-	mysql_query($query);	
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);	
 }
 
 /**Used for error handling */
@@ -360,8 +360,8 @@ function displaywarning($error_desc) {
 function getUserName($userId) {
 	if($userId <= 0) return "Anonymous";
 	$query = "SELECT `user_name` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 
@@ -373,8 +373,8 @@ function getUserName($userId) {
 function getUserFullName($userId) {
 	if($userId <= 0) return "Anonymous";
 	$query = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 /**
@@ -385,8 +385,8 @@ function getUserFullName($userId) {
 function getUserIdFromUserName($userName) {
 	if($userName == "") return "0";
 	$query = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_name` = '".$userName."'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 
@@ -397,9 +397,9 @@ function getUserIdFromUserName($userName) {
  */
 function getUserFullNameFromEmail($email) {
 	$query = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_email` = '".$email."'";
-	$result = mysql_query($query);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 
@@ -411,8 +411,8 @@ function getUserFullNameFromEmail($email) {
 function getUserEmail($userId) {
 	if($userId <= 0) return 'Anonymous';
 	$query="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-	$result = mysql_query($query);
-	$row= mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row= mysqli_fetch_row($result);
 	return $row[0];
 }
 
@@ -424,8 +424,8 @@ function getUserEmail($userId) {
 function getUserIdFromEmail($email) {
 	if(strtolower($email) == 'anonymous') return 0;
 	$query = 'SELECT `user_id` FROM `'.MYSQL_DATABASE_PREFIX."users` WHERE `user_email` = '".$email."'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 
@@ -437,8 +437,8 @@ function getUserIdFromEmail($email) {
  */
 function getEffectivePageModule($pageId) {
 	$pagemodule_query = "SELECT `page_module`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
-	$pagemodule_result = mysql_query($pagemodule_query);
-	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
+	$pagemodule_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagemodule_query);
+	$pagemodule_row = mysqli_fetch_assoc($pagemodule_result);
 	if($pagemodule_row['page_module']=="link")	return (getEffectivePageModule($pagemodule_row['page_modulecomponentid']));
 	return $pagemodule_row['page_module'];
 }
@@ -450,10 +450,10 @@ function getEffectivePageModule($pageId) {
  */
 function getNextModuleComponentId($modulename) {
 		$moduleComponentIdQuery = "SELECT MAX(page_modulecomponentid) FROM `".MYSQL_DATABASE_PREFIX."_pages` WHERE `page_module`='$modulename'";
-		$moduleComponentIdResult = mysql_query($moduleComponentIdQuery);
+		$moduleComponentIdResult = mysqli_query($GLOBALS["___mysqli_ston"], $moduleComponentIdQuery);
 		if(!$moduleComponentIdResult)
 			return 0;
-		$moduleComponentIdRow = mysql_fetch_row($moduleComponentIdResult);
+		$moduleComponentIdRow = mysqli_fetch_row($moduleComponentIdResult);
 		if(!is_null($moduleComponentIdRow[0]))
 			return $moduleComponentIdRow[0] + 1;
 		return 1;
@@ -467,8 +467,8 @@ function getNextModuleComponentId($modulename) {
  */
 function getDereferencedPageId($pageId) {
 	$pagemodule_query = "SELECT `page_module`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
-	$pagemodule_result = mysql_query($pagemodule_query);
-	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
+	$pagemodule_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagemodule_query);
+	$pagemodule_row = mysqli_fetch_assoc($pagemodule_result);
 	if($pagemodule_row['page_module']=="link") {
 		return getDereferencedPageId($pagemodule_row['page_modulecomponentid']);
 	}
@@ -485,8 +485,8 @@ function getPagePath($pageid) {
 
 	while($pageid != 0) {
 		$pathQuery = "SELECT `page_parentid`, `page_name` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '".$pageid."'";
-		$pathResult = mysql_query($pathQuery);
-		$pathResultRow = mysql_fetch_row($pathResult);
+		$pathResult = mysqli_query($GLOBALS["___mysqli_ston"], $pathQuery);
+		$pathResultRow = mysqli_fetch_row($pathResult);
 
 		$pageid = $pathResultRow[0];
 		$pagepath = $pathResultRow[1]."/$pagepath";
@@ -499,14 +499,14 @@ function getPagePathFromModule($moduleName,$moduleComponentId) {
 }
 function getPageModule($pageId) {
 	$pagemodule_query = "SELECT `page_module` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`=".$pageId;
-	$pagemodule_result = mysql_query($pagemodule_query);
-	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
+	$pagemodule_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagemodule_query);
+	$pagemodule_row = mysqli_fetch_assoc($pagemodule_result);
 	return $pagemodule_row['page_module'];
 }
 function getPageTitle($pageId) {
 	$pagemodule_query = "SELECT `page_title` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
-	$pagemodule_result = mysql_query($pagemodule_query);
-	$pagemodule_row = mysql_fetch_assoc($pagemodule_result);
+	$pagemodule_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagemodule_query);
+	$pagemodule_row = mysqli_fetch_assoc($pagemodule_result);
 	return $pagemodule_row['page_title'];
 }
 
@@ -519,33 +519,33 @@ function getPageTitle($pageId) {
  */
 function getParentPage($pageid) {
 	$pageparent_query = "SELECT `page_parentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
-	$pageparent_result = mysql_query($pageparent_query);
-	$pageparent_row = mysql_fetch_assoc($pageparent_result);
+	$pageparent_result = mysqli_query($GLOBALS["___mysqli_ston"], $pageparent_query);
+	$pageparent_row = mysqli_fetch_assoc($pageparent_result);
 	return $pageparent_row['page_parentid'];
 }
 function getPageInfo($pageid) {
 	$pageparent_query = "SELECT `page_id`, `page_name`, `page_parentid`, `page_title`, `page_module`, `page_modulecomponentid`, `page_menurank`, `page_inheritedinfoid`, `page_displayinmenu`, `page_displaymenu`, `page_displaysiblingmenu`, `page_menutype`, `page_menudepth`, `page_image`, `page_displayicon` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
-	$pageparent_result = mysql_query($pageparent_query);
-	$pageparent_row = mysql_fetch_assoc($pageparent_result);
+	$pageparent_result = mysqli_query($GLOBALS["___mysqli_ston"], $pageparent_query);
+	$pageparent_row = mysqli_fetch_assoc($pageparent_result);
 	return $pageparent_row;
 }
 function getPageModuleComponentId($pageid) {
 	$pageparent_query = "SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageid."'";
-	$pageparent_result = mysql_query($pageparent_query);
-	$pageparent_row = mysql_fetch_assoc($pageparent_result);
+	$pageparent_result = mysqli_query($GLOBALS["___mysqli_ston"], $pageparent_query);
+	$pageparent_row = mysqli_fetch_assoc($pageparent_result);
 	return $pageparent_row['page_modulecomponentid'];
 }
 function getPageIdFromModuleComponentId($moduleName,$moduleComponentId) {
 	$moduleid_query = "SELECT `page_id` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module` = '".$moduleName."' AND `page_modulecomponentid` = '".$moduleComponentId."'";
-	$moduleid_result = mysql_query($moduleid_query);
-	$moduleid_row = mysql_fetch_assoc($moduleid_result);
+	$moduleid_result = mysqli_query($GLOBALS["___mysqli_ston"], $moduleid_query);
+	$moduleid_row = mysqli_fetch_assoc($moduleid_result);
 	return $moduleid_row['page_id'];
 }
 
 function getModuleComponentIdFromPageId($pageId, $moduleName) {
 	$moduleIdQuery = 'SELECT `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_module` = '".$moduleName."' AND `page_id` = '".$pageId."'";
-	$moduleIdResult = mysql_query($moduleIdQuery);
-	$moduleIdRow = mysql_fetch_row($moduleIdResult);
+	$moduleIdResult = mysqli_query($GLOBALS["___mysqli_ston"], $moduleIdQuery);
+	$moduleIdRow = mysqli_fetch_row($moduleIdResult);
 	return $moduleIdRow[0];
 }
 /**
@@ -571,16 +571,16 @@ function logInfo ($userEmail, $userId, $pageId, $pagePath, $permModule, $permAct
 	if(isset($_GET['fileget']))	return false;
 
 	$updateQuery = "SELECT `log_no` FROM `".MYSQL_DATABASE_PREFIX."log` WHERE `log_no` = 1";
-	$result = mysql_query($updateQuery);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	
-	if(!$result || mysql_num_rows($result) == 0)
+	if(!$result || mysqli_num_rows($result) == 0)
 		$updateQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."log` (`log_no`, `user_email`, `user_id`, `page_id`, `page_path`, `perm_module`, `perm_action`, `user_accessipaddress`)
     	VALUES ( 1  , '".$userEmail."', ".$userId.", ".$pageId.", '".$pagePath."', '".$permModule."', '".$permAction."', '".$accessIpAddress."' );";
     else
     	$updateQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."log` (`log_no`, `user_email`, `user_id`, `page_id`, `page_path`, `perm_module`, `perm_action`, `user_accessipaddress`)
     	( SELECT (MAX(log_no)+1)  , '".$userEmail."', ".$userId.", ".$pageId.", '".$pagePath."', '".$permModule."', '".$permAction."', '".$accessIpAddress."' FROM  `".MYSQL_DATABASE_PREFIX."log`);";
     
-    if(!mysql_query($updateQuery))
+    if(!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery))
     	displayerror ("Error in logging info.");
     return true;
 }
@@ -599,8 +599,8 @@ SUBDATE( SUBTIME(NOW(),CURTIME()),(
 		)%10 
 		)
 LIMIT 0,1";
-	$requiredResult = mysql_query($requiredQuery);
-	if($requiredResult!=NULL && mysql_num_rows($requiredResult) == 0) { 
+	$requiredResult = mysqli_query($GLOBALS["___mysqli_ston"], $requiredQuery);
+	if($requiredResult!=NULL && mysqli_num_rows($requiredResult) == 0) { 
 		return true;
 	}
 	return false;
@@ -682,13 +682,13 @@ function strleft($s1, $s2) {
 
 function updateUserPassword($user_email,$user_passwd) {
 	$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_password`= '".md5($user_passwd)."' WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_email` = '" . $user_email . "'";
-							mysql_query($query) or die(mysql_error() . " in function updateUserPassword");
+							mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " in function updateUserPassword");
 }
 
 function getUserInfo($user_email) {
 	$query = "SELECT `user_id`,`user_password`,`user_name`,`user_activated`,`user_lastlogin`,`user_loginmethod` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` = '" . $user_email . "'";
-	$result = mysql_query($query) or die(mysql_error() . " in function getUserInfo : common.lib.php");
-	return mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " in function getUserInfo : common.lib.php");
+	return mysqli_fetch_assoc($result);
 }
 
 /*
@@ -751,10 +751,10 @@ class messenger {
 function getAvailableTemplates()
 {
 	$query="SELECT template_name FROM `".MYSQL_DATABASE_PREFIX."templates`";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$templates=array();
 	$i=0;
-	while($row=mysql_fetch_row($result))
+	while($row=mysqli_fetch_row($result))
 	{
 		$templates[$i]=$row[0];
 		$i++;
@@ -766,10 +766,10 @@ function getAvailableTemplates()
 function getAvailableModules()
 {
 	$query="SELECT `module_name` FROM `".MYSQL_DATABASE_PREFIX."modules`";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$templates=array();
 	$i=0;
-	while($row=mysql_fetch_row($result))
+	while($row=mysqli_fetch_row($result))
 	{
 		$templates[$i]=$row[0];
 		$i++;
@@ -781,14 +781,14 @@ function getAvailableModules()
 function getTableFieldsName($tablename,$exclude="user_profilepic")
 {
 	$query="SELECT * FROM ".MYSQL_DATABASE_PREFIX.$tablename;
-	$result=mysql_query($query);
-	$numfields=mysql_num_fields($result);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$numfields=(($___mysqli_tmp = mysqli_num_fields($result)) ? $___mysqli_tmp : false);
 	$fields=array();
 	$i=0;
 	$exclist=explode(",",$exclude);
 	while($i<$numfields)
 	{
-		$meta=mysql_fetch_field($result,$i);
+		$meta=(((($___mysqli_tmp = mysqli_fetch_field_direct($result, 0)) && is_object($___mysqli_tmp)) ? ( (!is_null($___mysqli_tmp->primary_key = ($___mysqli_tmp->flags & MYSQLI_PRI_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->multiple_key = ($___mysqli_tmp->flags & MYSQLI_MULTIPLE_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->unique_key = ($___mysqli_tmp->flags & MYSQLI_UNIQUE_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->numeric = (int)(($___mysqli_tmp->type <= MYSQLI_TYPE_INT24) || ($___mysqli_tmp->type == MYSQLI_TYPE_YEAR) || ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? ($___mysqli_tmp->type == MYSQLI_TYPE_NEWDECIMAL) : 0)))) && (!is_null($___mysqli_tmp->blob = (int)in_array($___mysqli_tmp->type, array(MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB)))) && (!is_null($___mysqli_tmp->unsigned = ($___mysqli_tmp->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->zerofill = ($___mysqli_tmp->flags & MYSQLI_ZEROFILL_FLAG) ? 1 : 0)) && (!is_null($___mysqli_type = $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = (($___mysqli_type == MYSQLI_TYPE_STRING) || ($___mysqli_type == MYSQLI_TYPE_VAR_STRING)) ? "type" : "")) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && in_array($___mysqli_type, array(MYSQLI_TYPE_TINY, MYSQLI_TYPE_SHORT, MYSQLI_TYPE_LONG, MYSQLI_TYPE_LONGLONG, MYSQLI_TYPE_INT24))) ? "int" : $___mysqli_tmp->type)) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && in_array($___mysqli_type, array(MYSQLI_TYPE_FLOAT, MYSQLI_TYPE_DOUBLE, MYSQLI_TYPE_DECIMAL, ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : -1)))) ? "real" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_TIMESTAMP) ? "timestamp" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_YEAR) ? "year" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && (($___mysqli_type == MYSQLI_TYPE_DATE) || ($___mysqli_type == MYSQLI_TYPE_NEWDATE))) ? "date " : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_TIME) ? "time" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_SET) ? "set" : $___mysqli_tmp->type)) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_ENUM) ? "enum" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_GEOMETRY) ? "geometry" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_DATETIME) ? "datetime" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && (in_array($___mysqli_type, array(MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB)))) ? "blob" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_NULL) ? "null" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type) ? "unknown" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->not_null = ($___mysqli_tmp->flags & MYSQLI_NOT_NULL_FLAG) ? 1 : 0)) ) : false ) ? $___mysqli_tmp : false);
 		if($meta && array_search($meta->name,$exclist)===FALSE)
 		{
 			$fields[$i]=$meta->name;
@@ -801,23 +801,23 @@ function getTableFieldsName($tablename,$exclude="user_profilepic")
 function getNextUserId()
 {
 	$query="SELECT max(user_id) FROM ".MYSQL_DATABASE_PREFIX."users";
-	$result=mysql_query($query);
-	$row=mysql_fetch_row($result);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row=mysqli_fetch_row($result);
 	return $row[0]+1;
 }
 
 function showBreadcrumbSubmenu()
 {
 	$query="SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute`='breadcrumb_submenu'";
-	$result = mysql_fetch_row(mysql_query($query));
+	$result = mysqli_fetch_row(mysqli_query($GLOBALS["___mysqli_ston"], $query));
 	return $result[0];
 }
 
 function getFileActualPath($moduleType,$moduleComponentId,$fileName)
 {
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
-	$result = mysql_query($query) or die(mysql_error() . "upload L:85");
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:85");
+	$row = mysqli_fetch_assoc($result);
 	/**
 	 * Not checking if filetype adheres to uploadable filetype list beacuse this check can be
 	 * performed in $moduleInstance->getFileAccessPermission.
@@ -846,8 +846,8 @@ $curl_message="cURL extention is not enabled/installed on your system. OpenID re
 function censor_words($text)
 {
 	$query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'censor_words'";
-	$words = mysql_query($query);
-	$words = mysql_fetch_row($words);
+	$words = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$words = mysqli_fetch_row($words);
 	$replace = "<b>CENSORED</b>";
 	if($words[0]=='')
 		return $text;

@@ -24,7 +24,7 @@ $configFileText = <<<CONFIGFILETEXT
  * For more details, see README
  */
 
-/*******MYSQL SETTINGS************************/
+/*******mysql SETTINGS************************/
 // defining the ip address of the mysql server.
 define("MYSQL_SERVER","$MYSQL_SERVER");
 

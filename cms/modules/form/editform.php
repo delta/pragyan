@@ -103,7 +103,7 @@ if(!defined('__PRAGYAN_CMS'))
 			if(count($updates) > 0) {
 				$updateQuery = 'UPDATE `form_desc` SET ' . join($updates, ', ') .
 				               ' WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
-				if(mysql_query($updateQuery)) {
+				if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 					displayinfo("All changes in the form have been successfully saved!");
 
 				}
@@ -121,14 +121,14 @@ if(!defined('__PRAGYAN_CMS'))
 				'form_allowuserunregister,form_showuseremail, form_showuserfullname, form_showuserprofiledata, '. 
 				'form_showregistrationdate, form_showlastupdatedate, form_registrantslimit, form_closelimit ' .
 				'FROM `form_desc` WHERE `page_modulecomponentid` = \'' . $moduleCompId."'";
-		$formResult = mysql_query($formQuery);
+		$formResult = mysqli_query($GLOBALS["___mysqli_ston"], $formQuery);
 
 		$userEdit = $formHeading = $headerText = $expiryDate = $requireLogin =
 		$sendConfirmation = $useCaptcha = $userProfiledata = $userEmail = $userUnregister = 
 		$userFullname = $regDate = $lastUpdate = $footerText = '';
 
 		if($formResult) {
-			if($formResultRow = mysql_fetch_assoc($formResult)) {
+			if($formResultRow = mysqli_fetch_assoc($formResult)) {
 				$formHeading = $formResultRow['form_heading'];
 				$requireLogin = $formResultRow['form_loginrequired'] ? 'checked="checked"' : '';
 				$headerText = $formResultRow['form_headertext'];
@@ -325,9 +325,9 @@ BODY;
 		$imagePath = "$urlRequestRoot/$cmsFolder/$templateFolder";$calpath="$urlRequestRoot/$cmsFolder/$moduleFolder";
 
 		$elementsQuery = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid` =  '$moduleCompId' ORDER BY `form_elementrank` ASC";
-		$elementsResult = mysql_query($elementsQuery) or die(mysql_error());
+		$elementsResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementsQuery) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$elementData = '';
-		while($elementsRow = mysql_fetch_assoc($elementsResult)) {
+		while($elementsRow = mysqli_fetch_assoc($elementsResult)) {
 			$tmpElement = new FormElement();
 			$tmpElement->fromMysqlTableRow($elementsRow);
 
@@ -373,28 +373,28 @@ BODY;
 
 
 		$query = "SELECT * FROM `form_elementdesc` WHERE `form_elementrank` $compare(SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId') AND `page_modulecomponentid`='$moduleCompId' AND `form_elementid`!='$elementId' ORDER BY `form_elementrank` $order LIMIT 0,1";
-		$result = mysql_query($query) or die(mysql_query());
-		if (mysql_num_rows($result) == 0) {
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(mysql_query());
+		if (mysqli_num_rows($result) == 0) {
 			displayerror("You cannot move up/down the first/last element in form");
 
 		} else {
-			$tempTarg = mysql_fetch_assoc($result);
+			$tempTarg = mysqli_fetch_assoc($result);
 			$query = "SELECT `form_elementrank` FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
-			$result = mysql_query($query) or die(mysql_query());
-			$tempSrc = mysql_fetch_assoc($result);
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(mysql_query());
+			$tempSrc = mysqli_fetch_assoc($result);
 
 			if ($tempTarg['form_elementrank'] == $tempSrc['form_elementrank']) {
 				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = `form_elementid` WHERE `page_modulecomponentid`='$tempTarg[page_modulecomponentid]'";
-				$result = mysql_query($query) or die(mysql_error());
-				if (mysql_affected_rows() > 0)
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0)
 					displayinfo("Error in form element rank corrected. Please reorder them");
 				else
 					displayerror("Failed to correct error in form element ranks!");
 			} else {
 				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempSrc[form_elementrank]' WHERE `page_modulecomponentid`='$tempTarg[page_modulecomponentid]' AND `form_elementid`='$tempTarg[form_elementid]'";
-				$result = mysql_query($query) or die(mysql_error());
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				$query = "UPDATE `form_elementdesc` SET `form_elementrank` = '$tempTarg[form_elementrank]' WHERE `page_modulecomponentid`='$moduleCompId' AND `form_elementid`='$elementId'";
-				$result = mysql_query($query) or die(mysql_error());
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			}
 		}
 
@@ -406,14 +406,14 @@ BODY;
 	 */
 	function deleteFormElement($moduleCompId,$elementId) {
 		$query="DELETE FROM `form_elementdesc` WHERE `page_modulecomponentid` = '$moduleCompId' AND `form_elementid`='$elementId'";
-		$resultDel=mysql_query($query);
-		if(mysql_affected_rows()>0)
+		$resultDel=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
 		$query1=1;
 		else $query1=0;
 		$queryDelData="DELETE FROM `form_elementdata` WHERE `page_modulecomponentid` = '$moduleCompId' AND `form_elementid`='$elementId'";
-		$resultDelData=mysql_query($queryDelData);
-		if(!$resultDelData)	{ displayerror('Invalid query: ' . mysql_error()); 	return false; }
-		$queryAffectedRows=mysql_affected_rows();
+		$resultDelData=mysqli_query($GLOBALS["___mysqli_ston"], $queryDelData);
+		if(!$resultDelData)	{ displayerror('Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; }
+		$queryAffectedRows=mysqli_affected_rows($GLOBALS["___mysqli_ston"]);
 		if($queryAffectedRows>0)
 		$query2=1;
 		else $query2=0;
@@ -426,8 +426,8 @@ BODY;
 	/**Adds an empty form element */
 	function addDefaultFormElement($moduleCompId) {
 		$query="SELECT MAX(`form_elementid`) FROM `form_elementdesc` WHERE `page_modulecomponentid`='$moduleCompId'";
-		$result=mysql_query($query);
-		$row = mysql_fetch_row($result);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$row = mysqli_fetch_row($result);
 
 		$elementId = 0;
 		if(!is_null($row[0])) {
@@ -440,13 +440,13 @@ BODY;
 				"`form_elementmorethan`, `form_elementlessthan`, `form_elementcheckint`, `form_elementtooltiptext`," .
 				"`form_elementisrequired` ,`form_elementrank`) VALUES " .
 				"('$moduleCompId', '$elementId', 'register', 'Are you sure you want to register ?', 'radio', 100, 'Yes|No' , NULL , NULL , NULL , 0, '', 0, '$elementId')";
-		$resultAdd=mysql_query($queryInsert);
+		$resultAdd=mysqli_query($GLOBALS["___mysqli_ston"], $queryInsert);
 
 
 
 
 
-		if(mysql_affected_rows()>0)
+		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
 			return true;
 		else return false;
 	}

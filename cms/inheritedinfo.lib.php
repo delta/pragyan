@@ -28,15 +28,15 @@ if(!defined('__PRAGYAN_CMS'))
 function inheritedinfo($array) {
 
 	$query = "SELECT `page_inheritedinfoid` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` IN(" . join($array, ",") . ")";
-	$data = mysql_query($query);
+	$data = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$inheritedinfoid = -1;
-	while ($temp = mysql_fetch_assoc($data))
+	while ($temp = mysqli_fetch_assoc($data))
 		if ($temp['page_inheritedinfoid'] != -1)
 			$inheritedinfoid = $temp['page_inheritedinfoid'];
 	if ($inheritedinfoid != -1) {
 		$query = "SELECT `page_inheritedinfocontent` FROM `" . MYSQL_DATABASE_PREFIX . "inheritedinfo` WHERE `page_inheritedinfoid` = '$inheritedinfoid'";
-		$data = mysql_query($query);
-		$temp = mysql_fetch_assoc($data);
+		$data = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$temp = mysqli_fetch_assoc($data);
 	}
 	$inheritedinfocontent = $temp['page_inheritedinfocontent'];
 	return $inheritedinfocontent;

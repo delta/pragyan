@@ -62,22 +62,22 @@ class newsletter implements module {
 
 	private static function moveUserToInternal($userEmail, $userId) {
 		$query = "SELECT `page_modulecomponentid` FROM `newsletter_externalusers` WHERE `user_email` = '$userEmail'";
-		$result = mysql_query($query);
-		while ($row = mysql_fetch_row($result)) {
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		while ($row = mysqli_fetch_row($result)) {
 			if (!isInternalUserRegistered($userId, $row[0], false)) {
 				$insertQuery = "INSERT INTO `newsletter_users`(`page_modulecomponentid`, `newsletter_subscriptiontype`, `user_id`, `user_joindatetime`) VALUES ({$row[0]}, 'user', $userId, NOW())";
-				if (!mysql_query($insertQuery)) {
+				if (!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
 					displayerror('Could not add user to internal list.');
 				}
 				else {
 					$deleteQuery  = "DELETE FROM `newsletter_externalusers` WHERE `page_modulecomponentid` = {$row[0]} AND `user_email` = '$userEmail'";
-					if (!mysql_query($deleteQuery))
+					if (!mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery))
 						displayerror('Could not remove user from external list.');
 				}
 			}
 			else {
 				$deleteQuery = "DELETE FROM `newsletter_externalusers` WHERE `page_modulecomponentid` = {$row[0]} AND `user_email` = '$userEmail'";
-				if (!mysql_query($deleteQuery))
+				if (!mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery))
 					displayerror('Could not remove user from external list.');
 			}
 		}
@@ -85,8 +85,8 @@ class newsletter implements module {
 
 	private static function isInternalUserRegistered($userId, $moduleComponentId, $testGroups = true) {
 		$userExistsQuery = "SELECT COUNT(*) FROM `newsletter_users` WHERE `page_modulecomponentid` = $moduleComponentId AND `newsletter_subscriptiontype` = 'group'";
-		$userExistsResult = mysql_query($userExistsQuery);
-		if ($userExistsRow = mysql_fetch_row($userExistsResult))
+		$userExistsResult = mysqli_query($GLOBALS["___mysqli_ston"], $userExistsQuery);
+		if ($userExistsRow = mysqli_fetch_row($userExistsResult))
 			if ($userExistsRow[0] == 1)
 				return true;
 
@@ -95,8 +95,8 @@ class newsletter implements module {
 			$usergroupTable = MYSQL_DATABASE_PREFIX . 'usergroup';
 			$groupsQuery = "SELECT COUNT(*) FROM `newsletter_users`, `$usergroupTable` WHERE `newsletter_users`.`page_modulecomponentid` = $moduleComponentId AND `newsletter_users`.`newsletter_subscriptiontype` = 'group' " .
 					"AND `$usergroupTable`.`user_id` = $userId AND `newsletter_users`.`usergroup_id` = `$usergroupTable`.`group_id`";
-			$groupsResult = mysql_query($groupsQuery);
-			if ($groupsResultRow = mysql_fetch_row($groupsResult))
+			$groupsResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupsQuery);
+			if ($groupsResultRow = mysqli_fetch_row($groupsResult))
 				if ($groupsResultRow[0] > 0)
 					return true;
 		}
@@ -106,8 +106,8 @@ class newsletter implements module {
 
 	public static function isExternalUserRegistered($userEmail, $moduleComponentId) {
 		$userExistsQuery = "SELECT COUNT(*) FROM `newsletter_externalusers` WHERE `page_modulecomponentid` = $moduleComponentId AND `user_email` = '$userEmail'";
-		$userExistsResult = mysql_query($userExistsQuery);
-		if ($userExistsRow = mysql_fetch_row($userExistsResult))
+		$userExistsResult = mysqli_query($GLOBALS["___mysqli_ston"], $userExistsQuery);
+		if ($userExistsRow = mysqli_fetch_row($userExistsResult))
 			if ($userExistsRow[0] == 1)
 				return true;
 		return false;
@@ -115,8 +115,8 @@ class newsletter implements module {
 
 	private function getNewsletterName($listId) {
 		$listNameQuery = 'SELECT `newsletter_name` FROM `newsletter_desc` WHERE `page_modulecomponentid` = ' . $listId;
-		$listNameResult = mysql_query($listNameQuery);
-		if ($listNameRow = mysql_fetch_row($listNameQuery))
+		$listNameResult = mysqli_query($GLOBALS["___mysqli_ston"], $listNameQuery);
+		if ($listNameRow = mysqli_fetch_row($listNameQuery))
 			return $listNameRow[0];
 		return '';
 	}
@@ -128,10 +128,10 @@ class newsletter implements module {
 	// return an array containing name of list, path, boolean indicating if user is registered or not
 	public static function getSubscribableLists($userId) {
 		$newsletterListQuery = 'SELECT `page_id`, `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_module` = \'newsletter\' ORDER BY `page_modulecomponentid`';
-		$newsletterListResult = mysql_query($newsletterListQuery);
+		$newsletterListResult = mysqli_query($GLOBALS["___mysqli_ston"], $newsletterListQuery);
 
 		$subscribableLists = array();
-		while ($newsletterListRow = mysql_fetch_row($newsletterListQuery)) {
+		while ($newsletterListRow = mysqli_fetch_row($newsletterListQuery)) {
 			if (getPermissions($userId, $newsletterListRow[0], 'view', 'newsletter')) {
 				$listName = getNewsletterName($newsletterListRow[1]);
 				$listPath = getNewsletterPath($newsletterListRow[0]);
@@ -160,7 +160,7 @@ class newsletter implements module {
 
 	public function createModule($compId) {
 		$query = "INSERT INTO `newsletter_desc` (`page_modulecomponentid` ,`newsletter_name`)VALUES ('$compId', 'New Newsletter')";
-		$result = mysql_query($query) or die(mysql_error()."newsletter.lib L:188");
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."newsletter.lib L:188");
 	}
 
 	public function deleteModule($moduleComponentId) {

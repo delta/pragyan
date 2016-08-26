@@ -43,8 +43,8 @@ class pagelist implements module {
 		$pageid = getPageIdFromModuleComponentId("pagelist",$this->moduleComponentId);
 		$pageid=getParentPage($pageid);
 		$query = "SELECT `depth` FROM `list_prop` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-		$result = mysql_query($query) or die(mysql_error());
-		$row = mysql_fetch_assoc($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$row = mysqli_fetch_assoc($result);
 		$reqdepth=$row['depth'];
 		$out=$this->generatePagelist($pageid, $this->userId, 0, 'view',$reqdepth+1);
 		return $out;
@@ -58,8 +58,8 @@ class pagelist implements module {
 		
 		else {
 			$permQuery = 'SELECT `page_module`, `perm_action` FROM `' . MYSQL_DATABASE_PREFIX . 'permissionlist` WHERE `perm_id` = \'' . $permId."'";
-			$permResult = mysql_query($permQuery);
-			$permRow = mysql_fetch_row($permResult);
+			$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
+			$permRow = mysqli_fetch_row($permResult);
 			$module = $permRow[0];
 			$action = $permRow[1];
 			$treeData .= $this->getNodeHtmlforPagelist($pageId, $userId, $module, $action, $urlRequestRoot . '/', $depth);
@@ -122,9 +122,9 @@ class pagelist implements module {
 			$htmlOut.="<span class='list'><img src='$thumbname' alt=' !sorry! '>" . getPageTitle($pageId) . "</span></a>\n</form>";
 
 			$childrenQuery = 'SELECT `page_id`, `page_displayinmenu` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = ' . $pageId;
-			$childrenResult = mysql_query($childrenQuery);
+			$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 			$childrenHtml = '';
-			while($childrenRow = mysql_fetch_row($childrenResult)) {
+			while($childrenRow = mysqli_fetch_row($childrenResult)) {
 				if($childrenRow[1] == 1&&$depth!=0) {
 					$childrenHtml .= $this->getNodeHtmlforPagelist($childrenRow[0], $userId, $module, $action, $pagePath, $depth-1);
 				
@@ -146,15 +146,15 @@ class pagelist implements module {
 		if(isset($_POST['depth'])) 
 		{ 		
 			$query = "UPDATE `list_prop` SET `depth`='".escape($_POST['depth'])."' WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-			$result = mysql_query($query);
-			if (mysql_affected_rows()) 	 
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			if (mysqli_affected_rows($GLOBALS["___mysqli_ston"])) 	 
 				$ret.="<div class='cms-info'>Depth value updated.</div>";
 			else $ret.="<div class='cms-info'>ok. updated. (Its already set)</div>";	 
 		}	
 
 		$query = "SELECT `depth` FROM `list_prop` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-		$result = mysql_query($query) or die(mysql_error());
-		$row = mysql_fetch_assoc($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$row = mysqli_fetch_assoc($result);
 		
 		$ret.="<form action='./+edit&subaction=submit' method=POST>
 <table>
@@ -176,7 +176,7 @@ class pagelist implements module {
 		
 		$defaultdepth=3;
 		$query = "INSERT INTO `list_prop` (`page_modulecomponentid`, `depth`) VALUES ('$compId', '$defaultdepth')";
-		$result = mysql_query($query) or die(mysql_error());
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
 	
 	

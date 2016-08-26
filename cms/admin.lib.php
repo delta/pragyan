@@ -226,8 +226,8 @@ function getBlacklistTable()
 {
 	$black = "<fieldset><legend>Blacklisted Domains</legend><table><tr><td style='width:35%'>Domains</td><td style='width:65%'>IPs</td><td>Actions</td></tr>";	
 	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist`";
-	$result = mysql_query($query) or displayerror("Unable to load Blacklisted Information".mysql_error());
-	while($row=mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror("Unable to load Blacklisted Information".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while($row=mysqli_fetch_array($result))
 		$black .="<tr><td>$row[1]</td><td>$row[2]</td><td><a href='./+admin&subaction=global&del_black=$row[0]'>Delete</a></td></tr>";	
 	$black .="</table><fieldset><legend>Add new blacklist</legend><table><tr><td>New Domain :<input type='text' name='blacklist_domain'></td><td>IP (optional) :<input type='text' name='blacklist_ip'></td></tr>";
 	$black.="</table></fieldset></fieldset>";
@@ -241,11 +241,11 @@ function setblacklist($domain="",$ip="")
 	if($ip=="")
 		$ip=gethostbyname($domain);
 	$chk_query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `domain` = '$domain' AND `ip`= '$ip'";
-	$chk_result = mysql_num_rows(mysql_query($chk_query));
+	$chk_result = mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $chk_query));
 	if($chk_result<1)
 	{
 		$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."blacklist` (`domain`,`ip`) VALUES ('$domain','$ip')";
-		$result =mysql_query($query) or displayerror("Unable to update blacklist".mysql_error());
+		$result =mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror("Unable to update blacklist".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}	
 	return 1;
 }
@@ -253,8 +253,8 @@ function delete_blacklist()
 {
 	$id = safe_html($_GET['del_black']);
 	$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `id` = '$id'";
-	$result =mysql_query($query) or displayerror("Unable to Delete blacklist". mysql_error());
-	if(mysql_affected_rows()>0)	
+	$result =mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror("Unable to Delete blacklist". ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)	
 			displayinfo("Blackilist Deleted Successfully");
 	return 1;
 }
@@ -343,11 +343,11 @@ function getSuggestions($pattern) {
 			"IF(`user_fullname` LIKE \"%$pattern%\", 5, 6" .
 			"))))) AS `relevance`,	`user_email`, `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_activated`=1 AND(`user_email` LIKE \"%$pattern%\" OR `user_fullname` LIKE \"%$pattern%\" ) ORDER BY `relevance`";
 //			echo $suggestionsQuery;
-	$suggestionsResult = mysql_query($suggestionsQuery);
+	$suggestionsResult = mysqli_query($GLOBALS["___mysqli_ston"], $suggestionsQuery);
 
 	$suggestions = array($pattern);
 
-	while($suggestionsRow = mysql_fetch_row($suggestionsResult)) {
+	while($suggestionsRow = mysqli_fetch_row($suggestionsResult)) {
 		$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
 	}
 
@@ -378,12 +378,12 @@ function admin($pageid, $userid) {
 		}
 	}
 	
-	$result = mysql_fetch_array(mysql_query("SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = 'reindex_frequency'"));
+	$result = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE `attribute` = 'reindex_frequency'"));
 	if($result != NULL)
 		$threshold = $result['value'];
 	else
 		$threshold = 30;
-	$result = mysql_fetch_array(mysql_query("SELECT to_days(CURRENT_TIMESTAMP)-to_days(`indexdate`) AS 'diff' FROM `sites` WHERE `url` LIKE '%home%'"));
+	$result = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT to_days(CURRENT_TIMESTAMP)-to_days(`indexdate`) AS 'diff' FROM `sites` WHERE `url` LIKE '%home%'"));
 	
 	if($result == NULL)
 		displayinfo("It seems the site doesn't have index for the search to work. Click <a href='./+admin&indexsite=1'>here</a> to index the site.");
@@ -449,8 +449,8 @@ ADMINPAGE;
 		if(isset($_GET['module'])){
 			$type = escape($_GET['module']);
 			$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."modules` WHERE `module_name` = '$type'";
-			$result = mysql_query($query);
-			if(mysql_num_rows($result)==0){
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			if(mysqli_num_rows($result)==0){
 				displayerror("No such module exists.");
 			}
 			else {
@@ -471,9 +471,9 @@ ADMINPAGE;
 		}
 		else{
 			$moduleQuery = "SELECT `module_name` FROM `".MYSQL_DATABASE_PREFIX."modules`";
-			$moduleResult = mysql_query($moduleQuery);
+			$moduleResult = mysqli_query($GLOBALS["___mysqli_ston"], $moduleQuery);
 			$returnHtml .="<fieldset><legend>Module Administration</legend>";
-			while($row=mysql_fetch_array($moduleResult)){
+			while($row=mysqli_fetch_array($moduleResult)){
 				$returnHtml .= "<a href=./+admin&subaction=moduleadmin&module=$row[0]>".ucfirst($row[0]) ." Administration</a><br />";
 			}
 			$returnHtml .="</fieldset>";
@@ -762,8 +762,8 @@ function admin_checkFunctionPerms() {
 
 			foreach ($perm as $permission) {
 				$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module`='$module' AND `perm_action`='$permission'";
-				$result = mysql_query($query);
-				if (mysql_num_rows($result) > 0) {
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				if (mysqli_num_rows($result) > 0) {
 					if ($i == 1)
 						$permExists .= ", "; // Just to append ,(comma) after every perm but last
 					$permExists .= $permission;
@@ -771,17 +771,17 @@ function admin_checkFunctionPerms() {
 				} else {
 					$returnStr.="<br/><b>$permission DOES NOT exist for $module but will be created</b><br>";
 					$query = "SELECT MAX(perm_id) as MAX FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist`";
-					$result = mysql_query($query) or die(mysql_error());
-					$row = mysql_fetch_assoc($result);
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					$row = mysqli_fetch_assoc($result);
 					$permid = $row['MAX'] + 1;
 					$query = "SELECT MAX(perm_rank) as MAX FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module`='$module'";
-					$result = mysql_query($query) or die(mysql_error());
-					$row = mysql_fetch_assoc($result);
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					$row = mysqli_fetch_assoc($result);
 					$permrank = $row['MAX'] + 1;
 					$desc = $permission . " the " . $module;
 					$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "permissionlist`(`perm_id` ,`page_module` ,`perm_action` ,`perm_text` ,`perm_rank` ,`perm_description`)VALUES ('$permid', '$module', '$permission', '$permission', '$permrank', '$desc') ";
-					$result = mysql_query($query) or die(mysql_error());
-					if (mysql_affected_rows())
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]))
 						displayinfo("$permission has been created for $module");
 				}
 			}
@@ -800,8 +800,8 @@ function admin_checkFunctionPerms() {
 			require_once ($sourceFolder . "/" . $moduleFolder . "/" . $module . ".lib.php");
 			$class = new $module ();
 			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist` WHERE `page_module`='$module'";
-			$result = mysql_query($query);
-			while ($tempres = mysql_fetch_assoc($result)) {
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			while ($tempres = mysqli_fetch_assoc($result)) {
 
 				$permName = ucfirst($tempres['perm_action']);
 				$method = "action" . $permName;
@@ -820,20 +820,20 @@ function admin_checkFunctionPerms() {
 
 function admin_checkAdminUser() {
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_name`='admin'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) > 0) {
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if (mysqli_num_rows($result) > 0) {
 		displayinfo("User \"Admin\" exists in database.");
 	} else {
 		$query = "SELECT MAX(user_id) as MAX FROM `" . MYSQL_DATABASE_PREFIX . "users` ";
-		$result = mysql_query($query) or die(mysql_error() . "check.lib L:141");
-		$row = mysql_fetch_assoc($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "check.lib L:141");
+		$row = mysqli_fetch_assoc($result);
 		$uid = $row['MAX'] + 1;
 		$passwd = rand();
 		$adminPasswd = md5($passwd);
 		$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users`( `user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password`  ,`user_activated`)VALUES ( '$uid' , 'admin', 'admin@cms.org', 'Administrator', '$adminPasswd', '1')";
 		
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_affected_rows() > 0) {
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0) {
 			displayinfo("User Admin has been created with email admin@cms.org and password as $passwd");
 		} else
 			displayerror("Failed to create user Admin");
@@ -850,21 +850,21 @@ function admin_checkAdminPerms()
 	$returnStr="";
 	$str="";
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_name`='admin' ";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) > 0) {
-		$temp = mysql_fetch_array($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if (mysqli_num_rows($result) > 0) {
+		$temp = mysqli_fetch_array($result);
 		$user_Id = $temp['user_id'];
 		$query1 = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "permissionlist`";
-		$result1 = mysql_query($query1);
-		while ($temp1 = mysql_fetch_assoc($result1)) {
+		$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+		while ($temp1 = mysqli_fetch_assoc($result1)) {
 			foreach ($temp1 as $var => $val) {
 				if ($var == 'perm_id') {
 					$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "userpageperm` WHERE `perm_type`='user' AND `usergroup_id`='$user_Id' AND `page_id`=0 AND `perm_id`='$val' AND `perm_permission`='Y'";
-					$result = mysql_query($query) or die(mysql_error());
-					if (!mysql_num_rows($result)) {
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					if (!mysqli_num_rows($result)) {
 						$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "userpageperm` (`perm_type`,`page_id`,`usergroup_id`,`perm_id`,`perm_permission`) VALUES ('user','0','$user_Id','$val','Y')";
-						$result2 = mysql_query($query);
-						if (mysql_affected_rows())
+						$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+						if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]))
 							$returnStr.="\n<br>User Admin userId=$user_Id has been allotted permission $temp1[perm_action] of module $temp1[page_module] over page 0";
 						else
 							$returnStr.="\n<br>Failed to create permission $temp1[perm_action] of module $temp1[page_module] over page 0 for User Admin userId=$user_Id";
@@ -965,8 +965,8 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 			}
 			else {
 				$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . $userId . '\' AND `group_id` = ' . $groupId;
-				$deleteResult = mysql_query($deleteQuery);
-				if(!$deleteResult || mysql_affected_rows() != 1) {
+				$deleteResult = mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery);
+				if(!$deleteResult || mysqli_affected_rows($GLOBALS["___mysqli_ston"]) != 1) {
 					displayerror('Could not delete user with the given E-mail from the given group.');
 				}
 				else {
@@ -982,7 +982,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 		}
 		elseif ($subAction == 'savegroupproperties' && isset($_POST['txtGroupDescription'])) {
 			$updateQuery = "UPDATE `" . MYSQL_DATABASE_PREFIX . "groups` SET `group_description` = '".escape($_POST['txtGroupDescription'])."' WHERE `group_id` = '$groupId'";
-			$updateResult = mysql_query($updateQuery);
+			$updateResult = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 			if (!$updateResult) {
 				displayerror('Could not update database.');
 			}
@@ -1067,7 +1067,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 		$usersTable = '`' . MYSQL_DATABASE_PREFIX . 'users`';
 		$usergroupTable = '`' . MYSQL_DATABASE_PREFIX . 'usergroup`';
 		$userQuery = "SELECT `user_email`, `user_fullname` FROM $usergroupTable, $usersTable WHERE `group_id` =  '$groupId' AND $usersTable.`user_id` = $usergroupTable.`user_id` ORDER BY `user_email`";
-		$userResult = mysql_query($userQuery);
+		$userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userQuery);
 		if(!$userResult) {
 			displayerror('Error! Could not fetch group information.');
 			return '';
@@ -1075,7 +1075,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 	
 		$userEmails = array();
 		$userFullnames = array();
-		while($userRow = mysql_fetch_row($userResult)) {
+		while($userRow = mysqli_fetch_row($userResult)) {
 			$userEmails[] = $userRow[0];
 			$userFullnames[] = $userRow[1];
 		}
@@ -1095,7 +1095,7 @@ function groupManagementForm($currentUserId, $modifiableGroups, &$pagePath) {
 				<legend>{$ICONS['User Groups']['small']}Existing Users in Group:</legend>
 GROUPEDITFORM;
 
-		$userCount = mysql_num_rows($userResult);
+		$userCount = mysqli_num_rows($userResult);
 		global $urlRequestRoot, $cmsFolder, $templateFolder,$sourceFolder;
 		$deleteImage = "<img src=\"$urlRequestRoot/$cmsFolder/$templateFolder/common/icons/16x16/actions/edit-delete.png\" alt=\"Remove user from the group\" title=\"Remove user from the group\" />";
 
@@ -1194,17 +1194,17 @@ GROUPEDITFORM;
 		elseif(isset($_GET['dowhat']) && $_GET['dowhat'] == 'addgroup') {
 			if(isset($_POST['txtGroupName']) && isset($_POST['txtGroupDescription']) && isset($_POST['selGroupPriority'])) {
 				$existsQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_name` = '".escape($_POST['txtGroupName'])."'";
-				$existsResult = mysql_query($existsQuery);
+				$existsResult = mysqli_query($GLOBALS["___mysqli_ston"], $existsQuery);
 				if(trim($_POST['txtGroupName']) == '') {
 					displayerror('Cannot create a group with an empty name. Please type in a name for the new group.');
 				}
-				elseif(mysql_num_rows($existsResult) >= 1) {
+				elseif(mysqli_num_rows($existsResult) >= 1) {
 					displayerror('A group with the name you specified already exists.');
 				}
 				else {
 					$idQuery = 'SELECT MAX(`group_id`) FROM `' . MYSQL_DATABASE_PREFIX . 'groups`';
-					$idResult = mysql_query($idQuery);
-					$idRow = mysql_fetch_row($idResult);
+					$idResult = mysqli_query($GLOBALS["___mysqli_ston"], $idQuery);
+					$idRow = mysqli_fetch_row($idResult);
 					$newGroupId = 2;
 					if(!is_null($idRow[0])) {
 						$newGroupId = $idRow[0] + 1;
@@ -1217,13 +1217,13 @@ GROUPEDITFORM;
 
 					$addGroupQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'groups` (`group_id`, `group_name`, `group_description`, `group_priority`) ' .
 							"VALUES($newGroupId, '".escape($_POST['txtGroupName'])."', '".escape($_POST['txtGroupDescription'])."', '$newGroupPriority')";
-					$addGroupResult = mysql_query($addGroupQuery);
+					$addGroupResult = mysqli_query($GLOBALS["___mysqli_ston"], $addGroupQuery);
 					if($addGroupResult) {
 						displayinfo('New group added successfully.');
 
 						if(isset($_POST['chkAddMe'])) {
 							$insertQuery = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . "usergroup`(`user_id`, `group_id`) VALUES ('$currentUserId', '$newGroupId')";
-							if(!mysql_query($insertQuery)) {
+							if(!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
 								displayerror('Error adding user to newly created group: ' . $insertQuery . '<br />' . mysql_query());
 							}
 						}
@@ -1232,7 +1232,7 @@ GROUPEDITFORM;
 						$modifiableGroups = getModifiableGroups($currentUserId, $maxPriorityGroup, $ordering = 'asc');
 					}
 					else {
-						displayerror('Could not run MySQL query. New group could not be added.');
+						displayerror('Could not run mysql query. New group could not be added.');
 					}
 				}
 			}

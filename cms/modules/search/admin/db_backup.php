@@ -2,14 +2,14 @@
 include "auth.php";
 $backup_path="./backup/";
 
-$stats  = mysql_query("SHOW TABLE STATUS FROM $database LIKE '$mysql_table_prefix%'");
-$numtables = mysql_num_rows($stats);
+$stats  = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLE STATUS FROM $database LIKE '$mysql_table_prefix%'");
+$numtables = mysqli_num_rows($stats);
 $starttime=microtime();
 if($send2=="Optimize"){
 	$i = 0;  
 	while($i < $numtables) {
 		if (isset($tables[$i])) {
-		  mysql_query("OPTIMIZE TABLE ".$tables[$i]);
+		  mysqli_query($GLOBALS["___mysqli_ston"], "OPTIMIZE TABLE ".$tables[$i]);
 
 			}
 		$i++;
@@ -22,7 +22,7 @@ if($send2=="Optimize"){
         $copyr="# Table backup from Sphider\n".
                "# Creation date: ".date("d-M-Y H:s",time())."\n".
                "# Database: ".$database."\n".
-               "# MySQL Server version: ".mysql_get_server_info()."\n\n" ;
+               "# mysql Server version: ".((is_null($___mysqli_res = mysqli_get_server_info($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res)."\n\n" ;
 	gzwrite ($fp,$copyr);
 	gzclose ($fp);
   chmod($backup_path.$filename, 0777);
@@ -50,8 +50,8 @@ function get_def($database,$table,$fp) {
     $def = "";
     $def .= "DROP TABLE IF EXISTS $table;#%%\n";
     $def .= "CREATE TABLE $table (\n";
-    $result = mysql_db_query($database, "SHOW FIELDS FROM $table") or die("Table $table not existing in database");
-    while($row = mysql_fetch_array($result)) {
+    $result = ((mysqli_query($GLOBALS["___mysqli_ston"], "USE $database")) ? mysqli_query($GLOBALS["___mysqli_ston"],  "SHOW FIELDS FROM $table") : false) or die("Table $table not existing in database");
+    while($row = mysqli_fetch_array($result)) {
         $def .= "    $row[Field] $row[Type]";
         if ($row["Default"] != "") $def .= " DEFAULT '$row[Default]'";
         if ($row["Null"] != "YES") $def .= " NOT NULL";
@@ -59,8 +59,8 @@ function get_def($database,$table,$fp) {
         	$def .= ",\n";
      }
      $def = ereg_replace(",\n$","", $def);
-     $result = mysql_db_query($database, "SHOW KEYS FROM $table");
-     while($row = mysql_fetch_array($result)) {
+     $result = ((mysqli_query($GLOBALS["___mysqli_ston"], "USE $database")) ? mysqli_query($GLOBALS["___mysqli_ston"],  "SHOW KEYS FROM $table") : false);
+     while($row = mysqli_fetch_array($result)) {
           $kname=$row["Key_name"];
           if(($kname != "PRIMARY") && ($row["Non_unique"] == 0)) $kname="UNIQUE|$kname";
           if(!isset($index[$kname])) $index[$kname] = array();
@@ -80,13 +80,13 @@ function get_def($database,$table,$fp) {
 }
 
 function get_content($database,$table,$fp) {
-     $result = mysql_db_query($database, "SELECT * FROM $table") or die("Cannot get content of table");
+     $result = ((mysqli_query($GLOBALS["___mysqli_ston"], "USE $database")) ? mysqli_query($GLOBALS["___mysqli_ston"],  "SELECT * FROM $table") : false) or die("Cannot get content of table");
           
-     while($row = mysql_fetch_row($result)) {
+     while($row = mysqli_fetch_row($result)) {
          
          $insert = "INSERT INTO $table VALUES (";
         
-         for($j=0; $j<mysql_num_fields($result);$j++) {
+         for($j=0; $j<(($___mysqli_tmp = mysqli_num_fields($result)) ? $___mysqli_tmp : false);$j++) {
             if(!isset($row[$j])) $insert .= "NULL,";
             elseif(isset($row[$j])) $insert .= "'".addslashes($row[$j])."',";
             else $insert .= "'',";

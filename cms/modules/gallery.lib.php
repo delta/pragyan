@@ -63,40 +63,40 @@ class gallery implements module, fileuploadable {
 			$arr=explode("/",$_GET['ref']);
 			$arr = $arr[sizeof($arr)-1];
 			$query="SELECT* FROM `gallery_pics` WHERE upload_filename='".$arr."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
-			$result=mysql_query($query);
+			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if($result){
-				$newrate = mysql_result($result,0,'pic_rate')+1;
+				$newrate = mysqli_result($result, 0, 'pic_rate')+1;
 				$query="UPDATE `gallery_pics` SET `pic_rate`='".$newrate."' WHERE upload_filename='".$arr."' AND page_modulecomponentid='$this->moduleComponentId'";
-				mysql_query($query);
+				mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			}}
 		else if($_GET['getView']){
 			$arr1=explode("/",$_GET['getView']);
 			$arr1 = $arr1[sizeof($arr1)-1];
 			$query="SELECT* FROM `gallery_pics` WHERE upload_filename='".$arr1."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
-			$result1=mysql_query($query);
+			$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if($result1){
-				$view = mysql_result($result1,0,'pic_rate');
+				$view = mysqli_result($result1, 0, 'pic_rate');
 				echo $view;
 			}
 			}
 		else if($_GET['rateIt']){
 			$arr3 = $_GET['rateRef'];
 			$query="SELECT `vote_avg`,`voters` FROM `gallery_pics` WHERE upload_filename='".$arr3."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
-			$result3=mysql_query($query);
+			$result3=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if($result3){
-				$voteAvg = mysql_result($result3,0,'vote_avg');
-				$voters = mysql_result($result3,0,'voters');
+				$voteAvg = mysqli_result($result3, 0, 'vote_avg');
+				$voters = mysqli_result($result3, 0, 'voters');
 				$newAvg = (($voters*$voteAvg)+$_GET['rateIt'])/($voters+1);
 				$voters=$voters+1;
 				$query="UPDATE `gallery_pics` SET `vote_avg`='".$newAvg."',`voters`='".$voters."' WHERE upload_filename='".$arr3."' AND page_modulecomponentid='$this->moduleComponentId'";
-				$result = mysql_query($query);
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				if (!$result){echo "a";}
 				else{
 					$query="SELECT* FROM `gallery_pics` WHERE upload_filename='".$arr3."' AND page_modulecomponentid='$this->moduleComponentId' LIMIT 1";
-					$result3 = mysql_query($query);
+					$result3 = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					if($result3){
-						$rating = mysql_result($result3,0,'vote_avg');
-						$voters = mysql_result($result3,0,'voters');
+						$rating = mysqli_result($result3, 0, 'vote_avg');
+						$voters = mysqli_result($result3, 0, 'voters');
 						echo $rating."-".$voters;
 					}
 					else{
@@ -142,17 +142,17 @@ class gallery implements module, fileuploadable {
 			</script>
 JS;
 		$gallQuery = "SELECT * from `gallery_name` where `page_modulecomponentid`='$this->moduleComponentId'";
-		$gallResult = mysql_query($gallQuery);
-		$row = mysql_fetch_assoc($gallResult);
+		$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
+		$row = mysqli_fetch_assoc($gallResult);
 		$content .= "<h2><center>{$row['gallery_name']}</center></h2><br/><center><h3>{$row['gallery_desc']}</center></h3>";
 		$perPage = $row['imagesPerPage'];
 		$viewCheck = $row['allowViews'];
 		$ratingCheck = $row['allowRatings'];
 		include_once ("$sourceFolder/" . 'upload.lib.php');
 		$query = "SELECT `upload_filename` FROM `gallery_pics` WHERE `page_modulecomponentid` ='". $this->moduleComponentId."'";
-		$pic_result = mysql_query($query) or die(mysql_error());
+		$pic_result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$arr = array ();
-		while ($row = mysql_fetch_assoc($pic_result))
+		while ($row = mysqli_fetch_assoc($pic_result))
 			$arr[] = $row;
 		$numPic = count($arr);
 		if(isset($_GET['gallerypage']))
@@ -170,8 +170,8 @@ JS;
 		$content .= '<div class="highslide-gallery" style="width: 100%; margin: auto">';
 		for ($i = $start; $i < $end; $i++) {
 			$gallQuery2 = "SELECT * FROM `gallery_pics` where `upload_filename`='{$arr[$i]['upload_filename']}' AND `page_modulecomponentid`= '$this->moduleComponentId'";
-			$gallResult2 = mysql_query($gallQuery2);
-			$row2 = mysql_fetch_assoc($gallResult2);
+			$gallResult2 = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery2);
+			$row2 = mysqli_fetch_assoc($gallResult2);
 			if ($row2) {
 				$content .= "<input type=\"hidden\" id=\""."thumb_"."{$row2['upload_filename']}\" value=\"{$row2['pic_rate']}\" />";
 				$content .= "<input type=\"hidden\" id=\""."thumb1_"."{$row2['upload_filename']}\" value=\"{$row2['vote_avg']}\" />";
@@ -213,7 +213,7 @@ JS;
 	}
 	public function createModule($nextId) {
 		$gallQuery = "INSERT INTO `gallery_name` (`page_modulecomponentid`, `gallery_name`, `gallery_desc`) VALUES('$nextId', 'New Gallery', 'Edit your new gallery')";
-		$gallResult = mysql_query($gallQuery);
+		$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
 	}
 	public function actionEdit($moduleComponentId) {
 		global $sourceFolder;
@@ -225,13 +225,13 @@ JS;
 		if (isset ($_POST['btnDeleteImage']) && isset ($_POST['imagename']) && $_POST['imagename'] != '') {
 			deleteFile($moduleComponentId, 'gallery', $_POST['imagename']);
 			$gallQuery = "DELETE FROM `gallery_pics` WHERE `upload_filename`='".escape($_POST['imagename'])."'";
-			$gallResult = mysql_query($gallQuery);
+			$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
 		} 
 		else if (isset ($_POST['btnEditComment']) && isset ($_POST['imagename']) && $_POST['imagename'] != '') {
 			$imageName =  escape($_POST['imagename']);
 			$comment = escape($_POST['desc']);
 			$gallQuery = "UPDATE `gallery_pics` SET `gallery_filecomment`=\"$comment\" WHERE `upload_filename`=\"$imageName\"";
-			$gallResult = mysql_query($gallQuery);
+			$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
 		}
 		if (isset ($_POST['btnEditGallname']) && isset ($_POST['gallName']) && isset ($_POST['gallDesc']) && $_POST['gallName'] != '' && $_POST['gallDesc'] != '') {
 			if(is_numeric($_POST['imagesPerPage']))
@@ -239,7 +239,7 @@ JS;
 				$viewCount = ( $_POST['allowViews'] ? 1 : 0 );
 				$ratingCount = ( $_POST['allowRatings'] ? 1 : 0 );
 			$gallQuery = "UPDATE `gallery_name` SET `gallery_name`='".escape($_POST['gallName'])."',`gallery_desc`='".escape($_POST['gallDesc'])."', `imagesPerPage`='".$perPage."',`allowViews`='".$viewCount."',`allowRatings`='".$ratingCount."' WHERE `page_modulecomponentid`='$moduleComponentId'";
-			$gallResult = mysql_query($gallQuery);
+			$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
 		}
 
 		$content2 = getFileUploadForm($this->moduleComponentId, "gallery", './+edit', 10000000, 5);
@@ -254,14 +254,14 @@ JS;
 		if (is_array($uploadSuccess) && isset ($uploadSuccess[0])) {
 			for($i=0;$i<count($uploadSuccess);$i++){
 				$gallQuery3 = "INSERT INTO `gallery_pics` (`upload_filename`, `page_modulecomponentid`, `gallery_filecomment`) VALUES('$uploadSuccess[$i]', '$this->moduleComponentId', 'No Comment')";
-				$gallResult3 = mysql_query($gallQuery3);
+				$gallResult3 = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery3);
 			}
 		}
 		$arr = getUploadedFiles($this->moduleComponentId, 'gallery');
 		global $ICONS;
 		$content2="<fieldset><legend>{$ICONS['Gallery Edit']['small']}Edit Gallery</legend>".$content2;
 		
-		$result = mysql_fetch_array(mysql_query("SELECT * FROM `gallery_name` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
+		$result = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `gallery_name` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
 		if($result){
 			$checkViews = ($result['allowViews'] == 1 ? 'checked="checked" ': '' );
 			$checkRatings = ($result['allowRatings'] == 1 ? 'checked="checked" ': '' );
@@ -317,9 +317,9 @@ JS;
 					<br /><br />
 GALFORM;
 		$gallQuery2 = "SELECT * FROM `gallery_pics` where `page_modulecomponentid`= '$this->moduleComponentId'";
-		$gallResult2 = mysql_query($gallQuery2);
+		$gallResult2 = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery2);
 		$fileArray = array ();
-		while ($row2 = mysql_fetch_assoc($gallResult2))
+		while ($row2 = mysqli_fetch_assoc($gallResult2))
 			$fileArray[] = $row2;
 		if ($fileArray) {
 			for ($i = 0; $i < count($fileArray); $i++) {
@@ -354,15 +354,15 @@ IMGFORM;
 			$content = deleteFile($moduleComponentId, 'gallery', $arr[$c]['upload_filename']) && $content;
 		}
 		$gallQuery = "DELETE FROM `gall_name` where `page_modulecomponentid`='$moduleComponentId'";
-		$gallResult = mysql_query($gallQuery);
+		$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
 		$gallQuery2 = "DELETE FROM `gall_pics` where `page_modulecomponentid`='$moduleComponentId'";
-		$gallResult2 = mysql_query($gallQuery2);
+		$gallResult2 = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery2);
 		return $content;
 	}
 	public function copyModule($moduleComponentId,$newId) {
 		$gallQuery = "SELECT * FROM `gallery_pics` WHERE page_modulecomponentid = '" . $moduleComponentId."'";
-		$gallResult = mysql_query($gallQuery);
-		$gallRow = mysql_fetch_assoc($gallResult);
+		$gallResult = mysqli_query($GLOBALS["___mysqli_ston"], $gallQuery);
+		$gallRow = mysqli_fetch_assoc($gallResult);
 		$destinationPage_moduleComponentId = $newId;
 		while ($gallRow) {
 			fileCopy($moduleComponentId, 'gallery', $gallRow['upload_filename'], $destinationPage_moduleComponentId, 'gallery', $gallRow['upload_filename'], $this->userId);

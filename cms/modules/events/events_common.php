@@ -13,7 +13,7 @@ function returnUserProfileDetails($userId){
                             data.user_id = $userId
                          WHERE descr.page_modulecomponentid = 0
                          ";
-  $profileDetailRes = mysql_query($profileDetailQuery) or displayerror(mysql_error());
+  $profileDetailRes = mysqli_query($GLOBALS["___mysqli_ston"], $profileDetailQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if(!$profileDetailRes) {
     displayerror("check the error in getProfileDetailsForPr function in prhospi_common.php");
     return '';
@@ -32,8 +32,8 @@ TABLE;
     if($userId>20000 && $userId<30000)
         $userId +=180000;
 $userNameCons="SELECT * FROM `festemberV3_users` WHERE `user_id`='{$userId}'";
-$userNameQuery=mysql_query($userNameCons) or displayerror(mysql_error());
-$userNameDetails=mysql_fetch_assoc($userNameQuery);
+$userNameQuery=mysqli_query($GLOBALS["___mysqli_ston"], $userNameCons) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$userNameDetails=mysqli_fetch_assoc($userNameQuery);
 $userDetails.=<<<TR
      <tr>
         <td>$userId</td>
@@ -49,7 +49,7 @@ $userDetails.=<<<TR
     </tr>
 TR;
 
-  while($result=mysql_fetch_assoc($profileDetailRes)) {
+  while($result=mysqli_fetch_assoc($profileDetailRes)) {
     if($count == 11) { $count ++ ; continue; }
     $dispText = $result['dispText'];
     $dispData = $result['dispData'];
@@ -68,8 +68,8 @@ TR;
 function getBookletIdFromUserId($userId,$mcId) {
   $bookletId = escape($bookletId);
   $checkUserRegisteredToPr = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid` = {$mcId} AND `user_id` = '{$userId}'";
-  $checkUserRegisteredToPrQuery = mysql_query($checkUserRegisteredToPr) or displayerror(mysql_error());
-  $row = mysql_fetch_assoc($checkUserRegisteredToPrQuery);
+  $checkUserRegisteredToPrQuery = mysqli_query($GLOBALS["___mysqli_ston"], $checkUserRegisteredToPr) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $row = mysqli_fetch_assoc($checkUserRegisteredToPrQuery);
   return $row['booklet_id'];
 
 }
@@ -126,7 +126,7 @@ function validateAddEventData($pageModuleComponentId){
                                     ."'{$_POST['eventStartTime']}', '{$_POST['eventEndTime']}', "
                                     ."'{$_POST['eventVenue']}', '{$_POST['eventDesc']}', CURRENT_TIME(), '', '{$pageModuleComponentId}', "
                                     ."'{$_POST['lng']}', '{$_POST['lat']}');";
-            $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+            $insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
             echo "Valid";
     }
     else echo "Invalid";
@@ -153,7 +153,7 @@ function validateEditEventData($pageModuleComponentId){
                                                     `event_loc_y`='{$_POST['lat']}' "
                         ." WHERE `page_moduleComponentId`='{$pageModuleComponentId}'"
                         ."AND `event_id`={$_POST['eventId']}";
-            $editRes=mysql_query($editQuery) or displayerror(mysql_error());
+            $editRes=mysqli_query($GLOBALS["___mysqli_ston"], $editQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
             echo "Valid";
     }
     else echo "Invalid";
@@ -166,7 +166,7 @@ function getAllEvents($pmcid){
     $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
     //displaywarning($scriptFolder);
     $selectQuery="SELECT * FROM `events_details` WHERE `page_moduleComponentId`={$pmcid};";
-    $insertRes=mysql_query($selectQuery) or displayerror(mysql_error());
+    $insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     global $STARTSCRIPTS;
     $smarttablestuff = smarttable::render(array('table_event_details'),null);
     $STARTSCRIPTS .="initSmartTable();";
@@ -188,7 +188,7 @@ function getAllEvents($pmcid){
     </thead>
 TABLE;
 
-while($res = mysql_fetch_assoc($insertRes)) {
+while($res = mysqli_fetch_assoc($insertRes)) {
     $eventDetails .=<<<TR
     <tr>        
     <td>{$res['event_id']}</td>
@@ -265,8 +265,8 @@ MAP1;
             
     $fpmcid=1;
     $q="SELECT * from `events_notifications` WHERE NOW()-`timeadded` <= 3600 * 20 AND  NOW()-`timeadded`>=0  ORDER BY `timeadded` DESC";
-    $res=mysql_query($q); 
-    while($row=mysql_fetch_array($res)){
+    $res=mysqli_query($GLOBALS["___mysqli_ston"], $q); 
+    while($row=mysqli_fetch_array($res)){
      $maps.="<tr  style='margin-bottom:5px;'><td style='margin-bottom:5px;border:1px solid #C3AC7A; border-radius: 5px;font-size:2em;'> {$row['notif_content']}  </td></tr>";
     }
       
@@ -312,8 +312,8 @@ function getEventsJSON($pmcid){
     $eventsQuery="SELECT * FROM `events_details` "
                             ."WHERE '{$lastdate}'<=`event_last_update_time` AND event_date>='{$date1}' AND `page_moduleComponentId`='{$pmcid}'" 
                             ."ORDER BY event_date ASC LIMIT {$prod}, {$ipp};";
-    $eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
-    while($row=mysql_fetch_array($eventsRes)){
+    $eventsRes=mysqli_query($GLOBALS["___mysqli_ston"], $eventsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    while($row=mysqli_fetch_array($eventsRes)){
             $event=array(
                     "event_id"=> $row['event_id'], 
                     "event_name"=> $row['event_name'],
@@ -343,7 +343,7 @@ function getSchedule($pmcid){
     $eventsQuery="SELECT * FROM `events_details` "
                 ."WHERE `page_moduleComponentId`='{$pmcid}'"
                 ."ORDER BY event_date ASC;";
-    $eventsRes=mysql_query($eventsQuery) or displayerror(mysql_error());
+    $eventsRes=mysqli_query($GLOBALS["___mysqli_ston"], $eventsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
     $schedule=<<<SCHEDULE
     <script src="$scriptFolder/jquery.js"></script>
@@ -355,7 +355,7 @@ function getSchedule($pmcid){
     <th width='10%;'>Time</th>
 SCHEDULE;
 
-    while($row=mysql_fetch_array($eventsRes)){
+    while($row=mysqli_fetch_array($eventsRes)){
         $edate=$row['event_name'];
         $schedule.="<tr> <td>{$row['event_name']}</td> <td>{$row['event_venue']}</td><td>";
         $schedule.="{$row['event_date']}</td><td>";
@@ -371,7 +371,7 @@ SCHEDULE;
 function deleteEvent($eventid, $pmcid){
     //query to delete event
     $deleteQuery="DELETE FROM `events_details` WHERE `event_id`='{$eventid}' AND `page_moduleComponentId`='{$pmcid}';";
-    $deletetRes=mysql_query($deleteQuery) or displayerror(mysql_error());
+    $deletetRes=mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if ($deletetRes==1) {
             echo("Success");
     }
@@ -393,8 +393,8 @@ function validateProcurementData($pageModuleComponentId){
             $_POST['eventName']=escape($_POST['eventName']);
             $_POST['procurementName']=escape($_POST['procurementName']);
             $selectQuery = "SELECT * FROM `events_event_procurement` WHERE `event_name`='{$_POST[eventName]}' AND `procurement_name`='{$_POST[procurementName]}' ";
-            $selectRes=mysql_query($selectQuery);
-            if(mysql_num_rows($selectRes)==1){
+            $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery);
+            if(mysqli_num_rows($selectRes)==1){
                 $isValid=false;
                 echo "Procurement ".$_POST['procurementName']." already exists for event ".$_POST['eventName'].". Kindly edit in VIEW ALL if you want to change.";
                 exit();
@@ -409,10 +409,10 @@ function validateProcurementData($pageModuleComponentId){
             //Query to insert into the db
             $insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
                          ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['quantity']}', '{$pageModuleComponentId}')";
-            $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+            $insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
             $updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`+ {$_POST['quantity']} WHERE `procurement_name`='{$_POST['procurementName']}'";
-            $updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+            $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
             echo "Valid";
     }
     exit();
@@ -427,9 +427,9 @@ function validateEditProcurementData($pageModuleComponentId){
     }
     else {
             $selectQuery="SELECT * FROM `events_event_procurement`";
-            $selectRes=mysql_query($selectQuery);
+            $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery);
             $cnt=1;
-            while($res = mysql_fetch_assoc($selectRes)) {
+            while($res = mysqli_fetch_assoc($selectRes)) {
             if($cnt!=$_POST['eventnum'] &&	($_POST['procurementName']==$res['procurement_name'] && $_POST['eventName']==$res['event_name']) )
                 $isValid=false;
             $cnt++;
@@ -443,22 +443,22 @@ function validateEditProcurementData($pageModuleComponentId){
             }
             //Query to insert into the db
             $selectQuery="SELECT * FROM `events_event_procurement`";
-            $selectRes=mysql_query($selectQuery);
+            $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery);
             $cnt=1;
-            while($res = mysql_fetch_assoc($selectRes)) {		
+            while($res = mysqli_fetch_assoc($selectRes)) {		
             if($cnt==$_POST['eventnum']){
                 $updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`-{$res['quantity']} WHERE `procurement_name`='{$res['procurement_name']}'";	
-                $updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+                $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                 $updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`+ {$_POST['editquantity']} WHERE `procurement_name`='{$_POST['procurementName']}'";
-                $updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+                $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                 
                 $deleteQuery="DELETE FROM `events_event_procurement` WHERE `event_name`='{$res['event_name']}' AND `procurement_name`='{$res['procurement_name']}' ";
-                $deleteRes=mysql_query($deleteQuery) or displayerror(mysql_error());
+                $deleteRes=mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                 $insertQuery="INSERT INTO `events_event_procurement` (`event_name`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
                          ."VALUES ('{$_POST['eventName']}', '{$_POST['procurementName']}','{$_POST['editquantity']}', '{$pageModuleComponentId}')";
-                $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+                $insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
                 
                 echo '<script>window.location = ("./+ochead&subaction=viewAll");</script>';
                 echo '<script>cmsShow("info", "Procurement edited");</script>';
@@ -481,8 +481,8 @@ function validateNewProcurement($pageModuleComponentId){
     else {
             $_POST['newProc']=escape(strtolower($_POST['newProc']));
             $selectQuery = "SELECT `procurement_name` FROM `events_procurements` WHERE `procurement_name`='{$_POST['newProc']}' ";
-            $selectRes=mysql_query($selectQuery);
-            if(mysql_num_rows($selectRes)==1){
+            $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery);
+            if(mysqli_num_rows($selectRes)==1){
                 $isValid=false;
                 echo "Exists";
                 exit();
@@ -497,7 +497,7 @@ function validateNewProcurement($pageModuleComponentId){
             //Query to insert into the db
             $insertQuery="INSERT INTO `events_procurements` (`procurement_id`, `procurement_name`, `quantity`, `page_moduleComponentId`) "
                          ."VALUES (NULL, '{$_POST['newProc']}', 0, '{$pageModuleComponentId}')";
-            $insertRes=mysql_query($insertQuery) or displayerror(mysql_error());
+            $insertRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
             echo "Valid";
     }
     else echo "Invalid";
@@ -527,7 +527,7 @@ function getAllProcurements($pmcid){
     global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
     $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
     $selectQuery="SELECT * FROM `events_event_procurement` WHERE `page_moduleComponentId`={$pmcid};";
-    $selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+    $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     global $STARTSCRIPTS;
     $smarttablestuff = smarttable::render(array('table_procurement_details'),null);
     $STARTSCRIPTS .="initSmartTable();";
@@ -552,10 +552,10 @@ $procurementDetails =<<<TABLE
     </thead>
 TABLE;
 $cnt=1;
-while($res = mysql_fetch_assoc($selectRes)) {
+while($res = mysqli_fetch_assoc($selectRes)) {
 $selQuery="SELECT * FROM `events_details` WHERE `event_name`='{$res['event_name']}'";
-$selRes=mysql_query($selQuery) or displayerror(mysql_error());
-$selRes = mysql_fetch_assoc($selRes);
+$selRes=mysqli_query($GLOBALS["___mysqli_ston"], $selQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+$selRes = mysqli_fetch_assoc($selRes);
 $procurementDetails .=<<<TR
 
       <tr>        
@@ -587,14 +587,14 @@ return $procurementDetails;
 
 function deleteProcurement($eventname, $pmcid){
 $selectQuery="SELECT * FROM `events_event_procurement` ";
-$selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+$selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $cnt=1;
-while($res = mysql_fetch_assoc($selectRes)) {		
+while($res = mysqli_fetch_assoc($selectRes)) {		
 if($cnt==$eventname){
 $updateQuery="UPDATE `events_procurements` SET `quantity`=`quantity`-{$res['quantity']} WHERE `procurement_name`='{$res['procurement_name']}'";	
-$updateRes=mysql_query($updateQuery) or displayerror(mysql_error());
+$updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $deleteQuery="DELETE FROM `events_event_procurement` WHERE `event_name`='{$res['event_name']}' AND `procurement_name`='{$res['procurement_name']}'";
-$deletetRes=mysql_query($deleteQuery) or displayerror(mysql_error());
+$deletetRes=mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 }
 $cnt++;
 }
@@ -625,7 +625,7 @@ function viewEventWise(){
     global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
     $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
     $selectQuery="SELECT * FROM `events_details` ORDER BY STR_TO_DATE(`event_date`, '%d.%m.%y'),`event_start_time` ";
-    $selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+    $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     global $STARTSCRIPTS;
     $smarttablestuff = smarttable::render(array('show_event_wise'),null);
     $STARTSCRIPTS .="initSmartTable();";
@@ -648,9 +648,9 @@ $procurementDetails =<<<TABLE
     </thead>
 TABLE;
 $cnt=1;
-while($event=mysql_fetch_assoc($selectRes)) {	
-$result=mysql_query("SELECT * FROM `events_event_procurement` WHERE `event_name`='{$event['event_name']}'");
-while($res=mysql_fetch_assoc($result))
+while($event=mysqli_fetch_assoc($selectRes)) {	
+$result=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `events_event_procurement` WHERE `event_name`='{$event['event_name']}'");
+while($res=mysqli_fetch_assoc($result))
 {
         $procurementDetails .=<<<TR
         <tr>        
@@ -677,7 +677,7 @@ function viewProcurementWise(){
     global $cmsFolder,$moduleFolder,$urlRequestRoot, $sourceFolder;
     $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
     $selectQuery="SELECT * FROM `events_procurements`;";
-    $selectRes=mysql_query($selectQuery) or displayerror(mysql_error());
+    $selectRes=mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     global $STARTSCRIPTS;
     $smarttablestuff = smarttable::render(array('show_procurement_wise'),null);
     $STARTSCRIPTS .="initSmartTable();";
@@ -697,7 +697,7 @@ $procurementDetails =<<<TABLE
     </thead>
 TABLE;
 $cnt=1;
-while($res = mysql_fetch_assoc($selectRes)) {
+while($res = mysqli_fetch_assoc($selectRes)) {
 $procurementDetails .=<<<TR
       <tr>        
        <td>{$cnt}</td>
@@ -718,8 +718,8 @@ return $procurementDetails;
 
 function getEventName($pmcId,$eventId){
 $getEventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id` = '{$eventId}'";
-$getEventNameRes = mysql_query($getEventNameQuery) or displayerror(mysql_error());
-return mysql_result($getEventNameRes,0);
+$getEventNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getEventNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+return mysqli_result($getEventNameRes, 0);
 }
 
 
@@ -745,8 +745,8 @@ if($gotoaction == 'qa'){
 else if($gotoaction == 'qahead'){
     $eventDetails .= qaHeadOptions($pmcId).'<br/><br/>asdasdasd<h2>'.getEventName($pmcId,$eventId).'</h2>';
     $checkLockedQuery  = "SELECT `event_id` FROM `events_locked` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
-    $checkLockedRes = mysql_query($checkLockedQuery) or displayerror(mysql_error());
-    if(mysql_num_rows($checkLockedRes) > 0){
+    $checkLockedRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkLockedQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    if(mysqli_num_rows($checkLockedRes) > 0){
         $eventDetails.=<<<FORM
             <br/><p>Event Locked</p>
             <table><tr><td>
@@ -765,8 +765,8 @@ FORM;
 }*/
 
 $checkParticipantsQuery = "SELECT `user_pid` FROM `events_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' LIMIT 1";
-$checkParticipantsRes = mysql_query($checkParticipantsQuery) or displayerror(mysql_error());
-if(mysql_num_rows($checkParticipantsRes) == 0){
+$checkParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+if(mysqli_num_rows($checkParticipantsRes) == 0){
     //Show FileUpload Details
     $fileUploadableField=getFileUploadField('fileUploadField',"events");
 
@@ -796,13 +796,13 @@ else{
 PRINTTABLE;
     //$downloadTable = getUserDetailsTable($pmcId,$eventId);
     //$eventDetails.=displayExcelForTable($downloadTable);
-    if(($gotoaction=='qahead') && mysql_num_rows($checkLockedRes) == 0)
+    if(($gotoaction=='qahead') && mysqli_num_rows($checkLockedRes) == 0)
      {
       $eventDetails.=deleteEventForm($pmcID,$eventId);
     $eventDetails.=addParticipant($gotoaction,$pmcId,$eventId);
    $eventDetails.=searchParticipant($gotoaction,$pmcId,$eventId);
     }
-    if(($gotoaction=='qa') && mysql_num_rows($checkLockedRes) == 0)
+    if(($gotoaction=='qa') && mysqli_num_rows($checkLockedRes) == 0)
      {
     $eventDetails.=addParticipant($gotoaction,$pmcId,$eventId);
     }
@@ -829,7 +829,7 @@ $selectParticipantsQuery = "SELECT `events_participants`.`user_pid`,`events_part
             AND `events_participants`.`event_id`='{$eventId}' AND `events_participants`.`user_pid` NOT IN (SELECT `events_confirmed_participants`.`user_id` 
             FROM `events_confirmed_participants` WHERE `events_confirmed_participants`.`page_moduleComponentId` =  '{$pmcId}') ORDER BY `events_participants`.`user_team_id`";
 //	return $selectParticipantsQuery;
-$selectParticipantsRes = mysql_query($selectParticipantsQuery) or displayerror(mysql_error());
+$selectParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 $participantsTable.=<<<TABLE
 
   $smarttable<table id='participants_table' class='display' width='100%' border='1'><thead><tr><th>Team Id</th><th>FID</th><th>Booklet Id</th><th>Name</th><th>College</th><th>Phone No.</th><th>Rank</th><th>Prize Money</th><th>Options</th>
@@ -838,21 +838,21 @@ TABLE;
 if($gotoaction=='qahead')
   $participantsTable.="<th>Delete</th>";
 $participantsTable.="</thead>";
-while($participant = mysql_fetch_assoc($selectParticipantsRes)){
+while($participant = mysqli_fetch_assoc($selectParticipantsRes)){
     $editRowId = "";
     $participantNameQuery = "SELECT `".MYSQL_DATABASE_PREFIX."users`.`user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$participant['user_pid']}'";
-    $participantNameRes = mysql_query($participantNameQuery) or displayerror(mysql_error());
+    $participantNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $getBookletIdQuery = "SELECT `booklet_id` FROM `prhospi_pr_status` WHERE `user_id`='{$participant['user_pid']}' AND `page_moduleComponentId`='{$pmcId}'";
-    $getBookletIdRes = mysql_query($getBookletIdQuery) or displayerror(mysql_error());
-    if(mysql_num_rows($getBookletIdRes == 0))
+    $getBookletIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $getBookletIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    if(mysqli_num_rows($getBookletIdRes == 0))
        $bookletId = " ";
     else
-      $bookletId = mysql_result($getBookletIdRes,0);
+      $bookletId = mysqli_result($getBookletIdRes, 0);
     if($participant['user_pid']<30000&&$participant['user_pid']>20000) 
    $rep = $participant['user_pid']+180000;
     else
     $rep = $participant['user_pid'];
-    $participantsTable.="<tr id='partRow{$participant['user_pid']}'><td>".$participant['user_team_id']."</td><td>".$rep."</td><td>".$bookletId."<td><span class='userDataDisp{$participant['user_pid']}'>".mysql_result($participantNameRes, 0)."</span><input type='text' class='userDataEditVal{$participant['user_pid']}' value='".mysql_result($participantNameRes, 0)."' style='display:none'></td>";
+    $participantsTable.="<tr id='partRow{$participant['user_pid']}'><td>".$participant['user_team_id']."</td><td>".$rep."</td><td>".$bookletId."<td><span class='userDataDisp{$participant['user_pid']}'>".mysqli_result($participantNameRes,  0)."</span><input type='text' class='userDataEditVal{$participant['user_pid']}' value='".mysqli_result($participantNameRes,  0)."' style='display:none'></td>";
     $editRowId.='-1,';
     $phNoFormId = retPnoneNoFormId();
     $collFormId = retCollFormId();
@@ -861,18 +861,18 @@ while($participant = mysql_fetch_assoc($selectParticipantsRes)){
     $participantsDetailsQuery = "SELECT `form_elementid`,`form_elementdata` FROM `form_elementdata` WHERE `page_moduleComponentId`='{$globalPmcId}' AND `user_id`='{$participant['user_pid']}' AND `form_elementid` IN ($phNoFormId,$collFormId) ORDER BY `form_elementid`";
     //displayinfo($participantsDetailsQuery);
     //1
-    $participantsDetailsRes = mysql_query($participantsDetailsQuery) or displayerror(mysql_error());
+    $participantsDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     //displayinfo(mysql_num_rows($participantsDetailsRes));
-    if(mysql_num_rows($participantsDetailsRes) == 0 || mysql_num_rows($participantsDetailsRes) == 1){
+    if(mysqli_num_rows($participantsDetailsRes) == 0 || mysqli_num_rows($participantsDetailsRes) == 1){
       $participantsDetailsQuery = "SELECT `form_elementid`,`form_elementdata` FROM `form_elementdata` WHERE `page_moduleComponentId`='{$globalPmcId}' AND `user_id`='{$participant['user_pid']}' AND `form_elementid`='{$otherCollFormId}'";
-      $participantsDetailsRes = mysql_query($participantsDetailsQuery) or displayerror(mysql_error());
+      $participantsDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       //echo $participantsDetailsQuery;
       //die();
       $collNameId = $otherCollFormId;
-      if(mysql_num_rows($participantsDetailsRes) == 0)
+      if(mysqli_num_rows($participantsDetailsRes) == 0)
         $collName = " ";
       else{
-        while($userDetails = mysql_fetch_assoc($participantsDetailsRes)){
+        while($userDetails = mysqli_fetch_assoc($participantsDetailsRes)){
           //echo $userDetails['form_elementdata'];
           //die();
           $collName = $userDetails['form_elementdata'];
@@ -884,7 +884,7 @@ while($participant = mysql_fetch_assoc($selectParticipantsRes)){
       //displayinfo($collName);
     }
     else{
-    while($userDetails = mysql_fetch_assoc($participantsDetailsRes)){
+    while($userDetails = mysqli_fetch_assoc($participantsDetailsRes)){
         if($userDetails['form_elementid'] == $phNoFormId){
             $phNoId = $userDetails['form_elementid'];
             $phNo = $userDetails['form_elementdata'];
@@ -895,8 +895,8 @@ while($participant = mysql_fetch_assoc($selectParticipantsRes)){
             $collName = $userDetails['form_elementdata'];
             if($collName == "" || $collName == "Others"){
                 $getCollNameQuery = "SELECT `form_elementdata`,`form_elementid` FROM `form_elementdata` WHERE `form_elementid`='{$otherCollFormId}' AND `page_modulecomponentid`='{retglobalPmcId()}' AND `user_id`='{$participant['user_pid']}'";
-                $getCollNameRes = mysql_query($getCollNameQuery) or displayerror(mysql_error());
-                while($otherCollDetails = mysql_fetch_assoc($getCollNameRes)){
+                $getCollNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCollNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+                while($otherCollDetails = mysqli_fetch_assoc($getCollNameRes)){
                     $collNameId = $otherCollDetails['form_elementid'];
                     $collName = $otherCollDetails['form_elementdata'];
                 }
@@ -918,8 +918,8 @@ while($participant = mysql_fetch_assoc($selectParticipantsRes)){
     /////////////////////////////////////////////////GETTING A DROPDOWN FOR THE LIST OF COLLEGES FROM REGISTRATION FORM 
         $selectTag="<select name='college' class='userDataEditVal{$participant['user_pid']}' style='display:none '>";
             $getCollegeListQuery="SELECT `form_elementtypeoptions` FROM `form_elementdesc` WHERE `page_modulecomponentid`=0 AND `form_elementid`=10";
-            $getCollegeListRes=mysql_query($getCollegeListQuery) or displayerror(mysql_error());
-            if($fullCollegeList=mysql_fetch_array($getCollegeListRes))
+            $getCollegeListRes=mysqli_query($GLOBALS["___mysqli_ston"], $getCollegeListQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            if($fullCollegeList=mysqli_fetch_array($getCollegeListRes))
             {
             
             $fullCollegeArray=explode('|',$fullCollegeList['form_elementtypeoptions']);
@@ -946,13 +946,13 @@ while($participant = mysql_fetch_assoc($selectParticipantsRes)){
 	*/	
     $participantsTable.="<td><span class='userDataDisp{$participant['user_pid']}'>".$phNo."</span><input type='text' class='userDataEditVal{$participant['user_pid']}' value='{$phNo}' style='display:none'></td>";
 		$participantsRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$participant['user_pid']}' AND `event_id`='{$eventId}'";
-		$participantsRankRes = mysql_query($participantsRankQuery) or displayerror(mysql_error());
-		$userRank = mysql_result($participantsRankRes,0);
+		$participantsRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$userRank = mysqli_result($participantsRankRes, 0);
 		$participantsTable.="<td><span class='userDataDisp{$participant['user_pid']}'>".$userRank."</span><input type='text' class='userDataEditVal{$participant['user_pid']}' value='{$userRank}' style='display:none'></td>";
 		$editRowId.='-2,';
 		$getPrizeMoneyQuery = "SELECT `prize_money` FROM `events_participants` WHERE `user_pid`='{$participant['user_pid']}' AND `event_id`='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-		$getPrizeMoneyRes = mysql_query($getPrizeMoneyQuery) or displayerror(mysql_error());
-		$prizeMoney = mysql_result($getPrizeMoneyRes,0);
+		$getPrizeMoneyRes = mysqli_query($GLOBALS["___mysqli_ston"], $getPrizeMoneyQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$prizeMoney = mysqli_result($getPrizeMoneyRes, 0);
 		$participantsTable.="<td><span class='userDataDisp{$participant['user_pid']}'>".$prizeMoney."</span><input type='text' class='userDataEditVal{$participant['user_pid']}' value='{$prizeMoney}' style='display:none'></td>";
 		$editRowId.='-3,';
 		$editRowId=trim($editRowId,',');
@@ -1002,20 +1002,20 @@ function getUserDetailsTable($gotoaction,$pmcId,$eventId){
 				<table id='participants_table' class='display' width='100%' border='1'><thead><tr><th>Team Id</th><th>FID</th><th>Booklet ID</th><th>Name</th><th>College</th><th>Phone No.</th><th>Rank</th><th>Prize Money</th></tr></thead>
 TABLE;
 	$selectTeamQuery = "SELECT `user_team_id`,COUNT(*) AS `count` FROM `events_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' GROUP BY `user_team_id`";
-	$selectTeamRes = mysql_query($selectTeamQuery) or displayerror(mysql_error());
-	while($team = mysql_fetch_assoc($selectTeamRes)){
+	$selectTeamRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectTeamQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while($team = mysqli_fetch_assoc($selectTeamRes)){
 		$participantsTable.="<tr><td rowspan='{$team['count']}'>".$team['user_team_id']."</td>";
 		$selectParticipantsQuery = "SELECT `user_pid` FROM `events_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' AND `user_team_id`='{$team['user_team_id']}'";
-		$selectParticipantsRes = mysql_query($selectParticipantsQuery) or displayerror(mysql_error());
-		while($participant = mysql_fetch_assoc($selectParticipantsRes)){
+		$selectParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while($participant = mysqli_fetch_assoc($selectParticipantsRes)){
 			$participantNameQuery = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$participant['user_pid']}'";
-			$participantNameRes = mysql_query($participantNameQuery) or displayerror(mysql_error());
+			$participantNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$getBookletIdQuery = "SELECT `booklet_id` FROM `prhospi_pr_status` WHERE `user_id`='{$participant['user_pid']}' AND `page_moduleComponentId`='1'";
-		$getBookletIdRes = mysql_query($getBookletIdQuery) or displayerror(mysql_error());
-		if(mysql_num_rows($getBookletIdRes == 0))
+		$getBookletIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $getBookletIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		if(mysqli_num_rows($getBookletIdRes == 0))
 		   $bookletId = " ";
 		else
-		  $bookletId = mysql_result($getBookletIdRes,0);
+		  $bookletId = mysqli_result($getBookletIdRes, 0);
             //$getBookeltIdQuery = "SELECT `booklet_id` FROM `prhospi_pr_status` WHERE `page_moduleComponentId`='{$pmcId}' and `user_id`='{$participant['user_pid']}'";
 			//$getBookletIdRes = mysql_query($getBookletIdQuery) or displayerror(mysql_error());
 			//$bookletId = mysql_result($getBookletIdRes,0);
@@ -1023,14 +1023,14 @@ TABLE;
             $rep = $participant['user_pid']+180000;
         else
             $rep=$participant['user_pid'];
-			$participantsTable.="<td>".$rep."</td><td>".$bookletId."</td><td>".mysql_result($participantNameRes, 0)."</td>";
+			$participantsTable.="<td>".$rep."</td><td>".$bookletId."</td><td>".mysqli_result($participantNameRes,  0)."</td>";
 			$phNoFormId = retPnoneNoFormId();
 			$collFormId = retCollFormId();
 			$otherCollFormId = retOtherCollFormId();
 			$participantsDetailsQuery = "SELECT `form_elementdata`,`form_elementid` FROM `form_elementdata` WHERE `page_moduleComponentId`='{retglobalPmcId()}' AND `user_id`='{$participant['user_pid']}' AND `form_elementid` IN ($phNoFormId,$collFormId)";
 			//2
-			$participantsDetailsRes = mysql_query($participantsDetailsQuery) or displayerror(mysql_error());
-			while($userDetails = mysql_fetch_assoc($participantsDetailsRes)){
+			$participantsDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			while($userDetails = mysqli_fetch_assoc($participantsDetailsRes)){
 				if($userDetails['form_elementid'] == $phNoFormId){
 					$phNoId = $userDetails['form_elementid'];
 					$phNo = $userDetails['form_elementdata'];
@@ -1040,8 +1040,8 @@ TABLE;
 					$collName = $userDetails['form_elementdata'];
 					if($collName == "Others"){
 						$getCollNameQuery = "SELECT `form_elementdata`,`form_elementid` FROM `form_elementdata` WHERE `form_elementid`='{$otherCollFormId}' AND `page_modulecomponentid`='{retglobalPmcId()}' AND `user_id`='{$participant['user_pid']}'";
-						$getCollNameRes = mysql_query($getCollNameQuery) or displayerror(mysql_error());
-						while($otherCollDetails = mysql_fetch_assoc($getCollNameRes)){
+						$getCollNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCollNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						while($otherCollDetails = mysqli_fetch_assoc($getCollNameRes)){
 							$collNameId = $otherCollDetails['form_elementid'];
 							$collName = $otherCollDetails['form_elementdata'];
 						}
@@ -1050,19 +1050,19 @@ TABLE;
 			}
 			$participantsTable.="<td>".$collName."</td><td>".$phNo."</td>";
 			$getUserRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' AND `user_id`='{$participant['user_pid']}'";
-			$getUserRankRes = mysql_query($getUserRankQuery) or displayerror(mysql_error());
-			$userRank = mysql_result($getUserRankRes,0);
+			$getUserRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$userRank = mysqli_result($getUserRankRes, 0);
 			$participantsTable.="<td>".$userRank."</td>";
 			$getPrizeMoneyQuery = "SELECT `prize_money` FROM `events_participants` WHERE `user_pid`='{$participant['user_pid']}' AND `event_id`='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-			$getPrizeMoneyRes = mysql_query($getPrizeMoneyQuery) or displayerror(mysql_error());
-			$prizeMoney = mysql_result($getPrizeMoneyRes,0);
+			$getPrizeMoneyRes = mysqli_query($GLOBALS["___mysqli_ston"], $getPrizeMoneyQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$prizeMoney = mysqli_result($getPrizeMoneyRes, 0);
 			$participantsTable.="<td>".$prizeMoney."</td>";
 			$participantsTable.="</tr>";
 		}
 	}
 	$eventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
-	$eventNameRes = mysql_query($eventNameQuery) or displayerror(mysql_error());
-	$eventName = mysql_result($eventNameRes, 0);
+	$eventNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $eventNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$eventName = mysqli_result($eventNameRes,  0);
 	$participantsTable.="</table>";
 	displayExcelForTable($participantsTable,$eventName);
 	//return $participantsTable;
@@ -1070,9 +1070,9 @@ TABLE;
 
 function confirmParticipation($gotoaction,$pmcid,$eventId,$userId){
 	$confirmQuery = "INSERT INTO `events_confirmed_participants`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
-	$confirmRes = mysql_query($confirmQuery) or displayerror(mysql_error());
+	$confirmRes = mysqli_query($GLOBALS["___mysqli_ston"], $confirmQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$userRankQuery = "INSERT INTO `events_result`(`page_moduleComponentId`,`event_id`,`user_id`) VALUES('{$pmcid}','{$eventId}','{$userId}')";
-	$userRankRes = mysql_query($userRankQuery) or displayerror(mysql_error());
+	$userRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $userRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	//return "Successfully deleted.";
 	$redirectData = <<<POSTDATA
 		<form method='POST' action='./+{$gotoaction}&subaction=viewEvent' name='postDataForm'>
@@ -1091,11 +1091,11 @@ function editParticipant($gotoaction,$pmcId,$eventId,$formId,$userId,$teamId,$ro
 	$rowIdArray = explode(",",$rowId);
 	$updatedRow = "";
 	$getBookletIdQuery = "SELECT `booklet_id` FROM `prhospi_pr_status` WHERE `user_id`='{$userId}' AND `page_moduleComponentId`='1'";
-	$getBookletIdRes = mysql_query($getBookletIdQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($getBookletIdRes) == 0)
+	$getBookletIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $getBookletIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($getBookletIdRes) == 0)
 	  $bookletId = " ";
 	else
-	  $bookletId = mysql_result($getBookletIdRes,0);
+	  $bookletId = mysqli_result($getBookletIdRes, 0);
 	$updatedRow.="<td>".$teamId."</td><td>".$userId."</td><td>".$bookletId."</td>";
        	for($i=0;$i<sizeof($rowValueArray);$i++){
 /*
@@ -1104,22 +1104,22 @@ function editParticipant($gotoaction,$pmcId,$eventId,$formId,$userId,$teamId,$ro
 		$insertEditedRowRes = mysql_query($insertEditedRowQuery) or displayerror(mysql_error());
 */
     $formDataQuery = "SELECT * FROM `form_elementdata` WHERE `user_id`={$userId}";
-    $formDataRes = mysql_query($formDataQuery) or displayerror(mysql_error());
-    if(mysql_num_rows($formDataRes)==0){
+    $formDataRes = mysqli_query($GLOBALS["___mysqli_ston"], $formDataQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    if(mysqli_num_rows($formDataRes)==0){
         for($k=0;$k<13;$k++){
             $insQuery="INSERT INTO `form_elementdata` VALUES({$userId},0,{$k},'')";
-            $inses=mysql_query($insQuery) or displayerror(mysql_error());
+            $inses=mysqli_query($GLOBALS["___mysqli_ston"], $insQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         }
     }
 			if($rowIdArray[$i] == -1){
 			$editNameQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."users` SET `user_fullname`='{$rowValueArray[$i]}' WHERE `user_id`='{$userId}'";
-			$editNameRes = mysql_query($editNameQuery) or displayerror(mysql_error());
+			$editNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $editNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
             $updatedRow.="<td><span class='userDataDisp{$userId}'>".$rowValueArray[$i]."</span><input type='text' class='userDataEditVal{$userId}' value='".$rowValueArray[$i]."' style='display:none' /></td>";
 		}
 		else if($rowIdArray[$i] == -2){
 			$editRankQuery = "UPDATE `events_result` SET `user_rank`='{$rowValueArray[$i]}' WHERE `user_id`='{$userId}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
-			$editRankRes = mysql_query($editRankQuery) or displayerror(mysql_error());
+			$editRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $editRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 
             $updatedRow.="<td><span class='userDataDisp{$userId}'>".$rowValueArray[$i]."</span><input type='text' class='userDataEditVal{$userId}' value='".$rowValueArray[$i]."' style='display:none' /></td>";
@@ -1128,7 +1128,7 @@ function editParticipant($gotoaction,$pmcId,$eventId,$formId,$userId,$teamId,$ro
                   $editPrizeMoneyQuery = "UPDATE `events_participants` SET `prize_money`='{$rowValueArray[$i]}' WHERE `user_pid`='{$userId}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
 
 		  //		  return $editPrizeMoneyQuery;
-                  $editPrizeMoneyRes = mysql_query($editPrizeMoneyQuery) or displayerror(mysql_error());
+                  $editPrizeMoneyRes = mysqli_query($GLOBALS["___mysqli_ston"], $editPrizeMoneyQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 
                   $updatedRow.="<td><span class='userDataDisp{$userId}'>".$rowValueArray[$i]."</span><input type='text' class='userDataEditVal{$userId}' value='".$rowValueArray[$i]."' style='display:none' /></td>";
@@ -1148,14 +1148,14 @@ function editParticipant($gotoaction,$pmcId,$eventId,$formId,$userId,$teamId,$ro
      //           $rowIdArray[$i]=12;
        //          }
             $editValuesQuery = "UPDATE `form_elementdata` SET `form_elementdata`='{$rowValueArray[$i]}' WHERE `user_id`='{$userId}' AND `form_elementid`=10 AND `page_moduleComponentId`='{retglobalPmcId()}'";
-            $editValuesRes = mysql_query($editValuesQuery) or displayerror(mysql_error());
+            $editValuesRes = mysqli_query($GLOBALS["___mysqli_ston"], $editValuesQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
        
      
             $selectTag="<td><span class='userDataDisp{$userId}'>".$rowValueArray[$i]."</span>";
 //<select class='userdataeditval{$userid}' style='display:none' >";
             $getCollegeListQuery="SELECT `form_elementtypeoptions` FROM `form_elementdesc` WHERE `page_modulecomponentid`=0 AND `form_elementid`=10";
-            $getCollegeListRes=mysql_query($getCollegeListQuery) or displayerror(mysql_error());
-            if($fullCollegeList=mysql_fetch_array($getCollegeListRes))
+            $getCollegeListRes=mysqli_query($GLOBALS["___mysqli_ston"], $getCollegeListQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+            if($fullCollegeList=mysqli_fetch_array($getCollegeListRes))
             {
                $selectTag.="<select class='userDataEditVal{$userId}' style='display:none' >";
       
@@ -1181,7 +1181,7 @@ function editParticipant($gotoaction,$pmcId,$eventId,$formId,$userId,$teamId,$ro
             {
             $editValuesQuery = "UPDATE `form_elementdata` SET `form_elementdata`='{$rowValueArray[$i]}' WHERE `user_id`='{$userId}' AND `form_elementid`='{$rowIdArray[$i]}' AND `page_moduleComponentId`='{retglobalPmcId()}'";
                     //3
-            $editValuesRes = mysql_query($editValuesQuery) or displayerror(mysql_error());
+            $editValuesRes = mysqli_query($GLOBALS["___mysqli_ston"], $editValuesQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         //if($rowIdArray[$i]==12){
     
        //$updatedRow.="<input type='text' class='userDataEditVal{$userId}' value='{$rowValueArray[$i]}' style='display:none' /></td>";   
@@ -1229,7 +1229,7 @@ return $updatedRow;
 function lockEvent($pmcId,$eventId){
 
 	$lockEventQuery = "INSERT INTO `events_locked`(`page_moduleComponentId`,`event_id`) VALUES('{$pmcId}','{$eventId}')";
-	$lockEventRes = mysql_query($lockEventQuery) or displayerror(mysql_error());
+	$lockEventRes = mysqli_query($GLOBALS["___mysqli_ston"], $lockEventQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	return displayinfo("Event Locked");
 }
 
@@ -1237,7 +1237,7 @@ function lockEvent($pmcId,$eventId){
 function unlockEvent($pmcId,$eventId){
 
 	$unlockEventQuery = "DELETE FROM `events_locked` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}'";
-	$unlockEventRes = mysql_query($unlockEventQuery) or displayerror(mysql_error());
+	$unlockEventRes = mysqli_query($GLOBALS["___mysqli_ston"], $unlockEventQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	return displayinfo("Event Unlocked");
 }
 
@@ -1254,21 +1254,21 @@ function syncExcelFile($pmcId,$eventId,$fileLoc){
 			}
 			if(!empty($excelData[$i][$j])){
 				$checkDuplicateQuery = "SELECT `user_pid` FROM `events_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' AND `user_pid`='{$userPid}'";
-				$checkDuplicateRes = mysql_query($checkDuplicateQuery) or displayerror(mysql_error());
-				if(mysql_num_rows($checkDuplicateRes) == 0){
+				$checkDuplicateRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkDuplicateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				if(mysqli_num_rows($checkDuplicateRes) == 0){
                                         
                      $getBookletIdQuery = "SELECT `booklet_id` FROM `prhospi_pr_status` WHERE `user_id`='{$userPid}' AND `page_moduleComponentId`='{$pmcId}'";
-        $getBookletIdRes = mysql_query($getBookletIdQuery) or displayerror(mysql_error());
-        if(mysql_num_rows($getBookletIdRes)>0 || 1)
+        $getBookletIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $getBookletIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        if(mysqli_num_rows($getBookletIdRes)>0 || 1)
           {
     displaywarning("Am here");
-          $bookletId = mysql_result($getBookletIdRes,0);
+          $bookletId = mysqli_result($getBookletIdRes, 0);
           $saveUserIdQuery = "INSERT INTO `events_participants`(`page_moduleComponentId`,`event_id`,`user_pid`,`user_team_id`) VALUES('{$pmcId}','{$eventId}','{$userPid}','{$i}')";
-                    $saveUserIdRes = mysql_query($saveUserIdQuery) or displayerror(mysql_error());
+                    $saveUserIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $saveUserIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
                     $userInitRankQuery = "INSERT INTO `events_result`(`page_moduleComponentId`,`user_id`,`user_rank`,`event_id`) VALUES('{$pmcId}','{$userPid}','-1','{$eventId}')";
                     displaywarning($userInitQuery);
-                    $userInitRankRes = mysql_query($userInitRankQuery) or displayerror(mysql_error());
+                    $userInitRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $userInitRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
           }
                 }
 			}
@@ -1307,7 +1307,7 @@ UNLOCK;
 	}
 
 	$checkParticipantsQuery = "SELECT `user_pid` FROM `events_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' LIMIT 1";
-	$checkParticipantsRes = mysql_query($checkParticipantsQuery) or displayerror(mysql_error());
+	$checkParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	
 	$eventParticipants=displayParticipantRank($gotoaction,$pmcId,$eventId);
 		//displayExcelForTable($eventParticipants);
@@ -1324,27 +1324,27 @@ function displayParticipantRank($gotoaction,$pmcId,$eventId){
 				AND `events_participants`.`event_id`='{$eventId}' AND `events_participants`.`user_pid` NOT IN (SELECT `events_confirmed_participants`.`user_id` 
 				FROM `events_confirmed_participants` WHERE `events_confirmed_participants`.`page_moduleComponentId` =  '{$pmcId}') ORDER BY `events_participants`.`user_team_id`";
 //	return $selectParticipantsQuery;
-	$selectParticipantsRes = mysql_query($selectParticipantsQuery) or displayerror(mysql_error());
+	$selectParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$participantsTable.=<<<TABLE
 				$smarttable<table id='participants_table' class='display' width='100%' border='1'><thead><tr><th>Team Id</th><th>FID</th><th>Name</th><th>College</th><th>Phone No.</th><th>Rank</th><th>Prize Money</th><th>Options</th></tr></thead>
 TABLE;
-	while($participant = mysql_fetch_assoc($selectParticipantsRes)){
+	while($participant = mysqli_fetch_assoc($selectParticipantsRes)){
 	  $participantsTable.="<tr id='partRow{$participant['user_pid']}'><td>".$participant['user_team_id']."</td>";
 		$participantNameQuery = "SELECT `".MYSQL_DATABASE_PREFIX."users`.`user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$participant['user_pid']}'";
-		$participantNameRes = mysql_query($participantNameQuery) or displayerror(mysql_error());
+		$participantNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         if($participant['user_pid']>20000&&$participant['user_pid']<30000)
             $rep = $participant['user_pid']+180000;
         else
             $rep=$participant['user_pid'];
-		$participantsTable.="<td>".$rep."</td><td>".mysql_result($participantNameRes, 0)."</td>";
+		$participantsTable.="<td>".$rep."</td><td>".mysqli_result($participantNameRes,  0)."</td>";
 		$phNoFormId = retPnoneNoFormId();
 		$collFormId = retCollFormId();
 		$otherCollFormId = retOtherCollFormId();
 		$participantsDetailsQuery = "SELECT `form_elementid`,`form_elementdata` FROM `form_elementdata` WHERE `page_moduleComponentId`='{retglobalPmcId()}' AND `user_id`='{$participant['user_pid']}' AND `form_elementid` IN ($phNoFormId,$collFormId) ORDER BY `form_elementid`";
 		//4
-		$participantsDetailsRes = mysql_query($participantsDetailsQuery) or displayerror(mysql_error());
-		if(mysql_num_rows($participantsDetailsRes)>0){
-		while($userDetails = mysql_fetch_assoc($participantsDetailsRes)){
+		$participantsDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		if(mysqli_num_rows($participantsDetailsRes)>0){
+		while($userDetails = mysqli_fetch_assoc($participantsDetailsRes)){
 			if($userDetails['form_elementid'] == $phNoFormId){
 				$phNoId = $userDetails['form_elementid'];
 				$phNo = $userDetails['form_elementdata'];
@@ -1354,8 +1354,8 @@ TABLE;
 				$collName = $userDetails['form_elementdata'];
 				if($collName == "Others"){
 					$getCollNameQuery = "SELECT `form_elementdata`,`form_elementid` FROM `form_elementdata` WHERE `form_elementid`='{$otherCollFormId}' AND `page_modulecomponentid`='{retglobalPmcId()}' AND `user_id`='{$participant['user_pid']}'";
-					$getCollNameRes = mysql_query($getCollNameQuery) or displayerror(mysql_error());
-					while($otherCollDetails = mysql_fetch_assoc($getCollNameRes)){
+					$getCollNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCollNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					while($otherCollDetails = mysqli_fetch_assoc($getCollNameRes)){
 						$collNameId = $otherCollDetails['form_elementid'];
 						$collName = $otherCollDetails['form_elementdata'];
 					}
@@ -1371,12 +1371,12 @@ TABLE;
 		}
 		$participantsTable.="<td>".$collName."</td><td>".$phNo."</td>";
 		$participantsRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$participant['user_pid']}' AND `event_id`='{$eventId}'";
-		$participantsRankRes = mysql_query($participantsRankQuery) or displayerror(mysql_error());
-		$userRank = mysql_result($participantsRankRes,0);
+		$participantsRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$userRank = mysqli_result($participantsRankRes, 0);
 		$participantsTable.="<td>".$userRank."</td>";
 		$getPrizeMoneyQuery = "SELECT `prize_money` FROM `events_participants` WHERE `event_id`='{$eventId}' AND `user_pid`='{$participant['user_pid']}'";
-		$getPrizeMoneyRes = mysql_query($getPrizeMoneyQuery) or displayerror(mysql_error());
-		$prizeMoney = mysql_result($getPrizeMoneyRes,0);
+		$getPrizeMoneyRes = mysqli_query($GLOBALS["___mysqli_ston"], $getPrizeMoneyQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$prizeMoney = mysqli_result($getPrizeMoneyRes, 0);
 		$participantsTable.="<td>".$prizeMoney."</td>";
 		$participantsTable.=<<<FORM
 			<td>
@@ -1401,8 +1401,8 @@ function printIndividualCerti($gotoaction,$eventAction,$pmcId,$userId,$eventId){
 	if($eventAction == 'event'){
 		$eventName = getEventName($pmcId,$eventId);
 		$getUserRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_id`='{$eventId}' AND `user_id`='{$userId}'";
-		$getUserRankRes = mysql_query($getUserRankQuery) or displayerror(mysql_error());
-		$userRank = mysql_result($getUserRankRes,0);
+		$getUserRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$userRank = mysqli_result($getUserRankRes, 0);
 
 	}
 
@@ -1411,8 +1411,8 @@ function printIndividualCerti($gotoaction,$eventAction,$pmcId,$userId,$eventId){
 	      return "";
 		$getWorkshopNameQuery = "SELECT `workshop_name` FROM `events_workshop_details` WHERE `workshop_id`='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
 		//		return $getWorkshopNameQuery;
-		$getWorkshopNameRes = mysql_query($getWorkshopNameQuery) or displayerror(mysql_error());
-		$eventName = mysql_result($getWorkshopNameRes,0);
+		$getWorkshopNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getWorkshopNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$eventName = mysqli_result($getWorkshopNameRes, 0);
 		$userRank="-1";
 	}
 	//displayerror($eventAction." ".$eventId." ".$pmcId." ".$userId." ".$userRank);
@@ -1432,29 +1432,29 @@ function printCertificates($eventAction,$pmcId,$eventId){
 	require_once("$sourceFolder/$moduleFolder/events/events_certi_image2.php");
 	
 	$eventCountQuery = "SELECT COUNT(*) FROM `events_participants` WHERE `event_id` ='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-	$eventCountRes = mysql_query($eventCountQuery) or displayerror(mysql_error());
-	$eventCount = mysql_result($eventCountRes,0);
+	$eventCountRes = mysqli_query($GLOBALS["___mysqli_ston"], $eventCountQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$eventCount = mysqli_result($eventCountRes, 0);
 	//	for($i=0;$i<=ceil(
 	//	for($i=0;$i < ceil($eventCount/30);$i++){
 	if($eventAction == 'event'){
 	  
 		$getEventNameQuery = "SELECT `event_name` FROM `events_details` WHERE `event_id` = '{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-		$getEventNameRes = mysql_query($getEventNameQuery) or displayerror(mysql_error());
-		$eventName = mysql_result($getEventNameRes,0);
+		$getEventNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getEventNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$eventName = mysqli_result($getEventNameRes, 0);
 		//		$limitStart = ($i*30)+1;
 		$selectIdQuery = "SELECT DISTINCT `events_participants`.`user_pid`,`events_result`.`user_rank` FROM `events_participants`,`events_result`
 				WHERE `events_participants`.`event_id`='{$eventId}' AND `events_result`.`event_id`='{$eventId}' AND `events_result`.`user_id`=`events_participants`.`user_pid` AND `events_participants`.`page_moduleComponentId`='{$pmcId}' AND
 				`events_result`.`page_moduleComponentId`='{$pmcId}'  ORDER BY `events_participants`.`user_team_id`,`events_result`.`user_rank`";
-		$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
+		$selectIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
 
 	else if($eventAction == 'workshop'){
 		$getEventNameQuery = "SELECT `workshop_name` FROM `events_workshop_details` WHERE `workshop_id` = '{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-		$getEventNameRes = mysql_query($getEventNameQuery) or displayerror(mysql_error());
-		$eventName = mysql_result($getEventNameRes,0);
+		$getEventNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getEventNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$eventName = mysqli_result($getEventNameRes, 0);
 
 		$selectIdQuery = "SELECT DISTINCT `user_id` FROM `events_workshop_participants`,`events_result` WHERE `page_modulecomponentid`='{$pmcId}' AND `workshop_id`='{$eventId}'";
-		$selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
+		$selectIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
 //return $selectIdQuery;
 	$certiImagePage = "";
@@ -1471,7 +1471,7 @@ function printCertificates($eventAction,$pmcId,$eventId){
       return false;
     }*/
 
-	while($printParticipant = mysql_fetch_assoc($selectIdRes)){
+	while($printParticipant = mysqli_fetch_assoc($selectIdRes)){
 		if($eventAction == 'event'){
 			$userId = $printParticipant['user_pid'];
 			$userRank = $printParticipant['user_rank'];
@@ -1524,11 +1524,11 @@ function generateCerti($eventAction,$eventId,$pmcId,$userId,$userRank){
 	}
 	else if($eventAction == 'workshop')
 		$getCertiImgQuery = "SELECT `certificate_id`,`certificate_image` FROM `events_certificate` WHERE `user_rank` = '{$eventId}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id` = '-1'";
-	$getCertiImgRes = mysql_query($getCertiImgQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($getCertiImgRes) == 0){
+	$getCertiImgRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCertiImgQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($getCertiImgRes) == 0){
 	  $getEventsCertiQuery = "SELECT `certificate_id`,`certificate_image` FROM `events_certificate` WHERE `user_rank` = '{$userCertiRank}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id` = '-1'";
 	  //	  return $getEventsCertiQuery;
-	  $getCertiImgRes = mysql_query($getEventsCertiQuery) or displayerror(mysql_error());
+	  $getCertiImgRes = mysqli_query($GLOBALS["___mysqli_ston"], $getEventsCertiQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
 
 	$certiImage = "";
@@ -1538,7 +1538,7 @@ function generateCerti($eventAction,$eventId,$pmcId,$userId,$userRank){
 	$posY2String="";
 	$certiValueString="";
 	
-	while($certiDetails = mysql_fetch_assoc($getCertiImgRes)){
+	while($certiDetails = mysqli_fetch_assoc($getCertiImgRes)){
 	  $certiImage = $certiDetails['certificate_image'];
 		$certiId = $certiDetails['certificate_id'];
 		//	return $certiImage;
@@ -1546,14 +1546,14 @@ function generateCerti($eventAction,$eventId,$pmcId,$userId,$userRank){
 		//Get Certificate Details From evets_certficate_details
 		$getCertiDetailsQuery = "SELECT `certificate_posx`,`certificate_posy`,`certificate_posx2`,`certificate_posy2`,`form_value_id` FROM `events_certificate_details` WHERE `page_moduleComponentId`='{$pmcId}' AND `certificate_id`='{$certiId}'";
 		//		return $getCertiDetailsQuery;
-		$getCertiDetailsRes = mysql_query($getCertiDetailsQuery) or displayerror(mysql_error());
+		$getCertiDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCertiDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		//		return mysql_num_rows($getCertiDetailsRes);
 		//Get Form Values From form_elementdesc
 		//Form_value_id=1 -> Rank
 		//Form_value_id=2 -> Event Name
 		//Form_value_id=3 -> PArticipant Name
 		//Form_value_id=4 -> Coll
-		while($getValues = mysql_fetch_assoc($getCertiDetailsRes)){
+		while($getValues = mysqli_fetch_assoc($getCertiDetailsRes)){
 			//User Rank
 
 		  // echo $getValues['form_value_id'];
@@ -1637,8 +1637,8 @@ function generateCerti($eventAction,$eventId,$pmcId,$userId,$userRank){
 				}
 			else if($getValues['form_value_id'] == 3){
 				$getUserNameQuery = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$userId}'";
-				$getUserNameRes = mysql_query($getUserNameQuery) or displayerror(mysql_error());
-				$userName = ucwords_specific(strtolower(mysql_result($getUserNameRes, 0)),".");
+				$getUserNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				$userName = ucwords_specific(strtolower(mysqli_result($getUserNameRes,  0)),".");
 				$posXString.=$getValues['certificate_posx']."::";
 				$posYString.=$getValues['certificate_posy']."::";
 				$posX2String.=$getValues['certificate_posx2']."::";
@@ -1655,15 +1655,15 @@ function generateCerti($eventAction,$eventId,$pmcId,$userId,$userRank){
 				//$getFormValuesQuery = "SELECT `form_elementdata`.`form_elementdata` FROM `form_elementdata` INNER JOIN `events_form` ON `form_elementdata`.`page_moduleComponentId`=`events_form`.`form_id` 
 				//	AND `events_form`.`event_id`='{$eventId}' AND `events_form`.`page_moduleComponentId`='{$pmcId}' AND `form_elementdata`.`user_id`='{$printParticipant['user_id']}' AND `form_elementdata`.`form_elementid`='{$getValues['form_value_id']}'";
 				$getFormValuesQuery = "SELECT `form_elementdata` FROM `form_elementdata` WHERE `page_moduleComponentId`='{$formPmcId}' AND `form_elementid`='{$collId}' AND `user_id`='{$userId}'";
-				$getFormValuesRes = mysql_query($getFormValuesQuery) or displayerror(mysql_error());
+				$getFormValuesRes = mysqli_query($GLOBALS["___mysqli_ston"], $getFormValuesQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			//	return mysql_num_rows($getFormValuesQuery);
-				while($formData = mysql_fetch_assoc($getFormValuesRes)){
+				while($formData = mysqli_fetch_assoc($getFormValuesRes)){
 				//	imagettftext($rotatedImage, 20, 90, $getValues['certificate_posx'], $getValues['certificate_posy'], $color, $font, $formData['form_elementdata']);
 					if($formData['form_elementdata'] == "Others"){
 						$collFormId = retOtherCollFormId();
 						$getCollNameQuery = "SELECT `form_elementdata` FROM `form_elementdata` WHERE `page_moduleComponentId`='{$formPmcId}' AND `user_id`='{$userId}' AND `form_elementid`='{$collFormId}'";
-						$getCollNameRes = mysql_query($getCollNameQuery) or displayerror(mysql_error());
-						$collName = ucwords_specific(strtolower(mysql_result($getCollNameRes,0)),".");
+						$getCollNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCollNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						$collName = ucwords_specific(strtolower(mysqli_result($getCollNameRes, 0)),".");
 					} 
 					else
 					  $collName = ucwords_specific(strtolower($formData['form_elementdata']),".");
@@ -1691,8 +1691,8 @@ function generateCerti($eventAction,$eventId,$pmcId,$userId,$userRank){
 function getUserIdFromBookletId($bookletId,$mcId) {
   $bookletId = escape($bookletId);
   $checkUserRegisteredToPr = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid` = {$mcId} AND `booklet_id` = '{$bookletId}'";
-  $checkUserRegisteredToPrQuery = mysql_query($checkUserRegisteredToPr) or displayerror(mysql_error());
-  $row = mysql_fetch_assoc($checkUserRegisteredToPrQuery);
+  $checkUserRegisteredToPrQuery = mysqli_query($GLOBALS["___mysqli_ston"], $checkUserRegisteredToPr) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $row = mysqli_fetch_assoc($checkUserRegisteredToPrQuery);
   return $row['user_id'];
 
 }
@@ -1714,14 +1714,14 @@ OPTIONS;
 
 function getWorkshopsList($pmcId){
 	$selectWorkshopQuery = "SELECT `workshop_id`,`workshop_name` FROM `events_workshop_details` WHERE `page_moduleComponentId`='{$pmcId}' ORDER BY `workshop_name`";
-	$selectWorkshopRes = mysql_query($selectWorkshopQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($selectWorkshopRes) > 0){
+	$selectWorkshopRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectWorkshopQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($selectWorkshopRes) > 0){
 		$selectWorkshop = <<<FORM
 			<h3>Choose Workshop</h3>
 			<form method="POST" action="./+prhead&subaction=viewWorkshopDetails">
 				<select name='workshopId' id='workshopId'>
 FORM;
-		while($workshopList = mysql_fetch_assoc($selectWorkshopRes)){
+		while($workshopList = mysqli_fetch_assoc($selectWorkshopRes)){
 			$selectWorkshop.=<<<DROPDOWN
 			<option value="{$workshopList['workshop_id']}">{$workshopList['workshop_name']}</option>	
 DROPDOWN;
@@ -1746,8 +1746,8 @@ SCRIPT;
 	}
 
 	$checkParticipantsQuery = "SELECT `user_id` FROM `events_workshop_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `workshop_id`='{$workshopId}' LIMIT 1";
-	$checkParticipantsRes = mysql_query($checkParticipantsQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($checkParticipantsRes) == 0){
+	$checkParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($checkParticipantsRes) == 0){
 		//Show FileUpload Details
 		$fileUploadableField=getFileUploadField('fileUploadField',"events");
 
@@ -1792,27 +1792,27 @@ function displayWorkshopParticipants($pmcId,$workshopId){
 	$selectParticipantsQuery = "SELECT `events_workshop_participants`.`user_id`,`events_workshop_participants`.`user_team_id` FROM `events_workshop_participants` WHERE `events_workshop_participants`.`page_moduleComponentId`='{$pmcId}' 
 				AND `events_workshop_participants`.`workshop_id`='{$workshopId}' AND `events_workshop_participants`.`user_id` ORDER BY `events_workshop_participants`.`user_team_id`";
 //	return $selectParticipantsQuery;
-	$selectParticipantsRes = mysql_query($selectParticipantsQuery) or displayerror(mysql_error());
+	$selectParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$participantsTable.=<<<TABLE
 				$smarttable<table id='participants_table' class='display' width='100%' border='1'><thead><tr><th>Team Id</th><th>FID</th><th>Name</th><th>College</th><th>Phone No.</th><th>Options</th><th>Print</th></tr></thead>
 TABLE;
-	while($participant = mysql_fetch_assoc($selectParticipantsRes)){
+	while($participant = mysqli_fetch_assoc($selectParticipantsRes)){
 		$editRowId = "";
 		$participantNameQuery = "SELECT `".MYSQL_DATABASE_PREFIX."users`.`user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$participant['user_id']}'";
-		$participantNameRes = mysql_query($participantNameQuery) or displayerror(mysql_error());
+		$participantNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         if($participant['user_id']>20000&&$participant['user_id']<30000)
             $rep = $participant['user_id']+180000;
         else
             $rep=$participant['user_id'];
-		$participantsTable.="<tr id='partRow{$participant['user_id']}'><td>".$participant['user_team_id']."</td><td>".$rep."</td><td><span class='userDataDisp{$participant['user_id']}'>".mysql_result($participantNameRes, 0)."</span><input type='text' class='userDataEditVal{$participant['user_id']}' value='".mysql_result($participantNameRes, 0)."' style='display:none'></td>";
+		$participantsTable.="<tr id='partRow{$participant['user_id']}'><td>".$participant['user_team_id']."</td><td>".$rep."</td><td><span class='userDataDisp{$participant['user_id']}'>".mysqli_result($participantNameRes,  0)."</span><input type='text' class='userDataEditVal{$participant['user_id']}' value='".mysqli_result($participantNameRes,  0)."' style='display:none'></td>";
 		$editRowId.='-1,';
 		$phNoFormId = retPnoneNoFormId();
 		$collFormId = retCollFormId();
 		$otherCollFormId = retOtherCollFormId();
 		$participantsDetailsQuery = "SELECT `form_elementid`,`form_elementdata` FROM `form_elementdata` WHERE `page_moduleComponentId`='{retglobalPmcId()}' AND `user_id`='{$participant['user_id']}' AND `form_elementid` IN ($phNoFormId,$collFormId) ORDER BY `form_elementid`";
 		//1
-		$participantsDetailsRes = mysql_query($participantsDetailsQuery) or displayerror(mysql_error());
-		while($userDetails = mysql_fetch_assoc($participantsDetailsRes)){
+		$participantsDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $participantsDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while($userDetails = mysqli_fetch_assoc($participantsDetailsRes)){
 			if($userDetails['form_elementid'] == $phNoFormId){
 				$phNoId = $userDetails['form_elementid'];
 				$phNo = $userDetails['form_elementdata'];
@@ -1822,8 +1822,8 @@ TABLE;
 				$collName = $userDetails['form_elementdata'];
 				if($collName == "Others"){
 					$getCollNameQuery = "SELECT `form_elementdata`,`form_elementid` FROM `form_elementdata` WHERE `form_elementid`='{$otherCollFormId}' AND `page_modulecomponentid`='{retglobalPmcId()}' AND `user_id`='{$participant['user_id']}'";
-					$getCollNameRes = mysql_query($getCollNameQuery) or displayerror(mysql_error());
-					while($otherCollDetails = mysql_fetch_assoc($getCollNameRes)){
+					$getCollNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getCollNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+					while($otherCollDetails = mysqli_fetch_assoc($getCollNameRes)){
 						$collNameId = $otherCollDetails['form_elementid'];
 						$collName = $otherCollDetails['form_elementdata'];
 					}
@@ -1873,10 +1873,10 @@ function syncExcelFileWorkshop($pmcId,$workshopId,$fileLoc){
 			}
 			if(!empty($excelData[$i][$j])){
 				$checkDuplicateQuery = "SELECT `user_id` FROM `events_workshop_participants` WHERE `page_moduleComponentId`='{$pmcId}' AND `workshop_id`='{$workshopId}' AND `user_id`='{$userPid}'";
-				$checkDuplicateRes = mysql_query($checkDuplicateQuery) or displayerror(mysql_error());
-				if(mysql_num_rows($checkDuplicateRes) == 0){
+				$checkDuplicateRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkDuplicateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				if(mysqli_num_rows($checkDuplicateRes) == 0){
 					$saveUserIdQuery = "INSERT INTO `events_workshop_participants`(`page_moduleComponentId`,`workshop_id`,`user_id`,`user_team_id`) VALUES('{$pmcId}','{$workshopId}','{$userPid}','{$i}')";
-					$saveUserIdRes = mysql_query($saveUserIdQuery) or displayerror(mysql_error());
+					$saveUserIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $saveUserIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				}
 			}
 		}
@@ -1895,13 +1895,13 @@ function editWorkshopParticipant($gotoaction,$pmcId,$workshopId,$formId,$userId,
 		$insertEditedRowRes = mysql_query($insertEditedRowQuery) or displayerror(mysql_error());*/
 		if($rowIdArray[$i] == -1){
 			$editNameQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."users` SET `user_fullname`='{$rowValueArray[$i]}' WHERE `user_id`='{$userId}'";
-			$editNameRes = mysql_query($editNameQuery) or displayerror(mysql_error());
+			$editNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $editNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		}
 		else{
 			$editValuesQuery = "UPDATE `form_elementdata` SET `form_elementdata`='{$rowValueArray[$i]}' 
 					WHERE `user_id`='{$userId}' AND `form_elementid`='{$rowIdArray[$i]}' AND `page_moduleComponentId`='{retglobalPmcId()}'";
 					//3
-			$editValuesRes = mysql_query($editValuesQuery) or displayerror(mysql_error());
+			$editValuesRes = mysqli_query($GLOBALS["___mysqli_ston"], $editValuesQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		}
 		$updatedRow.="<td><span class='userDataDisp{$userId}'>".$rowValueArray[$i]."</span><input type='text' class='userDataEditVal{$userId}' value='{$rowValueArray[$i]}' style='display:none'></td>";
 	}
@@ -1927,8 +1927,8 @@ BUTTON;
 
 function displayQA($pmcid){
 	$selectEventQuery = "SELECT DISTINCT `event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' AND `event_id` NOT IN (SELECT `event_id` FROM `events_locked` WHERE `page_moduleComponentId` = '{$pmcid}') ORDER BY `event_name`";
-	$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($selectEventRes) > 0){
+	$selectEventRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectEventQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($selectEventRes) > 0){
 	$gotoaction='qa';
 	$selectEvent=searchParticipant($gotoaction,$pmcId,1);
 		$selectEvent.= <<<FORM
@@ -1936,10 +1936,10 @@ function displayQA($pmcid){
 			<form method="POST" action="./+qa&subaction=viewEvent">
 				<select name='eventId' id='eventId'>
 FORM;
-		while($eventList = mysql_fetch_assoc($selectEventRes)){
+		while($eventList = mysqli_fetch_assoc($selectEventRes)){
 		  $selectIdQuery = "SELECT `event_id` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcid}' AND `event_name`='{$eventList['event_name']}' LIMIT 1";
-		  $selectIdRes = mysql_query($selectIdQuery) or displayerror(mysql_error());
-		  $eventId = mysql_result($selectIdRes,0);
+		  $selectIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		  $eventId = mysqli_result($selectIdRes, 0);
 			$selectEvent.=<<<DROPDOWN
 			<option value="{$eventId}">{$eventList['event_name']}</option>	
 DROPDOWN;
@@ -1958,7 +1958,7 @@ return $selectEvent;
 
 function editParticipantRank($gotoaction,$pmcId,$eventId,$userId,$newRank){
 	$updateRankQuery = "UPDATE `events_result` SET `user_rank` = '{$newRank}' WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$userId}' AND `event_id`='{$eventId}'";
-	$updateRankRes = mysql_query($updateRankQuery) or displayerror(mysql_error());
+	$updateRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $updateRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	return $newRank;
 }
 
@@ -1969,8 +1969,8 @@ function editParticipantRank($gotoaction,$pmcId,$eventId,$userId,$newRank){
 
 function qaHeadOptions($pmcId){
 	$selectEventQuery = "SELECT DISTINCT `event_name` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcId}' ORDER BY `event_name`";
-	$selectEventRes = mysql_query($selectEventQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($selectEventRes) > 0){
+	$selectEventRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectEventQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($selectEventRes) > 0){
 	
  $gotoaction='qahead';
 $selectEvent=searchParticipant($gotoaction,$pmcId,1);	
@@ -1979,10 +1979,10 @@ $selectEvent .= <<<FORM
 			<form method="POST" action="./+qahead&subaction=viewEvent">
 				<select name='eventId'>
 FORM;
-		while($eventList = mysql_fetch_assoc($selectEventRes)){
+		while($eventList = mysqli_fetch_assoc($selectEventRes)){
 		  $selectEventIdQuery = "SELECT `event_id` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_name`='{$eventList['event_name']}' LIMIT 1";
-		  $selectEventIdRes = mysql_query($selectEventIdQuery) or displayerror(mysql_error());
-		  $eventId = mysql_result($selectEventIdRes,0);
+		  $selectEventIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectEventIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		  $eventId = mysqli_result($selectEventIdRes, 0);
 			$selectEvent.=<<<DROPDOWN
 			<option value="{$eventId}">{$eventList['event_name']}</option>	
 DROPDOWN;
@@ -2001,17 +2001,17 @@ function displayPR($gotoaction,$pmcId){
 	$selectLockedEventsQuery = "SELECT DISTINCT `events_details`.`event_name` FROM `events_details` INNER JOIN `events_locked` 
 		ON `events_locked`.`event_id` = `events_details`.`event_id` AND `events_locked`.`page_moduleComponentId` = `events_details`.`page_moduleComponentId` 
 		AND `events_details`.`page_moduleComponentId` = '{$pmcId}' ORDER BY `event_name`";
-	$selectLockedEventsRes = mysql_query($selectLockedEventsQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($selectLockedEventsRes) > 0){
+	$selectLockedEventsRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectLockedEventsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($selectLockedEventsRes) > 0){
 		$selectEvent = <<<FORM
 			<h3>Choose Event</h3>
 			<form method="POST" action="./+{$gotoaction}&subaction=viewEvent">
 				<select name='eventId'>
 FORM;
-		while($eventList = mysql_fetch_assoc($selectLockedEventsRes)){
+		while($eventList = mysqli_fetch_assoc($selectLockedEventsRes)){
 		  $selectEventIdQuery = "SELECT `event_id` FROM `events_details` WHERE `page_moduleComponentId`='{$pmcId}' AND `event_name`='{$eventList['event_name']}' LIMIT 1";
-		  $selectEventIdRes = mysql_query($selectEventIdQuery) or displayerror(mysql_error());
-		  $eventId = mysql_result($selectEventIdRes,0);
+		  $selectEventIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectEventIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		  $eventId = mysqli_result($selectEventIdRes, 0);
 			$selectEvent.=<<<DROPDOWN
 			<option value="{$eventId}">{$eventList['event_name']}</option>	
 DROPDOWN;
@@ -2048,14 +2048,14 @@ function getUserDetails($gotoaction,$pmcId,$userBookletId){
 	else
 		$userId = $userBookletId;
 	$getUserDetailsQuery = "SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' AND `page_moduleComponentId`='{$pmcId}' AND `event_id` IN(SELECT `event_id` FROM `events_locked` WHERE `page_moduleComponentId`='{$pmcId}')";
-	$getUserDetailsRes = mysql_query($getUserDetailsQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($getUserDetailsRes) == 0)
+	$getUserDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($getUserDetailsRes) == 0)
 		displayerror("No info found.");
 	else{
 
 		$getUserNameQuery = "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$userId}'";
-		$getUserNameRes = mysql_query($getUserNameQuery) or displayerror(mysql_error());
-		$userEventListTable.="<br/><h4>".mysql_result($getUserNameRes,0)."</h4><br/>";
+		$getUserNameRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$userEventListTable.="<br/><h4>".mysqli_result($getUserNameRes, 0)."</h4><br/>";
 		$userEventListTable.=<<<FORM
 			<form method='post' action='./+{$gotoaction}&subaction=printUserCerti'>
 				<input type='hidden' value='{$userId}' name='userId'/>
@@ -2063,11 +2063,11 @@ function getUserDetails($gotoaction,$pmcId,$userBookletId){
 			</form>
 FORM;
 		$userEventListTable.="$smarttable<table id='user_table' class='display' width='100%' border='1'><thead><th>User FID</th><th>Event Name</th><th>User Rank</th></thead>";
-		while($userEvent = mysql_fetch_assoc($getUserDetailsRes)){
+		while($userEvent = mysqli_fetch_assoc($getUserDetailsRes)){
 			$eventName = getEventName($pmcId,$userEvent['event_id']);
 			$getUserRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$userId}' AND `event_id`='{$userEvent['event_id']}'";
-			$getUserRankRes = mysql_query($getUserRankQuery) or displayerror(mysql_error());
-			$userRank = mysql_result($getUserRankRes,0);
+			$getUserRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$userRank = mysqli_result($getUserRankRes, 0);
 			$userEventListTable .= "<tr><td>".$userId."</td><td>".$eventName."</td><td>".$userRank."</td></tr>";
 		}
 		$userEventListTable.="</table>";
@@ -2082,13 +2082,13 @@ function printUserCerti($pmcId,$userId){
 	require_once("$sourceFolder/$moduleFolder/events/html2pdf/html2pdf.class.php");	
 	require_once("$sourceFolder/$moduleFolder/events/events_certi_image2.php");
 	$getUserDetailsQuery = "SELECT * FROM `events_participants` WHERE `user_pid`='{$userId}' AND `page_moduleComponentId`='{$pmcId}'";
-	$getUserDetailsRes = mysql_query($getUserDetailsQuery) or displayerror(mysql_error());
+	$getUserDetailsRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$certiImagePage="";
-	if(mysql_num_rows($getUserDetailsRes) != 0){
-		while($userEvent = mysql_fetch_assoc($getUserDetailsRes)){
+	if(mysqli_num_rows($getUserDetailsRes) != 0){
+		while($userEvent = mysqli_fetch_assoc($getUserDetailsRes)){
 			$getUserRankQuery = "SELECT `user_rank` FROM `events_result` WHERE `page_moduleComponentId`='{$pmcId}' AND `user_id`='{$userId}' AND `event_id`='{$userEvent['event_id']}'";
-			$getUserRankRes = mysql_query($getUserRankQuery) or displayerror(mysql_error());
-			$userRank = mysql_result($getUserRankRes,0);
+			$getUserRankRes = mysqli_query($GLOBALS["___mysqli_ston"], $getUserRankQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$userRank = mysqli_result($getUserRankRes, 0);
 			$certiImagePage.=generateCerti('event',$userEvent['event_id'],$pmcId,$userId,$userRank);
 		}
 	}
@@ -2109,9 +2109,9 @@ OPTION;
 
 function deleteParticipant($pmcId,$userId,$eventId){
   $deleteParticipantQuery = "DELETE FROM `events_participants` WHERE `user_pid`='{$userId}' AND `event_id`='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-  $deleteParticipantRes = mysql_query($deleteParticipantQuery) or displayerror(mysql_error());
+  $deleteParticipantRes = mysqli_query($GLOBALS["___mysqli_ston"], $deleteParticipantQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $deleteParticipantResultQuery = "DELETE FROM `events_result` WHERE `event_id`='{$eventId}' AND `user_id`='{$userId}' AND `page_moduleComponentId`='{$pmcId}'";
-  $deleteParticipantResultRes = mysql_query($deleteParticipantResultQuery) or displayerror(mysql_error());
+  $deleteParticipantResultRes = mysqli_query($GLOBALS["___mysqli_ston"], $deleteParticipantResultQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
   $eventForm = <<<FORM
     <script src="$scriptFolder/events.js"></script>
@@ -2171,9 +2171,9 @@ return $searchParticipantForm;
 function deleteEventQa($pmcId,$eventId){
   $scriptFolder = "$urlRequestRoot/$cmsFolder/$moduleFolder/events";
   $deleteEventParticipantsQuery = "DELETE FROM `events_participants` WHERE `event_id`='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-  $deleteEventParticipantsRes = mysql_query($deleteEventParticipantsQuery) or displayerror(mysql_error());
+  $deleteEventParticipantsRes = mysqli_query($GLOBALS["___mysqli_ston"], $deleteEventParticipantsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $deleteEventResultQuery = "DELETE FROM `events_result`WHERE `event_id`='{$eventId}' AND `page_moduleComponentId`='{$pmcId}'";
-  $deleteEventResultRes = mysql_query($deleteEventResultQuery) or displayerror(mysql_error());
+  $deleteEventResultRes = mysqli_query($GLOBALS["___mysqli_ston"], $deleteEventResultQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $eventForm = <<<FORM
     <script src="$scriptFolder/events.js"></script>
     <script src="$scriptFolder/jquery.js"></script>

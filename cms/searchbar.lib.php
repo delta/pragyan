@@ -25,9 +25,9 @@ function getSearchbar($userId, $pageId) {
         $_GET['searchContents'] = escape($_GET['searchContents']);
 
         $allPageQuery="SELECT `page_id`, `page_module` FROM `". MYSQL_DATABASE_PREFIX ."pages`";
-        $allPageResult=mysql_query($allPageQuery);
+        $allPageResult=mysqli_query($GLOBALS["___mysqli_ston"], $allPageQuery);
         $pagesIdList=array(); //Contains all pages for which the user has view permission
-        while ($row=mysql_fetch_assoc($allPageResult)) {
+        while ($row=mysqli_fetch_assoc($allPageResult)) {
             if(getPermissions($userId, $row['page_id'], $action="view", $module=$row['page_module']))
                 array_push($pagesIdList, intval($row['page_id']));
         }
@@ -37,11 +37,11 @@ function getSearchbar($userId, $pageId) {
         }
         $searchQueryParams=substr($searchQueryParams,0,-1);
         $searchQuery="SELECT * FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `tag_text` LIKE '%{$_GET['searchContents']}%' AND `page_id` IN (".$searchQueryParams.");";
-        $tagsWithPermsResult= mysql_query($searchQuery);
+        $tagsWithPermsResult= mysqli_query($GLOBALS["___mysqli_ston"], $searchQuery);
 
-        $searchResult=mysql_query($searchQuery);
+        $searchResult=mysqli_query($GLOBALS["___mysqli_ston"], $searchQuery);
         $suggestions="";
-        while ($row=mysql_fetch_assoc($searchResult)) {
+        while ($row=mysqli_fetch_assoc($searchResult)) {
             $suggestions.="<a href=".hostURL().getPagePath($row['page_id']).">";
             $pageInfo=getPageInfo($row['page_id']);
             $suggestions.=$pageInfo['page_title']."</a><br/>";
@@ -95,9 +95,9 @@ SEARCHSCRIPT;
  */
 function getPagetags($pageId) {
     $pageTagQuery="SELECT `tag_text` FROM `". MYSQL_DATABASE_PREFIX ."pagetags` WHERE `page_id` = {$pageId}";
-    $pageTagResult=mysql_query($pageTagQuery);
+    $pageTagResult=mysqli_query($GLOBALS["___mysqli_ston"], $pageTagQuery);
     $pagetags=[];
-    while ($row=mysql_fetch_assoc($pageTagResult)) {
+    while ($row=mysqli_fetch_assoc($pageTagResult)) {
         array_push($pagetags, $row['tag_text']);
     }
     $pagetags = implode(" , ", $pagetags);

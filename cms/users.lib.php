@@ -127,10 +127,10 @@ function handleUserMgmt()
 	if(isset($_POST['user_selected_activate'])) {
 		foreach($_POST as $key => $var)
 			if(substr($key,0,9)=="selected_") {
-				if(!mysql_query("UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id='".substr($key,9)."'")) {
-					$result = mysql_query("SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='".substr($key,9)."'");
+				if(!mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id='".substr($key,9)."'")) {
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='".substr($key,9)."'");
 					if($result) {
-						$row = mysql_fetch_assoc($result);
+						$row = mysqli_fetch_assoc($result);
 						displayerror("Couldn't activate user, {$row['user_fullname']}");
 					}
 				}
@@ -144,10 +144,10 @@ function handleUserMgmt()
 					displayerror("You cannot deactivate administrator!");
 					continue;
 				}
-				if(!mysql_query("UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id='".substr($key,9)."'")) {
-					$result = mysql_query("SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='".substr($key,9)."'");
+				if(!mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id='".substr($key,9)."'")) {
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='".substr($key,9)."'");
 					if($result) {
-						$row = mysql_fetch_assoc($result);
+						$row = mysqli_fetch_assoc($result);
 						displayerror("Couldn't deactivate user, {$row['user_fullname']}");
 					}
 				}
@@ -163,9 +163,9 @@ function handleUserMgmt()
 					continue;
 				}
 				$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".substr($key,9)."'";
-				if(mysql_query($query)) {
+				if(mysqli_query($GLOBALS["___mysqli_ston"], $query)) {
 					$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."openid_users` WHERE `user_id` = '".substr($key,9)."'";
-					if(!mysql_query($query))
+					if(!mysqli_query($GLOBALS["___mysqli_ston"], $query))
 						$done = false;
 				} else
 					$done = false;
@@ -177,7 +177,7 @@ function handleUserMgmt()
 	if(isset($_POST['user_activate']))
 	{
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1 WHERE user_id='{$_GET['userid']}'";
-		if(mysql_query($query))
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 			displayInfo("User Successfully Activated!");
 		else displayerror("User Not Activated!");
 		return registeredUsersList($_POST['editusertype'],"edit",false);
@@ -186,7 +186,7 @@ function handleUserMgmt()
 	{
 		
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=1";
-		if(mysql_query($query))
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 			displayInfo("All users activated successfully!");
 		else displayerror("Users Not Deactivated!");
 		
@@ -200,7 +200,7 @@ function handleUserMgmt()
 			return registeredUsersList($_POST['editusertype'],"edit",false);
 		}
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id='{$_GET['userid']}'";
-		if(mysql_query($query))
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 			displayInfo("User Successfully Deactivated!");
 		else displayerror("User Not Deactivated!");
 		
@@ -210,7 +210,7 @@ function handleUserMgmt()
 	{
 		
 		$query="UPDATE ".MYSQL_DATABASE_PREFIX."users SET user_activated=0 WHERE user_id != ".ADMIN_USERID;
-		if(mysql_query($query))
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 			displayInfo("All users deactivated successfully except Administrator!");
 		else displayerror("Users Not Deactivated!");
 		
@@ -225,10 +225,10 @@ function handleUserMgmt()
 			return registeredUsersList($_POST['editusertype'],"edit",false);
 		}
 		$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '$userId'";
-		if(mysql_query($query))
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 		{
 			$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."openid_users` WHERE `user_id` = '$userId'";
-			if(mysql_query($query))
+			if(mysqli_query($GLOBALS["___mysqli_ston"], $query))
 			{
 				displayinfo("User Successfully Deleted!");
 			}
@@ -247,14 +247,14 @@ function handleUserMgmt()
 			$updates = array();
 			$userId=$_GET['userid'];
 			$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='{$userId}'";
-			$row=mysql_fetch_assoc(mysql_query($query));
+			$row=mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], $query));
 			$errors = false;
 			
 			if(isset($_POST['user_name']) && $row['user_name']!=$_POST['user_name'])
 			{
 				$chkquery="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_name`='".escape($_POST['user_name'])."'";
-				$result=mysql_query($chkquery) or die("failed  : $chkquery");
-				if(mysql_num_rows($result)>0) 
+				$result=mysqli_query($GLOBALS["___mysqli_ston"], $chkquery) or die("failed  : $chkquery");
+				if(mysqli_num_rows($result)>0) 
 				{
 					displayerror("User Name already exists in database!");
 					$errors=true;
@@ -309,7 +309,7 @@ function handleUserMgmt()
 				if(count($updates) > 0)
 				{
 					$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = ".escape($_GET['userid'])."'";
-					$profileResult = mysql_query($profileQuery);
+					$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
 					if(!$profileResult) {
 					displayerror('An error was encountered while attempting to process your request.'.$profileQuery);
 					$errors = true;
@@ -336,7 +336,7 @@ function handleUserMgmt()
 		$xcolumnIds=array_keys($columnList);
 		$xcolumnNames=array_values($columnList);
 		
-		$row=mysql_fetch_assoc(mysql_query($query));
+		$row=mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], $query));
 		
 		
 		$userfieldprettynames=array("User ID","Username","Email","Full Name","Password","Registration","Last Login","Activated","Login Method");	
@@ -416,14 +416,14 @@ function handleUserMgmt()
 		if($qstring!="")
 		{
 			$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE $qstring ";
-			$resultSearch = mysql_query($query);
-			if (mysql_num_rows($resultSearch) > 0) {
-				$num = mysql_num_rows($resultSearch);
+			$resultSearch = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			if (mysqli_num_rows($resultSearch) > 0) {
+				$num = mysqli_num_rows($resultSearch);
 				
 				$userInfo=array();
 				
 				
-				while($row=mysql_fetch_assoc($resultSearch))
+				while($row=mysqli_fetch_assoc($resultSearch))
 				{
 					$userInfo['user_id'][]=$row['user_id'];
 					$userInfo['user_name'][]=$row['user_name'];
@@ -489,8 +489,8 @@ function handleUserMgmt()
 				$user_id=$_GET['userid'];
 				$chkquery="SELECT COUNT(user_id) FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id`='$user_id' OR `user_name`='$user_name' OR `user_email`='$user_email'";
 			
-				$result=mysql_query($chkquery);
-				$row=mysql_fetch_row($result);
+				$result=mysqli_query($GLOBALS["___mysqli_ston"], $chkquery);
+				$row=mysqli_fetch_row($result);
 			
 				if($row[0]>0) displayerror("Another user with the same name or email already exists!");
 				else if($user_password!=$_POST['user_password2']) displayerror("Passwords mismatch!");
@@ -498,11 +498,11 @@ function handleUserMgmt()
 				{
 					if(isset($_POST['user_activated'])) $user_activated=1;
 					$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` (`user_id` ,`user_name` ,`user_email` ,`user_fullname` ,`user_password` ,`user_regdate` ,`user_lastlogin` ,`user_activated`,`user_loginmethod`)VALUES ('$user_id' ,'$user_name' ,'$user_email' ,'$user_fullname' , MD5('$user_password') ,CURRENT_TIMESTAMP , '', '$user_activated','$user_loginmethod')";
-					$result = mysql_query($query) or die(mysql_error());
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					global $sourceFolder,$moduleFolder;
 		require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
 		require_once("$sourceFolder/$moduleFolder/form/registrationformgenerate.php");
-					if (mysql_affected_rows() && submitRegistrationForm(0, $user_id, true, true)) displayinfo("User $user_fullname Successfully Created!");
+					if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) && submitRegistrationForm(0, $user_id, true, true)) displayinfo("User $user_fullname Successfully Created!");
 					else displayerror("Failed to create user");
 				}
 			}
@@ -539,7 +539,7 @@ function handleUserMgmt()
 function getAllUsersInfo(&$userId,&$userName,&$userEmail,&$userFullName,&$userPassword,&$userLastLogin,&$userRegDate,&$userActivated,&$userLoginMethod)
 {
 	$query="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` ORDER BY `user_id` ASC";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$userId=array();
 	$userEmail=array();
 	$userName=array();
@@ -550,7 +550,7 @@ function getAllUsersInfo(&$userId,&$userName,&$userEmail,&$userFullName,&$userPa
 	$userActivated=array();
 	$userLoginMethod=array();
 	$i=0;
-	while($row=mysql_fetch_assoc($result))
+	while($row=mysqli_fetch_assoc($result))
 	{
 		$userId[$i]=$row['user_id'];
 		$userName[$i]=$row['user_name'];

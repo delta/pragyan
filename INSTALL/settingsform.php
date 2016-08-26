@@ -250,7 +250,7 @@ $settingsForm = <<<SETTINGSFORM1
 
 			if(!validate_domain(document.getElementById('txtMySQLServerHost'),1))
 			{
-			message+="MySQL Server Host , ";
+			message+="mysql Server Host , ";
 			error++;
 			}if(!validate_username(document.getElementById('txtMySQLUsername'),1))
 			{
@@ -356,11 +356,11 @@ $settingsForm = <<<SETTINGSFORM1
 	<legend>Database Settings</legend>
 	<table border="0" width="580px">
 		<tr>
-			<td width="210px"><label for="txtMySQLServerHost">MySQL Server Host:</label></td>
+			<td width="210px"><label for="txtMySQLServerHost">mysql Server Host:</label></td>
 			<td><input type="text" name="txtMySQLServerHost" id="txtMySQLServerHost" value="localhost" onblur="validate_domain(this,0)" /></td>
 		</tr>
 		<tr>
-			<td width="210px"><label for="txtMySQLServerPort">MySQL Server Port:<br/>(Leave blank if not sure) </label></td>
+			<td width="210px"><label for="txtMySQLServerPort">mysql Server Port:<br/>(Leave blank if not sure) </label></td>
 			<td><input type="text" name="txtMySQLServerPort" id="txtMySQLServerPort" value="" onblur="validate_port(this,0)" /></td>
 		</tr>
 		<tr>

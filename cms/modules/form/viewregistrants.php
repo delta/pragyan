@@ -33,15 +33,15 @@ if(!defined('__PRAGYAN_CMS'))
 
 function getLastUpdateDate($moduleComponentId, $userId) {
 	$query = 'SELECT `form_lastupdated` FROM `form_regdata` WHERE `page_modulecomponentid` = \'' . $moduleComponentId . '\' AND `user_id` = \'' . $userId."'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 
 function getRegistrationDate($moduleComponentId, $userId) {
 	$query = 'SELECT `form_firstupdated` FROM `form_regdata` WHERE `page_modulecomponentid` = \'' . $moduleComponentId . '\' AND `user_id` = \'' . $userId."'";
-	$result = mysql_query($query);
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 }
 
@@ -54,8 +54,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 					'`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND ' .
 					'`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ' .
 					'ORDER BY `form_elementrank` ASC';
-	$elementDataResult = mysql_query($elementDataQuery) or die($elementDataQuery . ' ' . mysql_error());
-	while($elementDataRow = mysql_fetch_row($elementDataResult)) {
+	$elementDataResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementDataQuery) or die($elementDataQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while($elementDataRow = mysqli_fetch_row($elementDataResult)) {
 	  //displayinfo(print_r($elementDataRow,true));
 	    $elementRow['elementid_' . $elementDataRow[1]] = $elementDataRow[0];
 		if($elementDataRow[2] == 'file') {
@@ -67,8 +67,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = '".$elementDataRow[0]."' AND " .
 						"`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND " .
 						"`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ORDER BY `form_elementrank`";
-			$elementDataResu = mysql_query($elementDataQuery) or die($elementDataQuery . '<br />' . mysql_error());
-			while($elementDataRes = mysql_fetch_assoc($elementDataResu)) {
+			$elementDataResu = mysqli_query($GLOBALS["___mysqli_ston"], $elementDataQuery) or die($elementDataQuery . '<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			while($elementDataRes = mysqli_fetch_assoc($elementDataResu)) {
 				$elementRow['form' .$elementDataRow[1].'_'. $elementDataRes['form_elementname']] = $elementDataRes['form_elementdata'];
 				if($elementDataRes['form_elementtype'] == 'file') {
 					$elementRow['form' .$elementDataRow[1].'_'. $elementDataRes['form_elementname']] = '<a href="./'.$elementDataRes['form_elementdata'].'">' . $elementDataRes['form_elementdata'] . '</a>';
@@ -76,8 +76,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			}
 			if($elementDataRow[0]!='') {
 			  $userProfile = "SELECT * FROM " . MYSQL_DATABASE_PREFIX . "users WHERE `user_id` = ".$elementDataRow[0];	
-			  $userResult = mysql_query($userProfile) or displayerror(mysql_error());
-			  $res = mysql_fetch_assoc($userResult);
+			  $userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userProfile) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			  $res = mysqli_fetch_assoc($userResult);
 			  $elementRow['form' .$elementDataRow[1].'_userEmail'] = $res['user_email'];
 			  $elementRow['form' .$elementDataRow[1].'_userFullName'] = $res['user_fullname'];
 			}
@@ -94,16 +94,16 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 						"`form_elementdata`.`page_modulecomponentid` = 0 AND `user_id` = '$userId' AND " .
 						"`form_elementdata`.`page_modulecomponentid` = `form_elementdesc`.`page_modulecomponentid` AND " .
 						"`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid` ORDER BY `form_elementrank`";
-			$elementDataResult = mysql_query($elementDataQuery) or die($elementDataQuery . '<br />' . mysql_error());
-			while($elementDataRow = mysql_fetch_assoc($elementDataResult)) {
+			$elementDataResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementDataQuery) or die($elementDataQuery . '<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			while($elementDataRow = mysqli_fetch_assoc($elementDataResult)) {
 				$elementRow['form0_' . $elementDataRow['form_elementname']] = $elementDataRow['form_elementdata'];
 				if($elementDataRow['form_elementtype'] == 'file') {
 					$elementRow['form0_' . $elementDataRow['form_elementname']] = '<a href="./'.$elementDataRow['form_elementdata'].'">' . $elementDataRow['form_elementdata'] . '</a>';
 				}
 			}
 			$userProfile = "SELECT * FROM " . MYSQL_DATABASE_PREFIX . "users WHERE `user_id` = {$userId}";	
-			$userResult = mysql_query($userProfile) or displayerror(mysql_error());
-			$res = mysql_fetch_assoc($userResult);
+			$userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userProfile) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$res = mysqli_fetch_assoc($userResult);
 			$elementRow['form0_userEmail'] = $res['user_email'];
 			$elementRow['form0_userFullName'] = $res['user_fullname'];
 	
@@ -112,8 +112,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 		}
 		else {
 			$elementDataQuery = 'SELECT `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = 0';
-			$elementDataResult = mysql_query($elementDataQuery);
-			while($elementDataRow = mysql_fetch_row($elementDataResult)) {
+			$elementDataResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementDataQuery);
+			while($elementDataRow = mysqli_fetch_row($elementDataResult)) {
 				$elementDataRow['form0_' . $elementDataRow['form_elementname']] = '&nbsp;';
 			}
 		}
@@ -165,8 +165,8 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 			$columns['lastupdated'] = 'Last Updated';
 		if($showUserProfileData) {
 			$profileQuery = 'SELECT `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = 0 ORDER BY `form_elementrank`';
-			$profileResult = mysql_query($profileQuery);
-			while($profileRow = mysql_fetch_row($profileResult)) {
+			$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
+			while($profileRow = mysqli_fetch_row($profileResult)) {
 				$columns['form0_' . $profileRow[0]] = $profileRow[0];
 			}
 			$columns['form0_userEmail'] = 'Email';
@@ -176,16 +176,16 @@ function generateFormDataRow($moduleCompId, $userId, $columnList, $showProfileDa
 
 		$columnQuery = 'SELECT `form_elementid`, `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = \'' .
 									 $moduleCompId . '\' ORDER BY `form_elementrank` ASC';
-		$columnResult = mysql_query($columnQuery);
+		$columnResult = mysqli_query($GLOBALS["___mysqli_ston"], $columnQuery);
 		$cnt = 0;
-		while($columnRow = mysql_fetch_assoc($columnResult)) {
+		while($columnRow = mysqli_fetch_assoc($columnResult)) {
 			$columns['elementid_' . $columnRow['form_elementid']] = $columnRow['form_elementname'];
 			$query = "SELECT `form_elementid`, `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = {$moduleCompId} AND `form_elementtype` = 'member' AND `form_elementid`={$columnRow['form_elementid']}";
-			$res = mysql_query($query) or displayerror(mysql_error());
-			if(mysql_num_rows($res)>0) {
+			$res = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			if(mysqli_num_rows($res)>0) {
 				$profileQuery = 'SELECT `form_elementname` FROM `form_elementdesc` WHERE `page_modulecomponentid` = 0 ORDER BY `form_elementrank`';
-				$profileResult = mysql_query($profileQuery);
-				while($profileRow = mysql_fetch_row($profileResult)) {
+				$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
+				while($profileRow = mysqli_fetch_row($profileResult)) {
 					$columns['form' .$columnRow['form_elementid']. '_'. $profileRow[0]] = $columnRow['form_elementname'].'_'.$profileRow[0];
 				}
 				$elementRow['form' .$columnRow['form_elementid'].'_userEmail'] = $columnRow['form_elementname'].'_'.$res['user_email'];
@@ -245,8 +245,8 @@ WHERE dat.`form_elementid` = 3 ORDER BY dat.form_elementdata
 		}
 
 
-		$userResult = mysql_query($userQuery) or die ($userQuery . ' ' . mysql_error());
-		while($userRow = mysql_fetch_row($userResult)) {
+		$userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userQuery) or die ($userQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while($userRow = mysqli_fetch_row($userResult)) {
 			$users[] = $userRow[0];
 		}
 
@@ -267,13 +267,13 @@ function generateFormDataTable($moduleComponentId, $sortField, $sortOrder, $acti
 
 	$formDescQuery = 'SELECT  `form_showuseremail`, `form_showuserfullname`, `form_showregistrationdate`, `form_showlastupdatedate`, `form_showuserprofiledata`,`form_heading` FROM `form_desc` ' .
 					'WHERE `page_modulecomponentid` = \'' . $moduleComponentId."'";
-	$formDescResult = mysql_query($formDescQuery);
+	$formDescResult = mysqli_query($GLOBALS["___mysqli_ston"], $formDescQuery);
 	
 	$showUserEmail = $showUserFullName = false;
 	$showRegistrationDate = $showLastUpdateDate = true;
 	$showUserProfileData = false;
 	$formName='';
-	if($formDescRow = mysql_fetch_row($formDescResult)) {
+	if($formDescRow = mysqli_fetch_row($formDescResult)) {
 		
 		$showUserEmail = $formDescRow[0] == 1;
 		$showUserFullName = $formDescRow[1] == 1;
@@ -442,10 +442,10 @@ EDITREGISTRANTSVIEW;
 		if(verifyUserRegistered($moduleCompId,$userId)) {
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdata` FROM `form_elementdata` WHERE ' .
 									 "`page_modulecomponentid` = '$moduleCompId' AND `user_id` = '$userId'";
-			$dataResult = mysql_query($dataQuery);
+			$dataResult = mysqli_query($GLOBALS["___mysqli_ston"], $dataQuery);
 			
-			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . mysql_error()); 	return false; }
-			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; }
+			while($dataRow = mysqli_fetch_assoc($dataResult)) {
 			
 				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdata'];
 			}
@@ -453,19 +453,19 @@ EDITREGISTRANTSVIEW;
 		else {
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdefaultvalue` FROM `form_elementdesc` WHERE ' .
 									 "`page_modulecomponentid` = '$moduleCompId'";
-			$dataResult = mysql_query($dataQuery);
+			$dataResult = mysqli_query($GLOBALS["___mysqli_ston"], $dataQuery);
 			
-			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . mysql_error()); 	return false; }
-			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; }
+			while($dataRow = mysqli_fetch_assoc($dataResult)) {
 			
 				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdefaultvalue'];
 			}
 		}
 		$elementQuery = 'SELECT `form_elementid`, `form_elementtype`, `form_elementdisplaytext` FROM `form_elementdesc` WHERE ' .
 										"`page_modulecomponentid` ='$moduleCompId' ORDER BY `form_elementrank`";
-		$elementResult = mysql_query($elementQuery);
+		$elementResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementQuery);
 		$formElements = array();
-		while($elementRow = mysql_fetch_assoc($elementResult)) {
+		while($elementRow = mysqli_fetch_assoc($elementResult)) {
 				if($elementRow['form_elementtype']=='file'){
 					global $urlRequestRoot;
 					$fileLink=$formValues[$elementRow['form_elementid']];

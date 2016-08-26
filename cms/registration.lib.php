@@ -165,11 +165,11 @@ FORM;
 	elseif (isset ($_POST['resend_key_email'])) {
 		$email = escape($_POST['resend_key_email']);
 		$query = "SELECT * FROM  `" . MYSQL_DATABASE_PREFIX . "users`  WHERE `user_email`='$email' ";
-		$result = mysql_query($query) or displayerror(mysql_error() . "registration L:131");
-		if (!mysql_num_rows($result))
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:131");
+		if (!mysqli_num_rows($result))
 			displayinfo("This email-id has not yet been registered. Kindly <a href=\"./+login&subaction=register\">register</a>.");
 		else {
-			$temp = mysql_fetch_assoc($result);
+			$temp = mysqli_fetch_assoc($result);
 			if ($temp['user_activated'] == 1)
 				displayinfo("E-mail $email has already been verified.<a href=\"./+login\"> Login</a> <a href=\"./+login&subaction=resetPasswd\">Forgot Password?</a>");
 			else {
@@ -198,15 +198,15 @@ FORM;
 	elseif (isset ($_GET['key'])) {
 		$emailId = escape($_GET['verify']);
 		$query = "SELECT * FROM  `" . MYSQL_DATABASE_PREFIX . "users`  WHERE `user_email`='{$emailId}'";
-		$result = mysql_query($query) or displayerror(mysql_error() . "registration L:76");
-		$temp = mysql_fetch_assoc($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:76");
+		$temp = mysqli_fetch_assoc($result);
 		if ($temp['user_activated'] == 1)
 			displayinfo("E-mail ".escape($_GET[verify])." has already been verified");
 		else {
 			if ($_GET['key'] == getVerificationKey($_GET['verify'], $temp['user_password'], $temp['user_regdate'])) {
 				$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_activated`=1  WHERE `user_email`='$emailId'";
-				mysql_query($query) or die(mysql_error());
-				if (mysql_affected_rows() > 0)
+				mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+				if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0)
 					displayinfo("Your e-mail ".escape($_GET[verify])." has been verified. Now you can fill your profile information by clicking <a href=\"./+profile\">here</a> or by clicking on the preferences link in the action bar any time you are logged in.");
 				else
 					displayerror("Verification error for ".escape($_GET[verify]).". Please contact administrator");
@@ -249,8 +249,8 @@ FORM;
 			return getRegistrationForm();
 			}
 		$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . $umail . "'";
-		$result = mysql_query($query) or displayerror(mysql_error() . "in registration L:115");
-		if (mysql_num_rows($result)) {
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "in registration L:115");
+		if (mysqli_num_rows($result)) {
 			displaywarning("Email already exists in database. Please use a different e-mail.");
 			return getRegistrationForm();
 		} else {
@@ -258,15 +258,15 @@ FORM;
 			$query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
 					"(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`) " .
 					"VALUES ('".escape(htmlentities($_POST['user_name']))."', '".escape(htmlentities($_POST['user_email']))."', '".escape(htmlentities($_POST['user_fullname']))."', '$passwd', ".ACTIVATE_USER_ON_REG.")";
-			$result = mysql_query($query);
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			$query1 = "SELECT `user_id` FROM `". MYSQL_DATABASE_PREFIX . "users` WHERE `user_email` ='".escape($_POST['user_email'])."' LIMIT 1";
-			$result1 = mysql_query($query1);
-			$result1 = mysql_fetch_array($result1);
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+			$result1 = mysqli_fetch_array($result1);
 			$form_result = submitRegistrationForm(0, $result1[0], true, true); 
 			if(!$form_result)
 				{
 					$query1 = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` = '".$result1[0]."'";
-					$result = mysql_query($query1); 
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query1); 
 					return getRegistrationForm();
 				}			
 			if ($result)
@@ -279,9 +279,9 @@ FORM;
 			{
 				$email = $umail;
 				$query = "SELECT * FROM  `" . MYSQL_DATABASE_PREFIX . "users`  WHERE `user_email`='$email' ";
-				$result = mysql_query($query) or displayerror(mysql_error() . "registration L:211");
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "registration L:211");
 			
-				$temp = mysql_fetch_assoc($result);
+				$temp = mysqli_fetch_assoc($result);
 				$key = getVerificationKey($email, $temp['user_password'], $temp['user_regdate']);
 
 				// send mail code starts here - see common.lib.php for more

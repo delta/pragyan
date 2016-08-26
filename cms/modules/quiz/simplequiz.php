@@ -183,7 +183,7 @@ QUIZSTARTFORM;
 				// start it by inserting a row for each section in the quiz into quiz_userattempts.
 				$attemptQuery = "INSERT INTO `quiz_userattempts`(`page_modulecomponentid`, `quiz_sectionid`, `user_id`, `quiz_attemptstarttime`) " .
 						"SELECT {$this->quizId}, `quiz_sectionid`, $userId, NOW() FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}'";
-				if (!mysql_query($attemptQuery)) {
+				if (!mysqli_query($GLOBALS["___mysqli_ston"], $attemptQuery)) {
 					displayerror('Database Error. Could not update quiz information.');
 					return '';
 				}
@@ -233,9 +233,9 @@ QUIZSTARTFORM;
 		if($this->quizRow['quiz_allowsectionrandomaccess'] == 1)
 			$questionQuery .= "AND `quiz_answersubmissions`.`quiz_sectionid` = '".escape($_GET['sectionid']) ."'";
 		$questionQuery .= "ORDER BY `quiz_answersubmissions`.`quiz_questionrank` LIMIT {$this->quizRow['quiz_questionsperpage']}";
-		$questionResult = mysql_query($questionQuery);
+		$questionResult = mysqli_query($GLOBALS["___mysqli_ston"], $questionQuery);
 		if (!$questionResult) {
-			displayerror('Invalid query. ' . $questionQuery . ' ' . mysql_error());
+			displayerror('Invalid query. ' . $questionQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			return false;
 		}
 
@@ -255,7 +255,7 @@ QUIZSTARTFORM;
 
 		$submittedAnswers = array();
 		$rollbackQuery = array();
-		while ($questionRow = mysql_fetch_assoc($questionResult)) {
+		while ($questionRow = mysqli_fetch_assoc($questionResult)) {
 			$rollbackQuery[] = "(`quiz_sectionid` = {$questionRow['quiz_sectionid']} AND `quiz_questionid` = {$questionRow['quiz_questionid']})";
 			$questionType = $questionRow['quiz_questiontype'];
 
@@ -306,9 +306,9 @@ QUIZSTARTFORM;
 			$updateQuery = "UPDATE `quiz_answersubmissions` SET `quiz_submittedanswer` = '{$submittedAnswers[$i][3]}', `quiz_answersubmittime` = NOW() WHERE " .
 					"`page_modulecomponentid` = {$this->quizId} AND `quiz_sectionid` = '{$submittedAnswers[$i][0]}' AND " .
 					"`quiz_questionid` = '{$submittedAnswers[$i][1]}' AND `user_id` = '$userId'";
-			if (!mysql_query($updateQuery)) {
+			if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 				displayerror('Invalid Query. Could not save answers.');
-				mysql_query($rollbackQuery);
+				mysqli_query($GLOBALS["___mysqli_ston"], $rollbackQuery);
 				return false;
 			}
 		}
@@ -324,9 +324,9 @@ QUIZSTARTFORM;
 	 */
 	private function checkQuizInitialized($userId) {
 		$countQuery = "SELECT COUNT(*) FROM `quiz_answersubmissions` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
-		$countResult = mysql_query($countQuery);
+		$countResult = mysqli_query($GLOBALS["___mysqli_ston"], $countQuery);
 		
-		$countRow = mysql_fetch_row($countResult);
+		$countRow = mysqli_fetch_row($countResult);
 		
 		return $countRow[0] == $this->quizRow['quiz_questionspertest'];
 	}
@@ -360,7 +360,7 @@ QUIZSTARTFORM;
 		for ($i = 0; $i < count($sections); ++$i) {
 			$insertQuery = "INSERT INTO `quiz_answersubmissions`(`page_modulecomponentid`, `quiz_sectionid`, `quiz_questionid`, `user_id`, `quiz_questionrank`) VALUES" .
 					"({$this->quizId}, {$sectionList[$sections[$i]]['quiz_sectionid']}, {$questionList[$sections[$i]][$offsets[$sections[$i]]]}, $userId, $i)";
-			if (!mysql_query($insertQuery)) {
+			if (!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
 				displayerror('Database Error. Could not initialize quiz.');
 				return false;
 			}
@@ -389,13 +389,13 @@ QUIZSTARTFORM;
 		if ($this->quizRow['quiz_allowsectionrandomaccess'] == 1)
 			$questionQuery .= " AND `quiz_sectionid` = '$sectionId' ";
 		$questionQuery .= " ORDER BY `quiz_questionrank` LIMIT $questionsPerPage";
-		$questionResult = mysql_query($questionQuery);
+		$questionResult = mysqli_query($GLOBALS["___mysqli_ston"], $questionQuery);
 		if (!$questionResult) {
 			displayerror('Database Error. Could not fetch questions.');
 			return null;
 		}
 		$questionIds = array();
-		while ($questionRow = mysql_fetch_row($questionResult))
+		while ($questionRow = mysqli_fetch_row($questionResult))
 			$questionIds[] = $questionRow;
 		return $questionIds;
 	}
@@ -418,7 +418,7 @@ QUIZSTARTFORM;
 		$testTime = implode(', ', $testTime);
 		
 		if ($this->quizRow['quiz_allowsectionrandomaccess']) {
-		    $sectionTime = mysql_fetch_array(mysql_query("SELECT `quiz_sectiontimelimit` FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId'"));
+		    $sectionTime = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `quiz_sectiontimelimit` FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId'"));
 		
 		    $sectionTime = $sectionTime[0];
 		    $sectionTime = explode(':', $sectionTime);
@@ -553,14 +553,14 @@ QUESTIONFORM;
 		$questionQuery .= "ORDER BY `quiz_answersubmissions`.`quiz_questionrank` " .
 				"LIMIT $questionCount";
 
-		$questionResult = mysql_query($questionQuery);
+		$questionResult = mysqli_query($GLOBALS["___mysqli_ston"], $questionQuery);
 
 		$questionNumber = 1;
 		$questionPage = $this->getTimerHtml($userId, $sectionId);
 		$questionPage .= '<form name="quizquestions" id="quizForm" method="POST" action="./+view' . ($sectionId == -1 ? '' : '&sectionid=' . $sectionId) . '" onsubmit="return confirm(\'Are you sure you wish to submit this page?\')">';
-		while ($questionRow = mysql_fetch_assoc($questionResult)) {
+		while ($questionRow = mysqli_fetch_assoc($questionResult)) {
 			if (is_null($questionRow['quiz_questionviewtime']))
-				mysql_query("UPDATE `quiz_answersubmissions` SET `quiz_questionviewtime` = NOW() WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '{$questionRow['quiz_sectionid']}' AND `quiz_questionid` = '{$questionRow['quiz_questionid']}'");
+				mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `quiz_answersubmissions` SET `quiz_questionviewtime` = NOW() WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '{$questionRow['quiz_sectionid']}' AND `quiz_questionid` = '{$questionRow['quiz_questionid']}'");
 			$questionPage .= $this->formatQuestion($questionRow, $questionNumber);
 			++$questionNumber;
 		}
@@ -606,12 +606,12 @@ QUESTIONPAGESCRIPT;
 		if ($sectionId != -1)
 			$countQuery .= " AND `quiz_sectionid` = '$sectionId'";
 		$countQuery .= " `user_id` = $userId AND `quiz_answersubmittime` IS NOT NULL";
-		$countResult = mysql_query($countQuery);
+		$countResult = mysqli_query($GLOBALS["___mysqli_ston"], $countQuery);
 		if (!$countResult) {
 			displayerror('Database Error. Could not retrieve user attempt information.');
 			return false;
 		}
-		$countRow = mysql_fetch_row($countResult);
+		$countRow = mysqli_fetch_row($countResult);
 		return $countRow[0];
 	}
 	
@@ -643,8 +643,8 @@ QUESTIONPAGESCRIPT;
 		}
 
 		$questionIds = array();
-		$questionResult = mysql_query($questionQuery) or die(mysql_error());
-		while ($questionRow = mysql_fetch_row($questionResult))
+		$questionResult = mysqli_query($GLOBALS["___mysqli_ston"], $questionQuery) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while ($questionRow = mysqli_fetch_row($questionResult))
 			$questionIds[] = $questionRow[0];
 		return $questionIds;
 	}
@@ -663,16 +663,16 @@ QUESTIONPAGESCRIPT;
 				"`quiz_sections`.`page_modulecomponentid` = '{$this->quizId}' AND " .
 				"`quiz_userattempts`.`user_id` = '$userId' AND " .
 				"`quiz_submissiontime` IS NOT NULL";
-		$countResult = mysql_query($countQuery);
+		$countResult = mysqli_query($GLOBALS["___mysqli_ston"], $countQuery);
 		if (!$countResult) {
 			displayerror('Database Error. Could not fetch section information.');
 			return false;
 		}
-		$countRow = mysql_fetch_row($countResult);
+		$countRow = mysqli_fetch_row($countResult);
 		$completedCount = $countRow[0];
 		$countQuery = "SELECT COUNT(*) FROM `quiz_sections` WHERE `page_modulecomponentid` = '{$this->quizId}'";
-		$countResult = mysql_query($countQuery);
-		$countRow = mysql_fetch_row($countResult);
+		$countResult = mysqli_query($GLOBALS["___mysqli_ston"], $countQuery);
+		$countRow = mysqli_fetch_row($countResult);
 		return $countRow[0] == $completedCount;
 	}
 
@@ -705,14 +705,14 @@ QUESTIONPAGESCRIPT;
 			// Check if all questions for this section have been completed, if yes, set quiz_submissiontime and return true
 			$questionQuery = "SELECT COUNT(*) FROM `quiz_answersubmissions` WHERE " .
 					"`page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId' AND `quiz_answersubmittime` IS NULL";
-			$questionResult = mysql_query($questionQuery);
-			$questionRow = mysql_fetch_row($questionResult);
+			$questionResult = mysqli_query($GLOBALS["___mysqli_ston"], $questionQuery);
+			$questionRow = mysqli_fetch_row($questionResult);
 
 			if ($questionRow[0] != 0)
 				return false;
 
 			$updateQuery = "UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `page_modulecomponentid` = '$this->quizId' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
-			if (mysql_query($updateQuery))
+			if (mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery))
 				return true;
 			else {
 				displayerror('Database Error. Could not mark section as completed.');
@@ -735,7 +735,7 @@ QUESTIONPAGESCRIPT;
 			"UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId' AND `quiz_submissiontime` IS NULL"
 		);
 
-		if (!mysql_query($updateQueries[0]) || !mysql_query($updateQueries[1])) {
+		if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQueries[0]) || !mysqli_query($GLOBALS["___mysqli_ston"], $updateQueries[1])) {
 			displayerror('Error. Could not mark quiz as completed.');
 			return false;
 		}
@@ -757,10 +757,10 @@ QUESTIONPAGESCRIPT;
 			$elapsedQuery = "SELECT TIMEDIFF(NOW(), `quiz_attemptstarttime`) FROM `quiz_userattempts` WHERE " .
 					"`page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
 
-		$elapsedResult = mysql_query($elapsedQuery);
+		$elapsedResult = mysqli_query($GLOBALS["___mysqli_ston"], $elapsedQuery);
 		if (!$elapsedResult)
-			displayerror('Error. ' . $elapsedQuery . '<br />' . mysql_error());
-		$elapsedRow = mysql_fetch_row($elapsedResult);
+			displayerror('Error. ' . $elapsedQuery . '<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$elapsedRow = mysqli_fetch_row($elapsedResult);
 		return $elapsedRow[0];
 	}
 
@@ -774,8 +774,8 @@ QUESTIONPAGESCRIPT;
 					"`page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		}
 
-		$remainingResult = mysql_query($remainingQuery);
-		$remainingRow = mysql_fetch_row($remainingResult);
+		$remainingResult = mysqli_query($GLOBALS["___mysqli_ston"], $remainingQuery);
+		$remainingRow = mysqli_fetch_row($remainingResult);
 		return $remainingRow[0];
 	}
 
@@ -805,13 +805,13 @@ QUESTIONPAGESCRIPT;
 					"`quiz_userattempts` WHERE `page_modulecomponentid` = '{$this->quizId}' AND `quiz_sectionid` = '$sectionId' AND `user_id` = '$userId'";
 		}
 
-		$timeoutResult = mysql_query($timeoutQuery);
+		$timeoutResult = mysqli_query($GLOBALS["___mysqli_ston"], $timeoutQuery);
 		if (!$timeoutResult) {
 			displayerror('Database Error. Could not retrieve time information.');
 			return -1;
 		}
 
-		$timeoutRow = mysql_fetch_row($timeoutResult);
+		$timeoutRow = mysqli_fetch_row($timeoutResult);
 		if (is_null($timeoutRow[0])) {
 			// An invalid Section ID was passed => we could not find a row for the user for that
 			// Section ID. assume he timed out
@@ -832,7 +832,7 @@ QUESTIONPAGESCRIPT;
 		$updateQuery = "UPDATE `quiz_userattempts` SET `quiz_submissiontime` = NOW() WHERE `quiz_submissiontime` IS NULL AND `page_modulecomponentid` = '{$this->quizId}' AND `user_id` = '$userId'";
 		if ($sectionId >= 0)
 			$updateQuery .= " AND `quiz_sectionid` = '$sectionId'";
-		if (!mysql_query($updateQuery)) {
+		if (!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 			displayerror('Database Error. Could not mark quiz as completed.');
 			return false;
 		}

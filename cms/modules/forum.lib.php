@@ -53,18 +53,18 @@ class forum implements module {
 	 */
 	public function getTotalPosts($userID) {
 		$q1 = "SELECT * FROM `forum_threads` WHERE `forum_thread_user_id`='$userID' AND `page_modulecomponentid`='$this->moduleComponentId'";
-		$res1 = mysql_query($q1);
-		$posts = mysql_num_rows($res1);
+		$res1 = mysqli_query($GLOBALS["___mysqli_ston"], $q1);
+		$posts = mysqli_num_rows($res1);
 		$q2 = "SELECT * FROM `forum_posts` WHERE `forum_post_user_id`='$userID' AND `page_modulecomponentid`='$this->moduleComponentId'";
-		$res2 = mysql_query($q2);
-		$posts += mysql_num_rows($res2);
+		$res2 = mysqli_query($GLOBALS["___mysqli_ston"], $q2);
+		$posts += mysqli_num_rows($res2);
 		return $posts;
 	}
 
 	public function getLastLogin($userId) {
 		$query = "SELECT `user_lastlogin` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` = '$userId'";
-		$result = mysql_query($query);
-		$row = mysql_fetch_row($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$row = mysqli_fetch_row($result);
 		return $row[0];
 	}
 	/**
@@ -76,8 +76,8 @@ class forum implements module {
 		if ($userID == 0)
 			return 0;
 		$query = 'SELECT `user_regdate` FROM `' . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` = '$userID'";
-		$result = mysql_query($query);
-		$row = mysql_fetch_row($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$row = mysqli_fetch_row($result);
 		return $row[0];
 	}
 	public function actionForumsettings(){
@@ -108,21 +108,21 @@ class forum implements module {
 					$access_level = 0;
 					$approve = 1;
 					$q1 = "UPDATE `$table_name` SET `forum_post_approve`='$approve' WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-					$res1 = mysql_query($q1);
+					$res1 = mysqli_query($GLOBALS["___mysqli_ston"], $q1);
 					$q2 = "UPDATE `$table1_name` SET `forum_post_approve`='$approve' WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-					$res2 = mysql_query($q2);
+					$res2 = mysqli_query($GLOBALS["___mysqli_ston"], $q2);
 				}
 			else
 				{$access_level = 1;}
 			$pageId=getPageIdFromModuleComponentId("forum",$this->moduleComponentId);
 			$q = "UPDATE `$table2_name` SET `forum_moderated`='$access_level',  " .
 					"`forum_description`='$forum_description',`allow_delete_posts`='$del_post',`allow_like_posts`='$like_post' WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$res = mysql_query($q) or displayerror(mysql_error() . "Update failed L:113");
+			$res = mysqli_query($GLOBALS["___mysqli_ston"], $q) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Update failed L:113");
 			displayinfo("Forum settings updated successfully!");
 		}
 				$query = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$result = mysql_query($query);
-				$rows = mysql_fetch_array($result);
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				$rows = mysqli_fetch_array($result);
 				$forum_description = stripslashes($rows['forum_description']);
 				$forum_moderated = $rows['forum_moderated'];
 				$allow_delete_posts = $rows['allow_delete_posts'];
@@ -193,12 +193,12 @@ PRE;
 			if (!isset ($_GET['post_id'])) {
 				$thread_id = escape($_GET['thread_id']);
 				$query = "UPDATE `$table_name` SET `forum_post_approve`='$approval' WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$result = mysql_query($query);
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			} else {
 				$thread_id = escape($_GET['forum_id']);
 				$post_id = escape($_GET['post_id']);
 				$query = "UPDATE `$table1_name` SET `forum_post_approve`='$approval' WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$result = mysql_query($query);
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			}
 			if (!$result)
 				displayerror("Could not perform the desired action(approve/disapprove)!");
@@ -207,11 +207,11 @@ PRE;
 			if (!isset ($_GET['post_id'])) {
 				$thread_id = escape($_GET['thread_id']);
 				$query = "DELETE FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$result = mysql_query($query);
+				$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				$query1 = "DELETE FROM `forum_posts` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
-				$result1 = mysql_query($query1);
+				$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 				$query2 = "DELETE FROM `forum_like` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
-				$result2 = mysql_query($query2);
+				$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query2);
 				if (!$result)
 					displayerror("Could not perform the delete operation!");
 				else
@@ -221,9 +221,9 @@ PRE;
 				$thread_id = escape($_GET['forum_id']);
 				$post_id = escape($_GET['post_id']);
 				$query1 = "DELETE FROM `forum_posts` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$result1 = mysql_query($query1);
+				$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 				$query1 = "DELETE FROM `forum_like` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$result1 = mysql_query($query1);
+				$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 				if (!$result1)
 					displayerror("Could not perform the delete operation!");
 				else
@@ -234,12 +234,12 @@ PRE;
 		if (!isset ($_GET['forum_id'])) {
 			$query = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "" .
 					"' AND `forum_thread_category`='general' ORDER BY `forum_thread_lastpost_date` DESC";
-			$result = mysql_query($query);
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			$query1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "" .
 					"' AND `forum_thread_category`='sticky' ORDER BY `forum_thread_datetime` DESC";
-			$result1 = mysql_query($query1);
-			$num_rows = mysql_num_rows($result);
-			$num_rows1 = mysql_num_rows($result1);
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+			$num_rows = mysqli_num_rows($result);
+			$num_rows1 = mysqli_num_rows($result1);
 			global $ICONS;
 			if ($result) {
 			
@@ -259,10 +259,10 @@ PRE;
 PRE;
 				if ($result1 && $num_rows1 > 0) {
 					for ($i = 1; $i <= $num_rows1; $i++) {
-						$rows = mysql_fetch_array($result1);
+						$rows = mysqli_fetch_array($result1);
 						$query2 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$result2 = mysql_query($query2);
-						$reply_count = mysql_num_rows($result2);
+						$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query2);
+						$reply_count = mysqli_num_rows($result2);
 						$topic = ucfirst(parseubb(parsesmileys(htmlspecialchars($rows['forum_thread_topic']))));
 						$name = ucfirst(getUserName($rows['forum_thread_user_id']));
 						$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
@@ -297,15 +297,15 @@ PRE;
 				if ($num_rows < 1)
 					$moderate .= "<tr><td colspan=\"5\" class='forumTableRow'><strong>No Post</strong></td></tr>";
 				for ($i = 1; $i <= $num_rows; $i++) {
-					$rows = mysql_fetch_array($result);
+					$rows = mysqli_fetch_array($result);
 					if($userId>0 && ($_SESSION['last_to_last_login_datetime']<$rows['forum_thread_lastpost_date']))
 						$img_src = "thread_new.gif";
 					else
 						$img_src = "thread_hot.gif";
 
 					$query1 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1'";
-					$result1 = mysql_query($query1);
-					$reply_count = mysql_num_rows($result1);
+					$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+					$reply_count = mysqli_num_rows($result1);
 					$topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
 					$name = ucfirst(getUserName($rows['forum_thread_user_id']));
 					$last_post_author = ucfirst(getUserName($rows['forum_thread_last_post_userid']));
@@ -347,12 +347,12 @@ PRE;
 			return $moderate;
 		} else {
 			$q = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$r = mysql_query($q) or displayerror(mysql_error() . "Moderate failed L:343");
-			$r = mysql_fetch_array($r);
+			$r = mysqli_query($GLOBALS["___mysqli_ston"], $q) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Moderate failed L:343");
+			$r = mysqli_fetch_array($r);
 			$forum_id = escape($_GET['forum_id']); //Parent Thread ID
 			$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`='$forum_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$result1 = mysql_query($sql);
-			$rows = mysql_fetch_array($result1);
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$rows = mysqli_fetch_array($result1);
 			$forum_topic = ucfirst(parseubb(parsesmileys($rows['forum_thread_topic'])));
 			$forum_detail = parseubb(parsesmileys($rows['forum_detail']));
 			$name = ucfirst(getUserName($rows['forum_thread_user_id']));
@@ -411,8 +411,8 @@ PRE;
 PRE;
 
 			$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`='$forum_id' AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY forum_post_id ASC";
-			$result2 = mysql_query($sql2);
-			while ($rows = mysql_fetch_array($result2)) {
+			$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+			while ($rows = mysqli_fetch_array($result2)) {
 				$count = $count + 1;
 				$post_title = ucfirst(parseubb(parsesmileys($rows['forum_post_title'])));
 				$post_content = (parseubb(parsesmileys($rows['forum_post_content'])));
@@ -441,11 +441,11 @@ PRE;
 PRE;
 			if($r['allow_like_posts'] == 1){
 					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='$rows[forum_thread_id]' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$likeres = mysql_query($likequery) or displayerror(mysql_error() . "Moderate failed L:438");;
-					$likeres = mysql_num_rows($likeres);
+					$likeres = mysqli_query($GLOBALS["___mysqli_ston"], $likequery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Moderate failed L:438");;
+					$likeres = mysqli_num_rows($likeres);
 					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='$rows[forum_thread_id]' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$dlikeres = mysql_query($dlikequery) or displayerror(mysql_error() . "Moderate failed L:441");
-					$dlikeres = mysql_num_rows($dlikeres);
+					$dlikeres = mysqli_query($GLOBALS["___mysqli_ston"], $dlikequery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Moderate failed L:441");
+					$dlikeres = mysqli_num_rows($dlikeres);
 					$postpart .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';
 					$postpart .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
 					}
@@ -479,13 +479,13 @@ PRE;
 			}
 			$postpart .='</table>';
 			$query3 = "SELECT `forum_thread_viewcount` FROM `$table_name` WHERE forum_thread_id='$forum_id' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-			$result3 = mysql_query($query3);
-			$rows = mysql_fetch_array($result3);
+			$result3 = mysqli_query($GLOBALS["___mysqli_ston"], $query3);
+			$rows = mysqli_fetch_array($result3);
 			$view = $rows['forum_thread_viewcount'];
 			// count more value
 			$addview = $view +1; 
 			$query5 = "UPDATE `$table_name` SET `forum_thread_viewcount`='$addview' WHERE forum_thread_id='$forum_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$result5 = mysql_query($query5);
+			$result5 = mysqli_query($GLOBALS["___mysqli_ston"], $query5);
 			$postpart .= '<br>
 			        <p align="left"><a href="+post&subaction=post_reply&thread_id='.$forum_id.'"><img title="Reply" src="'.$temp.'/reply.gif" />' .
 			        		'</a>&nbsp;<a href="+post&subaction=create_thread"><img title="New Thread" src="'.$temp.'/newthread.gif" /></a></p>';
@@ -514,8 +514,8 @@ PRE;
 		require_once ("$sourceFolder/$moduleFolder/forum/bbeditor.php");
 		require_once ("$sourceFolder/$moduleFolder/forum/bbparser.php");
 		$q = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-		$res = mysql_query($q);
-		$rows = mysql_fetch_array($res);
+		$res = mysqli_query($GLOBALS["___mysqli_ston"], $q);
+		$rows = mysqli_fetch_array($res);
 		$access_level = $rows['forum_moderated'];
 		if ($access_level) {
 			$approve = 0;
@@ -544,8 +544,8 @@ PRE;
 					else
 						$category = "general";
 					$query="SELECT MAX(`forum_thread_id`) AS MAX FROM `forum_threads`";
-					$result=mysql_query($query);
-					$row1 = mysql_fetch_assoc($result);
+					$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+					$row1 = mysqli_fetch_assoc($result);
 					$threadid = $row1['MAX'] + 1;
 
 					$sql = "INSERT INTO `$table_name`(`forum_thread_id` ,`page_modulecomponentid` ,`forum_thread_category` ,`forum_access_status` ," .
@@ -553,17 +553,17 @@ PRE;
 							"`forum_thread_viewcount` ,`forum_thread_last_post_userid` ,`forum_thread_lastpost_date`)" .
 							" VALUES('$threadid', '$this->moduleComponentId', '$category', '$access', '$subject', '$message'," .
 							" '$userId', '$datetime', '$approve', '1','$userId', '$datetime')";
-					$result = mysql_query($sql) or displayerror(mysql_error() . "Create New Thread failed L:550");
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Create New Thread failed L:550");
 					if ($result) {
 						$sql1 = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-						$result1 = mysql_query($sql1);
-						$rows1 = mysql_fetch_array($result1);
+						$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1);
+						$rows1 = mysqli_fetch_array($result1);
 						$total_thread_count = $rows['total_thread_count'];
 						// count more value
 						$net_thread_count = $total_thread_count +1;
 						$sql2 = "UPDATE `$table2_name` SET `total_thread_count`='$net_thread_count', `last_post_userid`='$userId'," .
 								" `last_post_datetime`='$datetime' WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-						$result2 = mysql_query($sql2);
+						$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
 						if(($access=="moderated")&& (!$moderator))
 								displayinfo("You have successfully created a new thread.It will be published after getting the moderator's approval." .
 										"<br />");
@@ -586,8 +586,8 @@ PRE;
 						$subject = addslashes(htmlspecialchars($_POST['subject']));
 						$message = addslashes(htmlspecialchars(parsenewline(nl2br($message))));
 						$sql7 = "SELECT MAX(`forum_post_id`) AS Maxpost_id FROM `$table1_name` WHERE `forum_thread_id` = '$forum_id'";
-						$res = mysql_query($sql7);
-						$rows = mysql_fetch_array($res);
+						$res = mysqli_query($GLOBALS["___mysqli_ston"], $sql7);
+						$rows = mysqli_fetch_array($res);
 						// add + 1 to highest answer number and keep it in variable name "$Max_id". if there no answer yet set it = 1
 						if ($rows) {
 							$Max_id = $rows['Maxpost_id'] + 1;
@@ -597,22 +597,22 @@ PRE;
 						$sql = "INSERT INTO `$table1_name`( `page_modulecomponentid` , `forum_thread_id` , `forum_post_id` , `forum_post_user_id` , `forum_post_title` , " .
 								"`forum_post_content` , `forum_post_datetime` , `forum_post_approve` ) VALUES( '$this->moduleComponentId','$forum_id', '$Max_id'," .
 								" '$userId', '$subject', '$message', '$datetime', '$approve')";
-						$result = mysql_query($sql) or displayerror(mysql_error() . "Post failed L:594");
+						$result = mysqli_query($GLOBALS["___mysqli_ston"], $sql) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "Post failed L:594");
 						if ($result) {
 							$sql1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' AND `forum_thread_id`=$forum_id" .
 									" LIMIT 1";
-							$result1 = mysql_query($sql1);
-							$rows1 = mysql_fetch_array($result1);
+							$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql1);
+							$rows1 = mysqli_fetch_array($result1);
 							$sql2 = "UPDATE `$table_name` SET  `forum_thread_last_post_userid`='$userId', " .
 									"`forum_thread_lastpost_date`='$datetime' " .
 									"WHERE `page_modulecomponentid`='$this->moduleComponentId' AND `forum_thread_id`='$forum_id' LIMIT 1";
-							$result2 = mysql_query($sql2);
+							$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
 							$sql3 = "SELECT * FROM `$table2_name` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-							$result3 = mysql_query($sql3);
-							$rows3 = mysql_fetch_array($result3);
+							$result3 = mysqli_query($GLOBALS["___mysqli_ston"], $sql3);
+							$rows3 = mysqli_fetch_array($result3);
 							$sql4 = "UPDATE `$table2_name` SET  `last_post_userid`='$userId', " .
 									"`last_post_datetime`='$datetime' WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-							$result4 = mysql_query($sql4);
+							$result4 = mysqli_query($GLOBALS["___mysqli_ston"], $sql4);
 							if(($rows1['forum_access_status']=="moderated")&& (!$moderator))
 								displayinfo("You have successfully posted your reply.It will be published after getting the moderator's approval." .
 										"<br />");
@@ -625,8 +625,8 @@ PRE;
 						$forumHtml = '';
 						$thread_id = $forum_id;
 						$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-						$result1 = mysql_query($sql);
-						$rows = mysql_fetch_array($result1);
+						$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+						$rows = mysqli_fetch_array($result1);
 						$threadUserId = $rows['forum_thread_user_id'];
 						$forum_topic = parseubb(parsesmileys($rows['forum_thread_topic']));
 						$forum_detail = parseubb(parsesmileys($rows['forum_detail']));
@@ -637,17 +637,17 @@ PRE;
 						if ($rows['forum_post_approve'] == 1)
 						$forumHtml .= $this->forumHtml($rows,'threadMain');
 						$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`='$thread_id' AND `forum_post_approve` = 1 AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY `forum_post_id` ASC";
-						$result2 = mysql_query($sql2);
-						while ($rows = mysql_fetch_array($result2)) 
+						$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+						while ($rows = mysqli_fetch_array($result2)) 
 							$forumHtml .= $this->forumHtml($rows,'threadMain',1);
 						$sql3 = "SELECT `forum_thread_viewcount` FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$result3 = mysql_query($sql3);
-						$rows = mysql_fetch_array($result3);
+						$result3 = mysqli_query($GLOBALS["___mysqli_ston"], $sql3);
+						$rows = mysqli_fetch_array($result3);
 						$view = $rows['forum_thread_viewcount'];
 						// count more value
 						$addview = $view +1;
 						$sql5 = "UPDATE `$table_name` SET `forum_thread_viewcount`='$addview' WHERE forum_thread_id='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-						$result5 = mysql_query($sql5);
+						$result5 = mysqli_query($GLOBALS["___mysqli_ston"], $sql5);
 						$forumHtml .= '</table> ';
 						return $forumHtml;
 					}
@@ -687,9 +687,9 @@ PRE;
 		//to check last visit to the forum
 		$table_visit = "forum_visits";
 		$query_checkvisit = "SELECT * from `$table_visit` WHERE `user_id`='$userId' AND `page_modulecomponentid`='$this->moduleComponentId'";
-		$result_checkvisit = mysql_query($query_checkvisit);
-		$check_visits = mysql_fetch_array($result_checkvisit);
-		if(mysql_num_rows($result_checkvisit)<1) {
+		$result_checkvisit = mysqli_query($GLOBALS["___mysqli_ston"], $query_checkvisit);
+		$check_visits = mysqli_fetch_array($result_checkvisit);
+		if(mysqli_num_rows($result_checkvisit)<1) {
 			$forum_lastviewed = date("Y-m-d H:i:s");
 		}
 		else {
@@ -698,15 +698,15 @@ PRE;
 		//set user's last visit
 		$time_visit = date("Y-m-d H:i:s");
 		$query_visit = "SELECT * FROM `$table_visit` WHERE `user_id`='$userId' AND `page_modulecomponentid`='$this->moduleComponentId'";
-		$result_visit = mysql_query($query_visit);
-		$num_rows_visit = mysql_num_rows($result_visit);
+		$result_visit = mysqli_query($GLOBALS["___mysqli_ston"], $query_visit);
+		$num_rows_visit = mysqli_num_rows($result_visit);
 		if($num_rows_visit<1) {
 		  $query_setvisit = "INSERT INTO `$table_visit`(`page_modulecomponentid`,`user_id`,`last_visit`) VALUES('$this->moduleComponentId','$userId','$time_visit')";
 		}
 		else {
 		  $query_setvisit = "UPDATE `$table_visit` SET `last_visit`='$time_visit' WHERE `user_id`='$userId' AND `page_modulecomponentid`='$this->moduleComponentId'"; 
 		}
-		mysql_query($query_setvisit);
+		mysqli_query($GLOBALS["___mysqli_ston"], $query_setvisit);
 
 		require_once ("$sourceFolder/$moduleFolder/forum/bbeditor.php");
 		require_once ("$sourceFolder/$moduleFolder/forum/bbparser.php");
@@ -714,9 +714,9 @@ PRE;
 			if ((isset($_GET['subaction']))&&($_GET['subaction'] == "delete_thread")) {
 				$thread_id = escape($_GET['forum_id']);
 				$query = "DELETE FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-				$res = mysql_query($query);
+				$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				$query1 = "DELETE FROM `$table1_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
-				$res1 = mysql_query($query1);
+				$res1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 				if (!res || !res1)
 					displayerror("Could not perform the delete operation on the selected thread!");
 			}
@@ -729,18 +729,18 @@ PRE;
 			if($moderator)
 			{
 			$qum_0 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId ."' AND `forum_post_approve` = 0";
-			$resm_0 = mysql_query($qum_0);
-			$numm_0 = mysql_num_rows($resm_0);
+			$resm_0 = mysqli_query($GLOBALS["___mysqli_ston"], $qum_0);
+			$numm_0 = mysqli_num_rows($resm_0);
 			for ($j = 1; $j <= $numm_0; $j++) {
-				$rows = mysql_fetch_array($resm_0,MYSQL_ASSOC);
+				$rows = mysqli_fetch_array($resm_0, MYSQLI_ASSOC);
 				if($forum_lastVisit<$rows['forum_thread_datetime'])
 					$new_mt = $new_mt + '1';
 			}
 			$qum_1 = "SELECT * FROM `$table1_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId ."' AND `forum_post_approve` = 0";
-			$resm_1 = mysql_query($qum_1);
-			$numm_1 = mysql_num_rows($resm_1);
+			$resm_1 = mysqli_query($GLOBALS["___mysqli_ston"], $qum_1);
+			$numm_1 = mysqli_num_rows($resm_1);
 			for ($j = 1; $j <= $numm_1; $j++) {
-				$rows = mysql_fetch_array($resm_1,MYSQL_ASSOC);
+				$rows = mysqli_fetch_array($resm_1, MYSQLI_ASSOC);
 				if($forum_lastVisit<$rows['forum_post_datetime'])
 					$new_mp = $new_mp + '1';
 			}
@@ -752,18 +752,18 @@ PRE;
 			displayinfo($show_p);}
 			}
 			$qu_0 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId ."' AND `forum_post_approve` = 1 AND `forum_thread_user_id` !='$this->userId'";
-			$res_0 = mysql_query($qu_0);
-			$num_0 = mysql_num_rows($res_0);
+			$res_0 = mysqli_query($GLOBALS["___mysqli_ston"], $qu_0);
+			$num_0 = mysqli_num_rows($res_0);
 			for ($j = 1; $j <= $num_0; $j++) {
-				$rows = mysql_fetch_array($res_0,MYSQL_ASSOC);
+				$rows = mysqli_fetch_array($res_0, MYSQLI_ASSOC);
 				if($forum_lastVisit<$rows['forum_thread_datetime'])
 					$new_t = $new_t + '1';
 			}
 			$qu_1 = "SELECT * FROM `$table1_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId ."' AND `forum_post_approve` = 1 AND `forum_post_user_id` !='$this->userId'";
-			$res_1 = mysql_query($qu_1) or die(mysql_error());
-			$num_1 = mysql_num_rows($res_1);
+			$res_1 = mysqli_query($GLOBALS["___mysqli_ston"], $qu_1) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$num_1 = mysqli_num_rows($res_1);
 			for ($j = 1; $j <= $num_1; $j++) {
-				$rows = mysql_fetch_array($res_1,MYSQL_ASSOC);
+				$rows = mysqli_fetch_array($res_1, MYSQLI_ASSOC);
 				if($forum_lastVisit<$rows['forum_post_datetime'])
 					$new_p = $new_p + '1';
 			}
@@ -775,18 +775,18 @@ PRE;
 			displayinfo($show_p);}
 			}
 			$query_d = "SELECT `forum_description` FROM `forum_module` WHERE `page_modulecomponentid`='" . $this->moduleComponentId ."' LIMIT 1";
-			$result_d = mysql_query($query_d) or die(mysql_error());
-			$result_d = mysql_fetch_array($result_d);
+			$result_d = mysqli_query($GLOBALS["___mysqli_ston"], $query_d) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+			$result_d = mysqli_fetch_array($result_d);
 			$query = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "' AND " .
 					"`forum_thread_category`='general' ORDER BY `forum_thread_lastpost_date` DESC";
-			$result = mysql_query($query) or displayerror(mysql_error() . "View of General Threads failed L:776");
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "View of General Threads failed L:776");
 			$query1 = "SELECT * FROM `$table_name` WHERE `page_modulecomponentid`='" . $this->moduleComponentId . "' AND " .
 					"`forum_thread_category`='sticky' ORDER BY `forum_thread_datetime` DESC";
-			$result1 = mysql_query($query1)or displayerror(mysql_error() . "View of sticjy Threads failed L:779");
-			$num_rows1 = mysql_num_rows($result1); //counts the total no of sticky threads
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1)or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "View of sticjy Threads failed L:779");
+			$num_rows1 = mysqli_num_rows($result1); //counts the total no of sticky threads
 			if ($result) {
 				$action = "+post&subaction=create_thread";
-				$num_rows = mysql_num_rows($result); //counts the total no of general threads				
+				$num_rows = mysqli_num_rows($result); //counts the total no of general threads				
 				$forum_header =<<<PRE
 			<p align="left"><a href="$action"><img title="New Thread" src="$temp/newthread.gif" /></a></p>
 			<div style="text-align:center;"><b>" $result_d[0] "</b></div>
@@ -801,10 +801,10 @@ PRE;
 				$forumHtml .= $forum_header;
 				if ($result1 && $num_rows1 > 0) {
 					for ($j = 1; $j <= $num_rows1; $j++) {
-						$rows = mysql_fetch_array($result1,MYSQL_ASSOC);
+						$rows = mysqli_fetch_array($result1, MYSQLI_ASSOC);
 						$query2 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$result2 = mysql_query($query2);
-						$reply_count = mysql_num_rows($result2);
+						$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query2);
+						$reply_count = mysqli_num_rows($result2);
 						$topic = parseubb(parsesmileys(stripslashes($rows['forum_thread_topic'])));
 						$name = getUserName($rows['forum_thread_user_id']);
 						$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
@@ -816,10 +816,10 @@ PRE;
 			if ($num_rows < 1)
 					$forum_header .= "<tr><td colspan=\"5\" class='forumTableRow'><strong>No Post</strong></td></tr>";
 				for ($i = 1; $i <= $num_rows; $i++) {
-					$rows = mysql_fetch_array($result);
+					$rows = mysqli_fetch_array($result);
 					$query1 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
-					$result1 = mysql_query($query1);
-					$reply_count = mysql_num_rows($result1);
+					$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+					$reply_count = mysqli_num_rows($result1);
 					$topic = parseubb(parsesmileys($rows['forum_thread_topic']));
 					$name = getUserName($rows['forum_thread_user_id']);
 					$last_post_author = getUserName($rows['forum_thread_last_post_userid']);
@@ -836,19 +836,19 @@ PRE;
 				if ($_GET['subaction'] == "delete_post") {
 					$post_id = escape($_GET['post_id']);
 					$query = "DELETE FROM `$table1_name` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-					$res = mysql_query($query);
+					$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					if ( !$res )
 						displayerror("Could not perform the delete operation on the selected post!");
 					$query = "DELETE FROM `forum_like` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
-					$res = mysql_query($query);
+					$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			}
 				if ($_GET['subaction'] == "like_post") {
 					$post_id = escape($_GET['post_id']);
 					$query = "SELECT * FROM `forum_like` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$res = mysql_query($query);
-					if(mysql_num_rows($res)==0) {
+					$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+					if(mysqli_num_rows($res)==0) {
 					$query = "INSERT INTO`forum_like` (`page_modulecomponentid`,`forum_thread_id`,`forum_post_id`,`forum_like_user_id`,`like_status`) VALUES ('$this->moduleComponentId','$thread_id','$post_id','$userId','1')";
-					$res = mysql_query($query);
+					$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					if ( !$res )
 						displayerror("Could not perform the like operation on the selected post!");
 					}	
@@ -856,18 +856,18 @@ PRE;
 				if ($_GET['subaction'] == "dislike_post") {
 					$post_id = escape($_GET['post_id']);
 					$query = "SELECT * FROM `forum_like` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='$post_id' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$res = mysql_query($query);
-					if(mysql_num_rows($res)==0) {
+					$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+					if(mysqli_num_rows($res)==0) {
 					$query = "INSERT INTO`forum_like` (`page_modulecomponentid`,`forum_thread_id`,`forum_post_id`,`forum_like_user_id`,`like_status`) VALUES ('$this->moduleComponentId','$thread_id','$post_id','$userId','0')";
-					$res = mysql_query($query);
+					$res = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					if ( !$res )
 						displayerror("Could not perform the dislike operation on the selected post!");
 						}
 			}			
 			}
 			$sql = "SELECT * FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$result1 = mysql_query($sql);
-			$rows = mysql_fetch_array($result1);
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $sql);
+			$rows = mysqli_fetch_array($result1);
 			$threadUserId = $rows['forum_thread_user_id'];
 			$forum_topic = parseubb(parsesmileys($rows['forum_thread_topic']));
 			$forum_detail = parseubb(parsesmileys($rows['forum_detail']));
@@ -879,19 +879,19 @@ PRE;
 			if ($rows['forum_post_approve'] == 1)
 				$forumHtml .= $this->forumHtml($rows,'threadMain',0,0);
 			$sql2 = "SELECT * FROM `$table1_name` WHERE `forum_thread_id`='$thread_id' AND `forum_post_approve` = 1 AND `page_modulecomponentid`='$this->moduleComponentId' ORDER BY `forum_post_id` ASC";
-			$result2 = mysql_query($sql2);
-			while ($rows1 = mysql_fetch_array($result2)) {
+			$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $sql2);
+			while ($rows1 = mysqli_fetch_array($result2)) {
 				$count = $count + 1;
 				$forumHtml .= $this->forumHtml($rows1,'threadMain',1,$count);
 			}
 			$sql3 = "SELECT `forum_thread_viewcount` FROM `$table_name` WHERE `forum_thread_id`='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId'";
-			$result3 = mysql_query($sql3);
-			$rows2 = mysql_fetch_array($result3);
+			$result3 = mysqli_query($GLOBALS["___mysqli_ston"], $sql3);
+			$rows2 = mysqli_fetch_array($result3);
 			$view = $rows2['forum_thread_viewcount'];
 			// count more value
 			$addview = $view +1;
 			$sql5 = "UPDATE `$table_name` SET `forum_thread_viewcount`='$addview' WHERE forum_thread_id='$thread_id' AND `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$result5 = mysql_query($sql5);
+			$result5 = mysqli_query($GLOBALS["___mysqli_ston"], $sql5);
 			$forumHtml .= '</table><br />';
 			if($rows['forum_thread_category']!='sticky'){
 			$forumHtml .= '<p align="left"><a href="+post&subaction=post_reply&thread_id='.$thread_id.'"><img alt="Reply" title="Reply" src="'.$temp.'/reply.gif" /></a></p>';
@@ -936,8 +936,8 @@ PRE;
 						$img_src = 'sticky.gif';
 						}
 				$query1 = "SELECT `forum_post_id` FROM `$table1_name` WHERE `forum_thread_id`='" . $rows['forum_thread_id'] . "' AND `forum_post_approve`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-				$result1 = mysql_query($query1);
-				$reply_count = mysql_num_rows($result1);
+				$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+				$reply_count = mysqli_num_rows($result1);
 				$forum_threads .=<<<PRE1
 			            <tr class="forumThreadRow">
 			            <td class="forumThreadRow forumTableIcon" width="3%"><img src="$temp/$img_src" /></td>
@@ -965,8 +965,8 @@ PRE;
 		}
 		if($type == 'threadMain') {
 			$q = "SELECT * FROM `forum_module` WHERE `page_modulecomponentid`='$this->moduleComponentId' LIMIT 1";
-			$r = mysql_query($q) or displayerror(mysql_error() . "View of Thread failed L:962");
-			$r = mysql_fetch_array($r);
+			$r = mysqli_query($GLOBALS["___mysqli_ston"], $q) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "View of Thread failed L:962");
+			$r = mysqli_fetch_array($r);
 		if($post == 0){
 			$topic = censor_words(ucfirst(parseubb(parsesmileys($rows['forum_thread_topic']))));
 			$name = ucfirst(getUserName($rows['forum_thread_user_id']));
@@ -995,11 +995,11 @@ PRE;
 					if($post == 1)						
 					if($r['allow_like_posts'] == 1){
 					$likequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='1' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$likeres = mysql_query($likequery);
-					$likeres = mysql_num_rows($likeres);
+					$likeres = mysqli_query($GLOBALS["___mysqli_ston"], $likequery);
+					$likeres = mysqli_num_rows($likeres);
 					$dlikequery = "SELECT * from `forum_like` WHERE `forum_thread_id`='$thread_id' AND `forum_post_id`='".$rows['forum_post_id']."' AND `like_status`='0' AND `page_modulecomponentid`='$this->moduleComponentId' ";
-					$dlikeres = mysql_query($dlikequery);
-					$dlikeres = mysql_num_rows($dlikeres);
+					$dlikeres = mysqli_query($GLOBALS["___mysqli_ston"], $dlikequery);
+					$dlikeres = mysqli_num_rows($dlikeres);
 						$threadHtml .= '<br /><small> ' . $likeres . ' people like this post</small> &nbsp&nbsp&nbsp';
 						$threadHtml .= '<small> ' . $dlikeres . ' people dislike this post</small><br />';
 					}
@@ -1037,10 +1037,10 @@ if($post==1 && $userId>0 && ( ($r['allow_delete_posts'] == 1) ||($r['allow_like_
 						{
 						$postId=$rows['forum_post_id'];
 						$qu = " SELECT * FROM `forum_like` WHERE `forum_like_user_id` = '$userId' AND`forum_thread_id` = '$thread_id' AND `forum_post_id` = '$postId' AND `page_modulecomponentid`='$this->moduleComponentId' AND `like_status`='1'";
-						$re = mysql_query($qu) ;
+						$re = mysqli_query($GLOBALS["___mysqli_ston"], $qu) ;
 						$qu1 = " SELECT * FROM `forum_like` WHERE `forum_like_user_id` = '$userId' AND`forum_thread_id` = '$thread_id' AND `forum_post_id` = '$postId' AND `page_modulecomponentid`='$this->moduleComponentId' AND `like_status`='0'";
-						$re1 = mysql_query($qu1);
-						if(mysql_num_rows($re)==0 && mysql_num_rows($re1)==0)
+						$re1 = mysqli_query($GLOBALS["___mysqli_ston"], $qu1);
+						if(mysqli_num_rows($re)==0 && mysqli_num_rows($re1)==0)
 							{
 							$threadHtml .= '  <a href="+view&subaction=like_post&thread_id=' . $thread_id . '&post_id=' . $rows['forum_post_id'] . '">' .
 										'  <img title="Like this post" src="'.$temp.'/like.gif"></a></span>';
@@ -1048,7 +1048,7 @@ if($post==1 && $userId>0 && ( ($r['allow_delete_posts'] == 1) ||($r['allow_like_
 										'  <img title="Dislike this post" src="'.$temp.'/unlike.gif"></a></span>';
 							}
 						else {
-						if(mysql_num_rows($re)>0)
+						if(mysqli_num_rows($re)>0)
 							$threadHtml .= '<br /> You Like this post';
 						else
 							$threadHtml .= '<br /> You Dislike this post';
@@ -1080,9 +1080,9 @@ PRE;
 		if(!isset($_SESSION['forum_lastVisit'])){
 		$table_visit = "forum_visits";
 		$query_checkvisit = "SELECT * from `$table_visit` WHERE `user_id`='$userId' AND `page_modulecomponentid`='$this->moduleComponentId'";
-		$result_checkvisit = mysql_query($query_checkvisit);
-		$check_visits = mysql_fetch_array($result_checkvisit);
-		if(mysql_num_rows($result_checkvisit)<1) {
+		$result_checkvisit = mysqli_query($GLOBALS["___mysqli_ston"], $query_checkvisit);
+		$check_visits = mysqli_fetch_array($result_checkvisit);
+		if(mysqli_num_rows($result_checkvisit)<1) {
 			$forum_lastViewed = date("Y-m-d H:i:s");
 		}
 		else {
@@ -1092,15 +1092,15 @@ PRE;
 		//set user's last visit
 		$time_visit = date("Y-m-d H:i:s");
 		$query_visit = "SELECT * FROM `$table_visit` WHERE `user_id`='$userId' AND `page_modulecomponentid`='$this->moduleComponentId'";
-		$result_visit = mysql_query($query_visit);
-		$num_rows_visit = mysql_num_rows($result_visit);
+		$result_visit = mysqli_query($GLOBALS["___mysqli_ston"], $query_visit);
+		$num_rows_visit = mysqli_num_rows($result_visit);
 		if($num_rows_visit<1) {
 		  $query_setvisit = "INSERT INTO `$table_visit`(`page_modulecomponentid`,`user_id`,`last_visit`) VALUES('$this->moduleComponentId','$userId','$time_visit')";
 		}
 		else {
 		  $query_setvisit = "UPDATE `$table_visit` SET `last_visit`='$time_visit' WHERE `user_id`=$userId AND `page_modulecomponentid`=$this->moduleComponentId"; 
 		}
-		mysql_query($query_setvisit);//or die(mysql_error());
+		mysqli_query($GLOBALS["___mysqli_ston"], $query_setvisit);//or die(mysql_error());
 		}
 		else {
 			$forum_lastViewed = $_SESSION['forum_lastVisit'];
@@ -1110,7 +1110,7 @@ PRE;
 	}
 public function createModule($compId) {
 		$query = "INSERT INTO `forum_module` (`page_modulecomponentid`,`forum_description`,`last_post_userid` )VALUES ('$compId','Forum Description Here!!!','1')";
-		$result = mysql_query($query) or die(mysql_error() . " forum.lib L:1113");
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " forum.lib L:1113");
 	}
 
 	public function deleteModule($moduleComponentId) {

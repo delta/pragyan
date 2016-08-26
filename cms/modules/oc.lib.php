@@ -91,8 +91,8 @@ public function actionOcteam() {
     //changed to use userid instead of rollno
     $fetchUserRollQuery = "SELECT * FROM `oc_form_reg` WHERE `page_moduleComponentId`={$mcId} AND 
                                       `user_id`='{$roll}'";
-    $fetchUserRollResult = mysql_query($fetchUserRollQuery);
-    $roll=mysql_fetch_assoc($fetchUserRollResult)['oc_roll_no'];
+    $fetchUserRollResult = mysqli_query($GLOBALS["___mysqli_ston"], $fetchUserRollQuery);
+    $roll=mysqli_fetch_assoc($fetchUserRollResult)['oc_roll_no'];
 
     checkExisting($mcId,$roll,0,$this->userId); 
     $form =<<<FORM
@@ -135,7 +135,7 @@ public function actionOchead() {
       $email = $excelData[$i][2].'@nitt.edu';
    	 $query="INSERT IGNORE INTO `oc_valid_emails` (`page_moduleComponentId`,`oc_name`,`oc_valid_email`) 
                                             VALUES ($mcId,'{$excelData[$i][1]}','{$email}')";
-      mysql_query($query) or displayerror($email);
+      mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror($email);
      
     }
     //echo $c." ".$d;

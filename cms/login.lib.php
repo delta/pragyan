@@ -46,9 +46,9 @@ RESET;
 							displayerror("Invalid Email Id. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 						else {
 							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST[user_email])."' ";
-							$result = mysql_query($query);
-							$temp = mysql_fetch_assoc($result);
-							if (mysql_num_rows($result) == 0)
+							$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+							$temp = mysqli_fetch_assoc($result);
+							if (mysqli_num_rows($result) == 0)
 								displayerror("E-mail not in registered accounts list. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 							elseif ($temp['user_loginmethod']==='openid')
 		displayerror("This email is registered as an OpenID user. You do not have a permanent account on our server. Hence, we do not keep or maintain your password. Please ask the parent OpenID provider to reset the password for you");
@@ -83,12 +83,12 @@ RESET;
 					$password = rand();
 					$dbpassword = md5($password);
 					$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . $user_email . "'";
-					$result = mysql_query($query);
-					$temp = mysql_fetch_assoc($result);
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+					$temp = mysqli_fetch_assoc($result);
 					if ($key == md5($temp['user_password'].'xXc'.substr($temp['user_email'],1,2))) {
 						$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users`  SET `user_password`='$dbpassword' WHERE `user_email`='$user_email'";
-						$result = mysql_query($query);
-						if (mysql_affected_rows() > 0) { 
+						$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+						if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0) { 
 							// send mail code starts here
 //							$from = "no-reply@pragyan.org";
 							$to = "$temp[user_email]";
@@ -270,8 +270,8 @@ function openid_login($userdata){
   /// Build a query to check if the OpenID already exits in openid_users table
   $query="SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "openid_users` WHERE `openid_url` = '". $userdata['openid_url'] . "';";
 
-  $result=mysql_query($query) or die(mysql_error(). " in openid_login() inside login.lib.php while executing query for openid_row");
-  $openid_row=mysql_fetch_array($result);
+  $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)). " in openid_login() inside login.lib.php while executing query for openid_row");
+  $openid_row=mysqli_fetch_array($result);
   if($openid_row)
     { ///the record exists, this user has already used his OpenID before
       //print_r($row);
@@ -296,13 +296,13 @@ function openid_login($userdata){
     
       ///Assign the value to $_SESSION['last_to_last_login_datetime']
       $query = "SELECT `user_lastlogin` FROM `". MYSQL_DATABASE_PREFIX .  "users` WHERE `user_id`='".$openid_row['user_id']. "';";
-      $result=mysql_query($query) or die(mysql_error(). " in openid_login() inside login.lib.php while trying to fetch last login");
-      $last_login_row=mysql_fetch_array($result);
+      $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)). " in openid_login() inside login.lib.php while trying to fetch last login");
+      $last_login_row=mysqli_fetch_array($result);
       $_SESSION['last_to_last_login_datetime']=$last_login_row['user_lastlogin'];
       
       ///update the last login
       $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='". $openid_row['user_id']. "';" ;
-      mysql_query($query) or die(mysql_error() . " in openid_login() inside login.lib.php while trying to update the last login");
+      mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " in openid_login() inside login.lib.php while trying to update the last login");
       ///logging in the user
       setAuth($openid_row['user_id']);
 					
@@ -532,8 +532,8 @@ LOGIN;
  */
 function login() {
   $allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
-  $allow_login_result = mysql_query($allow_login_query);
-  $allow_login_result = mysql_fetch_array($allow_login_result);
+  $allow_login_result = mysqli_query($GLOBALS["___mysqli_ston"], $allow_login_query);
+  $allow_login_result = mysqli_fetch_array($allow_login_result);
   if(isset($_GET['subaction'])) {
     if($_GET['subaction']=="resetPasswd") {
       return resetPasswd($allow_login_result[0]);
@@ -609,7 +609,7 @@ function login() {
 		    {
 		      //Password was correct. Link the account
 		      $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$info['user_id'].")";
-		      $result=mysql_query($query) or die(mysql_error()." in login() subaction=openid_pass while trying to Link OpenID account");
+		      $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." in login() subaction=openid_pass while trying to Link OpenID account");
 		      if($result)
 			{
 			  displayinfo("Account successfully Linked. Log In one more time to continue.");
@@ -645,12 +645,12 @@ function login() {
 	      //Now let's start making the dummy user
 	      $query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " ."(`user_name`, `user_email`, `user_fullname`, `user_password`, `user_activated`,`user_loginmethod`) ".
 		"VALUES ('".$openid_email."', '".$openid_email."','".$openid_fname."','0',1,'openid');";	    
-	      $result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to insert information of new account");
+	      $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." in login() subaction=quick_openid_reg while trying to insert information of new account");
 	      if($result)
 		{
-		  $id=mysql_insert_id();
+		  $id=((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 		  $query="INSERT INTO `" . MYSQL_DATABASE_PREFIX ."openid_users` (`openid_url`,`user_id`) VALUES ('$openid_url',".$id.")";
-		  $result=mysql_query($query) or die(mysql_error()." in login() subaction=quick_openid_reg while trying to Link OpenID account");
+		  $result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))." in login() subaction=quick_openid_reg while trying to Link OpenID account");
 		  if($result)
 		    {
 		      displayinfo("Account successfully registered. You can now login via OpenID. Please complete your profile information after logging in.");
@@ -731,7 +731,7 @@ function login() {
 	    $query = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "users` " .
 	      "(`user_id`, `user_name`, `user_email`, `user_fullname`, `user_password`, `user_loginmethod`, `user_activated`) " .
 	      "VALUES (DEFAULT, '{$user_name}', '{$user_email}', '{$user_fullname}', '{$user_md5passwd}', '{$login_method}', '1')";
-	    mysql_query($query) or die(mysql_error() . " creating new user !");
+	    mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " creating new user !");
 	  }
 	  else displaywarning("Incorrect username and/or password for <b>".(isset($user_domain)?$user_domain."</b> domain!":$user_name."</b> user"));
 	}
@@ -745,7 +745,7 @@ function login() {
 	  }
 	  else {
 	    $query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "users` SET `user_lastlogin`=NOW() WHERE `" . MYSQL_DATABASE_PREFIX . "users`.`user_id` ='$temp[user_id]'";
-	    mysql_query($query) or die(mysql_error() . " in login.lib.L:111");
+	    mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . " in login.lib.L:111");
 	    $_SESSION['last_to_last_login_datetime']=$temp['user_lastlogin'];
 	    setAuth($temp['user_id']);
 							

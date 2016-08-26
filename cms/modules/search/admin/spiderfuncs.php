@@ -490,16 +490,16 @@ function save_keywords($wordarray, $link_id, $domain) {
 		if (strlen($word)<= 30) {
 			$keyword_id = $all_keywords[$word];
 			if ($keyword_id  == "") {
-                mysql_query("insert into ".$mysql_table_prefix."keywords (keyword) values ('$word')");
-				if (mysql_errno() == 1062) { 
-					$result = mysql_query("select keyword_ID from ".$mysql_table_prefix."keywords where keyword='$word'");
-					echo mysql_error();
-					$row = mysql_fetch_row($result);
+                mysqli_query($GLOBALS["___mysqli_ston"], "insert into ".$mysql_table_prefix."keywords (keyword) values ('$word')");
+				if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) == 1062) { 
+					$result = mysqli_query($GLOBALS["___mysqli_ston"], "select keyword_ID from ".$mysql_table_prefix."keywords where keyword='$word'");
+					echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+					$row = mysqli_fetch_row($result);
 					$keyword_id = $row[0];
 				} else{
-				$keyword_id = mysql_insert_id();
+				$keyword_id = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
 				$all_keywords[$word] = $keyword_id;
-				echo mysql_error();
+				echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 			} 
 			} 
 			$inserts[$wordmd5] .= ",($link_id, $keyword_id, $weight, $domain)"; 
@@ -511,8 +511,8 @@ function save_keywords($wordarray, $link_id, $domain) {
 		$values= substr($inserts[$char], 1);
 		if ($values!="") {
 			$query = "insert into ".$mysql_table_prefix."link_keyword$char (link_id, keyword_id, weight, domain) values $values";
-			mysql_query($query);
-			echo mysql_error();
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		}
 		
 	
@@ -692,9 +692,9 @@ function calc_weights($wordarray, $title, $host, $path, $keywords) {
 
 function isDuplicateMD5($md5sum) {
 	global $mysql_table_prefix;
-	$result = mysql_query("select link_id from ".$mysql_table_prefix."links where md5sum='$md5sum'");
-	echo mysql_error();
-	if (mysql_num_rows($result) > 0) {
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "select link_id from ".$mysql_table_prefix."links where md5sum='$md5sum'");
+	echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+	if (mysqli_num_rows($result) > 0) {
 		return true;
 	}
 	return false;
@@ -753,23 +753,23 @@ function check_include($link, $inc, $not_inc) {
 function check_for_removal($url) {
 	global $mysql_table_prefix;
 	global $command_line;
-	$result = mysql_query("select link_id, visible from ".$mysql_table_prefix."links"." where url='$url'");
-	echo mysql_error();
-	if (mysql_num_rows($result) > 0) {
-		$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "select link_id, visible from ".$mysql_table_prefix."links"." where url='$url'");
+	echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
+	if (mysqli_num_rows($result) > 0) {
+		$row = mysqli_fetch_row($result);
 		$link_id = $row[0];
 		$visible = $row[1];
 		if ($visible > 0) {
 			$visible --;
-			mysql_query("update ".$mysql_table_prefix."links set visible=$visible where link_id=$link_id");
-			echo mysql_error();
+			mysqli_query($GLOBALS["___mysqli_ston"], "update ".$mysql_table_prefix."links set visible=$visible where link_id=$link_id");
+			echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		} else {
-			mysql_query("delete from ".$mysql_table_prefix."links where link_id=$link_id");
-			echo mysql_error();
+			mysqli_query($GLOBALS["___mysqli_ston"], "delete from ".$mysql_table_prefix."links where link_id=$link_id");
+			echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 			for ($i=0;$i<=15; $i++) {
 				$char = dechex($i);
-				mysql_query("delete from ".$mysql_table_prefix."link_keyword$char where link_id=$link_id");
-				echo mysql_error();
+				mysqli_query($GLOBALS["___mysqli_ston"], "delete from ".$mysql_table_prefix."link_keyword$char where link_id=$link_id");
+				echo ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 			}
 			printStandardReport('pageRemoved',$command_line);
 		}

@@ -28,9 +28,9 @@ function breadcrumbs($pageIdArray) {
 	$sqlOutputArray = array();
 	$pageIdList = join($pageIdArray, ",");
 	$query = 'SELECT `page_id`, `page_name`, `page_title` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_id` IN (' . $pageIdList . ')';
-	$resultId = mysql_query($query);
+	$resultId = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 
-	while ($row = mysql_fetch_assoc($resultId))
+	while ($row = mysqli_fetch_assoc($resultId))
 		$sqlOutputArray[$row['page_id']] = array($row['page_name'], $row['page_title']);
 
 	global $urlRequestRoot;

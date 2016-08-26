@@ -74,19 +74,19 @@ VIEW;
 
 private function getEmailSuggestions($input) {
 	$emailQuery ="SELECT `form_elementdata` FROM `form_elementdata` WHERE `page_modulecomponentid`=36 AND form_elementid IN (3,13,14,15)  AND form_elementdata LIKE '%$input%' ";
-	$emailResult = mysql_query($emailQuery);
+	$emailResult = mysqli_query($GLOBALS["___mysqli_ston"], $emailQuery);
 	$suggestions = array($input);
-	while($emailRow = mysql_fetch_row($emailResult)) {
+	while($emailRow = mysqli_fetch_row($emailResult)) {
 			$suggestions[] = $emailRow[0];
 	}
 	$query ="SELECT  `user_id` FROM `form_regdata` WHERE `page_modulecomponentid`=36 ";
-	$result = mysql_query($query);
-	while($temp=mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	while($temp=mysqli_fetch_array($result))
 	{
 		$query1 = 'SELECT `user_email` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_email` LIKE "%'.$input.'%" AND `user_id`='.$temp[0];
-		$result1=mysql_query($query1);
-		if(mysql_num_rows($result1)){
-		$temp1=mysql_fetch_array($result1,MYSQL_NUM);
+		$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+		if(mysqli_num_rows($result1)){
+		$temp1=mysqli_fetch_array($result1, MYSQLI_NUM);
 		$suggestions[] = $temp1[0];
 		}
 	}
@@ -97,11 +97,11 @@ private function getEmailSuggestions($input) {
 public function getUserDetails($email)
 {
 	$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_guest_email`='$email' ORDER BY `hospi_actual_checkin` DESC  LIMIT 0,1";
-	$result=mysql_query($query) or die (mysql_error()."in function getUserDetails in hospi") ;
-	$temp=mysql_fetch_array($result,MYSQL_ASSOC);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."in function getUserDetails in hospi") ;
+	$temp=mysqli_fetch_array($result, MYSQLI_ASSOC);
 	$query="SELECT `hospi_hostel_name`,`hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_id`='$temp[hospi_room_id]'";
-	$result=mysql_query($query) or die (mysql_error()."in function getUserDetails in hospi") ;
-	$temp1=mysql_fetch_array($result,MYSQL_ASSOC);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."in function getUserDetails in hospi") ;
+	$temp1=mysqli_fetch_array($result, MYSQLI_ASSOC);
 	$userdetail=<<<UD
 <table border="1">
 <tr><td>Name</td><td>$temp[hospi_guest_name]</td></tr>
@@ -163,10 +163,10 @@ global $sourceFolder,$cmsFolder;
 		$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
 		$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
 $query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_guest_email`='".escape($_POST['guest_email'])."'";
-$result1=mysql_query($query1);
-if(mysql_num_rows($result1))
+$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+if(mysqli_num_rows($result1))
 {
-	$row=mysql_fetch_row($result1);
+	$row=mysqli_fetch_row($result1);
 	if($row[10]!=0)
 	{
 		displayerror('Already Checked Out. Please Check In using another id');
@@ -176,9 +176,9 @@ if(mysql_num_rows($result1))
 	return $this->viewall();
 }
 $query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='" . escape($_POST['guest_email']) . "'";
-		$result = mysql_query($query) or displayerror(mysql_error() . "in registration L:115");
-		if (mysql_num_rows($result)) {
-$profileRow = mysql_fetch_row($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "in registration L:115");
+		if (mysqli_num_rows($result)) {
+$profileRow = mysqli_fetch_row($result);
 $checkIn=<<<CHECKIN
 <link rel="stylesheet" type="text/css" media="all" href="$calpath/form/calendar/calendar.css" title="Aqua" />
 						 <script type="text/javascript" src="$calpath/form/calendar/calendar.js"></script>
@@ -219,25 +219,25 @@ User Id:
 CHECKIN;
 
 $query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel` ";
-		$result=mysql_query($query)or die(mysql_error());
-		while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query)or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			$hostel=$temp['hospi_hostel_name'];
 			$checkIn.='<td><div><tr><td><b>'.$hostel.'</b></td><td>';
 			$checkIn.="<select name=\"hostel_$hostel\"><option>Room No.</option>";
 			$query1="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE  `hospi_hostel_name`='$hostel' AND `hospi_room_no`<>0";
-			$result1=mysql_query($query1);
-			while($temp1=mysql_fetch_array($result1,MYSQL_NUM)){
+			$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+			while($temp1=mysqli_fetch_array($result1, MYSQLI_NUM)){
 			foreach($temp1 as $room)
 
 			{
 
 				$query3="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='$hostel' AND `hospi_room_no`='$room'";
-				$result3=mysql_query($query3);
-				$temp3=mysql_fetch_array($result3, MYSQL_ASSOC);
+				$result3=mysqli_query($GLOBALS["___mysqli_ston"], $query3);
+				$temp3=mysqli_fetch_array($result3,  MYSQLI_ASSOC);
 				$query4="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp3[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
-				$result4=mysql_query($query4);
-				$num=mysql_num_rows($result4);
+				$result4=mysqli_query($GLOBALS["___mysqli_ston"], $query4);
+				$num=mysqli_num_rows($result4);
 
 				if ($num<$temp3['hospi_room_capacity'])
 				$status="VACANT";
@@ -282,8 +282,8 @@ if(isset($_POST['guest_name']))
 {
 		static $room_no,$hostel;
 		$query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel` ";
-		$result=mysql_query($query)or die(mysql_error());
-		while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query)or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			$hostel_name="hostel_".$temp['hospi_hostel_name'];
 			if(is_numeric($_POST[''.$hostel_name.'']))
@@ -300,8 +300,8 @@ if(isset($_POST['guest_name']))
 		}
 
 		$query="SELECT `hospi_room_id` FROM `hospi_hostel` WHERE `hospi_hostel_name`='$hostel' AND `hospi_room_no`='$room_no'";
-		$result1=mysql_query($query);
-		$temp=mysql_fetch_assoc($result1);
+		$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$temp=mysqli_fetch_assoc($result1);
 		$room_Id=$temp['hospi_room_id'];
 		if($room_Id==0)
 		{
@@ -312,9 +312,9 @@ if(isset($_POST['guest_name']))
 		if(isset($_POST['cash_paid']))$paid=1;else $paid=0;
 
 	$query="INSERT INTO `hospi_accomodation_status` (`hospi_room_id`,`user_id`,`hospi_actual_checkin`,`hospi_checkedin_by`,`hospi_cash_collected`,`hospi_guest_name`,`hospi_guest_college`,`hospi_guest_phone`,`hospi_guest_email`) VALUES ('$room_Id','".escape($_POST[user_id])."',NOW(),'$this->userId','$paid','".escape($_POST[guest_name])."','".escape($_POST[guest_college])."','".escape($_POST[guest_phone])."','".escape($_POST[guest_email])."')";
-	$result=mysql_query($query) or displayerror(mysql_error());
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-	if(!(mysql_error()))
+	if(!(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))))
 {
 	
 	displayinfo("$_POST[guest_name] checked in successfully");
@@ -337,8 +337,8 @@ if(isset($_GET['subaction']) && $_GET['subaction'] == 'getsuggestions' && isset(
 }
 elseif(!isset($_GET['hostel'])){
 $query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel` ";
-		$result=mysql_query($query);
-		while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			$room.='<td > <a href="+accomodate&hostel='.$temp['hospi_hostel_name'].'">'. $temp['hospi_hostel_name'].' </td>';
 		}
@@ -348,18 +348,18 @@ $room.="</tr></table>";
 elseif(!isset($_GET['room_id']))
 {
 	$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='".escape($_GET[hostel])."' AND `hospi_room_id`!=0";
-		$result=mysql_query($query);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$room.='</tr><tr ><td >'.$_GET['hostel'].'</td>';
-		while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+		while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 		{
 			$status="Vacant";
 			$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
-			$result1=mysql_query($query1);
-			$temp1=mysql_fetch_array($result1, MYSQL_ASSOC);
-			if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
+			$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+			$temp1=mysqli_fetch_array($result1,  MYSQLI_ASSOC);
+			if(mysqli_num_rows($result1)<$temp['hospi_room_capacity']);
 			else $status="Full";
 			$room.='<td > <a href="+accomodate&hostel='.$temp['hospi_hostel_name'].'&room_id='.$temp['hospi_room_id'].'">'.$temp['hospi_room_no'].'              ' ;
-			$room.="$status      (".mysql_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
+			$room.="$status      (".mysqli_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
 			$room.='</td>';
 		}
 $room.="</tr></table>";
@@ -373,24 +373,24 @@ else{
 	$userId=getUserIdFromEmail(escape($_POST['txtUserEmail']));
 	if($userId!=0){
 	$query1="SELECT * FROM `hospi_accomodation_status` WHERE `user_id`='$userId' AND `hospi_actual_checkout` IS NULL ";
-	$result1=mysql_query($query1);
-	$room1=mysql_fetch_assoc($result1);
-	if(!(mysql_num_rows($result1))){
+	$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+	$room1=mysqli_fetch_assoc($result1);
+	if(!(mysqli_num_rows($result1))){
 		$name=getUserFullName($userId);
 		$email=getUserEmail($userId);
 
 
 	$query="INSERT INTO `hospi_accomodation_status` (`hospi_room_id`,`user_id`,`hospi_actual_checkin`,`hospi_checkedin_by`,`hospi_cash_collected`,`hospi_guest_name`,`hospi_guest_email`) VALUES ('".escape($_GET[room_id])."','$userId',NOW(),'$this->userId','$paid','$name','$email')";
-	$result=mysql_query($query) or displayerror(mysql_error());
-	if(!(mysql_error()))
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(!(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))))
 	displayinfo("$_POST[txtUserEmail] checked in successfully");
 	else displayerror("Failed to check in $_POST[txtUserEmail]");
 	}
 	else
 	{
 		$query="SELECT `hospi_hostel_name` FROM `hospi_hostel` WHERE `hospi_room_id`='$room1[hospi_room_id]'";
-		$result=mysql_query($query) or die (mysql_error());
-		$room2=mysql_fetch_row($result);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+		$room2=mysqli_fetch_row($result);
 		displayerror("User is already checked in <a href=\"+accomodate&hostel=$room2[0]&room_id=$room1[hospi_room_id]\">here</a>");
 	}
 }
@@ -403,8 +403,8 @@ if((isset($_GET['checkOut'])))
 	$cond='`user_id`=\''.escape($_GET['checkOut'])."'";
 	else $cond='`hospi_guest_name`=\''.escape($_GET['checkOut']).'\' AND `hospi_actual_checkin`=\''.escape($_GET['checkinTime']).'\' AND `hospi_checkedin_by`='.escape($_GET['by']).'';
 	$query="UPDATE `hospi_accomodation_status` SET `hospi_actual_checkout`=NOW(),`hospi_checkedout_by`= '$this->userId' WHERE `hospi_room_id`='".escape($_GET[room_id])."' AND $cond AND `hospi_actual_checkout` IS NULL ";
-	$result=mysql_query($query);
-	if(mysql_error())displayerror(mysql_error());
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)))displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 
 }
@@ -414,12 +414,12 @@ if((isset($_GET['checkOut'])))
 	$scriptsFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/scripts";
 	$imagesFolder = "$urlRequestRoot/$cmsFolder/$templateFolder/common/images";
 	$query1="SELECT * FROM `hospi_hostel` WHERE `hospi_room_id`='".escape($_GET[room_id])."'";
-	$result1=mysql_query($query1);
-	$temp1= mysql_fetch_array($result1,MYSQL_ASSOC);
+	$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+	$temp1= mysqli_fetch_array($result1, MYSQLI_ASSOC);
 	$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='".escape($_GET[room_id])."' AND `hospi_actual_checkout` IS NULL ";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$room.='</tr><tr ><td >Hostel:'.$_GET['hostel'].'<br>Room Number:'.$temp1['hospi_room_no'].'</td></tr>';
-	while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+	while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 	{
 		if($temp['user_id']<>0)
 		$room.="<tr><td><a href=\"+accomodate&displayUserDetails=$temp[hospi_guest_email] \">".getUserFullName($temp['user_id'])."</a></td><td><input type=\"submit\" value=\"Check Out\" onclick=\"window.location='./+accomodate&hostel=$_GET[hostel]&room_id=$_GET[room_id]&checkOut=$temp[user_id]'\"></td></tr>";
@@ -539,22 +539,22 @@ public function actionAddroom() {
 				}
 				
 			$query="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_no`='".escape($_POST['roomNo1'])."' AND `hospi_hostel_name`='".escape($_POST['hostels'])."'";
-			$result=mysql_query($query);	
-			if(mysql_num_rows($result))
+			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);	
+			if(mysqli_num_rows($result))
 			{
 				displayerror('Room no. already exists in the database for the hostel.');
 				return $this->viewall();
 			}
 			$query = 'SELECT MAX(`hospi_room_id`) FROM `hospi_hostel`';
-	  		$result = mysql_query($query) or die('error');
-	  		$row = mysql_fetch_row($result);
+	  		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die('error');
+	  		$row = mysqli_fetch_row($result);
 //	  		$room_id = 1;
 	  		if(!is_null($row[0])) {
 	  			$room_id = $row[0] + 1;
 	  		}
 	  		$query="INSERT INTO `hospi_hostel` (`hospi_room_id`,`hospi_hostel_name`,`hospi_room_capacity`,`hospi_room_no`,`hospi_floor`)".
 					"VALUES('$room_id','".escape($_POST['hostels'])."','".escape($_POST['capacity'])."','".escape($_POST['roomNo1'])."','".escape($_POST['floor'])."') ";
-			$result=mysql_query($query);
+			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if(!$result)
 			{
 				displayerror('Error while adding room data');
@@ -573,22 +573,22 @@ public function actionAddroom() {
 				for($room=$_POST['roomNo1'];$room<=$_POST['roomNo2'];$room++)
 				{
 			$query="SELECT `hospi_room_no` FROM `hospi_hostel` WHERE `hospi_room_no`='$room ' AND `hospi_hostel_name`='".escape($_POST['hostels'])."'";
-			$result=mysql_query($query);	
-			if(mysql_num_rows($result))
+			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);	
+			if(mysqli_num_rows($result))
 			{
 				displayerror("Room no.' $room ' already exists in the database for the hostel.");
 				continue;
 			}
 			$query = 'SELECT MAX(`hospi_room_id`) FROM `hospi_hostel`';
-	  		$result = mysql_query($query) or die('error');
-	  		$row = mysql_fetch_row($result);
+	  		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die('error');
+	  		$row = mysqli_fetch_row($result);
 //	  		$room_id = 1;
 	  		if(!is_null($row[0])) {
 	  			$room_id = $row[0] + 1;
 	  		}
 	  		$query="INSERT INTO `hospi_hostel` (`hospi_room_id`,`hospi_hostel_name`,`hospi_room_capacity`,`hospi_room_no`,`hospi_floor`)".
 					"VALUES('$room_id','".escape($_POST['hostels'])."','".escape($_POST['capacity'])."','$room','".escape($_POST['floor'])."') ";
-			$result=mysql_query($query);
+			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if(!$result)
 			{
 				displayerror('Error while adding room data');
@@ -614,18 +614,18 @@ public function actionAddroom() {
 			}
 
 			$query = 'SELECT MAX(`hospi_room_id`) FROM `hospi_hostel`';
-	  		$result = mysql_query($query) or die('error');
-	  		$row = mysql_fetch_row($result);
+	  		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die('error');
+	  		$row = mysqli_fetch_row($result);
 //	  		$room_id = 1;
 	  		if(!is_null($row[0])) {
 	  			$room_id = $row[0] + 1;
 	  		}
 
 			$query="INSERT INTO `hospi_hostel` (`hospi_hostel_name`,`hospi_room_id`) VALUES ('".escape($_POST['hostel'])."','$room_id')";
-			$result=mysql_query($query);
+			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			if(!$result)
 			{
-				displayerror(mysql_error());
+				displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				return $this->viewall();
 			}
 			
@@ -645,13 +645,13 @@ HOSTEL;
 
 
 	 $query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel`";
-	 $result=mysql_query($query);
+	 $result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	 $hostel=<<<ROOM
 <form method="POST" action="./+addroom&subaction=submitaddroom">
 Hostel : 
 <select name="hostels" id="hostels" >
 ROOM;
-	 while($temp=mysql_fetch_array($result,MYSQL_NUM))
+	 while($temp=mysqli_fetch_array($result, MYSQLI_NUM))
 	 {
 	 	foreach($temp as $hostelname)
 	 	{
@@ -697,14 +697,14 @@ public function displayUser()
 				//$query="SELECT * FROM `hospi_accomodation_status` WHERE `user_id`=$userid";
 				//else
 				$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_guest_name` LIKE '%$search%' OR `hospi_guest_email` LIKE '%$search%' OR `hospi_guest_college` LIKE '%$search%'";
-				$result=mysql_query($query);
+				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				if(!$result)
 				{
 
-					displayerror(mysql_error());
+					displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					return $this->viewall();
 				}
-				if(!mysql_num_rows($result))
+				if(!mysqli_num_rows($result))
 				{
 					displayinfo('The user has not checked into any room');
 					return $this->viewall();
@@ -714,11 +714,11 @@ public function displayUser()
 					$details=<<<USER
 					<b>User Email:{$_POST['txtUserEmail']}</b><br>		
 USER;
-					while($row=mysql_fetch_array($result))
+					while($row=mysqli_fetch_array($result))
 					{
 					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_room_id`='{$row['hospi_room_id']}'";
-					$result1=mysql_query($query);
-					$row1=mysql_fetch_array($result1);
+					$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+					$row1=mysqli_fetch_array($result1);
 					$details.=<<<USER1
 					<br>
 					<table border="1">
@@ -820,13 +820,13 @@ USER;
 			{
 					
 					$query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel` ";
-					$result4=mysql_query($query)or die(mysql_error());
+					$result4=mysqli_query($GLOBALS["___mysqli_ston"], $query)or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					$statusall=<<<ROOM
 					
 
 ROOM;
 					static $i;
-					while($temp4=mysql_fetch_array($result4,MYSQL_ASSOC))
+					while($temp4=mysqli_fetch_array($result4, MYSQLI_ASSOC))
 					{
 						$statusall.=$temp4['hospi_hostel_name'];
 						$statusall.='<table border="1">';
@@ -838,25 +838,25 @@ ROOM;
 					
 						$query="
 						SELECT *  FROM `hospi_hostel` WHERE `hospi_hostel_name`='$temp4[hospi_hostel_name]' AND `hospi_room_no`<>0  AND `hospi_floor`=$i";
-						$result=mysql_query($query)or die(mysql_error());
-						$num=mysql_num_rows($result);
+						$result=mysqli_query($GLOBALS["___mysqli_ston"], $query)or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+						$num=mysqli_num_rows($result);
 						$x=$num/8;
 						$x++;
 						$statusall.="<td rowspan=$x>$i</td>";
-						while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+						while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 							{
 			
 							//	$statusall.="</tr>";
 
 							$status="<br>Vacant";
 							$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
-							$result1=mysql_query($query1);
+							$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 
-							if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
+							if(mysqli_num_rows($result1)<$temp['hospi_room_capacity']);
 							else $status="Full";
 					
 //							$statusall.='<tr>';
-							if(mysql_num_rows($result1)>=$temp['hospi_room_capacity'])
+							if(mysqli_num_rows($result1)>=$temp['hospi_room_capacity'])
 							{
 							$statusall.='<td id="asdf">';
 							}
@@ -866,7 +866,7 @@ ROOM;
 							}
 							$statusall.='<a href="+accomodate&hostel='.$temp['hospi_hostel_name'].'&room_id='.$temp['hospi_room_id'].'">'.$temp['hospi_room_no'].'              ' ;
 						
-							$statusall.="$status      (".mysql_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
+							$statusall.="$status      (".mysqli_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
 							
 							$statusall.=<<<RED
 							<style type="text/css">
@@ -912,16 +912,16 @@ $j++;
 			{
 				if($_POST['roomno']<>'')$cond="`hospi_room_no`='".escape($_POST['roomno'])."' AND";
 				$query="SELECT * FROM `hospi_hostel` WHERE $cond `hospi_hostel_name`='".escape($_POST['hostels'])."'";
-				$result=mysql_query($query);
-				if(!mysql_num_rows($result))
+				$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				if(!mysqli_num_rows($result))
 				{
 					displayerror('Room not present');
 					return $this->viewall();
 				}
-				$row=mysql_fetch_array($result);
+				$row=mysqli_fetch_array($result);
 				$query="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`={$row['hospi_room_id']} AND `hospi_actual_checkout` IS NULL";
-				$result1=mysql_query($query);
-				if(!mysql_num_rows($result1))
+				$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+				if(!mysqli_num_rows($result1))
 				{
 					displayinfo('Room Vacant');
 					return $this->viewall();
@@ -943,7 +943,7 @@ DETAILS;
 
 				$room.="Guests alloted:<br>";
 
-					while($row1=mysql_fetch_assoc($result1))
+					while($row1=mysqli_fetch_assoc($result1))
 					{
 						$username=$row1['hospi_guest_email'];
 						$room.=<<<DETAILS
@@ -979,12 +979,12 @@ DETAILS;
 			if($subaction=='findroom')
 			{
 				$query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel`";
-	 			$result=mysql_query($query);
+	 			$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 				$room=<<<ROOM
 				<form method="POST" action="./+view&subaction=displayroom">
 				Hostels:<select name="hostels" id="hostels" >
 ROOM;
-				 while($temp=mysql_fetch_array($result,MYSQL_NUM))
+				 while($temp=mysqli_fetch_array($result, MYSQLI_NUM))
 	 			{
 	 				foreach($temp as $hostelname)
 	 				{
@@ -1007,23 +1007,23 @@ ROOM;
 				if($_POST['hostels']=="all")
 				{
 					$query="SELECT DISTINCT `hospi_hostel_name` FROM `hospi_hostel`";
-	 				$res=mysql_query($query);
-	 				while($row=mysql_fetch_array($res))
+	 				$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	 				while($row=mysqli_fetch_array($res))
 	 				{
 	 					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='{$row[hospi_hostel_name]}'  ";
-						$result=mysql_query($query);
+						$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 						$room.='<table border="1"><tr>';
 						$room.='</tr><tr ><td >'.$row['hospi_hostel_name'].'</td>';
-						while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+						while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 						{
 						$status="Vacant";
 						$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
-						$result1=mysql_query($query1);
-						$temp1=mysql_fetch_array($result1, MYSQL_ASSOC);
-						if(mysql_num_rows($result1)<$temp['hospi_room_capacity'])
+						$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+						$temp1=mysqli_fetch_array($result1,  MYSQLI_ASSOC);
+						if(mysqli_num_rows($result1)<$temp['hospi_room_capacity'])
 						{
 						$room.='<td width="95" height="95"> <a href="+accomodate&hostel='.$temp['hospi_hostel_name'].'&room_id='.$temp['hospi_room_id'].'">'.$temp['hospi_room_no'].'              ' ;
-						$room.="$status (".mysql_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
+						$room.="$status (".mysqli_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
 						$room.='</td>';
 						}
 						}
@@ -1034,20 +1034,20 @@ ROOM;
 				else
 				{
 					$query="SELECT * FROM `hospi_hostel` WHERE `hospi_hostel_name`='".escape($_POST[hostels])."'  ";
-					$result=mysql_query($query);
+					$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					$room.='<table border="1"><tr>';
 					$room.='</tr><tr ><td >'.$_POST['hostels'].'</td>';
-					while($temp=mysql_fetch_array($result,MYSQL_ASSOC))
+					while($temp=mysqli_fetch_array($result, MYSQLI_ASSOC))
 					{
 						$status="Vacant";
 						$query1="SELECT * FROM `hospi_accomodation_status` WHERE `hospi_room_id`='$temp[hospi_room_id]' AND `hospi_actual_checkout` IS NULL";
-						$result1=mysql_query($query1);
-						$temp1=mysql_fetch_array($result1, MYSQL_ASSOC);
-						if(mysql_num_rows($result1)<$temp['hospi_room_capacity']);
+						$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+						$temp1=mysqli_fetch_array($result1,  MYSQLI_ASSOC);
+						if(mysqli_num_rows($result1)<$temp['hospi_room_capacity']);
 						else $status="Full";
 						if($status!='Full'){
 						$room.='<td width="95" height="95"> <a href="+accomodate&hostel='.$temp['hospi_hostel_name'].'&room_id='.$temp['hospi_room_id'].'">'.$temp['hospi_room_no'].'              ' ;
-						$room.="$status (".mysql_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
+						$room.="$status (".mysqli_num_rows($result1)."/".$temp['hospi_room_capacity'].")";
 						$room.='</td>';}
 					}
 				    $room.="</tr></table>";

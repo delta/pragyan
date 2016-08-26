@@ -69,13 +69,13 @@ abstract class widgetFramework
 	
 		///Loading widget information
 		$query="SELECT `widget_name` AS 'name', `widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='{$this->widgetId}'";
-		$res=mysql_query($query);
-		if($res===false || mysql_num_rows($res)==0)
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if($res===false || mysqli_num_rows($res)==0)
 		{
 			displayerror("Error in loading widget {$this->widgetName}");
 			return false;
 		}
-		$row=mysql_fetch_array($res);
+		$row=mysqli_fetch_array($res);
 		
 		$this->widgetName=$row['name'];
 		$this->widgetDescription=$row['description'];
@@ -84,7 +84,7 @@ abstract class widgetFramework
 		
 		///Loading configuration settings (both instance-specific and global)
 		$query="SELECT `config_name` AS 'key', `config_value` AS 'value' FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`='{$this->widgetId}' AND `widget_instanceid` IN ({$this->widgetInstanceId},-1) ";
-		$res=mysql_query($query);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		
 		if($res===false)
 		{
@@ -92,7 +92,7 @@ abstract class widgetFramework
 			return false;
 		}
 		$this->settings = array();
-		while($row=mysql_fetch_array($res))
+		while($row=mysqli_fetch_array($res))
 		{
 			$this->settings[$row['key']]=$row['value'];
 		}
@@ -100,14 +100,14 @@ abstract class widgetFramework
 		///If configurations doesn't exists, then loading default values.
 		$query="SELECT `config_name` AS 'key', `config_default` AS 'value', `is_global` AS 'global' FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='{$this->widgetId}'";
 		
-		$res=mysql_query($query);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		if($res===false)
 		{
 			displayerror("Error in loading widget {$this->widgetName}");
 			return false;
 		}
 		
-		while($row=mysql_fetch_array($res))
+		while($row=mysqli_fetch_array($res))
 		{
 			if(!isset($this->settings[$row['key']]))
 			{
@@ -117,7 +117,7 @@ abstract class widgetFramework
 				if(($row['global']=='1' && $this->widgetInstanceId==-1) || ($row['global']=='0' && $this->widgetInstanceId!=-1))
 				{
 					$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ('{$this->widgetId}', '{$this->widgetInstanceId}', '{$row['key']}', '{$row['value']}')";
-					$res2=mysql_query($query);
+					$res2=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					if($res2===false)
 					{
 						displayerror("Error in loading widget {$this->widgetName}");
@@ -129,14 +129,14 @@ abstract class widgetFramework
 	
 		///Loading data settigns
 		$query="SELECT `widget_datakey` AS 'key', `widget_datavalue` AS 'value' FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`='{$this->widgetId}' AND`widget_instanceid` = '{$this->widgetInstanceId}'";
-		$res=mysql_query($query);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		if($res===false)
 		{
 			displayerror("Error in loading widget {$this->widgetName}");
 			return false;
 		}
 		$this->data = array();
-		while($row=mysql_fetch_array($res))
+		while($row=mysqli_fetch_array($res))
 		{
 			$this->data[$row['key']]=$row['value'];
 		}
@@ -167,7 +167,7 @@ abstract class widgetFramework
 		
 		///If some configuration fields are already there in table, we remove them.
 		$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='{$this->widgetId}'";
-		mysql_query($query);
+		mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		
 		
 		$install=$this->setConfigs($this->defaultConfigs);
@@ -196,7 +196,7 @@ abstract class widgetFramework
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` (`widget_id`,`config_name`,`config_type`,`config_options`,`config_displaytext`,`config_default`,`is_global`,`config_rank`) VALUES ({$this->widgetId},'{$config['name']}','{$config['type']}','{$config['options']}','{$config['displaytext']}','{$config['default']}',{$config['global']},{$rank})";
 			
 			$rank++;
-			if(mysql_query($query)==false)
+			if(mysqli_query($GLOBALS["___mysqli_ston"], $query)==false)
 			{
 				displayerror("Error in saving configurations for the widget {$this->widgetName}");
 				return false;
@@ -218,7 +218,7 @@ abstract class widgetFramework
 		
 		$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$value' WHERE `config_name`='$key' AND `widget_id`='{$this->widgetId}' AND `widget_instanceid`='{$this->widgetInstanceId}'";
 
-		if(mysql_query($query)===false) {
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query)===false) {
 			displayerror("Error in saving setting for the widget {$this->widgetName}.");
 			return false; 
 		}
@@ -242,7 +242,7 @@ abstract class widgetFramework
 		else 
 			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsdata` (`widget_id`,`widget_instanceid`,`widget_datakey`,`widget_datavalue`) VALUES ('{$this->widgetId}','{$this->widgetInstanceId}','$key','$value')";
 		
-		if(mysql_query($query)===false)
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query)===false)
 		{
 			displayerror("Error in saving data for the widget {$this->widgetName}.");
 			return false;
@@ -265,16 +265,16 @@ abstract class widgetFramework
 		$defaultloc=1;
 		
 		$query="SELECT MAX(`widget_instanceid`) FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id` = '{$this->widgetId}'";
-		$result=mysql_query($query);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		if($result===false) return false;
-		$row1=mysql_fetch_row($result);
+		$row1=mysqli_fetch_row($result);
 		if($row1==NULL)
 		 $row1[0]=0;
 		
 		$query="SELECT MAX(`widget_order`) FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `page_id` = '$pageId' AND `widget_location` = '$defaultloc'";
-		$result=mysql_query($query);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		if($result===false) return false;
-		$row2=mysql_fetch_array($result);
+		$row2=mysqli_fetch_array($result);
 		if($row2==NULL)
 		 $row2[0]=0;
 		
@@ -284,7 +284,7 @@ abstract class widgetFramework
 		
 		$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgets` (`widget_id`,`widget_instanceid`,`page_id`,`widget_location`,`widget_order`) VALUES ('{$this->widgetId}','$instanceId','$pageId','$widgetLocation','$widgetOrder')";
 		
-		if(mysql_query($query)==false)
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $query)==false)
 			return false;
 		
 	}

@@ -17,35 +17,35 @@ if(!defined('__PRAGYAN_CMS')) {
 
 function assignVars($userId,$mcId) {
   $query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-  $result = mysql_query($query);
-  $row = mysql_fetch_assoc($result);
+  $result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+  $row = mysqli_fetch_assoc($result);
   $arr = array ('PRAGYAN_ID'=> $row['user_id'] , 'NAME' => $row['user_name'] , 'EMAIL' => $row['user_email']);
   $userDetail = "SELECT * FROM `prhospi_accomodation_status` WHERE `page_modulecomponentid`={$mcId} AND `user_id` = {$userId}";
-  $userResult = mysql_query($userDetail) or displayerror(mysql_error());
-  $row = mysql_fetch_array($userResult);
-  $columnDetail = mysql_query("SHOW COLUMNS FROM `prhospi_accomodation_status`") or displayerror(mysql_error());
+  $userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userDetail) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $row = mysqli_fetch_array($userResult);
+  $columnDetail = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM `prhospi_accomodation_status`") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $cnt = 0;
-  while($res = mysql_fetch_array($columnDetail)) {
+  while($res = mysqli_fetch_array($columnDetail)) {
     if($res[0] == 'hospi_room_id') {
-      $userDataHostel = mysql_query("SELECT `hospi_hostel_name` FROM prhospi_hostel WHERE hospi_room_id={$row[$cnt]}") or displayerror(mysql_error());
-      $rowHostelName=mysql_fetch_array($userDataHostel);
+      $userDataHostel = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `hospi_hostel_name` FROM prhospi_hostel WHERE hospi_room_id={$row[$cnt]}") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $rowHostelName=mysqli_fetch_array($userDataHostel);
       $ret[strtoupper($res[0])] = strtoupper($rowHostelName[0]); 
   
-      $userDataHostel = mysql_query("SELECT `hospi_room_no` FROM prhospi_hostel WHERE hospi_room_id={$row[$cnt]}") or displayerror(mysql_error());
-      $rowHostelName=mysql_fetch_array($userDataHostel);
+      $userDataHostel = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `hospi_room_no` FROM prhospi_hostel WHERE hospi_room_id={$row[$cnt]}") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+      $rowHostelName=mysqli_fetch_array($userDataHostel);
       $ret[strtoupper('hospi_room_no')] = strtoupper($rowHostelName[0]); 
       $cnt++;
   }
     else $ret[strtoupper($res[0])] = $row[$cnt++];
   }
-  $collegeName = mysql_query("SELECT form_elementdata FROM form_elementdata WHERE user_id={$userId} AND page_modulecomponentid=0 AND form_elementid=6" ) or displayerror(mysql_error()); 
-  if(mysql_num_rows($collegeName)) {
-      $sol=mysql_fetch_array($collegeName);
+  $collegeName = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT form_elementdata FROM form_elementdata WHERE user_id={$userId} AND page_modulecomponentid=0 AND form_elementid=6" ) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 
+  if(mysqli_num_rows($collegeName)) {
+      $sol=mysqli_fetch_array($collegeName);
       $ret['COLLEGE']=$sol[0];
   } 
-  $collegeName = mysql_query("SELECT form_elementdata FROM form_elementdata WHERE user_id={$userId} AND page_modulecomponentid=0 AND form_elementid=5" ) or displayerror(mysql_error()); 
-  if(mysql_num_rows($collegeName)) {
-      $sol=mysql_fetch_array($collegeName);
+  $collegeName = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT form_elementdata FROM form_elementdata WHERE user_id={$userId} AND page_modulecomponentid=0 AND form_elementid=5" ) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 
+  if(mysqli_num_rows($collegeName)) {
+      $sol=mysqli_fetch_array($collegeName);
       $ret['PHONE']=$sol[0];
   } 
   return array_merge($ret,$arr);
@@ -56,14 +56,14 @@ function getDisclaimer($team,$mcid) {
   $team = escape($team);
   $mcid = escape($mcid);
   $getQuery="SELECT * FROM `prhospi_disclaimer` WHERE `page_modulecomponentid`={$mcid} AND `disclaimer_team`='{$team}'"; 
-  $runQuery=mysql_query($getQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($runQuery)) {
+  $runQuery=mysqli_query($GLOBALS["___mysqli_ston"], $getQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($runQuery)) {
     
-    $insertQuery=mysql_query("INSERT INTO `prhospi_disclaimer` VALUES({$mcid},'{$team}','',0)") or displayerror(mysql_error());
+    $insertQuery=mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `prhospi_disclaimer` VALUES({$mcid},'{$team}','',0)") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if($insertQuery!="") displayinfo("Field {$team} Inserted TO Table");
     return "";
   }
-  $res=mysql_fetch_assoc($runQuery);
+  $res=mysqli_fetch_assoc($runQuery);
   
   return $res['disclaimer_desc'];
 }
@@ -73,7 +73,7 @@ function printDisclaimer($mcid,$data,$team){
                   SET `hospi_printed` = 1 
                   WHERE `page_modulecomponentid`={$mcid} AND `user_id`={$data}";
   
-   $updateRes = mysql_query($updateQuery) or displayerror(mysql_error());               
+   $updateRes = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));               
 
   global $sourceFolder,$moduleFolder;
   require_once($sourceFolder."/".$moduleFolder."/qaos1/excel.php");
@@ -95,32 +95,32 @@ function printDisclaimer($mcid,$data,$team){
 
 function getAmount($team,$mcid) {
   $getQuery="SELECT * FROM `prhospi_disclaimer` WHERE `page_modulecomponentid`={$mcid} AND `disclaimer_team`='{$team}'"; 
-  $runQuery=mysql_query($getQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($runQuery)) {
-    $insertQuery=mysql_query("INSERT INTO `prhospi_disclaimer` VALUES({$mcid},'{$team}','',0)") or displayerror(mysql_error());
+  $runQuery=mysqli_query($GLOBALS["___mysqli_ston"], $getQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($runQuery)) {
+    $insertQuery=mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `prhospi_disclaimer` VALUES({$mcid},'{$team}','',0)") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if($insertQuery!="") displayinfo("Field {$team} Inserted TO Table");
     return 0;
   }
-  $res=mysql_fetch_assoc($runQuery);
+  $res=mysqli_fetch_assoc($runQuery);
   return $res['team_cost'];
 }
 
 function getRoomNoFromRoomId($roomId,$mcid) {
   $roomQuery = "SELECT `hospi_room_no` FROM `prhospi_hostel` WHERE `hospi_room_id`={$roomId} AND `page_modulecomponentid`={$mcid}";
-  $result = mysql_query($roomQuery) or displayerror(mysql_error());
-  $res = mysql_fetch_array($result);
+  $result = mysqli_query($GLOBALS["___mysqli_ston"], $roomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $res = mysqli_fetch_array($result);
   return $res[0];
 }
 function getDescription($team,$mcid) {
 
   $getQuery="SELECT * FROM `prhospi_disclaimer` WHERE `page_modulecomponentid`={$mcid} AND `disclaimer_team`='{$team}'"; 
-  $runQuery=mysql_query($getQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($runQuery)) {
-    $insertQuery=mysql_query("INSERT INTO `prhospi_disclaimer` VALUES({$mcid},'{$team}','',0)") or displayerror(mysql_error());
+  $runQuery=mysqli_query($GLOBALS["___mysqli_ston"], $getQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($runQuery)) {
+    $insertQuery=mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `prhospi_disclaimer` VALUES({$mcid},'{$team}','',0)") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if($insertQuery!="") displayinfo("Field {$team} Inserted TO Table");
     return "";
   }
-  $res=mysql_fetch_assoc($runQuery);
+  $res=mysqli_fetch_assoc($runQuery);
   
   return $res['disclaimer_desc'];
 }
@@ -128,9 +128,9 @@ function getDescription($team,$mcid) {
 function getSuggestionsForIdOrEmail($input) {
     $input=trim($input);
     $emailQuery ="SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` LIKE '%$input%' OR `user_email` LIKE '%$input%'";
-    $emailResult = mysql_query($emailQuery);
+    $emailResult = mysqli_query($GLOBALS["___mysqli_ston"], $emailQuery);
     $suggestions = array($input);
-    while($emailRow = mysql_fetch_row($emailResult)) {
+    while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[2]. ' - ' . $emailRow[0];
     }                                                                                                                                           
     return join($suggestions, ',');                                                                                                             
@@ -138,9 +138,9 @@ function getSuggestionsForIdOrEmail($input) {
   
 function getHostelsName($mcid) {
    $hostelNameQuery="SELECT DISTINCT `hospi_hostel_name` FROM `prhospi_hostel` WHERE `page_modulecomponentid`={$mcid}";
-   $hostelNameRes=mysql_query($hostelNameQuery) or displayerror(mysql_error());
+   $hostelNameRes=mysqli_query($GLOBALS["___mysqli_ston"], $hostelNameQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
    $ret="<option value=''>SELECT HOSTEL</option>";
-   while($result = mysql_fetch_array($hostelNameRes)) {
+   while($result = mysqli_fetch_array($hostelNameRes)) {
      $temp=str_replace(" ","_",$result[0]);
     $ret.=<<<OPTIONS
       <option value="{$temp}">$result[0]</option>
@@ -153,14 +153,14 @@ function getAvailableRooms($mcid) {
      $roomQuery="SELECT `hospi_room_id`,`hospi_hostel_name`,`hospi_room_no`,`hospi_room_capacity` 
                 FROM `prhospi_hostel` 
                 WHERE `page_modulecomponentid`={$mcid} AND `hospi_blocked`=0 ORDER BY `hospi_hostel_name`,`hospi_room_no` ASC";
-    $roomRes=mysql_query($roomQuery) or displayerror(mysql_error());
+    $roomRes=mysqli_query($GLOBALS["___mysqli_ston"], $roomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     $ret="<option value=''>SELECT ROOM NO</option>";
-    while($res=mysql_fetch_array($roomRes)) {
+    while($res=mysqli_fetch_array($roomRes)) {
        $availableQuery = "SELECT * FROM `prhospi_accomodation_status` 
                           WHERE `hospi_room_id`={$res[0]} AND `page_modulecomponentid`={$mcid}
                           AND hospi_actual_checkout IS NULL";
-       $availableRes = mysql_query($availableQuery) or displayerror(mysql_error());
-       $availableNo=$res[3]-mysql_num_rows($availableRes);
+       $availableRes = mysqli_query($GLOBALS["___mysqli_ston"], $availableQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+       $availableNo=$res[3]-mysqli_num_rows($availableRes);
        
        if(!$availableNo) continue;
        $tempClass=str_replace(" ","_","roomNo_".$res[1]);
@@ -179,14 +179,14 @@ function getUserDetailsForHospi($userId,$mcid) {
     displayerror("Invalid format.<br/>Format should be 'userid'");
     return "";
   }
-  $checkUserExist=mysql_query("SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(mysql_error());
-  if(!mysql_num_rows($checkUserExist)) {
+  $checkUserExist=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($checkUserExist)) {
     displayerror("Invalid User Id");
     return "";
   }
   $isRegisteredQuery = "SELECT * FROM prhospi_admin WHERE `page_modulecomponentid` = {$mcid}";
-  $isRegisteredRes = mysql_query($isRegisteredQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($isRegisteredRes)) {
+  $isRegisteredRes = mysqli_query($GLOBALS["___mysqli_ston"], $isRegisteredQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($isRegisteredRes)) {
     displayerror("Please Contact CSG for activating the accommodation form");
     return "";
   }  
@@ -199,7 +199,7 @@ function getUserDetailsForHospi($userId,$mcid) {
                   LEFT JOIN `form_elementdesc` AS formname 
                   ON formname.page_modulecomponentid=hospi.page_getform_modulecomponentid AND formname.form_elementid=hospi.details_to_display 
                   WHERE hospi.page_modulecomponentid = {$mcid} AND hospi.detail_required=1";
-  $displayResult=mysql_query($detailQuery) or displayerror(mysql_error());
+  $displayResult=mysqli_query($GLOBALS["___mysqli_ston"], $detailQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $checkRequired=0;
   $userDetails = <<<TABLE
     <table id="tableUserDetailsHospi" border="1">
@@ -211,7 +211,7 @@ function getUserDetailsForHospi($userId,$mcid) {
        </tr>
 
 TABLE;
-  while($result=mysql_fetch_array($displayResult)) {
+  while($result=mysqli_fetch_array($displayResult)) {
     $type=($result[0]==0)?"Profile":"Accomadation";
     if($result[2] == "") {
       if(!$result[3]) continue;
@@ -483,7 +483,7 @@ TROW;
 function deleteAccomodatedUser($userId,$mcid) {
   $deleteAccoUserQuery="DELETE FROM `prhospi_accomodation_status`
                   WHERE `user_id`={$userId} AND `page_modulecomponentid`={$mcid}";
-  $deleteAccoUserRes=mysql_query($deleteAccoUserQuery) or displayerror(mysql_error());
+  $deleteAccoUserRes=mysqli_query($GLOBALS["___mysqli_ston"], $deleteAccoUserQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($deleteAccoUserRes) 
     displayinfo("Successfully deleted Pragyan User: ".$userId);
   
@@ -492,7 +492,7 @@ function deleteAccomodatedUser($userId,$mcid) {
 function deletePrUser($userId,$mcid) {
   $deleteAccoUserQuery="DELETE FROM `prhospi_pr_status`
                   WHERE `user_id`={$userId} AND `page_modulecomponentid`={$mcid}";
-  $deleteAccoUserRes=mysql_query($deleteAccoUserQuery) or displayerror(mysql_error());
+  $deleteAccoUserRes=mysqli_query($GLOBALS["___mysqli_ston"], $deleteAccoUserQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($deleteAccoUserRes) 
     displayinfo("Successfully deleted Pragyan User: ".$userId);
   
@@ -523,8 +523,8 @@ function submitDetailsForPr($userId,$mcid,$registeredBy) {
     displayerror("Invalid format.<br/>Format should be 'userid'");
     return '';
   }
-  $checkUserExist=mysql_query("SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(mysql_error());
-  if(!mysql_num_rows($checkUserExist)) {
+  $checkUserExist=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM ".MYSQL_DATABASE_PREFIX."users WHERE `user_id`={$userId}") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($checkUserExist)) {
     displayerror("Invalid User Id");
     return '';
   }
@@ -538,7 +538,7 @@ function submitDetailsForPr($userId,$mcid,$registeredBy) {
                             data.user_id = $userId
                          WHERE descr.page_modulecomponentid = 0
                          ";
-  $profileDetailRes = mysql_query($profileDetailQuery) or displayerror(mysql_error());
+  $profileDetailRes = mysqli_query($GLOBALS["___mysqli_ston"], $profileDetailQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if(!$profileDetailRes) {
     displayerror("check the error in getProfileDetailsForPr function in prhospi_common.php");
     return '';
@@ -553,7 +553,7 @@ function submitDetailsForPr($userId,$mcid,$registeredBy) {
        </tr>
 
 TABLE;
-  while($result=mysql_fetch_assoc($profileDetailRes)) {
+  while($result=mysqli_fetch_assoc($profileDetailRes)) {
 	$dispText = $result['dispText'];
 	$dispData = $result['dispData'];
  
@@ -583,8 +583,8 @@ function isRegisteredToPr($userId,$mcId) {
   $userId = escape($userId);
   if(!is_numeric($userId)) return 0;
   $checkUserRegisteredToPr = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid` = {$mcId} AND `user_id` = {$userId}";
-  $checkUserRegisteredToPrQuery = mysql_query($checkUserRegisteredToPr) or displayerror(mysql_error());
-  if(mysql_num_rows($checkUserRegisteredToPrQuery)) return 1;
+  $checkUserRegisteredToPrQuery = mysqli_query($GLOBALS["___mysqli_ston"], $checkUserRegisteredToPr) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(mysqli_num_rows($checkUserRegisteredToPrQuery)) return 1;
   return 0;
 }
 
@@ -598,8 +598,8 @@ function checkInPrUser($userId,$mcId,$registeredBy) {
   $time = date("Y-m-d H:i:s");
   $amtToBeCollected = getAmount("prhead",$mcId); 
   $addUserToPrReg = "INSERT INTO `prhospi_pr_status` VALUES ({$mcId},{$userId},'{$time}','0000-00-00 00:00:00',{$amtToBeCollected},0,'{$registeredBy}')";
-  $addUserToPrRegQuery = mysql_query($addUserToPrReg) or displayerror(mysql_error());
-  if(mysql_affected_rows()>0) {
+  $addUserToPrRegQuery = mysqli_query($GLOBALS["___mysqli_ston"], $addUserToPrReg) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0) {
     displayinfo("Sucessfully Registered for Pragyan");
     return displayPrintOptionForPR($userId);
   }
@@ -619,15 +619,15 @@ function checkOutPr($userId,$refund,$mcid) {
   }
   $checkIfUserEnrolledQuery = "SELECT * FROM `prhospi_pr_status` 
                             WHERE `user_id`={$userId} AND `page_modulecomponentid`={$mcid}";
-  $checkIfUserEnrolledRes = mysql_query($checkIfUserEnrolledQuery) or displayerror(mysql_error());
- if(!mysql_num_rows($checkIfUserEnrolledRes)) {
+  $checkIfUserEnrolledRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfUserEnrolledQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+ if(!mysqli_num_rows($checkIfUserEnrolledRes)) {
     displaywarning("User ".getUserName($userId).", not registered for pr or for pragyan site ");
     return false;
     }
   $checkIfUserCheckedOutQuery = "SELECT * FROM `prhospi_pr_status` 
                             WHERE `user_id`={$userId} AND `page_modulecomponentid`={$mcid} AND `hospi_checkpout_time`!='0000-00-00 00:00:00'";
-  $checkIfUserEnrolledRes = mysql_query($checkIfUserCheckedOutQuery) or displayerror(mysql_error());
-  if(mysql_num_rows($checkIfUserEnrolledRes)) {
+  $checkIfUserEnrolledRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfUserCheckedOutQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(mysqli_num_rows($checkIfUserEnrolledRes)) {
     displaywarning("User ".getUserName($userId).", has already Checkedout ");
     return false;
     }
@@ -636,7 +636,7 @@ function checkOutPr($userId,$refund,$mcid) {
                   SET `hospi_checkpout_time` = '{$time}',`amount_refunded`={$refund} 
                   WHERE `page_modulecomponentid`={$mcid} AND `user_id`={$userId}";
   
-  $updateRes = mysql_query($updateQuery) or displayerror(mysql_error());               
+  $updateRes = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));               
   displayinfo("User Successfully checked out");
 }
 
@@ -693,16 +693,16 @@ function displayUsersRegisteredToPr($mcId) {
     </thead>
 TABLE;
   $getRegisteredUserDetailPRQuery = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid`={$mcId}";
-  $getRegisteredUserPR = mysql_query($getRegisteredUserDetailPRQuery) or displayerror("Error on viewing registered user".mysql_error());
-  while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
+  $getRegisteredUserPR = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailPRQuery) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($getRegisteredUserPR)) {
     $registeredByName = getUserName($res['user_registered_by']);
     $registeredByEmail = getUserEmail($res['user_registered_by']);
     $name = getUserName($res['user_id']);
     $id=$res['user_id'];
     $email = getUserEmail($res['user_id']);
     $getPhoneNumberQuery="SELECT * FROM `form_elementdata` WHERE `user_id`='{$id}' AND `page_modulecomponentid`=0 AND `form_elementid`=5";
-    $getPhoneNumberQuery=mysql_query($getPhoneNumberQuery);
-    $getPhoneNumberQueryResult=mysql_fetch_assoc($getPhoneNumberQuery);
+    $getPhoneNumberQuery=mysqli_query($GLOBALS["___mysqli_ston"], $getPhoneNumberQuery);
+    $getPhoneNumberQueryResult=mysqli_fetch_assoc($getPhoneNumberQuery);
     $phoneNumber=$getPhoneNumberQueryResult['form_elementdata'];
     $userDetails .=<<<TR
       <tr>
@@ -755,8 +755,8 @@ function displayUsersRegisteredToPrDelete($mcId) {
     </thead>
 TABLE;
   $getRegisteredUserDetailPRQuery = "SELECT * FROM `prhospi_pr_status` WHERE `page_modulecomponentid`={$mcId}";
-  $getRegisteredUserPR = mysql_query($getRegisteredUserDetailPRQuery) or displayerror("Error on viewing registered user".mysql_error());
-  while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
+  $getRegisteredUserPR = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailPRQuery) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($getRegisteredUserPR)) {
     $name = getUserName($res['user_id']);
     $email = getUserEmail($res['user_id']);
     $userDetails .=<<<TR
@@ -818,8 +818,8 @@ TABLE;
                                        LEFT JOIN `prhospi_hostel` AS hostel ON hostel.hospi_room_id = status.hospi_room_id AND
                                                                                hostel.page_modulecomponentid=status.page_modulecomponentid  
                                        WHERE status.page_modulecomponentid={$mcId}";
-  $getRegisteredUserPR = mysql_query($getRegisteredUserDetailAccoQuery) or displayerror("Error on viewing registered user".mysql_error());
-  while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
+  $getRegisteredUserPR = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailAccoQuery) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($getRegisteredUserPR)) {
     $registeredByName = getUserName($res['user_registered_by']);
     $registeredByEmail = getUserEmail($res['user_registered_by']);
     $name = getUserName($res['user_id']);
@@ -891,8 +891,8 @@ TABLE;
                                        LEFT JOIN `prhospi_hostel` AS hostel ON hostel.hospi_room_id = status.hospi_room_id AND
                                                                                hostel.page_modulecomponentid=status.page_modulecomponentid  
                                        WHERE status.page_modulecomponentid={$mcId}";
-  $getRegisteredUserPR = mysql_query($getRegisteredUserDetailAccoQuery) or displayerror("Error on viewing registered user".mysql_error());
-  while($res = mysql_fetch_assoc($getRegisteredUserPR)) {
+  $getRegisteredUserPR = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailAccoQuery) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($getRegisteredUserPR)) {
     
     $name = getUserName($res['user_id']);
     $email = getUserEmail($res['user_id']);
@@ -935,7 +935,7 @@ function blockRoom($mcid) {
     if($_POST['block']=='UNBLOCK') unBlockRoomNo(substr($_POST['roomId'],9),$mcid);
   }
   $getAvailableRoomQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid}";
-  $getAvailableRoomQueryRes = mysql_query($getAvailableRoomQuery) or displayerror(mysql_error());
+  $getAvailableRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $getAvailableRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   require_once("$sourceFolder/$moduleFolder/prhospi/accommodation.php");
   $roomDetails = displayRooms($mcid);
   $blockRoomForm=<<<FORM
@@ -947,7 +947,7 @@ $roomDetails
         <select id="blockRoomNo" name="roomAllotted">
         <option class="blockRoom" id="">Select Room</option>
 FORM;
-  while($details = mysql_fetch_assoc($getAvailableRoomQueryRes)) {
+  while($details = mysqli_fetch_assoc($getAvailableRoomQueryRes)) {
   $blockRoomForm.=<<<FORM
     <option class="blockRoom" id="blockRoom{$details['hospi_room_id']}">{$details['hospi_hostel_name']} RoomNo:{$details['hospi_room_no']}</option>
 FORM;
@@ -966,7 +966,7 @@ FORM;
 FORM;
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   $getAvailableRoomQuery = "SELECT * FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid}";
-  $getAvailableRoomQueryRes = mysql_query($getAvailableRoomQuery) or displayerror(mysql_error());
+  $getAvailableRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $getAvailableRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   $blockRoomForm.=<<<FORM
 <hr/>
 <h1> UnBlock Room</h1>
@@ -974,7 +974,7 @@ FORM;
         <select id="unblockRoomNo" name="roomAllotted">
         <option class="unblockRoom" id="">Select Room</option>
 FORM;
-  while($details = mysql_fetch_assoc($getAvailableRoomQueryRes)) {
+  while($details = mysqli_fetch_assoc($getAvailableRoomQueryRes)) {
   $blockRoomForm.=<<<FORM
     <option class="unblockRoom" id="blockRoom{$details['hospi_room_id']}">{$details['hospi_hostel_name']} RoomNo:{$details['hospi_room_no']}</option>
 FORM;
@@ -998,18 +998,18 @@ FORM;
 function blockRoomNo($roomId,$mcid) {
   $roomId = escape($roomId);
   $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($blockRoomQueryRes)) {
+  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($blockRoomQueryRes)) {
     displayerror("Room Does Not exist");
     return;
   } 
-  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  $res = mysqli_fetch_assoc($blockRoomQueryRes);
   if($res['hospi_blocked']!=0) {
     displaywarning("Room Blocked Already");
     return;
   }
   $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($blockRoomQueryRes) displayinfo("Room Blocked ");
   else  displayinfo("There is a Error.Please contact System Administrator for Details");
   return;
@@ -1019,18 +1019,18 @@ function blockRoomNo($roomId,$mcid) {
 function blockRoomNo($roomId,$mcid) {
   $roomId = escape($roomId);
   $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=0 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($blockRoomQueryRes)) {
+  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($blockRoomQueryRes)) {
     displayerror("Room Does Not exist");
     return;
   } 
-  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  $res = mysqli_fetch_assoc($blockRoomQueryRes);
   if($res['hospi_blocked']!=0) {
     displaywarning("Room Blocked Already");
     return;
   }
   $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=1 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($blockRoomQueryRes) displayinfo("Room Blocked ");
   else  displayinfo("There is a Error.Please contact System Administrator for Details");
   return;
@@ -1039,14 +1039,14 @@ function blockRoomNo($roomId,$mcid) {
 function unBlockRoomNo($roomId,$mcid) {
   $roomId = escape($roomId);
   $blockRoomQuery = "SELECT `hospi_blocked` FROM `prhospi_hostel` WHERE `hospi_blocked`=1 AND `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($blockRoomQueryRes)) {
+  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($blockRoomQueryRes)) {
     displayerror("Room Does Not exist");
     return;
   } 
-  $res = mysql_fetch_assoc($blockRoomQueryRes);
+  $res = mysqli_fetch_assoc($blockRoomQueryRes);
   $blockRoomQuery = "UPDATE `prhospi_hostel` SET `hospi_blocked`=0 WHERE `page_modulecomponentid`={$mcid} AND `hospi_room_id`={$roomId}";
-  $blockRoomQueryRes = mysql_query($blockRoomQuery) or displayerror(mysql_error());
+  $blockRoomQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $blockRoomQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($blockRoomQueryRes) displayinfo("Room Unblocked ");
   else  displayinfo("There is a Error.Please contact System Administrator for Details");
   

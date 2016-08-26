@@ -179,8 +179,8 @@ function getChildList($pageId,$depth,$rootUri,$userId,$curdepth) {
   $var = "<div class='div_{$classname}'><ul class='{$classname} depth{$curdepth}'>";
   for($i=0;$i<count($pageRow);$i+=1) {
   	$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$pageRow[$i][0]}'";
-		$result = mysql_query($query);
-		$result = mysql_fetch_assoc($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$result = mysqli_fetch_assoc($result);
 		$opennewtab="";
 		if($result['page_openinnewtab']=='1') 
 			$opennewtab = ' target="_blank" ';
@@ -214,8 +214,8 @@ function htmlMenuRenderer($menuArray, $currentIndex = -1, $linkPrefix = '') {
 	
 	for ($i = 0; $i < count($menuArray); ++$i) {
 			$query = "SELECT `page_openinnewtab` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id` = '{$menuArray[$i][0]}'";
-			$result = mysql_query($query);
-			$result = mysql_fetch_assoc($result);
+			$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$result = mysqli_fetch_assoc($result);
 			
 			if($result['page_openinnewtab']=='1') {
 				$menuHtml .= "<a href=\"".$hostURL."{$linkPrefix}{$menuArray[$i][1]}/\" target=\"_blank\"";
@@ -270,9 +270,9 @@ function getChildren($pageId, $userId) {
 	$pageId=escape($pageId);
 	$childrenQuery = 'SELECT `page_id`, `page_name`, `page_title`, `page_module`, `page_modulecomponentid`, `page_displayinmenu`, `page_image` , `page_displayicon` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = \'' . $pageId . '\' AND `page_id` != \'' . $pageId . '\' AND `page_displayinmenu` = 1 ORDER BY `page_menurank`';
 	
-	$childrenResult = mysql_query($childrenQuery);
+	$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 	$children = array();
-	while ($childrenRow = mysql_fetch_assoc($childrenResult))
+	while ($childrenRow = mysqli_fetch_assoc($childrenResult))
 		if ($childrenRow['page_displayinmenu'] == true && getPermissions($userId, $childrenRow['page_id'], 'view', $childrenRow['page_module']) == true)
 			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_title'], $childrenRow['page_image'],$childrenRow['page_displayicon']);
 			

@@ -13,7 +13,7 @@ $settings_dir = "../settings";
 include "$settings_dir/database.php";
 
 $error = 0;
-mysql_query("create table `".$mysql_table_prefix."sites`(
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."sites`(
 	site_id int auto_increment not null primary key,
 	url varchar(255),
 	title varchar(255),
@@ -23,13 +23,13 @@ mysql_query("create table `".$mysql_table_prefix."sites`(
 	required text,
 	disallowed text,
 	can_leave_domain bool)");
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
-mysql_query("create table `".$mysql_table_prefix."links` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."links` (
 	link_id int auto_increment primary key not null,
 	site_id int,
 	url varchar(255) not null,
@@ -44,28 +44,28 @@ mysql_query("create table `".$mysql_table_prefix."links` (
 	visible int default 0, 
 	level int)");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
-mysql_query("create table `".$mysql_table_prefix."keywords`	(
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."keywords`	(
 	keyword_id int primary key not null auto_increment,
 	keyword varchar(30) not null,
 	unique kw (keyword),
 	key keyword (keyword(10)))");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
 for ($i=0;$i<=15; $i++) {
 	$char = dechex($i);
-	mysql_query("create table `".$mysql_table_prefix."link_keyword$char` (
+	mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."link_keyword$char` (
 		link_id int not null,
 		keyword_id int not null,
 		weight int(3),
@@ -73,53 +73,53 @@ for ($i=0;$i<=15; $i++) {
 		key linkid(link_id),
 		key keyid(keyword_id))");
 
-	if (mysql_errno() > 0) {
+	if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 		print "Error: ";
-		print mysql_error();
+		print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 		print "<br>\n";
-		$error += mysql_errno();
+		$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 	}
 }
 
-mysql_query("create table `".$mysql_table_prefix."categories` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."categories` (
 	category_id integer not null auto_increment primary key, 
 	category text,
 	parent_num integer
 	)");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
-mysql_query("create table `".$mysql_table_prefix."site_category` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."site_category` (
 	site_id integer,
 	category_id integer
 	)");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
-mysql_query("create table `".$mysql_table_prefix."temp` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."temp` (
 	link varchar(255),
 	level integer,
 	id varchar (32)
 	)");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
-mysql_query("create table `".$mysql_table_prefix."pending` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."pending` (
 	site_id integer,
 	temp_id varchar(32),
 	level integer,
@@ -127,36 +127,36 @@ mysql_query("create table `".$mysql_table_prefix."pending` (
 	num integer
 )");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
-mysql_query("create table `".$mysql_table_prefix."query_log` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."query_log` (
 	query varchar(255),
 	time timestamp(14),
 	elapsed float(2),
 	results int, 
 	key query_key(query))");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
-mysql_query("create table `".$mysql_table_prefix."domains` (
+mysqli_query($GLOBALS["___mysqli_ston"], "create table `".$mysql_table_prefix."domains` (
 	domain_id int auto_increment primary key not null,	
 	domain varchar(255))");
 
-if (mysql_errno() > 0) {
+if (((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false)) > 0) {
 	print "Error: ";
-	print mysql_error();
+	print ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 	print "<br>\n";
-	$error += mysql_errno();
+	$error += ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_errno($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_errno()) ? $___mysqli_res : false));
 }
 
 
