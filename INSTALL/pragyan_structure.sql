@@ -1439,8 +1439,8 @@ CREATE TABLE IF NOT EXISTS `events_details` (
 --
 -- Indexes for table `events_details`
 --
-ALTER TABLE `events_details`
-  ADD PRIMARY KEY (`event_id`);
+-- ALTER TABLE `events_details`
+--   ADD PRIMARY KEY (`event_id`);
   
 --
 -- AUTO_INCREMENT for table `events_details`
