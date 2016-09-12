@@ -331,9 +331,9 @@ function getInheritedWidgets($pageId)
 	if($parentId==$pageId) return array();
 	
 	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`='$parentId' AND t1.`widget_propagate`=1 AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location` ASC";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$return=array();
-	while($row=mysql_fetch_array($result))
+	while($row=mysqli_fetch_array($result))
 	{
 		$row['source']=getPagePath($parentId);
 		$return[]=$row;
@@ -352,7 +352,7 @@ function getInheritedWidgets($pageId)
 function propagateWidgetInstance($widgetId,$widgetInstanceId)
 {
 	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=1 WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
-	mysql_query($query);
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	displayinfo("Widget has been succesfully propagated to all child pages recursively.");
 }
 
@@ -364,7 +364,7 @@ function propagateWidgetInstance($widgetId,$widgetInstanceId)
 function unpropagateWidgetInstance($widgetId,$widgetInstanceId)
 {
 	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_propagate`=0 WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
-	mysql_query($query);
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	displayinfo("Widget copies has been succesfully removed from all child pages recursively.");
 }
 
@@ -377,21 +377,21 @@ function unpropagateWidgetInstance($widgetId,$widgetInstanceId)
 function deleteWidgetInstance($widgetId,$widgetInstanceId)
 {
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgets` WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
-	if(mysql_query($query)===FALSE)
+	if(mysqli_query($GLOBALS["___mysqli_ston"], $query)===FALSE)
 	{
 		displayerror("Could not delete widget. Internal error occurred.");
 		return FALSE;
 	}
 	
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
-	if(mysql_query($query)===FALSE)
+	if(mysqli_query($GLOBALS["___mysqli_ston"], $query)===FALSE)
 	{
 		displayerror("Could not delete widget. Internal error occurred.");
 		return FALSE;
 	}
 	
 	$query="DELETE FROM `".MYSQL_DATABASE_PREFIX."widgetsdata` WHERE `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
-	if(mysql_query($query)===FALSE)
+	if(mysqli_query($GLOBALS["___mysqli_ston"], $query)===FALSE)
 	{
 		displayerror("Could not delete widget. Internal error occurred.");
 		return FALSE;
@@ -414,9 +414,9 @@ function deleteWidgetInstance($widgetId,$widgetInstanceId)
 function modifyWidgetInstanceLocation($pageId,$widgetId,$widgetInstanceId,$mod)
 {
 	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_location`=`widget_location`$mod WHERE `page_id`='$pageId' AND `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId' AND `widget_location`$mod >= 0";
-	$res=mysql_query($query);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	if(!$res) return false;
-	if(mysql_affected_rows()==0)
+	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])==0)
 		displayerror("Could not move widget to that location. Location cannot be negative.");
 	else displayinfo("Widget has been successfully relocated.");			
 }
@@ -432,9 +432,9 @@ function modifyWidgetInstanceLocation($pageId,$widgetId,$widgetInstanceId,$mod)
 function modifyWidgetInstanceOrder($pageId,$widgetId,$widgetInstanceId,$mod)
 {
 	$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgets` SET `widget_order`=`widget_order`$mod WHERE `page_id`='$pageId' AND `widget_id`='$widgetId' AND `widget_instanceid`='$widgetInstanceId'";
-	$res=mysql_query($query);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	if(!$res) return false;
-	if(mysql_affected_rows()==0)
+	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])==0)
 		displayerror("Could not move widget. Some internal error occurred.");
 	else displayinfo("Widget has been successfully reordered.");			
 }
@@ -449,13 +449,13 @@ function modifyWidgetInstanceOrder($pageId,$widgetId,$widgetInstanceId,$mod)
 function createWidgetInstance($pageId,$widgetId)
 {
 	$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='$widgetId'";
-	$res=mysql_query($query);
-	if(mysql_num_rows($res)==0)
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if(mysqli_num_rows($res)==0)
 	{
 		displayerror("Required widget is not registered with Pragyan CMS properly.");
 		return false;
 	}
-	$row=mysql_fetch_array($res);
+	$row=mysqli_fetch_array($res);
 	
 	global $widgetFolder;
 	$classname=$row['classname'];
@@ -501,9 +501,9 @@ function createWidgetInstance($pageId,$widgetId)
 function getEnabledWidgets($pageId)
 {
 	$query="SELECT t1.`widget_id` AS 'id', t1.`widget_instanceid` AS 'instanceid', t1.`widget_location` AS 'location', t1.`widget_order` AS 'order', t1.`widget_propagate` AS 'propagate', t2.`widget_name` AS 'name', t2.`widget_description` AS 'description', t2.`widget_author` AS 'author', t2.`widget_version` AS 'version', t2.`widget_classname` AS 'classname', t2.`widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgets` AS t1, `".MYSQL_DATABASE_PREFIX."widgetsinfo` AS t2 WHERE t1.`page_id`='$pageId' AND t2.`widget_id`=t1.`widget_id` ORDER BY t1.`widget_location`, t1.`widget_order` ASC";
-	$result=mysql_query($query);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$return=array();
-	while($row=mysql_fetch_array($result))
+	while($row=mysqli_fetch_array($result))
 		$return[]=$row;
 	return $return;
 }
@@ -538,15 +538,15 @@ function handleWidgetAdmin($pageId)
 	if(isset($_GET["deletewidget"])) {
 		$widgetId = escape($_GET['deletewidget']);
 		if(is_numeric($widgetId)) {
-			$widget = mysql_fetch_assoc(mysql_query("SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "widgetsinfo` WHERE `widget_id` = '{$widgetId}'"));
+			$widget = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "widgetsinfo` WHERE `widget_id` = '{$widgetId}'"));
 			$error = false;
 			$deletelist = array("widgets","widgetsinfo","widgetsconfiginfo","widgetsconfig","widgetsdata");
 			$rowCount = 0;
 			foreach($deletelist as $deleteitem) {
 				$query = "DELETE FROM `" . MYSQL_DATABASE_PREFIX . $deleteitem . "` WHERE `widget_id` = '{$widgetId}'";
-				mysql_query($query) or die($query . "<br><br>" . mysql_error());
+				mysqli_query($GLOBALS["___mysqli_ston"], $query) or die($query . "<br><br>" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 				
-				$ans = mysql_fetch_row(mysql_query("SELECT COUNT(*) FROM `" . MYSQL_DATABASE_PREFIX . $deleteitem . "` WHERE `widget_id` = '{$widgetId}'"));
+				$ans = mysqli_fetch_row(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT COUNT(*) FROM `" . MYSQL_DATABASE_PREFIX . $deleteitem . "` WHERE `widget_id` = '{$widgetId}'"));
 				$rowCount += $ans[0];
 			}
 			if(is_dir("$sourceFolder/$widgetFolder/{$widget['widget_foldername']}"))
@@ -565,13 +565,13 @@ function handleWidgetAdmin($pageId)
 		$widgetid=escape($_GET['widgetid']);		
 		
 		$query="SELECT `widget_name` AS 'name', `widget_classname` AS 'classname', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='$widgetid'";
-		$res=mysql_query($query);
-		if(mysql_num_rows($res)==0)
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		if(mysqli_num_rows($res)==0)
 		{
 			displayerror("Required widget is not registered with Pragyan CMS properly.");
 			return false;
 		}
-		$row=mysql_fetch_array($res);
+		$row=mysqli_fetch_array($res);
 	
 		global $widgetFolder;
 		$classname=$row['classname'];
@@ -693,10 +693,10 @@ function getConfigFormAsArray($widgetconfigs,$containsFileUploadFields,$widgetin
 			
 		$query="SELECT `config_name` AS 'confname', `config_value` AS 'confvalue' FROM ".MYSQL_DATABASE_PREFIX."widgetsconfig WHERE `widget_instanceid`='$widgetinstanceid' AND `widget_id`='{$widgetconfigs[0]['id']}'  AND `config_name` IN ('".join($confnames,"','")."')";
 
-		$res=mysql_query($query);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 
 		/// For those configurations which are set, overwrite the $formValues array
-		while($row=mysql_fetch_assoc($res))
+		while($row=mysqli_fetch_assoc($res))
 		{
 			$formValues[$row['confname']]=$row['confvalue'];	
 		}
@@ -1026,9 +1026,9 @@ function renderNoinputTypeField($elementName,$value,$options,&$htmlOutput)
 function getWidgetPageConfigInfo($widgetid)
 {
 	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='$widgetid' AND `is_global`=0 ORDER BY `config_rank`";
-	$res=mysql_query($query);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$ret=array();
-	while($arr=mysql_fetch_assoc($res))
+	while($arr=mysqli_fetch_assoc($res))
 	{
 		$ret[]=$arr;
 	}
@@ -1043,9 +1043,9 @@ function getWidgetPageConfigInfo($widgetid)
 function getWidgetGlobalConfigInfo($widgetid)
 {
 	$query="SELECT `widget_id` AS 'id', `config_name` AS 'confname', `config_displaytext` AS 'confdisplay', `config_type` AS 'conftype',`config_options` AS 'confoptions',`config_default` AS 'confdefault'  FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='$widgetid' AND `is_global`=1 ORDER BY `config_rank`";
-	$res=mysql_query($query);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$ret=array();
-	while($arr=mysql_fetch_assoc($res))
+	while($arr=mysqli_fetch_assoc($res))
 	{
 		$ret[]=$arr;
 	}
@@ -1059,8 +1059,8 @@ function getWidgetGlobalConfigInfo($widgetid)
 function getWidgetInfo($widgetid)
 {
 	$query="SELECT `widget_id` AS 'id', `widget_name` AS 'name', `widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author', `widget_foldername` AS 'foldername' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo` WHERE `widget_id`='$widgetid'";
-	$res=mysql_query($query);
-	return mysql_fetch_assoc($res);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	return mysqli_fetch_assoc($res);
 }
 /**
  * Retrieves the widget id and name of all the widgets
@@ -1069,9 +1069,9 @@ function getWidgetInfo($widgetid)
 function getAllWidgetsInfo()
 {
 	$query="SELECT `widget_id` AS 'id',`widget_name` AS 'name',`widget_description` AS 'description', `widget_version` AS 'version', `widget_author` AS 'author' FROM `".MYSQL_DATABASE_PREFIX."widgetsinfo`";
-	$res=mysql_query($query);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$ret=array();
-	while($row=mysql_fetch_array($res))
+	while($row=mysqli_fetch_array($res))
 	{
 		$ret[]=$row;
 	}
@@ -1088,11 +1088,11 @@ function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 {
 	$query="SELECT `config_name`,`config_type`,`config_default`,`config_options` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfiginfo` WHERE `widget_id`='$widgetid' AND `is_global`=".(int)$isglobal;
 	
-	$res=mysql_query($query);
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	
 	if($isglobal) $widgetinstanceid=-1;
 	
-	while($row=mysql_fetch_array($res))
+	while($row=mysqli_fetch_array($res))
 	{
 	
 		$conftype=$row['config_type'];
@@ -1107,9 +1107,9 @@ function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 		
 		$query="SELECT `config_value` FROM `".MYSQL_DATABASE_PREFIX."widgetsconfig` WHERE `config_name`='$confname' AND `widget_id`='$widgetid' AND `widget_instanceid`='$widgetinstanceid'";
 	
-		$result=mysql_query($query);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		
-		while($row=mysql_fetch_assoc($result))
+		while($row=mysqli_fetch_assoc($result))
 			$confcur=$row['config_value'];
 		
 		if($conftype=='checkbox')
@@ -1119,15 +1119,15 @@ function updateWidgetConf($widgetid,$widgetinstanceid=-1,$isglobal=TRUE)
 		
 		///If there was no submit value, then check for the current value, if even that's missing then use the default value	
 		$confval=($confval===false)?(($confcur===false)?$confdef:$confcur):$confval;
-		if(mysql_num_rows($result)==0)
+		if(mysqli_num_rows($result)==0)
 		{
 			$query="INSERT INTO `".MYSQL_DATABASE_PREFIX."widgetsconfig` (`widget_id`,`widget_instanceid`,`config_name`,`config_value`) VALUES ($widgetid,$widgetinstanceid,'$confname','$confval')";
-			mysql_query($query);
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		}	
 		else if($confval!=$confcur)
 		{
 			$query="UPDATE `".MYSQL_DATABASE_PREFIX."widgetsconfig` SET `config_value`='$confval' WHERE `config_name`='$confname' AND `widget_id`='$widgetid' AND `widget_instanceid`='$widgetinstanceid'";
-			mysql_query($query);
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		}
 	
 	}

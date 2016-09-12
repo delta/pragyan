@@ -18,8 +18,8 @@ if(!defined('__PRAGYAN_CMS')) {
 function getAuthMethod($userId) {
   if($userId <= 0) return "Anonymous";
   $query = "SELECT `user_loginmethod` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-  $result = mysql_query($query);
-  $row = mysql_fetch_row($result);
+  $result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+  $row = mysqli_fetch_row($result);
   return $row[0];
 
 }
@@ -35,8 +35,8 @@ function handleRegistrationFormSubmit($userId,$mcId) {
    global $authmethods;
    $rollNo=substr($email,0,strrpos($email,'@'.$authmethods['imap']['user_domain']));
    $checkIfUserRegisteredquery = "SELECT * from `oc_form_reg` WHERE `page_moduleComponentId`={$mcId} AND `user_id`={$userId}";
-   $checkIfUserRegisteredResult = mysql_query($checkIfUserRegisteredquery) or die(mysql_error());
-   if(mysql_num_rows($checkIfUserRegisteredResult)>0) {
+   $checkIfUserRegisteredResult = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfUserRegisteredquery) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+   if(mysqli_num_rows($checkIfUserRegisteredResult)>0) {
   if(!checkIfUserWhiteListed($mcId,getUserEmail($userId))) {
     displaywarning("<b>There are problems that persisting with your current mess account.</b><br/>Pragyan team will get back to you after identification of your problem.<br/><b>Your details have been noted</b>" );
    return false;
@@ -71,7 +71,7 @@ if(!isset($_POST['gender'])){
                                  VALUES ('$mcId','{$name}','{$amount}','{$userId}','{$tsize}','{$gender}',NOW(),$rollNo)";
      }*/
      else displaywarning("Good Try.But you won't get Food Coupon worth Rs.700");
-     if(mysql_query($query)) {
+     if(mysqli_query($GLOBALS["___mysqli_ston"], $query)) {
 	 displayinfo("Your registration is complete.");
        
        return false;
@@ -123,15 +123,15 @@ TABLE;
   $Yes = "green";
   $No = "red";
   $getRegisteredUserDetailQuery = "SELECT * FROM `oc_form_reg` WHERE `page_moduleComponentId`=1 ORDER BY oc_roll_no";
-  $getRegisteredUserOc = mysql_query($getRegisteredUserDetailQuery) or displayerror("Error on viewing registered user".mysql_error());
-  while($res = mysql_fetch_assoc($getRegisteredUserOc)) {
+  $getRegisteredUserOc = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailQuery) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($getRegisteredUserOc)) {
     //    $email = getUserEmail($res['user_id']);
     $rollNumber = $res['oc_roll_no'];
     $email = $res['oc_roll_no'].'@nitt.edu';
     //  if(!checkIfUserWhiteListed($mcId,$email)) continue;
   $getRegisteredUserDetailQuery1 = "SELECT * FROM `oc_valid_emails` WHERE `page_moduleComponentId`=1 AND oc_valid_email='{$email}'";
-  $getRegisteredUserOc1 = mysql_query($getRegisteredUserDetailQuery1) or displayerror("Error on viewing registered user".mysql_error());
-  $result12345 = mysql_fetch_assoc($getRegisteredUserOc1);
+  $getRegisteredUserOc1 = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailQuery1) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $result12345 = mysqli_fetch_assoc($getRegisteredUserOc1);
   
     
     $userDetails .=<<<TR
@@ -164,7 +164,7 @@ function view_whitelist_emails($mcId){
   if(isset($_POST['remove_email'])){
     $removing_user=escape($_POST['removing']);
     $query="DELETE FROM `oc_valid_emails` WHERE `oc_valid_email`='{$removing_user}' AND `page_moduleComponentId`={$mcId}";
-    mysql_query($query) or displayerror(mysql_error());
+    mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   }
   $userDetails =<<<TABLE
     $smarttablestuff
@@ -178,8 +178,8 @@ function view_whitelist_emails($mcId){
     </thead>
 TABLE;
   $getRegisteredUserDetailQuery = "SELECT oc_name,oc_valid_email FROM `oc_valid_emails` WHERE `page_moduleComponentId`={$mcId}";
-  $getRegisteredUserOc = mysql_query($getRegisteredUserDetailQuery) or displayerror("Error on viewing registered user".mysql_error());
-  while($res = mysql_fetch_assoc($getRegisteredUserOc)) {
+  $getRegisteredUserOc = mysqli_query($GLOBALS["___mysqli_ston"], $getRegisteredUserDetailQuery) or displayerror("Error on viewing registered user".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($getRegisteredUserOc)) {
     $name = $res['oc_name'];
     $email = $res['oc_valid_email'];
     $userDetails .=<<<TR
@@ -205,13 +205,13 @@ function add_whitelist_email($mcId){
   if(isset($_POST['add_email'])) {
     $name  = escape($_POST['roll']); 
     $email = escape($_POST['email']);
-    $query = mysql_query("INSERT IGNORE INTO `oc_valid_emails` (`page_modulecomponentid`,`oc_name`,`oc_valid_email`) 
+    $query = mysqli_query($GLOBALS["___mysqli_ston"], "INSERT IGNORE INTO `oc_valid_emails` (`page_modulecomponentid`,`oc_name`,`oc_valid_email`) 
                                                       VALUES ('$mcId','{$name}','{$email}')");
     if($query) {
       displayinfo("Successfully Added");
     }
     else {
-      displayinfo(mysql_error());
+      displayinfo(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     }
   }
   $addWhiteList=<<<FORM
@@ -229,15 +229,15 @@ function addToAvailability($mcId,$key,$pair) {
   escape($key);
   escape($pair);
   $checkIfKeyExistQuery = "SELECT * from `oc_config` WHERE `key`='{$key}' AND `page_moduleComponentId`={$mcId}";
-  $checkIfKeyExistResult = mysql_query($checkIfKeyExistQuery) or displayerror(mysql_error());
+  $checkIfKeyExistResult = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfKeyExistQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if((!$checkIfKeyExistResult)) {
     return;
   }
-  if(mysql_num_rows($checkIfKeyExistResult)) {
+  if(mysqli_num_rows($checkIfKeyExistResult)) {
     return;
   }
   $insertNewKeyQuery = "INSERT INTO `oc_config` VALUES ('{$mcId}','{$key}','{$pair}')";
-  $insertNewKeyResult = mysql_query($insertNewKeyQuery) or displayerror(mysql_error()); 
+  $insertNewKeyResult = mysqli_query($GLOBALS["___mysqli_ston"], $insertNewKeyQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 
   return;
 }
 
@@ -257,12 +257,12 @@ function availability($mcId){
     }
     else {
       $updateDetailsQuery = "UPDATE `oc_config` SET `value`='{$pair}' WHERE `key`='{$key}' AND `page_moduleComponentId`={$mcId}";
-      $updateDetailsResult = mysql_query($updateDetailsQuery) or displayerror(mysql_error());
+      $updateDetailsResult = mysqli_query($GLOBALS["___mysqli_ston"], $updateDetailsQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     }
   }  
 
   $getKeyQuery = "SELECT * from `oc_config` WHERE `page_moduleComponentId`={$mcId}";
-  $getKeyResult = mysql_query($getKeyQuery) or displayerror(mysql_error());
+  $getKeyResult = mysqli_query($GLOBALS["___mysqli_ston"], $getKeyQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if((!$getKeyResult)) {
     displayerror("Please contact System Administrator for ficing the error");
     return;
@@ -276,7 +276,7 @@ function availability($mcId){
       </tr>
 TABLE;
 
-  while($result = mysql_fetch_assoc($getKeyResult)) {
+  while($result = mysqli_fetch_assoc($getKeyResult)) {
     $tableDetails.=<<<TABLE
       <tr>
         <th>{$result['key']}</th>
@@ -308,15 +308,15 @@ function reg_status($mcId){
           <th>Total No. Of 700 Plan</th>
       </thead>
 TABLE;
-  $getRegStatus700 = mysql_query("SELECT * FROM `oc_form_reg` WHERE `amount`='700' AND `page_moduleComponentId`={$mcId}") 
-                             or displayerror(mysql_error());
-  $getRegStatus500 = mysql_query("SELECT * FROM `oc_form_reg` WHERE `amount`='500' AND `page_moduleComponentId`={$mcId}")
-                             or displayerror(mysql_error());
-  $totalReg = mysql_query("SELECT `user_id` FROM `oc_form_reg` WHERE `page_moduleComponentId`={$mcId}")
-                      or displayerror(mysql_error());
-  $countReg=mysql_num_rows($totalReg); 
-  $countReg500=mysql_num_rows($getRegStatus500); 
-  $countReg700=mysql_num_rows($getRegStatus700);
+  $getRegStatus700 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `oc_form_reg` WHERE `amount`='700' AND `page_moduleComponentId`={$mcId}") 
+                             or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $getRegStatus500 = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `oc_form_reg` WHERE `amount`='500' AND `page_moduleComponentId`={$mcId}")
+                             or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $totalReg = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_id` FROM `oc_form_reg` WHERE `page_moduleComponentId`={$mcId}")
+                      or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  $countReg=mysqli_num_rows($totalReg); 
+  $countReg500=mysqli_num_rows($getRegStatus500); 
+  $countReg700=mysqli_num_rows($getRegStatus700);
   $userDetails .=<<<TR
       <tr>
         <td>{$countReg}</td>
@@ -333,21 +333,21 @@ TABLEEND;
 function checkIfUserWhiteListed($mcId,$email) {
    $checkIfWhiteListQuery = "SELECT  `oc_name` FROM `oc_valid_emails` 
                         WHERE `page_moduleComponentId`={$mcId} AND `oc_valid_email`='{$email}'";
-   $checkIfWhiteListResult = mysql_query($checkIfWhiteListQuery);
-   if(mysql_num_rows($checkIfWhiteListResult)==1) return true;
+   $checkIfWhiteListResult = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfWhiteListQuery);
+   if(mysqli_num_rows($checkIfWhiteListResult)==1) return true;
    return false;
 }
 
 function isAvailable($mcId,$str) {
   $str=escape($str);
   $query = "SELECT `value` FROM `oc_config` WHERE `page_moduleComponentId` = '{$mcId}' AND `key` = '{$str}'";
-  $queryResult = mysql_query($query) or displayerror(mysql_error());
+  $queryResult = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if(!$queryResult) return false;
-  if(!mysql_num_rows($queryResult)) {
+  if(!mysqli_num_rows($queryResult)) {
     displaywarning("Invalid Key Given");
     return false;
   }
-  $value = mysql_fetch_assoc($queryResult);
+  $value = mysqli_fetch_assoc($queryResult);
   if($value['value'] == 'Yes')  return true;
   return false;
 }
@@ -376,7 +376,7 @@ function handleTShirtDistribution($mcId,$userId,$tShirtSize,$toDistribute = 0,$r
   } 
    $updateQuery = "UPDATE `oc_form_reg` SET `oc_tshirt_distributed`='Yes' , `updated_time`=NOW()
                            WHERE `oc_roll_no`={$userId} AND `page_moduleComponentId`={$mcId}";
-   if(mysql_query($updateQuery)) {
+   if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
     echo "Confirmed {$userId}:  ".$tShirtSize." to ".$userId.". $processIMG<br/><hr/>";
     $mailtype = "tshirt_registration";
     $messenger = new messenger(false);
@@ -417,7 +417,7 @@ function handleFoodCouponDistribution($mcId,$userId,$toDistribute = 0,$registere
   } 
    $updateQuery = "UPDATE `oc_form_reg` SET `oc_food_coupon_distributed`='Yes' , `updated_time`=NOW()
                            WHERE `oc_roll_no`={$userId} AND `page_moduleComponentId`={$mcId}";
-   if(mysql_query($updateQuery)) {
+   if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
     echo "Confirmed: Food Coupon to ".$userId.". $processIMG<br/><hr/>";
     $mailtype = "food_registration";
     $messenger = new messenger(false);
@@ -431,7 +431,7 @@ function handleFoodCouponDistribution($mcId,$userId,$toDistribute = 0,$registere
     $messenger->mailer($to,$mailtype,"",$from);
     }       
    else {
-    displayerror(mysql_error());
+    displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     echo "There is a error in Food Coupon Distribution.Contact System Administrator.Do not Distribute Food Coupon. $wrongIMG<br/><hr/>";
    }
    return;
@@ -460,7 +460,7 @@ function handleExtras($mcId,$userId,$toDistribute = 0) {
   } 
    $updateQuery = "UPDATE `oc_form_reg` SET `oc_extra_distributed`='Yes' , `updated_time` = NOW()
                            WHERE `oc_roll_no`={$userId} AND `page_moduleComponentId`={$mcId}";
-   if(mysql_query($updateQuery)) {
+   if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
     echo "Confirmed: Distribute Extra to ".$userId.". $processIMG<br/><hr/>";
    }       
    else {
@@ -488,13 +488,13 @@ function checkExisting($mcId,$barCode_roll,$submit = 0,$registeredBy){
   $userId = getUserIdFromEmail($email);
   $fetchUserDetailQuery = "SELECT * FROM `oc_form_reg` WHERE `page_moduleComponentId`={$mcId} AND 
                                       `oc_roll_no`='{$barCode_roll}'";
-  $fetchUserDetailResult = mysql_query($fetchUserDetailQuery);
+  $fetchUserDetailResult = mysqli_query($GLOBALS["___mysqli_ston"], $fetchUserDetailQuery);
   if(!$fetchUserDetailResult) {
     echo "There is an error is handling details.Contact CSG for more details. $wrongIMG<br/><hr/>";
     return;
   }
-  $userDetails = mysql_fetch_assoc($fetchUserDetailResult);
-  if(mysql_num_rows($fetchUserDetailResult)!=1) {
+  $userDetails = mysqli_fetch_assoc($fetchUserDetailResult);
+  if(mysqli_num_rows($fetchUserDetailResult)!=1) {
     echo "User ".$barCode_roll." has not registered for Coupons or T-Shirt. $wrongIMG<br/><hr/>";
     return;
   }
@@ -553,7 +553,7 @@ function upload_tshirt_list($mcId) {
       if($tsize == '') $tsize='N';
             $query="INSERT IGNORE INTO `oc_form_reg` (`page_modulecomponentid`,`name`,`amount`,`user_id`,`Tshirt_size`,`updated_time`,`oc_roll_no`) 
                                  VALUES ('$mcId','{$name}','700','0','{$tsize}',NOW(),'{$rollNumber}')";
-      mysql_query($query) or displayerror(mysql_error());
+      mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       
       //      $query = "UPDATE `oc_form_reg` SET Tshirt_size='{$tsize}' WHERE page_modulecomponentid='{$mcId}' AND oc_roll_no='{$rollNumber}'";  
       // mysql_query($query) or displayerror(mysql_error());
@@ -577,12 +577,12 @@ function download_black_list($mcId) {
       </tr>
 TABLE;
   $viewBlackListQuery="SELECT `name`,`oc_roll_no` FROM oc_form_reg WHERE `page_moduleComponentId`={$mcId} ORDER BY oc_roll_no";
-  $viewBlackListQueryRes = mysql_query($viewBlackListQuery) or displayerror(mysql_error());
-  while($res = mysql_fetch_assoc($viewBlackListQueryRes)) {
+  $viewBlackListQueryRes = mysqli_query($GLOBALS["___mysqli_ston"], $viewBlackListQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  while($res = mysqli_fetch_assoc($viewBlackListQueryRes)) {
     $email = $res['oc_roll_no'].'@nitt.edu';
     $checkIfExist = "SELECT oc_valid_email FROM oc_valid_emails WHERE oc_valid_email='{$email}' AND `page_moduleComponentId`={$mcId}";
-    $checkIfExistRes = mysql_query($checkIfExist) or displayerror(mysql_error());
-    if(!mysql_num_rows($checkIfExistRes)) {
+    $checkIfExistRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfExist) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+    if(!mysqli_num_rows($checkIfExistRes)) {
       $tableUpdate.=<<<TR
       <tr>
         <td>{$res['name']}</td>

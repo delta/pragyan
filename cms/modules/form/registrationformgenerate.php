@@ -66,9 +66,9 @@ if(!defined('__PRAGYAN_CMS'))
 		/// SELECT form details
 		$formQuery = 'SELECT `form_heading`, `form_headertext`, `form_footertext`, `form_usecaptcha` FROM `form_desc` WHERE ' .
 								 "`page_modulecomponentid` = '$moduleCompId'";
-		$formResult = mysql_query($formQuery);
-		if(!$formResult)	{ displayerror('E52 : Invalid query: ' . mysql_error()); 	return false; }
-		if($formRow = mysql_fetch_assoc($formResult)) {
+		$formResult = mysqli_query($GLOBALS["___mysqli_ston"], $formQuery);
+		if(!$formResult)	{ displayerror('E52 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; }
+		if($formRow = mysqli_fetch_assoc($formResult)) {
 			$body .= '<fieldset><legend><h2>' . $formRow['form_heading'] . '</h2></legend><br /><div style="text-align:center;font-size:20px;">' . $formRow['form_headertext'] . '</div><br />';
 		}
 		else {
@@ -82,7 +82,7 @@ if(!defined('__PRAGYAN_CMS'))
 		if(!$disableCaptcha && $formRow['form_usecaptcha'] == 1)
 			$body .= getCaptchaHtml();
 		$req_query = "SELECT count(*) FROM `form_elementdesc` WHERE `form_elementisrequired`=1 AND `page_modulecomponentid`='$moduleCompId'";
-		$res_req = mysql_fetch_array(mysql_query($req_query)) or displayerror("Error at registrationformgenerate.lib.php Line 85 ".mysql_error());
+		$res_req = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], $req_query)) or displayerror("Error at registrationformgenerate.lib.php Line 85 ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		if($res_req[0]>0)
 			$body .= '<tr>'.
 				'<td colspan="2">* - Required Fields&nbsp;</td></tr>';
@@ -107,7 +107,7 @@ SCRIPT;
 	function getCaptchaHtml() {
 			global $uploadFolder, $sourceFolder, $moduleFolder, $cmsFolder, $urlRequestRoot;
 			$captcha_query = "SELECT * FROM `". MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'recaptcha'";
-			$captcha_res = mysql_fetch_assoc(mysql_query($captcha_query));
+			$captcha_res = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], $captcha_query));
 			$recaptcha =0;			
 			if($captcha_res['value'])
 			{
@@ -116,10 +116,10 @@ SCRIPT;
 			else {
 			$recaptcha =1;
 			$query = "SELECT `value` FROM `". MYSQL_DATABASE_PREFIX ."global` WHERE `attribute`='recaptcha_public'";
-			$res = mysql_fetch_assoc(mysql_query($query));
+			$res = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], $query));
 			$public_key = $res['value']; 
 			$query = "SELECT `value` FROM `". MYSQL_DATABASE_PREFIX ."global` WHERE `attribute`='recaptcha_private'";
-			$res = mysql_fetch_assoc(mysql_query($query));
+			$res = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], $query));
 			$private_key = $res['value'];
 			if(($public_key==NULL)||($private_key==NULL))
 				$recaptcha = 0;
@@ -157,10 +157,10 @@ SCRIPT;
 		if(verifyUserRegistered($moduleCompId,$userId)) {
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdata` FROM `form_elementdata` WHERE ' .
 									 "`page_modulecomponentid` = '$moduleCompId' AND `user_id` = '$userId'";
-			$dataResult = mysql_query($dataQuery);
+			$dataResult = mysqli_query($GLOBALS["___mysqli_ston"], $dataQuery);
 			
-			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . mysql_error()); 	return false; }
-			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			if(!$dataResult)	{ displayerror('E35 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; }
+			while($dataRow = mysqli_fetch_assoc($dataResult)) {
 			
 				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdata'];
 			}
@@ -168,10 +168,10 @@ SCRIPT;
 		else {
 			$dataQuery = 'SELECT `form_elementid`, `form_elementdefaultvalue` FROM `form_elementdesc` WHERE ' .
 									 "`page_modulecomponentid` = '$moduleCompId'";
-			$dataResult = mysql_query($dataQuery);
+			$dataResult = mysqli_query($GLOBALS["___mysqli_ston"], $dataQuery);
 			
-			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . mysql_error()); 	return false; }
-			while($dataRow = mysql_fetch_assoc($dataResult)) {
+			if(!$dataResult)	{ displayerror('E132 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; }
+			while($dataRow = mysqli_fetch_assoc($dataResult)) {
 			
 				$formValues[$dataRow['form_elementid']] = $dataRow['form_elementdefaultvalue'];
 			}
@@ -179,11 +179,11 @@ SCRIPT;
 	
 		$elementQuery = 'SELECT `form_elementid`, `form_elementtype` FROM `form_elementdesc` WHERE ' .
 										"`page_modulecomponentid` ='$moduleCompId' ORDER BY `form_elementrank`";
-		$elementResult = mysql_query($elementQuery);
+		$elementResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementQuery);
 		$formElements = array();
 		$jsValidationFunctions = array();
 
-		while($elementRow = mysql_fetch_row($elementResult)) {
+		while($elementRow = mysqli_fetch_row($elementResult)) {
 			$jsOutput = '';
 			if($elementRow[1] == 'file') {
 				$containsFileUploadFields = true;
@@ -206,9 +206,9 @@ SCRIPT;
 function getFormElementInputField($moduleComponentId, $elementId, $value="", &$javascriptCheckFunctions) {
 	$elementQuery = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid` = " .
 	                "'$moduleComponentId' AND `form_elementid` = '$elementId'";
-	$elementResult = mysql_query($elementQuery);
+	$elementResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementQuery);
 
-	if($elementResult && $elementRow = mysql_fetch_assoc($elementResult)) {
+	if($elementResult && $elementRow = mysqli_fetch_assoc($elementResult)) {
 		$htmlOutput = '<td>' . $elementRow['form_elementdisplaytext'];
 		$jsOutput = array();
 

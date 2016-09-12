@@ -26,8 +26,8 @@ if(!defined('__PRAGYAN_CMS'))
 function getSessionData($user_id) {
 	$user_id=escape($user_id);
 	$query = "SELECT `user_name`,`user_email`,`user_lastlogin` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id`='$user_id'";
-	$data = mysql_query($query) or die(mysql_error());
-	$temp = mysql_fetch_assoc($data);
+	$data = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	$temp = mysqli_fetch_assoc($data);
 	$user_name = $temp['user_name'];
 	$user_email = $temp['user_email'];
 	$lastlogin = $temp['user_lastlogin'];
@@ -137,8 +137,8 @@ function getGroupIds($userId) {
 	else
 		$groups[] = 1;
 	$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . escape($userId)."'";
-	$groupQueryResult = mysql_query($groupQuery) or die(mysql_error());
-	while ($groupQueryResultRow = mysql_fetch_row($groupQueryResult))
+	$groupQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	while ($groupQueryResultRow = mysqli_fetch_row($groupQueryResult))
 		$groups[] = $groupQueryResultRow[0];
 	return $groups;
 }

@@ -98,8 +98,8 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	/// Coz work to be done after these actions do involve the page
 
 	$pagetype_query = "SELECT page_module, page_modulecomponentid FROM ".MYSQL_DATABASE_PREFIX."pages WHERE page_id='".escape($pageId)."'";
-	$pagetype_result = mysql_query($pagetype_query);
-	$pagetype_values = mysql_fetch_assoc($pagetype_result);
+	$pagetype_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagetype_query);
+	$pagetype_values = mysqli_fetch_assoc($pagetype_result);
 	if(!$pagetype_values) {
 		displayerror("The requested page does not exist.");
 		return "";
@@ -116,7 +116,7 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	}
 	if($recursed==0) {
 		$pagetypeupdate_query = "UPDATE ".MYSQL_DATABASE_PREFIX."pages SET page_lastaccesstime=NOW() WHERE page_id='".escape($pageId)."'";
-		$pagetypeupdate_result = mysql_query($pagetypeupdate_query);
+		$pagetypeupdate_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagetypeupdate_query);
 		if(!$pagetypeupdate_result)
 			return '<div class="cms-error">Error No. 563 - An error has occured. Contact the site administators.</div>';
 	}
@@ -130,8 +130,8 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	if($moduleType=="external") {
 		$query = "SELECT `page_extlink` FROM `".MYSQL_DATABASE_PREFIX."external` WHERE `page_modulecomponentid` =
 					(SELECT `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`= '".escape($pageId)."')";
-		$result = mysql_query($query);
-		$values = mysql_fetch_array($result);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$values = mysqli_fetch_array($result);
 		$link=$values[0];
 		header("Location: $link");
 	}
@@ -145,16 +145,16 @@ function getContent($pageId, $action, $userId, $permission, $recursed=0) {
 	}
 	
 	$createperms_query = " SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action = 'create' AND page_module = '".$moduleType."'";
-	$createperms_result = mysql_query($createperms_query);
-	if(mysql_num_rows($createperms_result)<1) {
+	$createperms_result = mysqli_query($GLOBALS["___mysqli_ston"], $createperms_query);
+	if(mysqli_num_rows($createperms_result)<1) {
 		displayerror("The action \"create\" does not exist in the module \"$moduleType\"</div>");
 		return "";
 	}
 
 	$availableperms_query = "SELECT * FROM ".MYSQL_DATABASE_PREFIX."permissionlist where perm_action != 'create' AND page_module = '".$moduleType."'";
-	$availableperms_result = mysql_query($availableperms_query);
+	$availableperms_result = mysqli_query($GLOBALS["___mysqli_ston"], $availableperms_query);
 	$permlist = array();
-	while ($value=mysql_fetch_assoc($availableperms_result))	{
+	while ($value=mysqli_fetch_assoc($availableperms_result))	{
 		array_push($permlist,$value['perm_action']);
 	}
 	array_push($permlist,"view");
@@ -269,10 +269,10 @@ function getTitle($pageId,$action, &$heading) {
 		return false;
 		
 	$pagetitle_query = "SELECT `page_title`, `page_module`, `page_modulecomponentid`, `page_displaypageheading` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='".$pageId."'";
-	$pagetitle_result = mysql_query($pagetitle_query);
+	$pagetitle_result = mysqli_query($GLOBALS["___mysqli_ston"], $pagetitle_query);
 	if (!$pagetitle_result)
 		return false;
-	$pagetitle_values = mysql_fetch_assoc($pagetitle_result);
+	$pagetitle_values = mysqli_fetch_assoc($pagetitle_result);
 
 	if ($pagetitle_values['page_displaypageheading'] == 0)
 		return false;
@@ -300,9 +300,9 @@ function child($pageId, $userId,$depth) {
 	}
 	
 	
-	$childrenResult = mysql_query($childrenQuery);
+	$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 	$children = array();
-	while ($childrenRow = mysql_fetch_assoc($childrenResult))
+	while ($childrenRow = mysqli_fetch_assoc($childrenResult))
 		if ($childrenRow['page_displayinmenu'] == true && getPermissions($userId, $childrenRow['page_id'], 'view', $childrenRow['page_module']) == true)
 			$children[] = array($childrenRow['page_id'], $childrenRow['page_name'], $childrenRow['page_module'], $childrenRow['page_image'],$childrenRow['page_displayicon'],$childrenRow['page_modulecomponentid']);
 			

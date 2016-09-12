@@ -44,12 +44,12 @@ if(!defined('__PRAGYAN_CMS'))
 		if($urlPieces[$i] != "") {
 			$selectString.=", node".$i.".page_id AS pageid".$i;
 			$fromString.=", `$pagesTable` as node".$i;
-			$whereString.=" and node".$i.".page_parentid = IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id) and node".$i.".page_name='".mysql_real_escape_string($urlPieces[$i])."'";
+			$whereString.=" and node".$i.".page_parentid = IF(node".($i - 1).".page_module = 'link', node".($i - 1).".page_modulecomponentid, node".($i - 1).".page_id) and node".$i.".page_name='".((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $urlPieces[$i]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))."'";
 	  }
 	}
   	$pageid_query = $selectString.$fromString.$whereString;
-	if($pageid_result = mysql_query($pageid_query)) {
-		if(!($pageids = mysql_fetch_row($pageid_result))) {
+	if($pageid_result = mysqli_query($GLOBALS["___mysqli_ston"], $pageid_query)) {
+		if(!($pageids = mysqli_fetch_row($pageid_result))) {
 			displayerror("The requested page does not exist.");
 			return false;
 		}
@@ -57,7 +57,7 @@ if(!defined('__PRAGYAN_CMS'))
 	return $pageids[count($pageids) - 1];
 }
 
- /* The following fails to work in Mysql 4.1.10 : theyaga's mysql account*/
+ /* The following fails to work in mysql 4.1.10 : theyaga's mysql account*/
  /* (The AS node0 gives an error)
 function parseUrlReal($url, &$pageIdArray) {
 	$url = trim($url, '/');

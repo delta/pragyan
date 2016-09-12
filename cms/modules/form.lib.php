@@ -91,8 +91,8 @@ FROM `form_elementdata` d
 	JOIN `form_elementdesc` e ON (`d.page_modulecomponentid` = `e.page_modulecomponentid`
 		AND d.form_elementid = e.form_elementid )
 WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$userId' AND `d.form_elementdata` = \"$fileName\"";
-		$uploadedResult = mysql_query($uploadedQuery) or displayerror(mysql_error() . "form.lib L:181");
-		if(mysql_num_rows($uploadedResult)>0 && getPermissions($userId, $pageId, "view"))
+		$uploadedResult = mysqli_query($GLOBALS["___mysqli_ston"], $uploadedQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "form.lib L:181");
+		if(mysqli_num_rows($uploadedResult)>0 && getPermissions($userId, $pageId, "view"))
 			return true;
 		else return false;
 	}
@@ -116,12 +116,12 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 		$formDescQuery='SELECT `form_loginrequired`, `form_expirydatetime`, (NOW() >= `form_expirydatetime`) AS `form_expired`, `form_sendconfirmation`, ' .
 				'`form_usecaptcha`, `form_allowuseredit`, `form_allowuserunregister`, `form_closelimit` ' .
 				'FROM `form_desc` WHERE `page_modulecomponentid`='."'".$this->moduleComponentId."'";
-		$formDescResult=mysql_query($formDescQuery);
+		$formDescResult=mysqli_query($GLOBALS["___mysqli_ston"], $formDescQuery);
 		if (!$formDescResult) {
-			displayerror('E69 : Invalid query: ' . mysql_error());
+			displayerror('E69 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			return '';
 		}
-		$formDescRow = mysql_fetch_assoc($formDescResult);
+		$formDescRow = mysqli_fetch_assoc($formDescResult);
 
 		if($formDescRow['form_loginrequired'] == 1) {
 			if($this->userId <= 0) {
@@ -145,7 +145,7 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 		}
 		if($formDescRow['form_closelimit']!= '-1'){
 			$usersRegisteredQuery = " SELECT COUNT( * ) FROM `form_regdata` WHERE `page_modulecomponentid` ='".$this->moduleComponentId."'";
-			$usersRegisteredResult = mysql_fetch_array(mysql_query($usersRegisteredQuery));
+			$usersRegisteredResult = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], $usersRegisteredQuery));
 			if(($usersRegisteredResult[0]>=$formDescRow['form_closelimit'])&&(!verifyUserRegistered($this->moduleComponentId,$this->userId))){
 				displayerror('Form registration limit has been reached.');
 				return '';	
@@ -178,24 +178,24 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 	 */
 	public static function getRegisteredUserArray($moduleComponentId) {
 		$userQuery = "SELECT `user_id` FROM `form_regdata` WHERE `page_modulecomponentid` = '$moduleComponentId'";
-		$userResult = mysql_query($userQuery);
+		$userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userQuery);
 		$registeredUsers = array();
-		while($userRow = mysql_fetch_row($userResult))
+		while($userRow = mysqli_fetch_row($userResult))
 			$registeredUsers[] = $userRow[0];
 		return $registeredUsers;
 	}
 
 	public static function getRegisteredUserCount($moduleComponentId) {
 		$userQuery = "SELECT COUNT(`user_id`) FROM `form_regdata` WHERE `page_modulecomponentid` = '$moduleComponentId'";
-		$userResult = mysql_query($userQuery);
-		$userRow = mysql_fetch_row($userResult);
+		$userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userQuery);
+		$userRow = mysqli_fetch_row($userResult);
 		return $userRow[0];
 	}
 
 	public static function isGroupAssociable($moduleComponentId) {
 		$validQuery = 'SELECT `form_loginrequired`, `form_allowuserunregister` FROM `form_desc` WHERE `page_modulecomponentid` = ' ."'". $moduleComponentId."'";
-		$validResult = mysql_query($validQuery);
-		$validRow = mysql_fetch_row($validResult);
+		$validResult = mysqli_query($GLOBALS["___mysqli_ston"], $validQuery);
+		$validRow = mysqli_fetch_row($validResult);
 
 		if(!$validResult || !$validRow) {
 			displayerror('Error trying to retrieve data from the database: form.lib.php:L163');
@@ -342,7 +342,7 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 	public function actionReports() {
 		 global $userId,$urlRequestRoot;
 		 $query = "SELECT `page_id`, `page_modulecomponentid` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_module`='form'";
-		 $resource = mysql_query($query);
+		 $resource = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		 $report=<<<CSS
 		  <style type="text/css">
 		  
@@ -360,7 +360,7 @@ WHERE `d.page_modulecomponentid` = '$moduleComponentId' AND `d.user_id` = '$user
 CSS;
 			$report .='<table id="reports"><tbody><tr><td>Form</td><td>No. of registrants</td></tr>'; 
 			$class = 'even';
-		 while($result = mysql_fetch_assoc($resource)) {
+		 while($result = mysqli_fetch_assoc($resource)) {
 		 	$permission = getPermissions($userId,$result[page_id],'viewRegistrant','form');
 			if($permission) {
 				$pageId = $result['page_id'];
@@ -370,8 +370,8 @@ CSS;
 				$formInfo = $parentTitle.'_'.$formTitle;
 				$formPath = getPagePath($pageId);
 				$query = "SELECT count(distinct(`user_id`)) FROM `form_regdata` WHERE `page_modulecomponentid`='$result[page_modulecomponentid]'";
-				$resource2 = mysql_query($query) ;//or die(mysql_error());
-				$result2 = mysql_fetch_row($resource2);
+				$resource2 = mysqli_query($GLOBALS["___mysqli_ston"], $query) ;//or die(mysql_error());
+				$result2 = mysqli_fetch_row($resource2);
 				
 				if(!strpos($formPath,'qaos'))
 				{
@@ -406,11 +406,11 @@ CSS;
 			"))))) AS `relevance`,	`user_email`, `user_fullname` FROM `".MYSQL_DATABASE_PREFIX."users` WHERE " .
 			"`user_activated` = 1 AND (`user_email` LIKE \"%$pattern%\" OR `user_fullname` LIKE \"%$pattern%\") " .
 			"AND `user_id` NOT IN ($registeredUserArray) ORDER BY `relevance`";
-		$suggestionsResult = mysql_query($suggestionsQuery);
+		$suggestionsResult = mysqli_query($GLOBALS["___mysqli_ston"], $suggestionsQuery);
 		if(!$suggestionsResult) return $pattern;
 
 		$suggestions = array($pattern);
-		while($suggestionsRow = mysql_fetch_row($suggestionsResult)) {
+		while($suggestionsRow = mysqli_fetch_row($suggestionsResult)) {
 			$suggestions[] = $suggestionsRow[1] . ' - ' . $suggestionsRow[2];
 		}
 
@@ -421,7 +421,7 @@ CSS;
 		global $sourceFolder, $moduleFolder;
 		$query = "INSERT INTO `form_desc` (`page_modulecomponentid`, `form_heading`,`form_loginrequired`,`form_headertext`)
 					VALUES ('".$moduleComponentId."', '',1,'Coming up Soon');";
-		$result = mysql_query($query) or die(mysql_error()."form.lib L:157");
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."form.lib L:157");
 		addDefaultFormElement($moduleComponentId);
 	}
 

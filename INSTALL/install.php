@@ -273,7 +273,7 @@ function checkDatabaseAccess() {
 			<pre>CREATE DATABASE `pragyandatabase`;
 CREATE USER 'pragyanuser'@'localhost' IDENTIFIED BY 'pragyanpassword';
 GRANT ALL PRIVILEGES ON `pragyandatabase` . * TO 'pragyanuser'@'localhost';</pre>
-			<p>After you run these queries successfully in your MySQL client, please run this install script again.</p>
+			<p>After you run these queries successfully in your mysql client, please run this install script again.</p>
 WHATEVER;
 
 	$dbhost=MYSQL_SERVER;
@@ -282,43 +282,43 @@ WHATEVER;
 	$dbuser=MYSQL_USERNAME;
 	$dbpasswd=MYSQL_PASSWORD;
 	
-	$dblink=mysql_connect($dbhost,$dbuser,$dbpasswd);
+	$dblink=($GLOBALS["___mysqli_ston"] = mysqli_connect($dbhost, $dbuser, $dbpasswd));
 	if($dblink==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> Pragyan CMS could not connect to database on '$dbhost' using username '$dbuser'. Please check the username/password you provided.</p>$dbpasswd";
 		return $dbaccessInfo . $dbaccessErrorTip;
 	}
-	$db=mysql_select_db($dbname);
+	$db=((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . $dbname));
 	if($db==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> Pragyan CMS could not select the database '$dbname'.<br/> Please make sure the database exists and the user $dbuser has permissions over it.</p>";
 			return $dbaccessInfo . $dbaccessErrorTip;
 	}
-	$res=mysql_query("CREATE TABLE IF NOT EXISTS `testtable948823` ( `testuserid` int(10) )");
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], "CREATE TABLE IF NOT EXISTS `testtable948823` ( `testuserid` int(10) )");
 	if($res==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> The User '$dbuser' does not have permissions to CREATE tables in '$dbname'.</p>";
 		return $dbaccessInfo . $dbaccessErrorTip;
 	}
-	$res=mysql_query("INSERT INTO `testtable948823` VALUES (123)");
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `testtable948823` VALUES (123)");
 	if($res==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> The User '$dbuser' does not have permissions to INSERT values in tables of database '$dbname'.</p>";
 		return $dbaccessInfo . $dbaccessErrorTip;
 	}
-	$res=mysql_query("UPDATE `testtable948823` SET testuserid=0");
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `testtable948823` SET testuserid=0");
 	if($res==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> The User '$dbuser' does not have permissions to UPDATE values in tables of database '$dbname'.</p>";
 		return $dbaccessInfo . $dbaccessErrorTip;
 	}
-	$res=mysql_query("SELECT * FROM `testtable948823`");
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `testtable948823`");
 	if($res==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> The User '$dbuser' does not have permissions to SELECT values in tables of database '$dbname'.</p>";
 		return $dbaccessInfo . $dbaccessErrorTip;
 	}
-	$res=mysql_query("DROP TABLE `testtable948823`");
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], "DROP TABLE `testtable948823`");
 	if($res==false)
 	{
 		$dbaccessInfo.="<p><b>Error:</b> The User '$dbuser' does not have permissions to DROP tables of database '$dbname'.</p>";
@@ -330,8 +330,8 @@ WHATEVER;
 function importDatabase() {
 	global $installFolder, $URL_REWRITE;
 
-	mysql_connect(MYSQL_SERVER, MYSQL_USERNAME, MYSQL_PASSWORD);
-	mysql_select_db(MYSQL_DATABASE);
+	($GLOBALS["___mysqli_ston"] = mysqli_connect(MYSQL_SERVER,  MYSQL_USERNAME,  MYSQL_PASSWORD));
+	((bool)mysqli_query($GLOBALS["___mysqli_ston"], "USE " . constant('MYSQL_DATABASE')));
 
 	$handle = @fopen($installFolder."/pragyan_structure.sql", "r");
 	$query = '';
@@ -347,9 +347,9 @@ function importDatabase() {
 	$singlequeries = explode(";\n",$query);
 	foreach ($singlequeries as $singlequery) {
 		if (trim($singlequery)!="") {
-			$result1 = mysql_query($singlequery);
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $singlequery);
 			if (!$result1) {
-				$output = "<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to create structure. ".mysql_error();
+				$output = "<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to create structure. ".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
 				return $output;
 			}
 		}
@@ -370,9 +370,9 @@ function importDatabase() {
 	$singlequeries = explode(";\n",$query);
 	foreach ($singlequeries as $singlequery) {
 		if (trim($singlequery)!="") {
-			$result1 = mysql_query($singlequery);
+			$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $singlequery);
 			if (!$result1) {
-  			$output = "<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to import the rows. " . mysql_error();
+  			$output = "<h3>Error:</h3><pre>".$singlequery."</pre>\n<br/>Unable to import the rows. " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false));
   			return $output;
 			}
 		}
@@ -397,7 +397,7 @@ function importDatabase() {
 
 	$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."users` (`user_id`,`user_name`,`user_email`,`user_fullname`,`user_password`,`user_regdate`,`user_lastlogin`,`user_activated`,`user_loginmethod`) VALUES (
 	1,'".ADMIN_USERNAME."','".ADMIN_EMAIL."','".ADMIN_FULLNAME."','".md5(ADMIN_PASSWORD)."',NOW(),'',1,'db')";
-	mysql_query($query);
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	global $cmsFolder;
 	$templates=scandir($cmsFolder.'/templates');
 
@@ -408,7 +408,7 @@ function importDatabase() {
 		{
 
 			$query="INSERT IGNORE INTO `".MYSQL_DATABASE_PREFIX."templates` (`template_name`) VALUES ('$tdir')";
-			mysql_query($query);
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		}
 	}
 	

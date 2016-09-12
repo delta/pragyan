@@ -18,8 +18,8 @@ if(!defined('__PRAGYAN_CMS'))
 
 function getAllUsers() {
 	$ret = "";
-	$result = mysql_query("SELECT `user_name`,`user_id`,`user_fullname`,`user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
-	while($row = mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_name`,`user_id`,`user_fullname`,`user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+	while($row = mysqli_fetch_array($result))
 		$ret .= "'{$row['user_id']}' : '{$row['user_name']} - {$row['user_fullname']} [{$row['user_email']}]', ";
 	$ret = rtrim($ret,", ");
 	return $ret;	
@@ -27,8 +27,8 @@ function getAllUsers() {
 
 function getAllGroups() {
 	$ret = "";
-	$result = mysql_query("SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups`");
-	while($row = mysql_fetch_array($result))
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `group_name`,`group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups`");
+	while($row = mysqli_fetch_array($result))
 		$ret .= "'{$row['group_id']}' : '{$row['group_name']}', ";
 	$ret = rtrim($ret,", ");
 	return $ret;
@@ -176,20 +176,20 @@ RET;
 function getTo($desc) {
 	$ret = "";
 	if($desc == "all") {
-		$result = mysql_query("SELECT `user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
-		while($row = mysql_fetch_array($result))
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users`");
+		while($row = mysqli_fetch_array($result))
 			$ret .= $row['user_email'] . ", ";
 		$ret = rtrim($ret, ", ");
 	} else if(substr($desc, 0, 5) == "users") {
 		$in = substr($desc, 6);
-		$result = mysql_query("SELECT `user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` IN ({$in})");
-		while($row = mysql_fetch_array($result))
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` IN ({$in})");
+		while($row = mysqli_fetch_array($result))
 			$ret .= $row['user_email'] . ", ";
 		$ret = rtrim($ret, ", ");
 	} else if(substr($desc, 0, 6) == "groups") {
 		$in = substr($desc, 7);
-		$result = mysql_query("SELECT `user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` IN (SELECT `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "usergroup` WHERE `group_id` IN ({$in}))");
-		while($row = mysql_fetch_array($result))
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `user_email` FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_id` IN (SELECT `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "usergroup` WHERE `group_id` IN ({$in}))");
+		while($row = mysqli_fetch_array($result))
 			$ret .= $row['user_email'] . ", ";
 		$ret = rtrim($ret, ", ");
 	}

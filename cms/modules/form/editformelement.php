@@ -20,8 +20,8 @@ if(!defined('__PRAGYAN_CMS'))
 										'`page_modulecomponentid` = \'' . $moduleCompId . '\' AND ' .
 										'`form_elementid` = \'' . $elementId."'";
 
-		if($elementResult = mysql_query($elementQuery)) {
-			if($elementRow = mysql_fetch_assoc($elementResult)) {
+		if($elementResult = mysqli_query($GLOBALS["___mysqli_ston"], $elementQuery)) {
+			if($elementRow = mysqli_fetch_assoc($elementResult)) {
 				$myElement -> fromMysqlTableRow($elementRow);
 				return $myElement -> toHtmlForm('elementDataForm', $action);
 			}
@@ -37,7 +37,7 @@ if(!defined('__PRAGYAN_CMS'))
 		$myElement -> fromHtmlForm();
 		$updateQuery = $myElement -> toMysqlUpdateQuery($moduleCompId);
 
-		if(mysql_query($updateQuery)) {
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 			return true;
 		}
 		else {

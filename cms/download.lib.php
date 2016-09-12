@@ -75,8 +75,8 @@ function download($pageId, $userId, $fileName,$action="") {
 	//return the file the particular page id.
 	
 	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE  `upload_filename`= '". escape($fileName). "' AND `page_module` = '".escape($moduleType)."' AND `page_modulecomponentid` = '".escape($moduleComponentId)."'";
-	$result = mysql_query($query) or die(mysql_error() . "upload L:85");
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:85");
+	$row = mysqli_fetch_assoc($result);
 
 	$fileType = $row['upload_filetype'];
 	/**

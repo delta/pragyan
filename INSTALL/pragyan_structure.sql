@@ -1419,7 +1419,7 @@ CREATE TABLE IF NOT EXISTS `events_confirmed_participants` (
 --
 
 CREATE TABLE IF NOT EXISTS `events_details` (
-`event_id` int(10) NOT NULL,
+`event_id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `event_name` varchar(100) NOT NULL,
   `event_start_time` time NOT NULL,
   `event_end_time` time NOT NULL,
@@ -1439,14 +1439,14 @@ CREATE TABLE IF NOT EXISTS `events_details` (
 --
 -- Indexes for table `events_details`
 --
-ALTER TABLE `events_details`
-  ADD PRIMARY KEY (`event_id`);
+-- ALTER TABLE `events_details`
+--   ADD PRIMARY KEY (`event_id`);
   
 --
 -- AUTO_INCREMENT for table `events_details`
 --
-ALTER TABLE `events_details`
-  MODIFY `event_id` int(10) NOT NULL AUTO_INCREMENT;
+-- ALTER TABLE `events_details`
+--   MODIFY `event_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- Table structure for table `events_edited_form`

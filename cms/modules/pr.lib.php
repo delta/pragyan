@@ -99,8 +99,8 @@ REGISTRATIONFORM;
 			}
 
 			$userIdQuery = 'SELECT MAX(`user_id`) FROM `'.MYSQL_DATABASE_PREFIX.'users`';
-			$userIdResult = mysql_query($userIdQuery);
-			$userIdRow = mysql_fetch_row($userIdResult);
+			$userIdResult = mysqli_query($GLOBALS["___mysqli_ston"], $userIdQuery);
+			$userIdRow = mysqli_fetch_row($userIdResult);
 
 			$newUserId = 1;
 			if(!is_null($userIdRow[0]))
@@ -112,7 +112,7 @@ REGISTRATIONFORM;
 			$userFullName=escape($_POST['txtUserFullName']);
 			$insertQuery = 'INSERT INTO `'.MYSQL_DATABASE_PREFIX.'users`(`user_id`, `user_name`, `user_email`, `user_fullname`, `user_password`, `user_regdate`, `user_lastlogin`, `user_activated`) ' .
 					"VALUES($newUserId, '$userFullName', '$userEmail', '$userFullName', MD5('$userPassword'), NOW(), NOW(), 1)";
-			$insertResult = mysql_query($insertQuery);
+			$insertResult = mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery);
 
 			if(!$insertResult) {
 				displayerror('Error. Could not add user to database.');
@@ -127,7 +127,7 @@ REGISTRATIONFORM;
 					"VALUES " .
 					"($newUserId, 0, $contactElementId, '$userContactNumber'), " .
 					"($newUserId, 0, $instituteElementId, '$userInstitute')";
-			$contactInsertResult = mysql_query($contactInsertQuery);
+			$contactInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $contactInsertQuery);
 			if(!$contactInsertResult) {
 				displayerror('Could not save the contact number of the user.');
 			}

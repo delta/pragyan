@@ -21,9 +21,9 @@ function templateDesc($templateId,$templateName) {
 		$imagePath = "$urlRequestRoot/$cmsFolder/$templateFolder";
 		$sectionDesc = '';
 		$sectionQuery = "SELECT * FROM `faculty_template` WHERE `template_id`=$templateId ORDER BY `template_sectionOrder` ASC";
-		$sectionResult = mysql_query($sectionQuery) or displayerror(mysql_error());
+		$sectionResult = mysqli_query($GLOBALS["___mysqli_ston"], $sectionQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
-		while($sectionRow = mysql_fetch_array($sectionResult)) {
+		while($sectionRow = mysqli_fetch_array($sectionResult)) {
 			$sectionDesc .= convertToRow($sectionRow,$imagePath);
 		}
 		$formElementDescBody =<<<BODY
@@ -94,7 +94,7 @@ ROWSTRING;
 }
 function editSectionForm($sectionId,$templateId){
 	$availableSectionsQuery = "SELECT `template_sectionId` FROM `faculty_template` WHERE `template_id`=$templateId AND `template_sectionId` != $sectionId";
-	$availableSectionsResult = mysql_query($availableSectionsQuery) or displayerror("Unable to select available sections!!!");
+	$availableSectionsResult = mysqli_query($GLOBALS["___mysqli_ston"], $availableSectionsQuery) or displayerror("Unable to select available sections!!!");
 	
 		
 	
@@ -106,18 +106,18 @@ function editSectionForm($sectionId,$templateId){
 function getTemplateDataFromModuleComponentId($moduleComponentId)
 {
 	$templateIdQuery="SELECT `templateId` FROM `faculty_module` WHERE `page_moduleComponentId`=$moduleComponentId";
-	$templateIdResult=mysql_query($templateIdQuery) or displayerror("Unable to find required moduleComponentId");
-	$template=mysql_fetch_assoc($templateIdResult);
+	$templateIdResult=mysqli_query($GLOBALS["___mysqli_ston"], $templateIdQuery) or displayerror("Unable to find required moduleComponentId");
+	$template=mysqli_fetch_assoc($templateIdResult);
 	$templateId=$template["templateId"];
 	$sectionDetailQuery="SELECT * FROM `faculty_template` WHERE `template_id`=$templateId AND `template_sectionParentId`=0";
-	$sectionDetailResult=mysql_query($sectionDetailQuery) or displayerror("Unable to find required Template");
+	$sectionDetailResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDetailQuery) or displayerror("Unable to find required Template");
 	return $sectionDetailResult;
 }
 function getTemplateId($moduleComponentId)
 {
 	$templateIdQuery="SELECT `templateId` FROM `faculty_module` WHERE `page_moduleComponentId`=$moduleComponentId";
-	$templateIdResult=mysql_query($templateIdQuery) or displayerror("Unable to find required moduleComponentId");
-	$template=mysql_fetch_assoc($templateIdResult);
+	$templateIdResult=mysqli_query($GLOBALS["___mysqli_ston"], $templateIdQuery) or displayerror("Unable to find required moduleComponentId");
+	$template=mysqli_fetch_assoc($templateIdResult);
 	$templateId=$template["templateId"];
 	
 	return $templateId;
@@ -126,8 +126,8 @@ function printFacultyDataFaculty($sectionId,$moduleComponentId)
 {
 	$printData="";
 	$sectionDataQuery="SELECT * FROM `faculty_data` WHERE `faculty_sectionId`=$sectionId AND `page_moduleComponentId`=$moduleComponentId";
-	$sectionDataResult=mysql_query($sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
-	while($sectionDataArray=mysql_fetch_assoc($sectionDataResult))
+	$sectionDataResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
+	while($sectionDataArray=mysqli_fetch_assoc($sectionDataResult))
 	{
 		$printData.=<<<details
 			<div>
@@ -151,11 +151,11 @@ function printFacultyData($sectionId,$moduleComponentId,$toPrint)
 	$headPrint="";
 	$printData="";
 	$sectionDataQuery="SELECT * FROM `faculty_data` WHERE `faculty_sectionId`=$sectionId AND `page_moduleComponentId`={$moduleComponentId}";
-	$sectionDataResult=mysql_query($sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
+	$sectionDataResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
 	if($toPrint){
 		$sectionDetailQuery="SELECT * FROM `faculty_template` WHERE `template_sectionId`=$sectionId ";
-	$sectionDetailResult=mysql_query($sectionDetailQuery) or displayerror("Unable to find required Template");
-	$resultantArray=mysql_fetch_assoc($sectionDetailResult);
+	$sectionDetailResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDetailQuery) or displayerror("Unable to find required Template");
+	$resultantArray=mysqli_fetch_assoc($sectionDetailResult);
 	$headPrint.=<<<details
 		
 	
@@ -165,7 +165,7 @@ details;
 }
 $headPrint.='<ul style="margin-left:25px;">';
 
-	while($sectionDataArray=mysql_fetch_assoc($sectionDataResult))
+	while($sectionDataArray=mysqli_fetch_assoc($sectionDataResult))
 	{
 		$printData.=<<<details
 <li>{$sectionDataArray['faculty_data']}</li>	
@@ -184,11 +184,11 @@ function printFacultyDataWithLi($sectionId,$moduleComponentId)
 {
 	$printData="";
 	$sectionDataQuery="SELECT * FROM `faculty_data` WHERE `faculty_sectionId`=$sectionId AND `page_moduleComponentId`=$moduleComponentId";
-	$sectionDataResult=mysql_query($sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
+	$sectionDataResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
 	
 	
 	
-	while($sectionDataArray=mysql_fetch_assoc($sectionDataResult))
+	while($sectionDataArray=mysqli_fetch_assoc($sectionDataResult))
 	{
 		$printData.=<<<details
 		<li>{$sectionDataArray['faculty_data']}</li>
@@ -208,12 +208,12 @@ function printFacultyDataWithLiFaculty($sectionId,$moduleComponentId,$toPrint)
 	
 	$printData="";
 	$sectionDataQuery="SELECT * FROM `faculty_data` WHERE `faculty_sectionId`=$sectionId AND `page_moduleComponentId`=$moduleComponentId";
-	$sectionDataResult=mysql_query($sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
+	$sectionDataResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDataQuery) or displayerror("Unable to find required moduleComponentId");
 if($toPrint){
 
 	$sectionDetailQuery="SELECT * FROM `faculty_template` WHERE `template_sectionId`=$sectionId ";
-	$sectionDetailResult=mysql_query($sectionDetailQuery) or displayerror("Unable to find required Template");
-	$resultantArray=mysql_fetch_assoc($sectionDetailResult);
+	$sectionDetailResult=mysqli_query($GLOBALS["___mysqli_ston"], $sectionDetailQuery) or displayerror("Unable to find required Template");
+	$resultantArray=mysqli_fetch_assoc($sectionDetailResult);
 				$printData.=<<<details
 		
 	
@@ -231,7 +231,7 @@ details;
 	</tr>
 details;
 
-	while($sectionDataArray=mysql_fetch_assoc($sectionDataResult))
+	while($sectionDataArray=mysqli_fetch_assoc($sectionDataResult))
 	{
 		
 		$printData.=<<<details
@@ -279,8 +279,8 @@ details;
 function getEmailForFaculty($moduleComponentId)
 {
 	$moduleQuery="SELECT * FROM `faculty_module` WHERE `page_moduleComponentId`={$moduleComponentId}";
-	$moduleResult=mysql_query($moduleQuery);
-	$facultyResult=mysql_fetch_assoc($moduleResult);
+	$moduleResult=mysqli_query($GLOBALS["___mysqli_ston"], $moduleQuery);
+	$facultyResult=mysqli_fetch_assoc($moduleResult);
 	if($facultyResult["email"]) return $facultyResult["email"];
 	return "";
 }

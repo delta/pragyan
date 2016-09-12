@@ -65,11 +65,11 @@ TABLE_HEAD;
 			/*Get stuff from database based on moduleComponentId */
         $counter=0;
         $query="SELECT * FROM publication_details where module_component_id =".$this->moduleComponentId.";";
-        $details=mysql_query($query) or die("error ..".mysql_error());	
+        $details=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die("error ..".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));	
         
         $view2='';
 
-        while($arr_details=mysql_fetch_array($details))
+        while($arr_details=mysqli_fetch_array($details))
         {
             $counter1 = $counter+1;
             $view2.=<<<ROWS
@@ -157,11 +157,11 @@ FORM_AND_TABLE;
 
         $counter=0;
         $query="SELECT * FROM publication_details where module_component_id =".$this->moduleComponentId.";";
-        $details=mysql_query($query) or die("error ..".mysql_error());
-        $rows=mysql_num_rows($details) - 1;	
+        $details=mysqli_query($GLOBALS["___mysqli_ston"], $query) or die("error ..".((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+        $rows=mysqli_num_rows($details) - 1;	
         $view2='';
 			 
-        while($arr_details=mysql_fetch_array($details))
+        while($arr_details=mysqli_fetch_array($details))
         {
             $counter1 = $counter+1;
 				

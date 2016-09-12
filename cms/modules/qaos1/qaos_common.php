@@ -21,19 +21,19 @@ if(!defined('__PRAGYAN_CMS'))
 
 function assignVars($userId) {
   $query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."users` WHERE `user_id` = '".$userId."'";
-  $result = mysql_query($query);
-  $row = mysql_fetch_assoc($result);
+  $result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+  $row = mysqli_fetch_assoc($result);
   return $arr = array ('PRAGYAN_ID'=> $row['user_id'] , 'NAME' => $row['user_name'] , 'EMAIL' => $row['user_email']);
 }
 
 function getEvtProc($evtProcId,$mcId) {
  $query = "SELECT * FROM `qaos1_evtproc` WHERE `modulecomponentid` = {$mcId} AND `evtproc_Id` = {$evtProcId}";		
- $result = mysql_query($query);
- $row = mysql_fetch_array($result);
- $columnDetail = mysql_query("SHOW COLUMNS FROM `qaos1_evtproc`");	
+ $result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+ $row = mysqli_fetch_array($result);
+ $columnDetail = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM `qaos1_evtproc`");	
  $ret = array();
  $cnt = 0;
- while($res = mysql_fetch_array($columnDetail)){
+ while($res = mysqli_fetch_array($columnDetail)){
   $ret[strtoupper($res[0])] = $row[$cnt++];
 
  } 
@@ -42,12 +42,12 @@ function getEvtProc($evtProcId,$mcId) {
 
 function getFundReq($fundReqId,$mcId) {
  $query = "SELECT * FROM `qaos1_fundreq` WHERE `modulecomponentid` = {$mcId} AND `fundreq_Id` = {$fundReqId}";		
- $result = mysql_query($query);
- $row = mysql_fetch_array($result);
- $columnDetail = mysql_query("SHOW COLUMNS FROM `qaos1_fundreq`");	
+ $result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+ $row = mysqli_fetch_array($result);
+ $columnDetail = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW COLUMNS FROM `qaos1_fundreq`");	
  $ret = array();
  $cnt = 0;
- while($res = mysql_fetch_array($columnDetail)){
+ while($res = mysqli_fetch_array($columnDetail)){
   $ret[strtoupper($res[0])] = $row[$cnt++];
 
  } 
@@ -129,17 +129,17 @@ TABLE;
 
 function getEventNameFromId($evtId,$mcid) {
   $query = "SELECT `events_name` FROM `qaos1_events` WHERE `page_modulecomponentid`=$mcid AND `events_id` = {$evtId}"; 
-  $result = mysql_query($query) or displayerror(mysql_error());
-  if(!mysql_num_rows($result)) return 0;
-  $res = mysql_fetch_array($result);
+  $result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($result)) return 0;
+  $res = mysqli_fetch_array($result);
   return $res[0];
 }
 
 function getEventIdFromName($evtName,$mcid) {
   $query = "SELECT `events_id` FROM `qaos1_events` WHERE `page_modulecomponentid`=$mcid AND `events_name` = '{$evtName}'"; 
-  $result = mysql_query($query) or displayerror(mysql_error());
-  if(!mysql_num_rows($result)) return 0;
-  $res = mysql_fetch_array($result);
+  $result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($result)) return 0;
+  $res = mysqli_fetch_array($result);
   return $res[0];
 }
 
@@ -153,25 +153,25 @@ function _date_is_valid($str) {
 }
 function addToBills($imgName,$evtId,$mcid,$userId,$cluster,$corp,$bill,$billdate,$billamt,$tin) {
   $checkImageExist = "SELECT * FROM  `qaos1_bills` WHERE `qaos1_eventid` = {$evtId} AND `page_modulecomponentid` = {$mcid} AND `qaos1_imgname` = '{$imgName}'";
-  $checkImageExistResult=mysql_query($checkImageExist) or displayerror(mysql_error());
-  if(mysql_num_rows($checkImageExistResult)) {
+  $checkImageExistResult=mysqli_query($GLOBALS["___mysqli_ston"], $checkImageExist) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(mysqli_num_rows($checkImageExistResult)) {
     displayerror("Image Already Exist");
     return 0;
   }
     $insertNewBillQuery = "INSERT INTO `qaos1_bills` (`qaos1_eventid`,`page_modulecomponentid`,`qaos1_imgname`,`userid`,`qaos1_cluster`,`qaos1_corp`,`qaos1_bill`,`qaos1_bill_date`,`qaos1_amt`,`qaos1_tin`) ";
   $insertNewBillQuery.= "VALUES ({$evtId},{$mcid},'{$imgName}',{$userId},'{$cluster}','{$corp}','{$bill}','{$billdate}','{$billamt}','{$tin}') ";
-  $insertNewBillResult = mysql_query($insertNewBillQuery) or displayerror(mysql_error());
+  $insertNewBillResult = mysqli_query($GLOBALS["___mysqli_ston"], $insertNewBillQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   return 1;
 }
 
 function displayBills($mcid,$active = false) {
   global $urlRequestRoot,$cmsFolder,$STARTSCRIPTS,$sourceFolder,$smarttablestuff;
   $billQuery = "SELECT * FROM `qaos1_bills` WHERE `page_modulecomponentid`={$mcid}";
-  $billResult = mysql_query($billQuery) or displayerror(mysql_error());
+  $billResult = mysqli_query($GLOBALS["___mysqli_ston"], $billQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($billQuery == "") return "";
   require_once($sourceFolder."/upload.lib.php");
   $uploadedFilesString = "";
-  while($result = mysql_fetch_assoc($billResult)) {
+  while($result = mysqli_fetch_assoc($billResult)) {
     $evtName=getEventNameFromId($result['qaos1_eventid'],$mcid);
     $billAddedBy = getUserName($result['userid']);
     $uploadedFilesString.=<<<TABLEROW
@@ -247,10 +247,10 @@ function downloadAsZipFile($mcid,$evtId = 0) {
   $getFileData.=($evtId != 0)?"AND events.qaos1_eventid= {$evtId}":"";
   $getFileData .= "      ORDER BY events.qaos1_eventid ";
   //  displayinfo($getFileData);
-  $getFileDataRes = mysql_query($getFileData) or displayerror(mysql_error());
+  $getFileDataRes = mysqli_query($GLOBALS["___mysqli_ston"], $getFileData) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
   if($getFileDataRes == "") return false;
   $billNo = array();
-  while($result = mysql_fetch_assoc($getFileDataRes)) {
+  while($result = mysqli_fetch_assoc($getFileDataRes)) {
     $upload_fileid = $result['upload_fileid'];
     $fileName = $result['qaos1_imgname'];
     $filename = str_repeat("0", (10 - strlen((string) $upload_fileid))) . $upload_fileid . "_" . $fileName;
@@ -303,21 +303,21 @@ FIELD;
 
 
 function disclaimerUpdate($mcid,$disclaimerTeam,$editorData) {
-    $mcid = mysql_real_escape_string($mcid);
+    $mcid = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $mcid) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
     $disclaimerTeam = escape($disclaimerTeam);	
 
     $checkIfBillDisclaimerExist = "SELECT * FROM `qaos1_disclaimer`                                                                  
                                    WHERE `page_modulecomponentid`={$mcid} AND  `disclaimer_team`='{$disclaimerTeam}'";
-    $checkQuery = mysql_query($checkIfBillDisclaimerExist) or displayerror(mysql_error());
+    $checkQuery = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfBillDisclaimerExist) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if(!$checkQuery) return;
-    if(!mysql_num_rows($checkQuery)) {
+    if(!mysqli_num_rows($checkQuery)) {
 	$insertDisclaimer = "INSERT INTO `qaos1_disclaimer` VALUES($mcid,'{$disclaimerTeam}','')"; 	
-        $insertDIsclaimerQuery = mysql_query($insertDisclaimer) or displayerror(mysql_error());	
+        $insertDIsclaimerQuery = mysqli_query($GLOBALS["___mysqli_ston"], $insertDisclaimer) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));	
 	if(!$insertDIsclaimerQuery) return ;
 	}
     $insertQuery="UPDATE `qaos1_disclaimer` SET `disclaimer_desc`='{$editorData}' WHERE `page_modulecomponentid`={$mcid} ";
     $insertQuery.="AND `disclaimer_team`='{$disclaimerTeam}'";
-    $updateRes=mysql_query($insertQuery) or displayerror(mysql_error());
+    $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if($updateRes!='') displayinfo("Details Successfully updated !!!");
 }
 
@@ -326,14 +326,14 @@ function getDisclaimer($team,$mcid) {
   $mcid = escape($mcid);
 
   $getQuery="SELECT * FROM `qaos1_disclaimer` WHERE `page_modulecomponentid`={$mcid} AND `disclaimer_team`='{$team}'"; 
-  $runQuery=mysql_query($getQuery) or displayerror(mysql_error());
-  if(!mysql_num_rows($runQuery)) {
+  $runQuery=mysqli_query($GLOBALS["___mysqli_ston"], $getQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+  if(!mysqli_num_rows($runQuery)) {
     
-    $insertQuery=mysql_query("INSERT INTO `qaos1_disclaimer` VALUES({$mcid},'{$team}','')") or displayerror(mysql_error());
+    $insertQuery=mysqli_query($GLOBALS["___mysqli_ston"], "INSERT INTO `qaos1_disclaimer` VALUES({$mcid},'{$team}','')") or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
     if($insertQuery!="") displayinfo("Field {$team} Inserted TO Table");
     return "";
   }
-  $res=mysql_fetch_assoc($runQuery);
+  $res=mysqli_fetch_assoc($runQuery);
   
   return $res['disclaimer_desc'];
 }

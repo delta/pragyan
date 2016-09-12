@@ -70,15 +70,15 @@ function checkAll(theForm, cName, allNo_stat) {
  <?php
 
 
-		$stats  = mysql_query ("SHOW TABLE STATUS FROM $dbname LIKE '$dbprefix%'");
-		$num_tables = mysql_num_rows($stats);
+		$stats  = mysqli_query($GLOBALS["___mysqli_ston"], "SHOW TABLE STATUS FROM $dbname LIKE '$dbprefix%'");
+		$num_tables = mysqli_num_rows($stats);
 		if ($num_tables==0) {
 			echo("ERROR: Database contains no tables");
 		}	
 
 		$bgcolor='grey';
 		$i=0;
-		while ($rows=mysql_fetch_array($stats) ) {
+		while ($rows=mysqli_fetch_array($stats) ) {
 			print "<tr><td class=".$bgcolor."><input type='checkbox' id='tables$i' class='check' name='tables[$i]' value='".$rows["Name"]."' ></td>";
 			print "<td class=".$bgcolor.">".$rows["Name"]."</td>";
 			print '<td align="center" class='.$bgcolor.'>'.$rows['Rows'].'</td>';
@@ -153,7 +153,7 @@ if (isset($file) && $del==0) {
 	$file_temp=fread(fopen($backup_path.$file, "r"), filesize($backup_path.$file));
 	$query=explode(";#%%\n",$file_temp);
 	for ($i=0;$i < count($query)-1;$i++) {
-		mysql_db_query($dbname,$query[$i]) or die(mysql_error());
+		((mysqli_query($GLOBALS["___mysqli_ston"], "USE $dbname")) ? mysqli_query($GLOBALS["___mysqli_ston"], $query[$i]) : false) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	}
 	unlink($backup_path.$file);
 	echo "<table width=\"94%\"><tr><td><b>Your restore 

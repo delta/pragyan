@@ -23,16 +23,16 @@ function generatePublicProfile($userProfileId,$accessUserId) {
 	require_once("$sourceFolder/upload.lib.php");
 	require_once ("$sourceFolder/profile.lib.php");
 	$profileQuery = 'SELECT `user_name`, `user_fullname`, `user_email` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = \'' . $userId."'";
-	$profileResult = mysql_query($profileQuery);
+	$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
 	if(!$profileResult) {
-		displayerror('An error occurred while trying to process your request.<br />' . mysql_error() . '<br />' . $profileQuery);
+		displayerror('An error occurred while trying to process your request.<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '<br />' . $profileQuery);
 		return '';
 	}
-	if(mysql_num_rows($profileResult)==0){
+	if(mysqli_num_rows($profileResult)==0){
 		displayerror("The Requested user is not found." );
 		return "Click <a href='".$urlRequestRoot."'>here </a> to return to the home page";
 	}
-	$profileRow = mysql_fetch_row($profileResult);
+	$profileRow = mysqli_fetch_row($profileResult);
 	$userName = $profileRow[0];
 	$userFullname = $profileRow[1];
 	$userEmail = $profileRow[2];

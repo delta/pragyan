@@ -45,8 +45,8 @@ This is what grant will have :
  */
 function getGroupRow($groupName) {
 	$groupQuery = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_name` = '".escape($groupName)."'";
-	$groupResult = mysql_query($groupQuery);
-	return mysql_fetch_assoc($groupResult);
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	return mysqli_fetch_assoc($groupResult);
 }
 
 function getGroupIdFromName($groupName) {
@@ -62,9 +62,9 @@ function getGroupIdFromName($groupName) {
  	  return false;
  	}
 	$query = "SELECT `group_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `form_id`='".escape($formId)."'";
-	$result = mysql_query($query);
-	if(mysql_num_rows($result)>0){
-		$array = mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if(mysqli_num_rows($result)>0){
+		$array = mysqli_fetch_assoc($result);
 		$groupId = $array['group_id'];
 		return $groupId;
 	}
@@ -77,9 +77,9 @@ function getGroupIdFromName($groupName) {
  */
 function getFormIdFromGroupId($groupId){
 	$query = "SELECT `form_id` FROM `".MYSQL_DATABASE_PREFIX."groups` WHERE `group_id`='".escape($groupId)."'";
-	$result = mysql_query($query);
-	if(mysql_num_rows($result)>0){
-		$array = mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if(mysqli_num_rows($result)>0){
+		$array = mysqli_fetch_assoc($result);
 		$formId = $array['form_id'];
 		return $formId;
 	}
@@ -117,13 +117,13 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 	if($groupRow['group_priority'] == $userMaxPriority) {
 		// SELECT `group_id` FROM .. WHERE `group_priority` = maxPriority AND `user_id` = $userId AND `group_id` = `group_id`
 		$memberQuery = "SELECT `$usergroupTable`.`group_id` FROM `$usergroupTable`, `$groupsTable` WHERE `group_priority` = '{$groupRow['group_priority']}' AND `user_id` = '$userId' AND `$usergroupTable`.`group_id` = `$groupsTable`.`group_id`";
-		$memberResult = mysql_query($memberQuery);
+		$memberResult = mysqli_query($GLOBALS["___mysqli_ston"], $memberQuery);
 		if(!$memberResult) {
-			displayerror($memberQuery . '<br />' . mysql_error());
+			displayerror($memberQuery . '<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			return false;
 		}
-		if(mysql_num_rows($memberResult) == 1) {
-			$memberRow = mysql_fetch_row($memberResult);
+		if(mysqli_num_rows($memberResult) == 1) {
+			$memberRow = mysqli_fetch_row($memberResult);
 			if($memberRow[0] == $groupId) {
 				displayerror('Error. Cannot shift the group that gives you grant permissions at this level.');
 				return false;
@@ -145,13 +145,13 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 
 	if($shiftNeighbours) {
 		$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_priority` =\'' . $groupPriority."'";
-		$groupResult = mysql_query($groupQuery);
-		if(mysql_num_rows($groupResult) > 1) {
+		$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+		if(mysqli_num_rows($groupResult) > 1) {
 			$groupQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_priority` = ' . $groupPriority . " $op 1";
-			$groupResult = mysql_query($groupQuery);
-			if (mysql_num_rows($groupResult) > 0) {
+			$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+			if (mysqli_num_rows($groupResult) > 0) {
 				$shiftQuery = "UPDATE `" . MYSQL_DATABASE_PREFIX . "groups` SET `group_priority` = `group_priority` + 1 WHERE `group_priority` " . ($direction == 'up' ? '>' : '>=') . " $groupPriority";
-				$shiftResult = mysql_query($shiftQuery);
+				$shiftResult = mysqli_query($GLOBALS["___mysqli_ston"], $shiftQuery);
 				$groupPriority++;
 			}
 
@@ -163,9 +163,9 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 		else {
 			/// no other groups on same level. find next higher existing priority level
 			$groupQuery = 'SELECT `group_priority` FROM `' . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` $rel $groupPriority ORDER BY `group_priority` $order LIMIT 0, 1";
-			$groupResult = mysql_query($groupQuery);
-			if(mysql_num_rows($groupResult) == 1) {
-				$groupRow = mysql_fetch_row($groupResult);
+			$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+			if(mysqli_num_rows($groupResult) == 1) {
+				$groupRow = mysqli_fetch_row($groupResult);
 				$newPriority = $groupRow[0];
 			}
 			else {
@@ -178,9 +178,9 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 	}
 	else {
 		$groupQuery = 'SELECT `group_priority` FROM `' . MYSQL_DATABASE_PREFIX . "groups` WHERE `group_priority` $rel $groupPriority ORDER BY `group_priority` $order LIMIT 0, 1";
-		$groupResult = mysql_query($groupQuery);
-		if(mysql_num_rows($groupResult) == 1) {
-			$groupRow = mysql_fetch_row($groupResult);
+		$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+		if(mysqli_num_rows($groupResult) == 1) {
+			$groupRow = mysqli_fetch_row($groupResult);
 			$newPriority = $groupRow[0];
 		}
 		else {
@@ -202,7 +202,7 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 	}
 
 	$groupQuery = "UPDATE `".MYSQL_DATABASE_PREFIX."groups` SET `group_priority` = '$newPriority' WHERE `group_id` = '$groupId'";
-	if(mysql_query($groupQuery)) {
+	if(mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery)) {
 		return true;
 	}
 	else {
@@ -212,9 +212,9 @@ function shiftGroupPriority($userId, $groupName, $direction = 'up', $userMaxPrio
 
 function getUsersRegisteredToGroup($groupId) {
 	$userQuery = 'SELECT `user_id` FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = \'' . $groupId."'";
-	$userResult = mysql_query($userQuery);
+	$userResult = mysqli_query($GLOBALS["___mysqli_ston"], $userQuery);
 	$registeredUserIds = array();
-	while($userRow = mysql_fetch_row($userResult)) {
+	while($userRow = mysqli_fetch_row($userResult)) {
 		$registeredUserIds[] = $userRow[0];
 	}
 
@@ -226,9 +226,9 @@ function associateGroupWithForm($groupId, $formId) {
 	require_once("$sourceFolder/$moduleFolder/form.lib.php");
 
 	$existsQuery = 'SELECT `group_id` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `form_id` = \'' . $formId."'";
-	$existsResult = mysql_query($existsQuery);
-	if(!$existsResult) displayerror($existsQuery . ' ' . mysql_error());
-	if(mysql_num_rows($existsResult)) {
+	$existsResult = mysqli_query($GLOBALS["___mysqli_ston"], $existsQuery);
+	if(!$existsResult) displayerror($existsQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($existsResult)) {
 		displayerror('The given form is already associated with another group.');
 		return false;
 	}
@@ -263,7 +263,7 @@ function associateGroupWithForm($groupId, $formId) {
 				$registeredUsers[$i] = "($registeredUsers[$i], $groupId)";
 			}
 			$insertQuery .= implode($registeredUsers, ', ');
-			if(!mysql_query($insertQuery)) {
+			if(!mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery)) {
 				displayerror('Could not move registered users to group.');
 				return false;
 			}
@@ -272,7 +272,7 @@ function associateGroupWithForm($groupId, $formId) {
 
 	/// Update group table, copy all users to group
 	$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . "groups` SET `form_id` = '$formId' WHERE `group_id` = '$groupId'";
-	if(!mysql_query($updateQuery)) {
+	if(!mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery)) {
 		displayerror('Could not associate the given group with the selected form.');
 		return false;
 	};
@@ -282,15 +282,15 @@ function associateGroupWithForm($groupId, $formId) {
 
 function unassociateFormFromGroup($groupId) {
 	$updateQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'groups` SET `form_id` = 0 WHERE `group_id` = \'' . $groupId."'";
-	$updateResult = mysql_query($updateQuery);
+	$updateResult = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	if(!$updateResult) {
-		displayerror('MySQL error! Could not unassociate the form from the given group.');
+		displayerror('mysql error! Could not unassociate the form from the given group.');
 	}
 
 	$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = \'' . $groupId."'";
-	$deleteResult = mysql_query($deleteQuery);
+	$deleteResult = mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery);
 	if(!$deleteResult) {
-		displayerror('MySQL error! Could not remove users from the given group.');
+		displayerror('mysql error! Could not remove users from the given group.');
 	}
 }
 
@@ -299,14 +299,14 @@ function getAssociableFormsList($userId, $emptyFormsOnly = false) {
 	$formIdQuery = 'SELECT `page_id`, `form_desc`.`page_modulecomponentid`, `page_title` FROM `' . MYSQL_DATABASE_PREFIX . "pages`, `form_desc` " .
 			'WHERE `page_module` = \'form\' AND `form_loginrequired` = 1 AND `' .
 			'form_desc`.`page_modulecomponentid` = `' . MYSQL_DATABASE_PREFIX . 'pages`.`page_modulecomponentid`';
-	$formIdResult = mysql_query($formIdQuery);
-	if(!$formIdResult) displayerror($formIdQuery . ' ' . mysql_error());
+	$formIdResult = mysqli_query($GLOBALS["___mysqli_ston"], $formIdQuery);
+	if(!$formIdResult) displayerror($formIdQuery . ' ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	$associableForms = array();
 
 	global $sourceFolder, $moduleFolder;
 	require_once("$sourceFolder/$moduleFolder/form.lib.php");
 
-	while($formIdRow = mysql_fetch_row($formIdResult)) {
+	while($formIdRow = mysqli_fetch_row($formIdResult)) {
 //		displayerror($userId . ' ' . $formIdRow[0] . ' ' . getPermissions($userId, $formIdRow[0], 'editform'));
 		if(getPermissions($userId, $formIdRow[0], 'editregistrants')) {
 			if($emptyFormsOnly) {
@@ -334,8 +334,8 @@ function emptyGroup($groupName, $silent = false) {
 
 	if($formId == 0) {
 		$groupQuery = 'DELETE FROM `'.MYSQL_DATABASE_PREFIX.'usergroup` WHERE `group_id` = \''.$groupId."'";
-		if(!mysql_query($groupQuery)) {
-			displayerror('Error running MySQL query. The given group could not be emptied.');
+		if(!mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery)) {
+			displayerror('Error running mysql query. The given group could not be emptied.');
 			return false;
 		}
 		if(!$silent) displayinfo("Group '$groupName' Emptied Successfully");
@@ -353,7 +353,7 @@ function emptyGroup($groupName, $silent = false) {
 function deleteGroup($groupName) {
 	if(emptyGroup($groupName, true)) {
 		$deleteQuery = 'DELETE FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_name` = \'' . $groupName . '\'';
-		if(mysql_query($deleteQuery)) {
+		if(mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery)) {
 			displayinfo("Group '$groupName' Deleted Successfully");
 			return true;
 		}
@@ -364,8 +364,8 @@ function deleteGroup($groupName) {
 
 function isGroupEmpty($groupId) {
 	$groupQuery = 'SELECT COUNT(`user_id`) FROM `' . MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `group_id` = \'' . $groupId."'";
-	$groupResult = mysql_query($groupQuery);
-	$groupRow = mysql_fetch_row($groupResult);
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	$groupRow = mysqli_fetch_row($groupResult);
 	return ($groupRow[0] == 0);
 }
 
@@ -377,40 +377,40 @@ function addUserToGroupName($groupName, $userId) {
 	$groupId = $groupRow['group_id'];
 
 	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = '$groupId' AND `user_id` = '$userId'";
-	$groupResult = mysql_query($groupQuery);
-	if($groupRow = mysql_fetch_assoc($groupResult)) {
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if($groupRow = mysqli_fetch_assoc($groupResult)) {
 		return true;
 	}
 
 	$groupQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."usergroup`(`group_id`, `user_id`) VALUES('$groupId', '$userId')";
-	mysql_query($groupQuery);
+	mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
 	return true;
 }
 
 function addUserToGroupId($groupId, $userId) {
 	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = '$groupId' AND `user_id` = '$userId'";
-	$groupResult = mysql_query($groupQuery);
-	if($groupRow = mysql_fetch_assoc($groupResult)) {
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if($groupRow = mysqli_fetch_assoc($groupResult)) {
 		displayerror("User already registered to the group.");
 		return false;
 	}
 
 	$groupQuery = "INSERT INTO `".MYSQL_DATABASE_PREFIX."usergroup`(`group_id`, `user_id`) VALUES('$groupId', '$userId')";
-	$groupResult = mysql_query($groupQuery);
-	if(mysql_affected_rows() == 0) {
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]) == 0) {
 		return false;
 	}
 	return true;
 }
 function removeUserFromGroupId($groupId, $userId) {
 	$groupQuery = "SELECT `user_id` FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `group_id` = '$groupId' AND `user_id` = '$userId'";
-	$groupResult = mysql_query($groupQuery);
-	if(mysql_num_fields($groupResult)==0) {
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if((($___mysqli_tmp = mysqli_num_fields($groupResult)) ? $___mysqli_tmp : false)==0) {
 		return false;
 	}
 	$groupQuery = "DELETE FROM `".MYSQL_DATABASE_PREFIX."usergroup` WHERE `user_id`='$userId' and `group_id` = '$groupId'";
-	$groupResult = mysql_query($groupQuery);
-	if(mysql_affected_rows() > 0) {
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0) {
 		return true;
 	}
 	else
@@ -427,8 +427,8 @@ function reevaluateGroupPriorities($modifiableGroups) {
 	$modifiableGroups = array();
 	if($modifiableCount) {
 		$groupQuery = 'SELECT `group_id`, `group_name`, `group_description`, `group_priority` FROM `' . MYSQL_DATABASE_PREFIX . 'groups` WHERE `group_id` IN (' . join($groupIdList, ', ') . ') ORDER BY `group_priority` DESC';
-		$groupResult = mysql_query($groupQuery) or die($groupQuery);
-		while($groupRow = mysql_fetch_assoc($groupResult)) {
+		$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery) or die($groupQuery);
+		while($groupRow = mysqli_fetch_assoc($groupResult)) {
 			$modifiableGroups[] = $groupRow;
 		}
 	}
@@ -438,9 +438,9 @@ function reevaluateGroupPriorities($modifiableGroups) {
 
 function getGroupAssociatedWithForm($formId) {
 	$groupQuery = "SELECT `group_id` FROM `" . MYSQL_DATABASE_PREFIX . "groups` WHERE `form_id` = '$formId'";
-	$groupResult = mysql_query($groupQuery);
-	if(mysql_num_rows($groupResult) != 0) {
-		$groupRow = mysql_fetch_row($groupResult);
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if(mysqli_num_rows($groupResult) != 0) {
+		$groupRow = mysqli_fetch_row($groupResult);
 		return $groupRow[0];
 	}
 
@@ -452,11 +452,11 @@ function getGroupsFromUserId($userId) {
 	$groupQuery = 'SELECT `' . MYSQL_DATABASE_PREFIX . 'groups`.`group_id`, `group_name`, `group_description`, `form_id` FROM `' . MYSQL_DATABASE_PREFIX .
 			'groups`, `'. MYSQL_DATABASE_PREFIX . 'usergroup` WHERE `user_id` = \'' . $userId . '\' AND `' .
 			MYSQL_DATABASE_PREFIX . 'groups`.`group_id` = `' . MYSQL_DATABASE_PREFIX . 'usergroup`.`group_id`';
-	$groupResult = mysql_query($groupQuery);
-	if(!$groupResult) displayerror($groupQuery . '<br />' . mysql_error());
+	$groupResult = mysqli_query($GLOBALS["___mysqli_ston"], $groupQuery);
+	if(!$groupResult) displayerror($groupQuery . '<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 
 	$groupRows = array();
-	while($groupRow = mysql_fetch_assoc($groupResult)) {
+	while($groupRow = mysqli_fetch_assoc($groupResult)) {
 		$groupRows[] = $groupRow;
 	}
 	return $groupRows;

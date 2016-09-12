@@ -45,8 +45,8 @@ class book implements module {
 		$this->moduleComponentId = $gotmoduleComponentId;
 		$this->action = $gotaction;
 		$this->pageId = getPageIdFromModuleComponentId("book",$gotmoduleComponentId);
-		$this->bookProps = mysql_fetch_assoc(mysql_query("SELECT * FROM `book_desc` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
-		$page_title = mysql_fetch_row(mysql_query("SELECT `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$this->pageId}'"));
+		$this->bookProps = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT * FROM `book_desc` WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'"));
+		$page_title = mysqli_fetch_row(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '{$this->pageId}'"));
 		$this->bookProps['page_title'] = $page_title[0];
 		$this->hideInMenu();
 		if ($this->action == "edit")
@@ -62,7 +62,7 @@ class book implements module {
 		global $INFOSTRING, $WARNINGSTRING, $ERRORSTRING;
 
 		$childrenQuery = 'SELECT `page_title`, `page_id`, `page_module`, `page_modulecomponentid`, `page_name` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = ' . $this->pageId . ' AND `page_id` IN (' . $this->bookProps['list'] . ') ORDER BY `page_menurank`';
-		$result = mysql_query($childrenQuery);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 		$ret = $this->tabScript();
 		$ret .=<<<RET
 <h2>{$this->bookProps['page_title']}</h2>
@@ -76,7 +76,7 @@ RET;
 		$backup_info = $INFOSTRING;
 		$backup_warning = $WARNINGSTRING;
 		$backup_error = $ERRORSTRING;
-		while($row = mysql_fetch_assoc($result)) {
+		while($row = mysqli_fetch_assoc($result)) {
 			if(getPermissions($this->userId, $row['page_id'], "view")) {
 				$INFOSTRING = "";
 				$WARNINGSTRING = "";
@@ -128,21 +128,21 @@ RET;
 				$this->bookProps['menu_hide'] = $hList;
 				$this->hideInMenu();
 				$query = "UPDATE `book_desc` SET `initial` = '" . escape($_POST['optInitial']) . "', `list` = '{$tList}', `menu_hide` = '{$hList}' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
-				mysql_query($query) or die(mysql_error() . ": book.lib.php L:131");
+				mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ": book.lib.php L:131");
 				$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_title` = '" . $this->bookProps['page_title'] . "' WHERE `page_id` = '{$this->pageId}'";
-				mysql_query($query) or die(mysql_error() . ": book.lib.php L:133");
+				mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . ": book.lib.php L:133");
 				displayinfo("Book Properties saved properly");
 			} else
 				displayerror("You've choosen a hidden sub-page as default which is not possible, so the settings are not saved.");
 		}
 		$childrenQuery = 'SELECT `page_id`, `page_title`, `page_module`, `page_name`, `page_modulecomponentid` FROM `' . MYSQL_DATABASE_PREFIX . 'pages` WHERE `page_parentid` = '."'" . $this->pageId ."'". ' AND `page_id` != \'' . $this->pageId . '\' ORDER BY `page_menurank`';
-		$result = mysql_query($childrenQuery);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 		$table = "";
 		$hide_list = explode(",",$this->bookProps['menu_hide']);
 		$show_list = explode(",",$this->bookProps['list']);
-		if(mysql_num_rows($result)) {
+		if(mysqli_num_rows($result)) {
 			$table = "<table><thead><td>Initial</td><td>Show in Tab</td><td>Hide in Menu</td><td>Page</td></thead>";
-			while($row = mysql_fetch_assoc($result)) {
+			while($row = mysqli_fetch_assoc($result)) {
 				$radio = "";
 				if($row['page_id'] == $this->bookProps['initial'])
 					$radio = "checked";
@@ -179,7 +179,7 @@ RET;
 	 */	
 	public function createModule($compId) {
 		$query = "INSERT INTO `book_desc` (`page_modulecomponentid` , `initial`, `list`,`menu_hide`)VALUES ('$compId','','','')";
-		$result = mysql_query($query) or die(mysql_error()."book.lib L:187");
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))."book.lib L:187");
 	}
 	
 	/**
@@ -270,7 +270,7 @@ RET;
 	 */
 	public function isPresent($parentId,$pageId) {
 		$moduleComponentId = getModuleComponentIdFromPageId($parentId,'book');
-		$list = mysql_fetch_assoc(mysql_query("SELECT `list` FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"));
+		$list = mysqli_fetch_assoc(mysqli_query($GLOBALS["___mysqli_ston"], "SELECT `list` FROM `book_desc` WHERE `page_modulecomponentid` = '{$moduleComponentId}'"));
 		$list = explode(",",$list['list']);
 		foreach($list as $element) {
 			if($pageId == $element)
@@ -288,10 +288,10 @@ RET;
 	private function hideInMenu() {
 		$cond = "";
 		if($this->bookProps['menu_hide'] != "") {
-			mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 0 WHERE `page_parentid` = '{$this->pageId}' AND `page_id` IN ({$this->bookProps['menu_hide']})");
+			mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 0 WHERE `page_parentid` = '{$this->pageId}' AND `page_id` IN ({$this->bookProps['menu_hide']})");
 			$cond = " AND `page_id` NOT IN ({$this->bookProps['menu_hide']})";
 		}
-		mysql_query("UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 1 WHERE `page_parentid` = '{$this->pageId}'{$cond}");
+		mysqli_query($GLOBALS["___mysqli_ston"], "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_displayinmenu` = 1 WHERE `page_parentid` = '{$this->pageId}'{$cond}");
 	}
 }
 ?>

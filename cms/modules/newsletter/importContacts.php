@@ -25,24 +25,24 @@ include_once("../../common.lib.php");
 connect();
 
 $query="SELECT `user_email` FROM `".MYSQL_DATABASE_PREFIX."users`";
-$result=mysql_query($query);
-while($temp=mysql_fetch_array($result,MYSQL_NUM))
+$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+while($temp=mysqli_fetch_array($result, MYSQLI_NUM))
 {
 foreach($temp as  $mail)
 {
 
 	$query1="SELECT * FROM `newsletter` WHERE `email`='$mail' ";
 //	echo $query1."<br>";
-	$result1=mysql_query($query1);
-	echo mysql_num_rows($result1).$query1."<br>";
+	$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+	echo mysqli_num_rows($result1).$query1."<br>";
 
-	if(!mysql_num_rows($result1))
+	if(!mysqli_num_rows($result1))
 	{
 		$query2="INSERT INTO `newsletter` (`email` ,`sent`)VALUES ('$mail','0')";
 		echo $query2."<br>";
-		$result2=mysql_query($query2) ;
-		if(mysql_affected_rows($result2)>0)echo "$mail inserted into newsletter<br>";
-		echo mysql_affected_rows($result2)."<=RES<br>";
+		$result2=mysqli_query($GLOBALS["___mysqli_ston"], $query2) ;
+		if(mysqli_affected_rows($result2)>0)echo "$mail inserted into newsletter<br>";
+		echo mysqli_affected_rows($result2)."<=RES<br>";
 
 //		echo $query2."<br>";
 	}

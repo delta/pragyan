@@ -34,15 +34,15 @@ class poll implements module {
 			$display="<h2>Poll!</h2><br /><div align='center'>";
 			
 			$query="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
-			$r=mysql_query($query);
-			$n=mysql_num_rows($r);
-			while($row=mysql_fetch_array($r))
+			$r=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$n=mysqli_num_rows($r);
+			while($row=mysqli_fetch_array($r))
 			{
 				$m=$row['multiple_opt'];
 				$p=$row['pid'];	
 				$query2="SELECT * FROM `poll_users` WHERE `pid`='$p' AND `page_modulecomponentid`='$this->moduleComponentId' AND `userID`='$this->userId'";
-				$r2=mysql_query($query2);
-				$n2=mysql_num_rows($r2);
+				$r2=mysqli_query($GLOBALS["___mysqli_ston"], $query2);
+				$n2=mysqli_num_rows($r2);
 				if($n2==0)   ///<the user has not yet voted for this poll
 				{       
 					    $display.="<form name='f".$p."' method='post' action='./+cast'><table width='50%'><tr><td align='center'><b><div align='center'>".$row['ques']."</div></b></td></tr>";
@@ -85,8 +85,8 @@ class poll implements module {
 				else
 				{
 						$query5="SELECT * FROM `poll_log` WHERE `pid`='".$p."' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$res5=mysql_query($query5);
-						$row5=mysql_fetch_array($res5);
+						$res5=mysqli_query($GLOBALS["___mysqli_ston"], $query5);
+						$row5=mysqli_fetch_array($res5);
 						$total=$row5['o1']+$row5['o2']+$row5['o3']+$row5['o4']+$row5['o5']+$row5['o6'];
 						
 						if($row['o1']!=NULL)
@@ -132,11 +132,11 @@ class poll implements module {
 		$pid=escape($_POST['id']);
 
 		$query="INSERT INTO `poll_users`(`pid`,`userID`,`page_modulecomponentid`) VALUES('$pid','$user','$this->moduleComponentId')";
-		mysql_query($query);
+		mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		
 		$query2="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId' AND `pid`='".$pid."'";
-		$r1=mysql_query($query2);
-		$row=mysql_fetch_array($r1);
+		$r1=mysqli_query($GLOBALS["___mysqli_ston"], $query2);
+		$row=mysqli_fetch_array($r1);
 		$m=$row['multiple_opt'];
 		
 		if($m==1)
@@ -150,7 +150,7 @@ class poll implements module {
 				else
 					$v=0;
 				$query1="UPDATE `poll_log` SET `$o`=`$o`+$v WHERE `pid` = $pid AND `page_modulecomponentid`=$this->moduleComponentId";
-				mysql_query($query1);
+				mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 			}
 		}
 		if($m==0)
@@ -158,13 +158,13 @@ class poll implements module {
 			$opt=escape($_POST['o']);
 			$o="o".$opt;
 			$query1="SELECT * FROM `poll_log` WHERE `pid`='".$pid."' AND `page_modulecomponentid`='$this->moduleComponentId'";
-			$res1=mysql_query($query1);
-			$n=mysql_num_rows($res1);
-			$val=mysql_fetch_array($res1);
+			$res1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+			$n=mysqli_num_rows($res1);
+			$val=mysqli_fetch_array($res1);
 			$value=$val["$o"];
 			$value+=1;
 			$query2="UPDATE `poll_log` SET `$o` = '$value' WHERE `pid` = '$pid' AND `page_modulecomponentid`='$this->moduleComponentId'";
-			mysql_query($query2);
+			mysqli_query($GLOBALS["___mysqli_ston"], $query2);
 		}
 		return $this->actionView();
 	}
@@ -197,7 +197,7 @@ class poll implements module {
 						$o6=htmlspecialchars(escape($_POST['o6']));
 						displayinfo('Poll Question Updated Succesfully');
 						$query="UPDATE `poll_content` SET `ques` = '$q',`o1` = '$o1',`o2` = '$o2',`o3` = '$o3',`o4` = '$o4',`o5` = '$o5',`o6` = '$o6',`multiple_opt` = '$multi' WHERE `pid` = $pid AND `page_modulecomponentid`='$this->moduleComponentId'";
-						mysql_query($query);
+						mysqli_query($GLOBALS["___mysqli_ston"], $query);
 					}
 				return $this-> actionView();
 				}
@@ -216,20 +216,20 @@ class poll implements module {
 						displayinfo('Poll Question Added Succesfully');
 						$query="INSERT INTO `poll_content` (`page_modulecomponentid`,`ques` ,`o1` ,`o2` ,`o3` ,`o4` ,`o5` ,`o6` ,`visibility`)
 						VALUES ('$this->moduleComponentId','".htmlspecialchars(escape($_POST['q']))."','".htmlspecialchars(escape($_POST['o1']))."','".htmlspecialchars(escape($_POST['o2']))."','".htmlspecialchars(escape($_POST['o3']))."','".htmlspecialchars(escape($_POST['o4']))."','".htmlspecialchars(escape($_POST['o5']))."','".htmlspecialchars(escape($_POST['o6']))."','1')";
-						$result=mysql_query($query);
+						$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 						
 						if($_POST['multi']=='y')
 						{
 							$query5="UPDATE `poll_content` SET `multiple_opt`='1' WHERE `ques`='".htmlspecialchars(escape($_POST['q']))."' AND `page_modulecomponentid`='$this->moduleComponentId'";
-							$result5=mysql_query($query5);
+							$result5=mysqli_query($GLOBALS["___mysqli_ston"], $query5);
 						}
 						
 						$query0="SELECT max(`pid`) from `poll_content` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-						$result0=mysql_query($query0);
-						$row0=mysql_fetch_array($result0);
+						$result0=mysqli_query($GLOBALS["___mysqli_ston"], $query0);
+						$row0=mysqli_fetch_array($result0);
 						
 						$query1="INSERT INTO `poll_log` (`pid`,`page_modulecomponentid`) VALUES ('".$row0[0]."','$this->moduleComponentId')";
-						$result1=mysql_query($query1);
+						$result1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 			
 					}
 				}
@@ -239,12 +239,12 @@ class poll implements module {
 					
 					$pollid=escape($_POST['ques1']);
 					$query3="SELECT * FROM `poll_content` WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
-					$result3=mysql_query($query3);
-					$nop=mysql_num_rows($result3);
+					$result3=mysqli_query($GLOBALS["___mysqli_ston"], $query3);
+					$nop=mysqli_num_rows($result3);
 					if($nop==1)
 					{
 						$query4="UPDATE `poll_content` SET `visibility`='0' WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$result4=mysql_query($query4);
+						$result4=mysqli_query($GLOBALS["___mysqli_ston"], $query4);
 					}
 					displayinfo("Poll Question Disabled");
 			
@@ -254,7 +254,7 @@ class poll implements module {
 				{
 					$pollid=escape($_POST['ques0']);
 					$query="SELECT * FROM `poll_content` WHERE `pid` = '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
-					$row=mysql_fetch_array(mysql_query($query));
+					$row=mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], $query));
 					$ques=$row['ques'];
 					$o1=$row['o1'];
 					$o2=$row['o2'];
@@ -297,12 +297,12 @@ class poll implements module {
 					
 					$pollid=escape($_POST['ques2']);
 					$query3="SELECT * FROM `poll_content` WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
-					$result3=mysql_query($query3);
-					$nop=mysql_num_rows($result3);
+					$result3=mysqli_query($GLOBALS["___mysqli_ston"], $query3);
+					$nop=mysqli_num_rows($result3);
 					if($nop==1)
 					{
 						$query4="UPDATE `poll_content` SET `visibility`='1' WHERE `pid`= '$pollid' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$result4=mysql_query($query4);
+						$result4=mysqli_query($GLOBALS["___mysqli_ston"], $query4);
 					}
 					displayinfo("Poll Question Enabled");
 				}
@@ -312,9 +312,9 @@ class poll implements module {
 					
 					$pollid=escape($_POST['ques3']);
 					$query4="DELETE FROM `poll_log` WHERE `pid`='$pollid'";
-					$result4=mysql_query($query4);
+					$result4=mysqli_query($GLOBALS["___mysqli_ston"], $query4);
 					$query5="DELETE FROM `poll_content` WHERE `pid`='$pollid'";
-					$result5=mysql_query($query5);
+					$result5=mysqli_query($GLOBALS["___mysqli_ston"], $query5);
 					displayinfo("Poll Question Deleted");
 			
 				}
@@ -340,18 +340,18 @@ class poll implements module {
 				
 				///Edit a poll question
 				$q0="SELECT * FROM `poll_content` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-				$r0=mysql_query($q0);
+				$r0=mysqli_query($GLOBALS["___mysqli_ston"], $q0);
 				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Edit Poll Question</h3>";
 				$display.="<div align='center'><form name='f4' method='POST' action='./+manage'>";
-				if(mysql_num_rows($r0)==0)
+				if(mysqli_num_rows($r0)==0)
 					$display.="No poll questions exist currently.";
 				else
 				{
 					$display.="<select name='ques0'>";
-					$n0=mysql_num_rows($r0);
+					$n0=mysqli_num_rows($r0);
 					for($i=1;$i<=$n0;$i++)
 					{
-						$row0=mysql_fetch_array($r0);
+						$row0=mysqli_fetch_array($r0);
 						$display.="<option value='".$row0['pid']."'>".$row0['ques'];
 					}
 					$display.="</select><br /><br />";
@@ -361,18 +361,18 @@ class poll implements module {
 				
 				///Disable a poll question
 				$q1="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
-				$r1=mysql_query($q1);
+				$r1=mysqli_query($GLOBALS["___mysqli_ston"], $q1);
 				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Disable Poll Question</h3>";
 				$display.="<div align='center'><form name='f2' method='POST' action='./+manage'>";
-				if(mysql_num_rows($r1)==0)
+				if(mysqli_num_rows($r1)==0)
 					$display.="All Poll Questions are Currently Disabled!";
 				else
 				{
 					$display.="<select name='ques1'>";
-					$n1=mysql_num_rows($r1);
+					$n1=mysqli_num_rows($r1);
 					for($i=1;$i<=$n1;$i++)
 					{
-						$row1=mysql_fetch_array($r1);
+						$row1=mysqli_fetch_array($r1);
 						$display.="<option value='".$row1['pid']."'>".$row1['ques'];
 					}
 					$display.="</select><br /><br />";
@@ -382,15 +382,15 @@ class poll implements module {
 				
 				///Enable a poll question
 				$q2="SELECT * FROM `poll_content` WHERE `visibility`='0' AND `page_modulecomponentid`='$this->moduleComponentId'";
-				$r2=mysql_query($q2);	
+				$r2=mysqli_query($GLOBALS["___mysqli_ston"], $q2);	
 				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Enable Poll Question</h3>";
 				$display.="<div align='center'><form name='f3' method='POST' action='./+manage'>";
-				if(mysql_num_rows($r2)==0)
+				if(mysqli_num_rows($r2)==0)
 					$display.="All Poll Questions are Currently Enabled!<br /><br />";
 				else
 				{
 					$display.="<select name='ques2'>";
-					while($row2=mysql_fetch_array($r2))
+					while($row2=mysqli_fetch_array($r2))
 						$display.="<option value='".$row2['pid']."'>".$row2['ques'];
 					$display.="</select><br /><br />";
 					$display.="<input type='submit' name='enable' value=' Enable ' /><br /><br />";
@@ -399,18 +399,18 @@ class poll implements module {
 				
 				///Delete a poll question
 				$q3="SELECT * FROM `poll_content` WHERE `page_modulecomponentid`='$this->moduleComponentId'";
-				$r3=mysql_query($q3);
+				$r3=mysqli_query($GLOBALS["___mysqli_ston"], $q3);
 				$display.="<table width='100%'><tr><td><h3>&nbsp;&nbsp;Delete Poll Question</h3>";
 				$display.="<div align='center'><form name='f3' method='POST' action='./+manage'>";
-				if(mysql_num_rows($r1)==0)
+				if(mysqli_num_rows($r1)==0)
 					$display.="No poll questions exist currently.";
 				else
 				{
 					$display.="<select name='ques3'>";
-					$n3=mysql_num_rows($r3);
+					$n3=mysqli_num_rows($r3);
 					for($i=1;$i<=$n3;$i++)
 					{
-						$row3=mysql_fetch_array($r3);
+						$row3=mysqli_fetch_array($r3);
 						$display.="<option value='".$row3['pid']."'>".$row3['ques'];
 					}
 					$display.="</select><br /><br />";
@@ -428,20 +428,20 @@ class poll implements module {
 			$display="<h2>Statistics</h2><br />";
 			
 			$query="SELECT * FROM `poll_content` WHERE `visibility`='1' AND `page_modulecomponentid`='$this->moduleComponentId'";
-			$r=mysql_query($query);
-			$n=mysql_num_rows($r);
+			$r=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$n=mysqli_num_rows($r);
 			
 			$display.="<table width='100%'><tr><td>";
 			$display.="<h3>Currently Enabled Polls</h3>";
 			if($n==0)
 				$display.="There Exist no Enabled Poll Questions Currently.";
 			else
-			while($row=mysql_fetch_array($r))
+			while($row=mysqli_fetch_array($r))
 				{
 						$p=$row['pid'];
 						$query2="SELECT * FROM `poll_log` WHERE `pid`='".$p."' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$res2=mysql_query($query2);
-						$row2=mysql_fetch_array($res2);
+						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $query2);
+						$row2=mysqli_fetch_array($res2);
 						$total=$row2['o1']+$row2['o2']+$row2['o3']+$row2['o4']+$row2['o5']+$row2['o6'];
 						
 						if($row['o1']!=NULL)
@@ -477,20 +477,20 @@ class poll implements module {
 			$display.="</td></tr></table>";
 			
 			$query="SELECT * FROM `poll_content` WHERE `visibility`='0' AND `page_modulecomponentid`='$this->moduleComponentId'";
-			$r=mysql_query($query);
-			$n=mysql_num_rows($r);
+			$r=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$n=mysqli_num_rows($r);
 			
 			$display.="<table width='100%'><tr><td>";
 			$display.="<h3>Currently Disabled Polls</h3>";
 			if($n==0)
 				$display.="There Exist no Disabled Poll Questions Currently.";
 			else
-			while($row=mysql_fetch_array($r))
+			while($row=mysqli_fetch_array($r))
 				{
 						$p=$row['pid'];
 						$query2="SELECT * FROM `poll_log` WHERE `pid`='".$p."' AND `page_modulecomponentid`='$this->moduleComponentId'";
-						$res2=mysql_query($query2);
-						$row2=mysql_fetch_array($res2);
+						$res2=mysqli_query($GLOBALS["___mysqli_ston"], $query2);
+						$row2=mysqli_fetch_array($res2);
 						$total=$row2['o1']+$row2['o2']+$row2['o3']+$row2['o4']+$row2['o5']+$row2['o6'];
 						
 						if($row['o1']!=NULL)

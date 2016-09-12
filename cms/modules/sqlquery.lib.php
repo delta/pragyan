@@ -34,12 +34,12 @@ class sqlquery implements module {
 
 	public function actionView() {
 		$sqlQueryQuery = 'SELECT `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = \'' . $this->moduleComponentId."'";
-		$sqlQueryResult = mysql_query($sqlQueryQuery);
+		$sqlQueryResult = mysqli_query($GLOBALS["___mysqli_ston"], $sqlQueryQuery);
 		if(!$sqlQueryResult) {
 			displayerror('Database error. An unknown error was encountered while trying to load page data.');
 			return '';
 		}
-		$sqlQueryRow = mysql_fetch_row($sqlQueryResult);
+		$sqlQueryRow = mysqli_fetch_row($sqlQueryResult);
 		if(!$sqlQueryRow) {
 			displayerror('Database error. Could not find data for the page requested.');
 			return '';
@@ -86,8 +86,8 @@ class sqlquery implements module {
 			
 			$helptext.="<h2>Tables of Database ".MYSQL_DATABASE."</h2><br/><table id='sqlhelptable' name='sqlhelptable' class='display'><thead></tr><tr><th>Table Name</th><th>Columns Information</th><th>Rows Information</th></tr></thead><tbody>";
 			$query="SHOW TABLES";
-			$res=mysql_query($query);
-			while($row=mysql_fetch_row($res))
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			while($row=mysqli_fetch_row($res))
 			{
 				$helptext .="<tr><td>{$row[0]}</td><td><a href='./+edit&subaction=tablecols&tablename={$row[0]}'>View Columns</a></td><td><a href='./+edit&subaction=tablerows&tablename={$row[0]}'>View Rows</a></td></tr>";
 			}
@@ -100,14 +100,14 @@ class sqlquery implements module {
 			else { displayerror("Table name missing"); return $editPageContent; }
 			
 			$query="SELECT * FROM '$tablename'";
-			$res=mysql_query($query);
-			$numfields=mysql_num_fields($res);
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			$numfields=(($___mysqli_tmp = mysqli_num_fields($res)) ? $___mysqli_tmp : false);
 			$helptext .="<table id='sqlhelptable' name='sqlhelptable' class='display'><thead><tr><th colspan=".$numfields.">Rows of Table $tablename <br/><a href='./+edit&subaction=tablecols&tablename=$tablename'>View Columns</a>  <a href='./+edit&subaction=listalltables'>View All Tables</a></th></tr>";
 			$helptext .="<tr>";
 			
 			for($i=0;$i<$numfields;$i++)
 			{
-				 $name = mysql_field_name($res, $i);
+				 $name = ((($___mysqli_tmp = mysqli_fetch_field_direct($res,  $i)->name) && (!is_null($___mysqli_tmp))) ? $___mysqli_tmp : false);
 				    if (!$name) {
 					displayerror("Field name could not be retrieved");
 					break;
@@ -117,7 +117,7 @@ class sqlquery implements module {
 			$helptext .="</tr></thead><tbody>";
 			
 			
-			while($row=mysql_fetch_row($res))
+			while($row=mysqli_fetch_row($res))
 			{
 				$helptext .="<tr>";
 				for($i=0;$i<$numfields;$i++)
@@ -135,10 +135,10 @@ class sqlquery implements module {
 			$helptext .="<table id='sqlhelptable' name='sqlhelptable' class='display'><thead><tr><th colspan=6>Column Information of Table $tablename <br/><a href='./+edit&subaction=tablerows&tablename=$tablename'>View Rows</a>  <a href='./+edit&subaction=listalltables'>View All Tables</a> </th></tr>";
 			$helptext .="<tr><th>Column Name</th><th>Column Type</th><th>Maximum Length</th><th>Default Value</th><th>Not Null</th><th>Primary Key</th></tr></thead><tbody>";
 			$query="SELECT * FROM '$tablename' LIMIT 1";
-			$res=mysql_query($query);
-			for($i=0;$i<mysql_num_fields($res);$i++)
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+			for($i=0;$i<(($___mysqli_tmp = mysqli_num_fields($res)) ? $___mysqli_tmp : false);$i++)
 			{
-				 $meta = mysql_fetch_field($res, $i);
+				 $meta = (((($___mysqli_tmp = mysqli_fetch_field_direct($res, 0)) && is_object($___mysqli_tmp)) ? ( (!is_null($___mysqli_tmp->primary_key = ($___mysqli_tmp->flags & MYSQLI_PRI_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->multiple_key = ($___mysqli_tmp->flags & MYSQLI_MULTIPLE_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->unique_key = ($___mysqli_tmp->flags & MYSQLI_UNIQUE_KEY_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->numeric = (int)(($___mysqli_tmp->type <= MYSQLI_TYPE_INT24) || ($___mysqli_tmp->type == MYSQLI_TYPE_YEAR) || ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? ($___mysqli_tmp->type == MYSQLI_TYPE_NEWDECIMAL) : 0)))) && (!is_null($___mysqli_tmp->blob = (int)in_array($___mysqli_tmp->type, array(MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB)))) && (!is_null($___mysqli_tmp->unsigned = ($___mysqli_tmp->flags & MYSQLI_UNSIGNED_FLAG) ? 1 : 0)) && (!is_null($___mysqli_tmp->zerofill = ($___mysqli_tmp->flags & MYSQLI_ZEROFILL_FLAG) ? 1 : 0)) && (!is_null($___mysqli_type = $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = (($___mysqli_type == MYSQLI_TYPE_STRING) || ($___mysqli_type == MYSQLI_TYPE_VAR_STRING)) ? "type" : "")) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && in_array($___mysqli_type, array(MYSQLI_TYPE_TINY, MYSQLI_TYPE_SHORT, MYSQLI_TYPE_LONG, MYSQLI_TYPE_LONGLONG, MYSQLI_TYPE_INT24))) ? "int" : $___mysqli_tmp->type)) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && in_array($___mysqli_type, array(MYSQLI_TYPE_FLOAT, MYSQLI_TYPE_DOUBLE, MYSQLI_TYPE_DECIMAL, ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : -1)))) ? "real" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_TIMESTAMP) ? "timestamp" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_YEAR) ? "year" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && (($___mysqli_type == MYSQLI_TYPE_DATE) || ($___mysqli_type == MYSQLI_TYPE_NEWDATE))) ? "date " : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_TIME) ? "time" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_SET) ? "set" : $___mysqli_tmp->type)) &&(!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_ENUM) ? "enum" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_GEOMETRY) ? "geometry" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_DATETIME) ? "datetime" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && (in_array($___mysqli_type, array(MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB)))) ? "blob" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type && $___mysqli_type == MYSQLI_TYPE_NULL) ? "null" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->type = ("" == $___mysqli_tmp->type) ? "unknown" : $___mysqli_tmp->type)) && (!is_null($___mysqli_tmp->not_null = ($___mysqli_tmp->flags & MYSQLI_NOT_NULL_FLAG) ? 1 : 0)) ) : false ) ? $___mysqli_tmp : false);
 				    if (!$meta) {
 					displayerror("Field information could not be retrieved");
 					break;
@@ -159,12 +159,12 @@ class sqlquery implements module {
 	private function getQueryEditForm($pageTitle = '', $sqlQuery = '', $useParams = false) {
 		if(!$useParams) {
 			$defaultValueQuery = 'SELECT `sqlquery_title`, `sqlquery_query` FROM `sqlquery_desc` WHERE `page_modulecomponentid` = \'' . $this->moduleComponentId."'";
-			$defaultValueResult = mysql_query($defaultValueQuery);
+			$defaultValueResult = mysqli_query($GLOBALS["___mysqli_ston"], $defaultValueQuery);
 			if(!$defaultValueResult) {
 				displayerror('Error. Could not retrieve data for the page requested.');
 				return '';
 			}
-			$defaultValueRow = mysql_fetch_row($defaultValueResult);
+			$defaultValueRow = mysqli_fetch_row($defaultValueResult);
 			if(!$defaultValueRow) {
 				displayerror('Error. Could not retrieve data for the page requested.');
 				return '';
@@ -206,7 +206,7 @@ QUERYEDITFORM;
 
 	private function generatePageData($sqlQuery) {
 		$sqlQuery = $sqlQuery;
-		$result = mysql_query($sqlQuery);
+		$result = mysqli_query($GLOBALS["___mysqli_ston"], $sqlQuery);
 
 		if(!$result) {
 			return 'Error. The query used to generate this page is invalid. <a href="./+edit">Click here</a> to change the default query.<br />';
@@ -215,13 +215,13 @@ QUERYEDITFORM;
 		$pageContent = '<table>';
 
 		$pageContent .= "<tr>\n";
-		$fieldCount = mysql_num_fields($result);
+		$fieldCount = (($___mysqli_tmp = mysqli_num_fields($result)) ? $___mysqli_tmp : false);
 		for($i = 0; $i < $fieldCount; $i++) {
-			$pageContent .= "<th>" . mysql_field_name($result, $i) . "</th>";
+			$pageContent .= "<th>" . ((($___mysqli_tmp = mysqli_fetch_field_direct($result,  $i)->name) && (!is_null($___mysqli_tmp))) ? $___mysqli_tmp : false) . "</th>";
 		}
 		$pageContent .= "</tr>\n";
 
-		while($resultrow = mysql_fetch_row($result))
+		while($resultrow = mysqli_fetch_row($result))
 			$pageContent .= "<tr><td>" . implode('</td><td>', $resultrow) . "</td></tr>\n";
 		$pageContent .= "</table>\n";
 
@@ -230,7 +230,7 @@ QUERYEDITFORM;
 
 	private function saveQueryEditForm($pageTitle, $sqlQuery) {
 		$updateQuery = "UPDATE `sqlquery_desc` SET `sqlquery_title` = '$pageTitle', `sqlquery_query` = '$sqlQuery' WHERE `page_modulecomponentid` = '{$this->moduleComponentId}'";
-		$updateResult = mysql_query($updateQuery);
+		$updateResult = mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 		if(!$updateResult) {
 			displayerror('SQL Error. Could not update database settings.');
 			return false;
@@ -249,7 +249,7 @@ QUERYEDITFORM;
         public function createModule($compId) {
 
                 $insertQuery = "INSERT INTO `sqlquery_desc`(`page_modulecomponentid`, `sqlquery_title`, `sqlquery_query`) VALUES('$compId', 'New Query', 'SELECT * FROM `mytable` WHERE 1')";
-                $insertResult = mysql_query($insertQuery);
+                $insertResult = mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery);
         }
 	public function moduleAdmin(){
 		return "This is the SQL Query module administration page. Options coming up soon!!!";

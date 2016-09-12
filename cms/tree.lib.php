@@ -54,10 +54,10 @@ class DirectoryTreeNode {
 
 		/// SELECT perm_permission, usergroup_id FROM $pagepermTable WHERE ((usergroup_id IN join() AND perm_type='group')
 		///		OR (usergroup_id = $userid AND perm_type = 'user')) AND page_id = $pid AND perm_id = $permId
-		$permResult = mysql_query($permQuery) or die($permQuery . "<br />" . mysql_error());
+		$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery) or die($permQuery . "<br />" . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		$groupCount = count($groups);
 
-		while ($permResultRow = mysql_fetch_row($permResult)) {
+		while ($permResultRow = mysqli_fetch_row($permResult)) {
 			$index = array_search($permResultRow[1], $groups);
 
 			if($index === false) {
@@ -99,8 +99,8 @@ class DirectoryTreeNode {
 	 */
 	public function __construct(& $pageId, & $userid, & $groups, &$permId, $permSet, $retrieveLinks = false) {
 		$pageNameQuery = "SELECT `page_name`, `page_title` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_id` = '$pageId'";
-		$pageNameResult = mysql_query($pageNameQuery);
-		$pageNameResultRow = mysql_fetch_row($pageNameResult);
+		$pageNameResult = mysqli_query($GLOBALS["___mysqli_ston"], $pageNameQuery);
+		$pageNameResultRow = mysqli_fetch_row($pageNameResult);
 
 		$this->pageId = $pageId;
 		$this->pageName = $pageNameResultRow[0];
@@ -112,9 +112,9 @@ class DirectoryTreeNode {
 		$this->children = array ();
 
 		$childQuery = "SELECT `page_id`, `page_module` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_parentid` = '$pageId' and `page_parentid` != `page_id` ORDER BY `page_menurank`";
-		$childResult = mysql_query($childQuery);
+		$childResult = mysqli_query($GLOBALS["___mysqli_ston"], $childQuery);
 
-		while ($childResultRow = mysql_fetch_assoc($childResult)) {
+		while ($childResultRow = mysqli_fetch_assoc($childResult)) {
 			if($childResultRow['page_module'] != "link" || $retrieveLinks == true) {
 				$a = new DirectoryTreeNode($childResultRow['page_id'], $userid, $groups, $permId, $permSet);
 

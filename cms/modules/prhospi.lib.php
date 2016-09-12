@@ -141,9 +141,9 @@ Ck1;
 
   private function getFormSuggestions($input) {
     $emailQuery ="SELECT * FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_name` LIKE '%$input%' AND `page_module`='form'";
-    $emailResult = mysql_query($emailQuery);
+    $emailResult = mysqli_query($GLOBALS["___mysqli_ston"], $emailQuery);
     $suggestions = array($input);
-    while($emailRow = mysql_fetch_row($emailResult)) {
+    while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[1]. ' - ' . $emailRow[7];
     }                                                                                                                                           
     return join($suggestions, ',');                                                                                                             
@@ -159,20 +159,20 @@ Ck1;
     if(isset($_GET['subaction'])&&$_GET['subaction'] == 'formDetailsrequired') {
       $cnt=0;
       while(isset($_POST['FormDetail-'.$cnt])&&isset($_POST['hiddenFormDetail-'.$cnt])) {
-	$_POST['hiddenFormDetail-'.$cnt]=mysql_real_escape_string($_POST['hiddenFormDetail-'.$cnt]);
-	$isRequired=(mysql_real_escape_string($_POST['FormDetail-'.$cnt])==='No')?0:1;
+	$_POST['hiddenFormDetail-'.$cnt]=((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['hiddenFormDetail-'.$cnt]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+	$isRequired=(((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['FormDetail-'.$cnt]) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""))==='No')?0:1;
 	$detailsGiven=explode("-",$_POST['hiddenFormDetail-'.$cnt]);
 	$checkForQuery="SELECT * FROM `prhospi_admin` WHERE `page_modulecomponentid`={$moduleComponentId} AND ";
 	$checkForQuery.="`page_getform_modulecomponentid`={$detailsGiven[1]} AND `details_to_display`='{$detailsGiven[2]}'";
-	if(mysql_num_rows(mysql_query($checkForQuery))) {
+	if(mysqli_num_rows(mysqli_query($GLOBALS["___mysqli_ston"], $checkForQuery))) {
 	  $updateRequiredDetailQuery="UPDATE `prhospi_admin` SET `detail_required`='{$isRequired}' WHERE `page_modulecomponentid`=";
 	  $updateRequiredDetailQuery.="{$moduleComponentId} AND `page_getform_modulecomponentid`={$detailsGiven[1]} AND `details_to_display`='";
 	  $updateRequiredDetailQuery.="{$detailsGiven[2]}'";
-	  $updateRequiredDetailRes=mysql_query($updateRequiredDetailQuery);
+	  $updateRequiredDetailRes=mysqli_query($GLOBALS["___mysqli_ston"], $updateRequiredDetailQuery);
 	}
 	else {
 	  $insertRequiredDetails="INSERT INTO `prhospi_admin` VALUES({$moduleComponentId},{$detailsGiven[1]},{$detailsGiven[2]},'{$isRequired}')";
-	  $insertRequiredResult=mysql_query($insertRequiredDetails);
+	  $insertRequiredResult=mysqli_query($GLOBALS["___mysqli_ston"], $insertRequiredDetails);
 	}
 	$cnt++;
       }
@@ -199,10 +199,10 @@ USER;
       if($findHypenPos !== false) {
 	$formModuleComponentId = substr($inputData,$findHypenPos+2); 
 	$getRequiredQuery = "SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid` IN (".$formModuleComponentId.",0)";
-	$getRequiredRes = mysql_query($getRequiredQuery);
+	$getRequiredRes = mysqli_query($GLOBALS["___mysqli_ston"], $getRequiredQuery);
 	$tableField="<form action='./+csg&subaction=formDetailsrequired' method='POST'><table border='1'>";
 	$cnt=0;
-	while($result=mysql_fetch_row($getRequiredRes)) {
+	while($result=mysqli_fetch_row($getRequiredRes)) {
 	  $tableField.=<<<REQUIRED
 	  <tr>
 	    <td>{$result[2]}</td>
@@ -385,18 +385,18 @@ checkOut;
     displayinfo(print_r(assignVars($this->userId,$moduleComponentId),true));
 
     if(isset($_POST['amountDetail'])) {
-      $amt=mysql_real_escape_string($_POST['amountDetail']);
+      $amt=((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['amountDetail']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
       $insertQuery="UPDATE `prhospi_disclaimer` SET `team_cost`={$amt} WHERE `page_modulecomponentid`={$this->moduleComponentId} AND ";
       $insertQuery.="`disclaimer_team`='hospihead'";
-      $updateRes=mysql_query($insertQuery) or displayerror(mysql_error());
+      $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       if($updateRes!='') displayinfo("Amount Updated to Rs. $amt");
     }
 
     if(isset($_POST['amountDetail1'])) {
-      $amt=mysql_real_escape_string($_POST['amountDetail1']);
+      $amt=((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['amountDetail1']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
       $insertQuery="UPDATE `prhospi_disclaimer` SET `team_cost`={$amt} WHERE `page_modulecomponentid`={$this->moduleComponentId} AND ";
       $insertQuery.="`disclaimer_team`='hospihead1'";
-      $updateRes=mysql_query($insertQuery) or displayerror(mysql_error());
+      $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       if($updateRes!='') displayinfo("Amount Updated to Rs. $amt");
     }
     
@@ -404,7 +404,7 @@ checkOut;
       $editorData=escape($_POST['CKEditor1']);
       $insertQuery="UPDATE `prhospi_disclaimer` SET `disclaimer_desc`='{$editorData}' WHERE `page_modulecomponentid`={$this->moduleComponentId} ";
       $insertQuery.="AND `disclaimer_team`='hospihead'";
-      $updateRes=mysql_query($insertQuery) or displayerror(mysql_error());
+      $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       if($updateRes!='') displayinfo("Details Successfully updated !!!");
     }
     if(isset($_POST['downloadSampleFormat'])) {
@@ -422,18 +422,18 @@ checkOut;
 	  $checkIfExistQuery = "SELECT * FROM `prhospi_hostel` 
                                 WHERE `hospi_hostel_name`='{$excelData[$i][1]}' AND 
                                       `hospi_room_no`={$j} AND `page_modulecomponentid`={$moduleComponentId}";
-	  $checkIfExistRes = mysql_query($checkIfExistQuery) or displayerror(mysql_error());
-	  if(mysql_num_rows($checkIfExistRes)) {
+	  $checkIfExistRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfExistQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	  if(mysqli_num_rows($checkIfExistRes)) {
 	    $updateFieldQuery = "UPDATE `prhospi_hostel` 
                                  SET `hospi_room_capacity`={$excelData[$i][4]} , `hospi_floor` =  {$excelData[$i][5]}
                                  WHERE `page_modulecomponentid`={$moduleComponentId} AND 
                                        `hospi_hostel_name`='{$excelData[$i][1]}' AND `hospi_room_no`={$j}";
-	    $updateResult = mysql_query($updateFieldQuery) or displayerror(mysql_error());
+	    $updateResult = mysqli_query($GLOBALS["___mysqli_ston"], $updateFieldQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	    continue;
 	  }
 	  $insertIntoHospiQuery = "INSERT INTO `prhospi_hostel` (page_modulecomponentid,hospi_hostel_name,hospi_room_capacity,
                                                                       hospi_room_no,hospi_floor)                                                                                            VALUES ({$moduleComponentId},'{$excelData[$i][1]}',{$excelData[$i][4]},{$j},{$excelData[$i][5]})";
-	  $res = mysql_query($insertIntoHospiQuery) or displayerror(mysql_error());
+	  $res = mysqli_query($GLOBALS["___mysqli_ston"], $insertIntoHospiQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	  if($res == "") $success=0;
 	}
       }
@@ -598,10 +598,10 @@ checkOut;
       deletePrUser($detailsGiven[1],$moduleComponentId);
     }
     if(isset($_POST['amountDetail'])) {
-      $amt=mysql_real_escape_string($_POST['amountDetail']);
+      $amt=((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $_POST['amountDetail']) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
       $insertQuery="UPDATE `prhospi_disclaimer` SET `team_cost`={$amt} WHERE `page_modulecomponentid`={$this->moduleComponentId} AND ";
       $insertQuery.="`disclaimer_team`='prhead'";
-      $updateRes=mysql_query($insertQuery) or displayerror(mysql_error());
+      $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       if($updateRes!='') displayinfo("Amount Updated to Rs. $amt");
     }
     
@@ -609,7 +609,7 @@ checkOut;
       $editorData=escape($_POST['CKEditor1']);
       $insertQuery="UPDATE `prhospi_disclaimer` SET `disclaimer_desc`='{$editorData}' WHERE `page_modulecomponentid`={$this->moduleComponentId} ";
       $insertQuery.="AND `disclaimer_team`='prhead'";
-      $updateRes=mysql_query($insertQuery) or displayerror(mysql_error());
+      $updateRes=mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
       if($updateRes!='') displayinfo("Details Successfully updated !!!");
     }
 

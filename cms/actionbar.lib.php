@@ -26,12 +26,12 @@ if(!defined('__PRAGYAN_CMS'))
 function getActionbarPage($userId, $pageId) {
 
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE page_module = 'page'";
-	$action_result = mysql_query($action_query);
+	$action_result = mysqli_query($GLOBALS["___mysqli_ston"], $action_query);
 	$allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
-	$allow_login_result = mysql_query($allow_login_query);
-	$allow_login_result = mysql_fetch_array($allow_login_result);
+	$allow_login_result = mysqli_query($GLOBALS["___mysqli_ston"], $allow_login_query);
+	$allow_login_result = mysqli_fetch_array($allow_login_result);
 	$actionbarPage=array();
-	while($action_row = mysql_fetch_assoc($action_result)) {
+	while($action_row = mysqli_fetch_assoc($action_result)) {
 		if(getPermissions($userId, $pageId, $action_row['perm_action']))
 			$actionbarPage[$action_row['perm_action']]=$action_row['perm_text'];
 	}
@@ -76,12 +76,12 @@ function getActionbarPage($userId, $pageId) {
  */
 function getActionbarModule($userId, $pageId) {
 	$action_query = "SELECT perm_id, perm_action, perm_text FROM `".MYSQL_DATABASE_PREFIX."permissionlist` WHERE perm_action != 'create' AND page_module = '".getEffectivePageModule($pageId)."'";
-	$action_result = mysql_query($action_query);
+	$action_result = mysqli_query($GLOBALS["___mysqli_ston"], $action_query);
 	$allow_login_query = "SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute` = 'allow_login'";
-	$allow_login_result = mysql_query($allow_login_query);
-	$allow_login_result = mysql_fetch_array($allow_login_result);
+	$allow_login_result = mysqli_query($GLOBALS["___mysqli_ston"], $allow_login_query);
+	$allow_login_result = mysqli_fetch_array($allow_login_result);
 	$actionbarPage = array();
-	while($action_row = mysql_fetch_assoc($action_result))
+	while($action_row = mysqli_fetch_assoc($action_result))
 		if(getPermissions($userId, $pageId, $action_row['perm_action']))
 			$actionbarPage[$action_row['perm_action']]=$action_row['perm_text'];
 	$actionbar="<div id=\"cms-actionbarModule\">";

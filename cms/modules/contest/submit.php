@@ -121,7 +121,7 @@ function submitPostSolution($contestCode, $problemCode) {
 	$time = time();
 	$insertQuery = 'INSERT INTO `problem`(`pid`, `uid`, `lang`, `stid`, `status`, `code`, `runout`, `time`, `score`) VALUES ' .
 		"({$problemRow['pid']}, {$userId}, '{$_POST['language']}', 1, 'Waiting', '$uploadedSource', '', $time, 0)";
-	if (mysql_query($insertQuery))
+	if (mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery))
 		return "<p>Your solution has been submitted. Please check the <a href=\"../../status/\">status page</a> for more.</p>";
 	else {
 		display_error("Error. Could not insert submission into database.");

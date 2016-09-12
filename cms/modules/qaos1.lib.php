@@ -37,9 +37,9 @@ class qaos1 implements module, fileuploadable {
   private function getFormSuggestions($input) {
     $mcid=$this->moduleComponentId;
     $emailQuery = "SELECT * FROM `qaos1_events` WHERE `events_name` LIKE '%{$input}%' and `page_modulecomponentid`={$mcid}";
-    $emailResult = mysql_query($emailQuery);
+    $emailResult = mysqli_query($GLOBALS["___mysqli_ston"], $emailQuery);
     $suggestions = array($input);
-    while($emailRow = mysql_fetch_row($emailResult)) {
+    while($emailRow = mysqli_fetch_row($emailResult)) {
       $suggestions[] = $emailRow[1];
     }
     return join($suggestions, ',');
@@ -143,12 +143,12 @@ AB;
                 WHERE `modulecomponentid`='{$this->moduleComponentId}' AND `evtproc_Request`='{$_POST["request"]}'";
 	 $query.=" AND `evtproc_Quantity`='{$_POST["qty"]}' AND `evtproc_name`='{$_POST["evtname"]}' AND `userid`='{$this->userId}' AND ";
 	 $query.=" `evtproc_date`='{$_POST["evtproc_time"]}' AND `evtproc_Status`=0 AND `evtproc_reason`='{$_POST["evtprocreason"]}'";
-	 $res=mysql_query($query) or displayerror(mysql_error());
-	 if(!mysql_num_rows($res)) { 
+	 $res=mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	 if(!mysqli_num_rows($res)) { 
 	  $submit="INSERT INTO `qaos1_evtproc` (evtproc_Request,evtproc_Quantity,evtproc_name,modulecomponentid,userid,evtproc_reason,evtproc_date)
                   values ('{$_POST["request"]}','{$_POST["qty"]}','{$_POST["evtname"]}',$this->moduleComponentId,$this->userId,
                           '{$_POST["evtprocreason"]}','{$_POST["evtproc_time"]}')";  
-	  mysql_query($submit) or displayerror(mysql_error());
+	  mysqli_query($GLOBALS["___mysqli_ston"], $submit) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	 }
 	}
       }    
@@ -170,13 +170,13 @@ AB;
                       `fundreq_Quantity`='{$_POST["qty1"]}' AND `fundreq_name`='{$_POST["fevtname"]}' AND `userid`='{$this->userId}' AND 
 	              `fundreq_date`='{$_POST["fundreq_time"]}' AND `fundreq_Status`=0 AND `fundreq_Amount`='{$_POST["amt1"]}' AND 
                       `fundreq_reason`='{$_POST["fundreqreason"]}'";
-	  $res=mysql_query($query) or displayerror(mysql_error());
-	  if(!mysql_num_rows($res)) { 
+	  $res=mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	  if(!mysqli_num_rows($res)) { 
 	    $submit="INSERT INTO `qaos1_fundreq` (fundreq_Request,fundreq_Quantity,fundreq_name,fundreq_Amount,
                                                  modulecomponentid,userid,fundreq_reason,fundreq_date) 
                    VALUES ('{$_POST["request1"]}','{$_POST["qty1"]}','{$_POST["fevtname"]}','{$_POST["amt1"]}',$this->moduleComponentId,
                            $this->userId,'{$_POST["fundreqreason"]}','{$_POST["fundreq_time"]}')";
-	    mysql_query($submit) or displayerror(mysql_error());
+	    mysqli_query($GLOBALS["___mysqli_ston"], $submit) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	  }
 	}		
     }
@@ -218,7 +218,7 @@ AB;
 
       $actionview=$actionview1.$actionview;
       $hist1="SELECT * FROM qaos1_evtproc where modulecomponentid=$this->moduleComponentId AND userid=$this->userId";
-      $res=mysql_query($hist1);
+      $res=mysqli_query($GLOBALS["___mysqli_ston"], $hist1);
       $actionview.=<<<AB
         $smarttablestuff
 	<div id="deventproc" class="forms">
@@ -226,7 +226,7 @@ AB;
 	<table class="display" border="1" id="table_eventproc" width="100%">
 	  <thead><tr><th>ITEM</th><th>QUANTITY</th><th>EVENT</th><th>REASON</th><th>STATUS</th><th>DEADLINE</th><th>DESCRIPTION</th></tr></thead>
 AB;
-      while($result=mysql_fetch_array($res)) {	
+      while($result=mysqli_fetch_array($res)) {	
 	if($result['evtproc_Status']==0)$status="Pending";
 	elseif($result['evtproc_Status']==1)$status="Accepted By QA";
 	elseif($result['evtproc_Status']==2) $status="Decline";
@@ -254,8 +254,8 @@ AB;
 	    <thead><tr><th>ITEM</th><th>QUANTITY</th><th>EVENT NAME</th><th>REASON</th><th>STATUS</th><th>DEADLINE</th><th>DESCRIPTION</th></tr></thead>
 AB;
       $hist2="SELECT * FROM qaos1_fundreq where modulecomponentid=$this->moduleComponentId AND userid=$this->userId";
-      $res1=mysql_query($hist2);
-      while($result1=mysql_fetch_array($res1)) {
+      $res1=mysqli_query($GLOBALS["___mysqli_ston"], $hist2);
+      while($result1=mysqli_fetch_array($res1)) {
 	if($result1['fundreq_Status']==0) $status1="Pending";
 	else if($result1['fundreq_Status']==1) $status1="Accepted by qaos";
 	else if($result1['fundreq_Status']==2) $status1="Decline";
@@ -418,11 +418,11 @@ FORMTOADD;
 	 if(($_POST["hid"]!=2)||($_POST["hid1"]!=""))  {
 	$query="update qaos1_evtproc set evtproc_Status = {$_POST["hid"]},evtproc_Desc ='{$_POST["hid1"]}' where evtproc_Id ='{$_POST["hid2"]}' AND modulecomponentid={$this->moduleComponentId} AND evtproc_Status=1";
         echo $query;        
-	$res=mysql_query($query);		 }
+	$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);		 }
 		}		
 	}
         $query="SELECT * FROM qaos1_evtproc WHERE modulecomponentid={$this->moduleComponentId}";
-        $res=mysql_query($query);
+        $res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
        	$css1=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/qaos1/styles/main.css";
 	$smarttablestuff = smarttable::render(array('table_evtprocrequest','table_eventproc_head'),null);
 	$STARTSCRIPTS .="initSmartTable();";
@@ -508,7 +508,7 @@ FORMTOADD;
 					<th>SUBMIT</th>
 				</tr></thead>
 AB;
-			while($result=mysql_fetch_array($res))
+			while($result=mysqli_fetch_array($res))
 			{
 				$event=$result['evtproc_Id'];
 				$userName=getUserName($result['userid']);
@@ -547,7 +547,7 @@ AB;
 AB;
 
 	$hist1="SELECT *FROM qaos1_evtproc WHERE modulecomponentid={$this->moduleComponentId}";
-        $res=mysql_query($hist1);
+        $res=mysqli_query($GLOBALS["___mysqli_ston"], $hist1);
 	 $orgCaction.=<<<AB
 	 	    <div id="formevt" class="forms">
 					<h2>Event Procurement Status</h2>	       	    	
@@ -564,7 +564,7 @@ AB;
                                                 <th>PRINT BILL</th>
 					 </tr></thead>
 AB;
-	while($result=mysql_fetch_array($res))
+	while($result=mysqli_fetch_array($res))
 		{	
 		  $userName=getUserName($result['userid']);
 			if($result['evtproc_Status']==0) $status="Pending";
@@ -629,10 +629,10 @@ return $orgCaction;
       for($i=2;$i<=count($excelData);$i++) {
 	if($excelData[$i][1] == NULL) continue;
 	$checkIfExistQuery = "SELECT * FROM `qaos1_events` WHERE `events_name`='{$excelData[$i][1]}' AND `page_modulecomponentid`={$mcid}";
-	$checkIfExistRes = mysql_query($checkIfExistQuery) or displayerror(mysql_error());
-	if(mysql_num_rows($checkIfExistRes)) continue;
+	$checkIfExistRes = mysqli_query($GLOBALS["___mysqli_ston"], $checkIfExistQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
+	if(mysqli_num_rows($checkIfExistRes)) continue;
 	$insertIntoEventTableQuery = "INSERT IGNORE INTO `qaos1_events` (events_name,page_modulecomponentid) VALUES ('{$excelData[$i][1]}',{$mcid})";  
-	$res = mysql_query($insertIntoEventTableQuery) or displayerror(mysql_error());
+	$res = mysqli_query($GLOBALS["___mysqli_ston"], $insertIntoEventTableQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	if($res == "") $success=0; 
       }
       if(!$success) displayerror("Datas are not inserted");
@@ -649,7 +649,7 @@ return $orgCaction;
 				{ 
 				if(($_POST["hid"]!=2)||($_POST["hid1"]!=""))  {
 			$query="update qaos1_evtproc set evtproc_Status = '{$_POST["hid"]}',evtproc_Desc ='{$_POST["hid1"]}' where evtproc_Id ='{$_POST["hid2"]}' AND modulecomponentid={$this->moduleComponentId}";
-			$res=mysql_query($query);		 }
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);		 }
 				}		
 		}
 		if(isset($_GET['subaction'])&&($_GET['subaction']=="apFundReq")&&(isset($_POST['qhid'])))
@@ -662,13 +662,13 @@ return $orgCaction;
 				if(($_POST["qhid"]!=2)||($_POST["qhid1"]!=""))  {
 
 			$query="update qaos1_fundreq set fundreq_Status = '{$_POST["qhid"]}',fundreq_Desc ='{$_POST["qhid1"]}' where fundreq_Id ='{$_POST["qhid2"]}' AND modulecomponentid={$this->moduleComponentId}";
-	       		$res=mysql_query($query);}
+	       		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);}
 					}
 		}
                 $query="SELECT * FROM qaos1_evtproc WHERE modulecomponentid={$this->moduleComponentId}";
-		$res=mysql_query($query);
+		$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);
        	  	$query1="SELECT * FROM qaos1_fundreq WHERE modulecomponentid={$this->moduleComponentId}";
-        	$res1=mysql_query($query1);
+        	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
         $css1=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/qaos1/styles/main.css";
 
 	$smarttablestuff = smarttable::render(array('table_evtprocrequest','table_fundreqform','table_eventproc_head','table_funreq_head'),null);
@@ -796,7 +796,7 @@ return $orgCaction;
 					<th>SUBMIT</th>
 				</tr></thead>
 AB;
-			while($result=mysql_fetch_array($res))
+			while($result=mysqli_fetch_array($res))
 			{
 				$event=$result['evtproc_Id'];
 				$userName=getUserName($result['userid']);
@@ -847,7 +847,7 @@ AB;
 		                                <th>SUBMIT</th>
 					    </tr></thead>
 AB;
-		     while($result1=mysql_fetch_array($res1))
+		     while($result1=mysqli_fetch_array($res1))
 				{
 					$event1=$result1['fundreq_Id'];
 					$userName=getUserName($result1['userid']);
@@ -886,7 +886,7 @@ AB;
 AB;
 
 	$hist1="SELECT *FROM qaos1_evtproc WHERE modulecomponentid={$this->moduleComponentId}";
-        $res=mysql_query($hist1);
+        $res=mysqli_query($GLOBALS["___mysqli_ston"], $hist1);
 	 $headaction.=<<<AB
 	 	    <div id="dheadeventproc" class="forms">
 					<h2>Event Procurement Status</h2>	       	    	
@@ -902,7 +902,7 @@ AB;
 				  		<th>DESCRIPTION</th>
 					 </tr></thead>
 AB;
-	while($result=mysql_fetch_array($res))
+	while($result=mysqli_fetch_array($res))
 		{	
 		  $userName=getUserName($result['userid']);
 			if($result['evtproc_Status']==0) $status="Pending";
@@ -945,9 +945,9 @@ AB;
 AB;
 	
 	$hist2="SELECT *  FROM qaos1_fundreq WHERE modulecomponentid={$this->moduleComponentId}";
-       	$res1=mysql_query($hist2);
+       	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $hist2);
 
-     		 while($result1=mysql_fetch_array($res1))
+     		 while($result1=mysqli_fetch_array($res1))
 		 {
 		   $userName=getUserName($result1['userid']);
 			if($result1['fundreq_Status']==0) $status1="Pending";
@@ -1022,10 +1022,10 @@ return $headaction;
 				{ 
 				if(($_POST["qhid"]!=2)||($_POST["qhid1"]!=""))  {
 			$query="update qaos1_fundreq set fundreq_Status = '{$_POST["qhid"]}',fundreq_Desc ='{$_POST["qhid1"]}' where fundreq_Id ='{$_POST["qhid2"]}' AND modulecomponentid={$this->moduleComponentId}";
-			$res=mysql_query($query);}}
+			$res=mysqli_query($GLOBALS["___mysqli_ston"], $query);}}
 			}
         	$query1="SELECT * FROM qaos1_fundreq WHERE modulecomponentid={$this->moduleComponentId}";
-         	$res1=mysql_query($query1);
+         	$res1=mysqli_query($GLOBALS["___mysqli_ston"], $query1);
 		$css1=$urlRequestRoot."/".$cmsFolder."/".$moduleFolder."/qaos1/styles/main.css";
 		$smarttablestuff = smarttable::render(array('table_formstatus','table_funreq_treasurer','filestable'),null);
 		$STARTSCRIPTS .="initSmartTable();";
@@ -1121,7 +1121,7 @@ return $headaction;
 
 						</tr></thead>
 AB;
-		while($result1=mysql_fetch_array($res1))
+		while($result1=mysqli_fetch_array($res1))
 		     			{
 					  $userName=getUserName($result1['userid']);
 						$event1=$result1['fundreq_Id'];
@@ -1174,8 +1174,8 @@ AB;
  			     			</tr></thead>
 AB;
 				$hist2="SELECT *  FROM qaos1_fundreq WHERE modulecomponentid={$this->moduleComponentId}";
-       				$res1=mysql_query($hist2);
-				while($result1=mysql_fetch_array($res1))
+       				$res1=mysqli_query($GLOBALS["___mysqli_ston"], $hist2);
+				while($result1=mysqli_fetch_array($res1))
 		 		{
 				  $userName = getUserName($result1['userid']);
 				  if($result1['fundreq_Status']==0) $status1="Pending";

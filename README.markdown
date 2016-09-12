@@ -33,5 +33,6 @@ Contributors
 - Sriram Sundarraj (ssundarraj)
 - Amal (amal1293)
 - Sarwesh Krishnan (baxiz)
+- Gokul Srinivas (gokulsrinivas)
 - Shravan Murali (shravan97)
 - (this could be you...)

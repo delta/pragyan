@@ -27,9 +27,9 @@ if(!defined('__PRAGYAN_CMS'))
 		///-------------------------Get anonymous unique negative user id---------------
 		if($userId==0) {
 			$useridQuery = "SELECT MIN(`user_id`) - 1 AS MIN FROM `form_regdata` WHERE 1";
-			$useridResult = mysql_query($useridQuery);
-			if(mysql_num_rows($useridResult)>0) {
-				$useridRow = mysql_fetch_assoc($useridResult);
+			$useridResult = mysqli_query($GLOBALS["___mysqli_ston"], $useridQuery);
+			if(mysqli_num_rows($useridResult)>0) {
+				$useridRow = mysqli_fetch_assoc($useridResult);
 				$userId = $useridRow['MIN'];
 			}
 			else
@@ -39,8 +39,8 @@ if(!defined('__PRAGYAN_CMS'))
 		///---------------------------- CAPTCHA Validation ----------------------------------
 		if(!$disableCaptcha) {
 			$captchaQuery = 'SELECT `form_usecaptcha` FROM `form_desc` WHERE `page_modulecomponentid` = ' . $moduleCompId;
-			$captchaResult = mysql_query($captchaQuery);
-			$captchaRow = mysql_fetch_row($captchaResult);
+			$captchaResult = mysqli_query($GLOBALS["___mysqli_ston"], $captchaQuery);
+			$captchaRow = mysqli_fetch_row($captchaResult);
 			if($captchaRow[0] == 1)
 				if(!submitCaptcha())
 					return false;
@@ -49,9 +49,9 @@ if(!defined('__PRAGYAN_CMS'))
 		///------------------------ CAPTCHA Validation Ends Here ----------------------------
 
 		$query="SELECT `form_elementid`,`form_elementtype` FROM `form_elementdesc` WHERE `page_modulecomponentid`=$moduleCompId";
-		$result=mysql_query($query);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
 		$allFieldsUpdated = true;
-		while($elementRow=mysql_fetch_assoc($result)) {
+		while($elementRow=mysqli_fetch_assoc($result)) {
 			$type = $elementRow['form_elementtype'];
 			$elementId = $elementRow['form_elementid'];
 			$postVarName = "form_".$moduleCompId."_element_".$elementRow['form_elementid'];
@@ -60,10 +60,10 @@ if(!defined('__PRAGYAN_CMS'))
 			$elementDescQuery="SELECT `form_elementname`,`form_elementsize`,`form_elementtypeoptions`,`form_elementmorethan`," .
 					"`form_elementlessthan`,`form_elementcheckint`,`form_elementisrequired` FROM `form_elementdesc` " .
 					"WHERE `page_modulecomponentid`=$moduleCompId AND `form_elementid` =$elementId";
-			$elementDescResult=mysql_query($elementDescQuery);
-			if (!$elementDescResult) {	displayerror('E69 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$elementDescResult=mysqli_query($GLOBALS["___mysqli_ston"], $elementDescQuery);
+			if (!$elementDescResult) {	displayerror('E69 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
-			$elementDescRow = mysql_fetch_assoc($elementDescResult);
+			$elementDescRow = mysqli_fetch_assoc($elementDescResult);
 
 			$elementName = $elementDescRow['form_elementname'];
 			$elementSize = $elementDescRow['form_elementsize'];
@@ -85,7 +85,7 @@ if(!defined('__PRAGYAN_CMS'))
 			else {
 				if (!verifyUserRegistered($moduleCompId, $userId)) {
 					$deleteelementdata_query = "DELETE FROM `form_elementdata` WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId ";
-					$deleteelementdata_result = mysql_query($deleteelementdata_query);
+					$deleteelementdata_result = mysqli_query($GLOBALS["___mysqli_ston"], $deleteelementdata_query);
 				}
 				return false;
 			}
@@ -167,12 +167,12 @@ MSG;
 		$submitData = trim($_POST[$postVarName]);
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E46 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E46 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
 		$query="SELECT * FROM `form_elementdesc` WHERE `page_modulecomponentid`=$moduleCompId AND `form_elementid` =$elementId";
-		$result=mysql_query($query);
-		$fetch=mysql_fetch_assoc($result);
+		$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+		$fetch=mysqli_fetch_assoc($result);
 		if($elementSize>0)
 		{
 			if(strlen($submitData) > $elementSize) {
@@ -203,16 +203,16 @@ MSG;
 				}
 			}
 		}
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$submitData."' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E67 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E67 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '". $submitData ."')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E13 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E13 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 		return true;
 	}
@@ -229,19 +229,19 @@ MSG;
 
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E34 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E34 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '$submitData' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '$submitData')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 		return true;
 
@@ -255,8 +255,8 @@ MSG;
 
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E73 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E73 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
 		$optionNumber = $_POST[$postVarName];
 		$options = explode("|",$elementTypeOptions);
@@ -266,16 +266,16 @@ MSG;
 			return false;
 		}
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '" . $options[$optionNumber] . "' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E28 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E28 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $options[$optionNumber] . "')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E90 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E90 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 		return true;
 
@@ -304,20 +304,20 @@ MSG;
 
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 							"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E91 : Invalid query: '.$textQuery . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E91 : Invalid query: '.$textQuery . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '$valuesString' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E78 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E78 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '$valuesString')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E55 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E55 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 
 		return true;
@@ -331,8 +331,8 @@ MSG;
 		}
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E64 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E64 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		$optionNumber = $_POST[$postVarName];
 		$options = explode("|",$elementTypeOptions);
 
@@ -341,16 +341,16 @@ MSG;
 			return false;
 		}
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '" . $options[$optionNumber] ."' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E102 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E102 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $options[$optionNumber] . "')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E121 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E121 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 		return true;
 
@@ -363,19 +363,19 @@ MSG;
 		}
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 						"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E234 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E234 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$_POST[$postVarName]."' ".
 								"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E39 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E39 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $_POST[$postVarName] . "')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E42 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E42 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 		return true;
 	}
@@ -388,17 +388,17 @@ MSG;
 
 		$existsQuery = "SELECT `form_elementdata` from `form_elementdata` WHERE `user_id` = $userId AND " .
 					"`page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-		$existsResult = mysql_query($existsQuery);
+		$existsResult = mysqli_query($GLOBALS["___mysqli_ston"], $existsQuery);
 
 		global $sourceFolder;
 		require_once("$sourceFolder/upload.lib.php");
 		/// if the user is uploading a file with any name again, delete existing file
 		if($_FILES[$postVarName]['error'][0] != UPLOAD_ERR_NO_FILE) {
-			if(mysql_num_rows($existsResult)>0) {
-				$existsRow = mysql_fetch_array($existsResult);
+			if(mysqli_num_rows($existsResult)>0) {
+				$existsRow = mysqli_fetch_array($existsResult);
 				if(deleteFile( $moduleCompId,'form', $existsRow[0])) {
 					$deleteQuery = "DELETE FROM `form_elementdata` WHERE `form_elementid` = $elementId AND `page_modulecomponentid` = $moduleCompId";
-					mysql_query($deleteQuery);
+					mysqli_query($GLOBALS["___mysqli_ston"], $deleteQuery);
 				}
 			}
 		}
@@ -417,7 +417,7 @@ MSG;
 
 		$submitQuery = 'INSERT INTO `form_elementdata`(`user_id`, `page_modulecomponentid`, `form_elementid`, `form_elementdata`) ' .
 									"VALUES($userId, $moduleCompId, $elementId, '$uploadFileName')";
-		if(!mysql_query($submitQuery) || mysql_affected_rows() != 1) {
+		if(!mysqli_query($GLOBALS["___mysqli_ston"], $submitQuery) || mysqli_affected_rows($GLOBALS["___mysqli_ston"]) != 1) {
 			displayerror('Error updating information in the database.');
 			return false;
 		}
@@ -433,19 +433,19 @@ MSG;
 		if(!verifyDate($_POST[$postVarName])) return false;
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 							"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E134 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E134 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$_POST[$postVarName]."' ".
 									"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 				$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 									"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $_POST[$postVarName] . "')";
-				$textInsertResult = mysql_query($textInsertQuery);
-				if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . mysql_error()); 	return false; 	}
+				$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+				if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 			return true;
 
@@ -467,19 +467,19 @@ MSG;
 				return false;
 		$textQuery = "SELECT 1 FROM `form_elementdata` " .
 							"WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId AND `form_elementid` =$elementId";
-		$textResult = mysql_query($textQuery);
-		if (!$textResult) {	displayerror('E234 : Invalid query: ' . mysql_error()); 	return false; 	}
+		$textResult = mysqli_query($GLOBALS["___mysqli_ston"], $textQuery);
+		if (!$textResult) {	displayerror('E234 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 
-		if(mysql_num_rows($textResult)>0) {
+		if(mysqli_num_rows($textResult)>0) {
 			$textUpdateQuery = "UPDATE `form_elementdata` SET `form_elementdata` = '".$_POST[$postVarName]."' ".
 									"WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId AND `form_elementid` = $elementId";
-			$textUpdateResult = mysql_query($textUpdateQuery);
-			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textUpdateResult = mysqli_query($GLOBALS["___mysqli_ston"], $textUpdateQuery);
+			if (!$textUpdateResult) {	displayerror('E12 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		} else {
 			$textInsertQuery = "INSERT INTO `form_elementdata` ( `user_id` , `page_modulecomponentid` , `form_elementid` , `form_elementdata` ) ".
 								"VALUES ( '$userId', '$moduleCompId', '$elementId', '" . $_POST[$postVarName] . "')";
-			$textInsertResult = mysql_query($textInsertQuery);
-			if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . mysql_error()); 	return false; 	}
+			$textInsertResult = mysqli_query($GLOBALS["___mysqli_ston"], $textInsertQuery);
+			if (!$textInsertResult) {	displayerror('E89 : Invalid query: ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false))); 	return false; 	}
 		}
 			return true;
 	}
@@ -541,35 +541,35 @@ MSG;
 
 	function insertFormView($moduleComponentId, $userId) {
 		$existsQuery = "SELECT COUNT(*) FROM `form_visits` WHERE `page_modulecomponentid` = $moduleComponentId AND `user_id` = $userId";
-		$existsResult = mysql_query($existsQuery);
-		$existsRow = mysql_fetch_row($existsResult);
+		$existsResult = mysqli_query($GLOBALS["___mysqli_ston"], $existsQuery);
+		$existsRow = mysqli_fetch_row($existsResult);
 
 		if ($existsRow[0] == 0) {
 			$insertQuery = "INSERT INTO `form_visits`(`page_modulecomponentid`, `user_id`, `user_submitcount`, `user_firstvisit`) VALUES " .
 					"($moduleComponentId, $userId, 0, NOW())";
-			mysql_query($insertQuery);
+			mysqli_query($GLOBALS["___mysqli_ston"], $insertQuery);
 		}
 	}
 
 	function updateFormSubmitCount($moduleComponentId, $userId) {
 		$existsQuery = "SELECT COUNT(*) FROM `form_visits` WHERE `page_modulecomponentid` = $moduleComponentId AND `user_id` = $userId";
-		$existsResult = mysql_query($existsQuery);
-		$existsRow = mysql_fetch_row($existsResult);
+		$existsResult = mysqli_query($GLOBALS["___mysqli_ston"], $existsQuery);
+		$existsRow = mysqli_fetch_row($existsResult);
 
 		if ($existsRow[0] == 1)
 			$updateQuery = "UPDATE `form_visits` SET `user_submitcount` = `user_submitcount` + 1 WHERE `page_modulecomponentid` = $moduleComponentId AND `user_id` = $userId";
 		else
 			$updateQuery = "INSERT INTO `form_visits`(`page_modulecomponentid`, `user_id`, `user_submitcount`, `user_firstvisit`) VALUES " .
 					"($moduleComponentId, $userId, 1, NOW())";
-		mysql_query($updateQuery);
+		mysqli_query($GLOBALS["___mysqli_ston"], $updateQuery);
 	}
 
 	/** Register a user in form_regdata table*/
 	function registerUser($moduleCompId,$userId) {
 		$registeruser_query = "INSERT INTO `form_regdata` (`user_id` ,`page_modulecomponentid` ,`form_firstupdated` ,`form_lastupdated`) " .
 				"VALUES ('$userId', '$moduleCompId', CURRENT_TIMESTAMP , CURRENT_TIMESTAMP)";
-		$registeruser_result = mysql_query($registeruser_query);
-		if(mysql_affected_rows()>0){
+		$registeruser_result = mysqli_query($GLOBALS["___mysqli_ston"], $registeruser_query);
+		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0){
 
 			/** ABHILASH'S EDIT FOR TUX VENTURE BEGINS HERE */
 
@@ -611,8 +611,8 @@ MSG;
 		/** ABHILASH'S EDIT FOR TUX VENTURE ENDS HERE */
 
 		$updateuser_query = "UPDATE `form_regdata` SET `form_lastupdated` = CURRENT_TIMESTAMP WHERE `user_id` =$userId AND `page_modulecomponentid` =$moduleCompId";
-		$updateuser_result = mysql_query($updateuser_query);
-		if(mysql_affected_rows()>0)
+		$updateuser_result = mysqli_query($GLOBALS["___mysqli_ston"], $updateuser_query);
+		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)
 			return true;
 		else
 			return false;
@@ -621,13 +621,13 @@ MSG;
 	function verifyUserRegistered($moduleCompId,$userId) {
 		if($userId == 0)	return false;
 		$verifyuser_query = " SELECT 1 FROM `form_regdata` WHERE `user_id` =$userId AND `page_modulecomponentid` = $moduleCompId";
-		$verifyuser_result = mysql_query($verifyuser_query);
+		$verifyuser_result = mysqli_query($GLOBALS["___mysqli_ston"], $verifyuser_query);
 		if (!$verifyuser_result) {
-			displayerror('E39 : Invalid query: '.$verifyuser_query . mysql_error());
+			displayerror('E39 : Invalid query: '.$verifyuser_query . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			return false;
 		}
 		/** NOT SURE IF THIS WILL WORK. it was if(mysql_affected_rows()>0))*/
-		if(mysql_num_rows($verifyuser_result)>0)
+		if(mysqli_num_rows($verifyuser_result)>0)
 			return true;
 		else
 			return false;
@@ -639,10 +639,10 @@ MSG;
 				'	ON s.form_elementid = d.form_elementid AND s.page_modulecomponentid = d.page_modulecomponentid AND d.user_id='.$userId.' ' .
 				'   WHERE s.form_elementisrequired = 1 AND s.page_modulecomponentid = 0 ' .
 				'	AND (d.form_elementdata IS NULL OR d.form_elementdata = "")';
-		$verifyprofile_result = mysql_query($verifyprofile_query);
+		$verifyprofile_result = mysqli_query($GLOBALS["___mysqli_ston"], $verifyprofile_query);
 		if(!$verifyprofile_result)
 			return false;
-		if(mysql_num_rows($verifyprofile_result)>0)
+		if(mysqli_num_rows($verifyprofile_result)>0)
 			return false;
 		else
 			return true;
@@ -651,23 +651,23 @@ MSG;
 	function unregisterUser($moduleCompId, $userId, $silentOnSuccess = false) {
 		if(verifyUserRegistered($moduleCompId,$userId)){
 			$unregisteruser_query = "DELETE FROM `form_regdata` WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId";
-			$unregisteruser_result = mysql_query($unregisteruser_query);
+			$unregisteruser_result = mysqli_query($GLOBALS["___mysqli_ston"], $unregisteruser_query);
 
 			/// Remove any files uploaded by the user
 			$fileFieldQuery = 'SELECT `form_elementdata` FROM `form_elementdata`, `form_elementdesc` WHERE ' .
 						"`form_elementdata`.`page_modulecomponentid` = $moduleCompId AND `form_elementtype` = 'file' AND " .
 						"`form_elementdata`.`user_id` = $userId AND `form_elementdesc`.`page_modulecomponentid` = `form_elementdata`.`page_modulecomponentid` AND " .
 						"`form_elementdata`.`form_elementid` = `form_elementdesc`.`form_elementid`";
-			$fileFieldResult = mysql_query($fileFieldQuery);
+			$fileFieldResult = mysqli_query($GLOBALS["___mysqli_ston"], $fileFieldQuery);
 
 			global $sourceFolder;
 			require_once("$sourceFolder/upload.lib.php");
-			while($fileFieldRow = mysql_fetch_row($fileFieldResult)) {
+			while($fileFieldRow = mysqli_fetch_row($fileFieldResult)) {
 				deleteFile($moduleCompId, 'form', $fileFieldRow[0]);
 			}
 
 			$deleteelementdata_query = "DELETE FROM `form_elementdata` WHERE `user_id` = $userId AND `page_modulecomponentid` = $moduleCompId ";
-			$deleteelementdata_result = mysql_query($deleteelementdata_query);
+			$deleteelementdata_result = mysqli_query($GLOBALS["___mysqli_ston"], $deleteelementdata_query);
 
 			if($deleteelementdata_result) {
 				global $sourceFolder;

@@ -60,14 +60,14 @@ class contest implements module, fileuploadable {
 
 	private function getContestPage($contestId) {
 		$problemQuery = "SELECT * FROM `contest_problem` WHERE `cid` = '$contestId' AND `testable` = 1 ORDER BY `pid`";
-		$problemResult = mysql_query($problemQuery);
+		$problemResult = mysqli_query($GLOBALS["___mysqli_ston"], $problemQuery);
 
 		$html = '<table border="0">';
 
 		$className = array('even', 'odd');
 		$parity = 0;
 
-		while ($problemRow = mysql_fetch_assoc($problemResult)) {
+		while ($problemRow = mysqli_fetch_assoc($problemResult)) {
 			$pcode = $problemRow['pcode'];
 			$ptitle = $problemRow['pname'];
 			$html .= "<tr class=\"{$className[$parity]}\"><td><a href=\"./+view&subaction=showproblem&pcode=$pcode\">{$problemRow['pcode']}</a></td><td><a href=\"./+view&subaction=showproblem&pcode=$pcode\">{$problemRow['ptitle']}</a></td></tr>\n";
@@ -80,12 +80,12 @@ class contest implements module, fileuploadable {
 
 	private function getProblemId($contestId, $pcode) {
 		$idQuery = "SELECT `pid` FROM `contest_problem` WHERE `cid` = '$contestId' AND `pcode` = '$pcode'";
-		$idResult = mysql_query($idQuery);
+		$idResult = mysqli_query($GLOBALS["___mysqli_ston"], $idQuery);
 		if (!$idResult) {
-			displayerror('MySQL error while attempting to fetch problem id, on line ' . __LINE__ . ', ' . __FILE__);
+			displayerror('mysql error while attempting to fetch problem id, on line ' . __LINE__ . ', ' . __FILE__);
 			return -1;
 		}
-		$idRow = mysql_fetch_row($idResult);
+		$idRow = mysqli_fetch_row($idResult);
 		if ($idRow) return $idRow[0];
 		else return -1;
 	}
@@ -123,9 +123,9 @@ class contest implements module, fileuploadable {
 	        $startItem = 0;
 	        if ($itemsPerPage <= 0) $itemsPerPage = 20;
 
-	        $itemCountResult = mysql_query($countQuery);
+	        $itemCountResult = mysqli_query($GLOBALS["___mysqli_ston"], $countQuery);
 	        if (!$itemCountResult) return false;
-	        $itemCount = mysql_fetch_row($itemCountResult);
+	        $itemCount = mysqli_fetch_row($itemCountResult);
 	        $itemCount = $itemCount[0];
 
 	        $pageCount = ceil($itemCount / $itemsPerPage);
@@ -138,17 +138,17 @@ class contest implements module, fileuploadable {
 	        if ($sortField != '' && ($sortDirection == 'ASC' || $sortDirection == 'DESC')) $selectQuery .= " ORDER BY `$sortField` $sortDirection";
 
 	        $selectQuery .= " LIMIT $startItem, $itemsPerPage";
-        	$selectResult = mysql_query($selectQuery);
+        	$selectResult = mysqli_query($GLOBALS["___mysqli_ston"], $selectQuery);
 	        if (!$selectResult) {
-        	        log_error(__FILE__, __LINE__, 'MySQL Error in query ' . $selectQuery . ': ' . mysql_error());
+        	        log_error(__FILE__, __LINE__, 'mysql Error in query ' . $selectQuery . ': ' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	                return false;
         	}
 
 	        $results = array();
-	        while ($selectRow = mysql_fetch_array($selectResult)) {
+	        while ($selectRow = mysqli_fetch_array($selectResult)) {
         	        $results[] = $selectRow;
 	        }
-	        mysql_free_result($selectResult);
+	        ((mysqli_free_result($selectResult) || (is_object($selectResult) && (get_class($selectResult) == "mysqli_result"))) ? true : false);
 
         	return $results;
 	}

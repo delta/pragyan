@@ -38,9 +38,9 @@ class tbman_executer {
 		//to generate the "WHERE..." string
 //		if ($this->pv['querystring'] == "")
 //			$this->pv['querystring'] = "SHOW TABLES";
-		@ $result = mysql_query($this->pv['querystring']);
+		@ $result = mysqli_query($GLOBALS["___mysqli_ston"], $this->pv['querystring']);
 		if (!$result) {
-			displayerror("Error line 26: " . mysql_error());
+			displayerror("Error line 26: " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			return;
 		} else
 			$this->result = $result;
@@ -53,9 +53,9 @@ class tbman_executer {
 			foreach ($fields as $tok) {
 				if ($tok == "")
 					continue;
-				@ $result = mysql_query($tok);
+				@ $result = mysqli_query($GLOBALS["___mysqli_ston"], $tok);
 				if (!$result) {
-					displayerror("Error line 42 (tbman_executer.lib.php): " . mysql_error());
+					displayerror("Error line 42 (tbman_executer.lib.php): " . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 					return;
 				} 
 			}
@@ -108,8 +108,8 @@ class tbman_executer {
 		$this->query .= $str . ";";
 	}
 	function get_wherestring($i) {
-		mysql_data_seek($this->result, $i);
-		$row = mysql_fetch_assoc($this->result);
+		mysqli_data_seek($this->result,  $i);
+		$row = mysqli_fetch_assoc($this->result);
 		$str = " WHERE ";
 		//if(isset($this->extra_where)) { $str .= $this->extra_where." AND "; }		
 		foreach ($row as $field => $value) {

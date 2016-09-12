@@ -55,7 +55,7 @@ if ($suggest_history && $_GET['q']!='"')
 
 /* 
 	phrase search
-	!! LOCATE: in MySQL 3.23 this function is case sensitive, while in 4.0 it's only case-sensitive if either argument is a binary string
+	!! LOCATE: in mysql 3.23 this function is case sensitive, while in 4.0 it's only case-sensitive if either argument is a binary string
 */
 
 if ($suggest_phrases) 

@@ -18,8 +18,8 @@ if(!defined('__PRAGYAN_CMS'))
 
 function isProfileFormCaptchaEnabled() {
 	$captchaQuery = 'SELECT `form_usecaptcha` FROM `form_desc` WHERE `page_modulecomponentid` = 0';
-	$captchaResult = mysql_query($captchaQuery);
-	$captchaRow = mysql_fetch_row($captchaResult);
+	$captchaResult = mysqli_query($GLOBALS["___mysqli_ston"], $captchaQuery);
+	$captchaRow = mysqli_fetch_row($captchaResult);
 	if($captchaRow && isset($captchaRow[0])) {
 		return $captchaRow[0] == 1;
 	}
@@ -68,12 +68,12 @@ function profile($userId, $forEditRegistrant = false) {
 		
 		/// Retrieve existing information
 	$profileQuery = 'SELECT `user_name`, `user_fullname`, `user_password` FROM `' . MYSQL_DATABASE_PREFIX . 'users` WHERE `user_id` = \'' . $userId."'";
-	$profileResult = mysql_query($profileQuery);
+	$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
 	if(!$profileResult) {
-		displayerror('An error occurred while trying to process your request.<br />' . mysql_error() . '<br />' . $profileQuery);
+		displayerror('An error occurred while trying to process your request.<br />' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '<br />' . $profileQuery);
 		return '';
 	}
-	$profileRow = mysql_fetch_row($profileResult);
+	$profileRow = mysqli_fetch_row($profileResult);
 	$newUserName = $userName = $profileRow[0];
 	$newUserFullname = $userFullname = $profileRow[1];
 	$userPassword = $profileRow[2];
@@ -122,7 +122,7 @@ function profile($userId, $forEditRegistrant = false) {
 
 			if(count($updates) > 0) {
 				$profileQuery = 'UPDATE `' . MYSQL_DATABASE_PREFIX . 'users` SET ' . join($updates, ', ') . " WHERE `user_id` = '$userId'";
-				$profileResult = mysql_query($profileQuery);
+				$profileResult = mysqli_query($GLOBALS["___mysqli_ston"], $profileQuery);
 				if(!$profileResult) {
 					displayerror('An error was encountered while attempting to process your request.');
 					$errors = true;
@@ -180,8 +180,8 @@ function getProfileForm($userId, $userName, $userFullname, $forEditRegistrant = 
 	$captchaValidation = '';
 	if(!$forEditRegistrant) {
 		$captchaQuery = 'SELECT `form_usecaptcha` FROM `form_desc` WHERE `page_modulecomponentid` = 0';
-		$captchaResult = mysql_query($captchaQuery);
-		$captchaRow = mysql_fetch_row($captchaResult);
+		$captchaResult = mysqli_query($GLOBALS["___mysqli_ston"], $captchaQuery);
+		$captchaRow = mysqli_fetch_row($captchaResult);
 		if(isset($captchaRow[0]) && $captchaRow[0] == 1) {
 			$captchaValidation = getCaptchaHtml();
 		} 
@@ -445,19 +445,19 @@ function getProfileRegistrantsList($showEditButtons = false) {
 function getProfileForms($userId) {
 	global $ICONS,$urlRequestRoot;
 	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_elementdata` WHERE `user_id` = '$userId' AND `page_modulecomponentid` != '0'";
-	$result2 = mysql_query($query);
+	$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$regforms='';
-	if(mysql_num_rows($result2)>0)
+	if(mysqli_num_rows($result2)>0)
 		{
 			$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms I Have Registered To</legend>";
 			$regforms .= '<ol>';
-			while($result = mysql_fetch_row($result2)) {
+			while($result = mysqli_fetch_row($result2)) {
 				if($result[0]!=0){
 					$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
 					$formPathLink = $urlRequestRoot . $formPath;
 					$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` ='". $result[0]."'";		
-					$result1 = mysql_query($query1);
-					$result1 = mysql_fetch_row($result1);
+					$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+					$result1 = mysqli_fetch_row($result1);
 					$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
 				}
 		}
@@ -469,8 +469,8 @@ function getFormDeadlines($userId) {
 	global $ICONS,$urlRequestRoot;
 	$regforms="";
 	$query = "SELECT * FROM `".MYSQL_DATABASE_PREFIX."global`";
-	$result = mysql_query($query);
-	while($res = mysql_fetch_row($result)) {
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	while($res = mysqli_fetch_row($result)) {
 		if($res[0] == 'deadline_notify')
 		{
 			$deadline = $res[1] * 24 * 3600;
@@ -478,17 +478,17 @@ function getFormDeadlines($userId) {
 			
 	}	
 	$query = "SELECT DISTINCT `page_modulecomponentid` FROM `form_desc` WHERE HOUR(TIMEDIFF(`form_expirydatetime`,NOW( )))*3600+MINUTE(TIMEDIFF(`form_expirydatetime`,NOW( )))*60+SECOND(TIMEDIFF(`form_expirydatetime`,NOW( )))*60 <= '".$deadline."'";
-	$result2 = mysql_query($query);
-	if(mysql_num_rows($result2)>0){
+	$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if(mysqli_num_rows($result2)>0){
 			$regforms ="<fieldset style=\"padding: 8px\"><legend>{$ICONS['User Groups']['small']}Forms Nearing Deadline</legend>";
 			$regforms .= '<ol>';
-			while($result = mysql_fetch_row($result2)) {
+			while($result = mysqli_fetch_row($result2)) {
 				if($result[0]!=0){
 				$formPath = getPagePath(getPageIdFromModuleComponentId('form', $result[0]));
 				$formPathLink = $urlRequestRoot . $formPath;
 				$query1 = "SELECT `form_heading` FROM `form_desc` WHERE `page_modulecomponentid` =". $result[0];		
-				$result1 = mysql_query($query1);
-				$result1 = mysql_fetch_row($result1);
+				$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query1);
+				$result1 = mysqli_fetch_row($result1);
 				$regforms .= '<li> <a href="'.$formPathLink.'">'.$result1[0].'</a></li>';
 				}
 			}

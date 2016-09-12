@@ -140,8 +140,8 @@ function upload($moduleComponentId, $moduleName, $userId, $uploadFormName, $maxF
  */
 function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileName, $tempFileName, $uploadFileType, $uploadDir) {
 	$query = 'SELECT MAX(`upload_fileid`) FROM `' . MYSQL_DATABASE_PREFIX . 'uploads`';
-	$result = mysql_query($query) or die(mysql_error() . 'upload.lib L:131');
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . 'upload.lib L:131');
+	$row = mysqli_fetch_row($result);
 	$upload_fileid = 1;
 	if(!is_null($row[0])) {
 		$upload_fileid = $row[0] + 1;
@@ -155,17 +155,17 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 		$duplicateCheckQuery = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` " .
 				"WHERE `page_modulecomponentid` = '$moduleComponentId' AND `page_module` = '$moduleName'" .
 				" AND upload_filename = '$uploadFileName'";
-		$duplicateCheckResult = mysql_query($duplicateCheckQuery);
+		$duplicateCheckResult = mysqli_query($GLOBALS["___mysqli_ston"], $duplicateCheckQuery);
 			/// Checking for duplicate entry of the file.		
-			if(mysql_num_rows($duplicateCheckResult) >= 1) {
+			if(mysqli_num_rows($duplicateCheckResult) >= 1) {
 			displayerror("A file with the name $uploadFileName already exists. Please use a different filename.");
 			return false;
 			}
 		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
 				"VALUES ('$moduleComponentId', '$moduleName', '$upload_fileid', " .
-				"'" . mysql_escape_string($uploadFileName) . "', '$uploadFileType', '$userId')";
-		mysql_query($query) or die(mysql_error() . "upload.lib L:158<br />");
+				"'" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $uploadFileName) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '$uploadFileType', '$userId')";
+		mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload.lib L:158<br />");
 		/// If galery create thumbnail and store in the database.
 		if($moduleName=="gallery")
 		{
@@ -181,8 +181,8 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 		$query = 'INSERT INTO `' . MYSQL_DATABASE_PREFIX . 'uploads` ' .
 				'(`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, `upload_filetype`, `user_id`) ' .
 				"VALUES ('$moduleComponentId', '$moduleName', '$thumb_upload_fileid', " .
-				"'" . mysql_escape_string($thumb_name) . "', '$uploadFileType', '$userId')";
-		mysql_query($query) or die(mysql_error() . "upload.lib L:163<br />");
+				"'" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $thumb_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '$uploadFileType', '$userId')";
+		mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload.lib L:163<br />");
 		}
 		move_uploaded_file($tempFileName, "$uploadDir/$moduleName/$finalName");
 		return $uploadFileName;
@@ -199,9 +199,9 @@ function saveUploadedFile($moduleComponentId,$moduleName, $userId, $uploadFileNa
 
 function getUploadedFiles($moduleComponentId, $moduleName) {
 	$query = "SELECT `upload_filename`, `upload_filetype`, `upload_time`, `user_id` FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='" . $moduleComponentId . "' AND `page_module` = '" . $moduleName . "'";
-	$result = mysql_query($query);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 	$fileArray = array ();
-	while ($row = mysql_fetch_assoc($result))
+	while ($row = mysqli_fetch_assoc($result))
 		$fileArray[] = $row;
 
 	return $fileArray;
@@ -227,21 +227,21 @@ function fileCopy($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
 	global $sourceFolder, $uploadFolder;
 	$uploadDir = $sourceFolder . "/" . $uploadFolder;
 
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='" . $sourcePage_modulecomponentid . "' AND `upload_filename` ='" . mysql_escape_string($sourceFile_name) . "'";
-	$result = mysql_query($query);
-	$array1 = mysql_fetch_assoc($result);
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='" . $sourcePage_modulecomponentid . "' AND `upload_filename` ='" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $sourceFile_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "'";
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$array1 = mysqli_fetch_assoc($result);
 	$tmp_name = $uploadDir . "/" . $sourcePage_module . "/" . str_repeat("0", (10 - strlen((string) $array1['upload_fileid']))) . $array1['upload_fileid'] . "_" . $sourceFile_name;
 	$query1= "SELECT MAX(upload_fileid) as MAX FROM `" . MYSQL_DATABASE_PREFIX . "uploads` ";
-	$result1 = mysql_query($query) or die(mysql_error() . "upload.lib");
-	$row1 = mysql_fetch_assoc($result);
+	$result1 = mysqli_query($GLOBALS["___mysqli_ston"], $query) or die(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload.lib");
+	$row1 = mysqli_fetch_assoc($result);
 	$upload_fileid = $row1['MAX'] + 1;
 	$finalname = str_repeat("0", (10 - strlen((string) $upload_fileid))) . $upload_fileid . "_" . $destinationFile_name;
 	if(!copy($tmp_name, $uploadDir . "/" . $destinationPage_module . "/" . $finalname))
 	   return false;
 	$query2 = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "uploads` (`page_modulecomponentid` ,`page_module` , `upload_fileid` , `upload_filename` ," .
 							" `upload_filetype` , `user_id`) VALUES ('$destinationPage_modulecomponentid', '$destinationPage_module','$upload_fileid'," .
-							" '" . mysql_escape_string($destinationFile_name) . "', '{$array1['upload_filetype']}','$user_id')";
-	$result2 = mysql_query($query2);
+							" '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $destinationFile_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '{$array1['upload_filetype']}','$user_id')";
+	$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query2);
 
 
 }
@@ -263,16 +263,16 @@ function fileMove($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
 	global $sourceFolder, $uploadFolder;
 	$uploadDir = "$sourceFolder/$uploadFolder";
 
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` = '$sourcePage_modulecomponentid' AND `upload_filename` ='" . mysql_escape_string($sourceFile_name) . "'";
-	$result = mysql_query($query);
-	$array1 = mysql_fetch_assoc($result);
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` = '$sourcePage_modulecomponentid' AND `upload_filename` ='" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $sourceFile_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "'";
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$array1 = mysqli_fetch_assoc($result);
 	$oldname = "$uploadDir/$sourcePage_module/" . str_repeat('0', (10 - strlen((string) $array1['upload_fileid']))) . $array1['upload_fileid'] . "_$sourceFile_name";
 	$finalname = "$uploadDir/$destinationPage_module/" . str_repeat('0', (10 - strlen((string) $array1['upload_fileid']))) . $array1['upload_fileid'] . "_$destinationFile_name";
 	rename($oldname,$finalname);
 	$query2 = "INSERT INTO `" . MYSQL_DATABASE_PREFIX . "uploads` (`page_modulecomponentid`, `page_module`, `upload_fileid`, `upload_filename`, " .
 							"`upload_filetype`, `user_id`) VALUES ('$destinationPage_modulecomponentid', '$destinationPage_module', '$upload_fileid', " .
-							" '" . mysql_escape_string($destinationFile_name) . "', '{$array1['upload_filetype']}','$user_id')";
-	$result2 = mysql_query($query2);
+							" '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $destinationFile_name) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "', '{$array1['upload_filetype']}','$user_id')";
+	$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query2);
 }
 
 
@@ -287,9 +287,9 @@ function fileMove($sourcePage_modulecomponentid,$sourcePage_module,$sourceFile_n
  */
 function getFileName($moduleComponentId, $page_module, $upload_fileid) {
 	$query = " SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads` WHERE `page_modulecomponentid` ='$moduleComponentId' AND `page_module` ='$page_module' AND `upload_fileid` ='$upload_fileid'";
-	$result = mysql_query($query);
-	if (mysql_num_rows($result) > 0) {
-		$name = mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if (mysqli_num_rows($result) > 0) {
+		$name = mysqli_fetch_assoc($result);
 		return $name['upload_filename'];
 	} else
 		return false;
@@ -308,11 +308,11 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 	global $uploadFolder;
 	global $sourceFolder;
 	$upload_filename = stripslashes($upload_filename);
-	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` ='$moduleComponentId' AND `page_module` = '$page_module' AND `upload_filename`= '" . mysql_escape_string($upload_filename) . "'";
+	$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "uploads`WHERE `page_modulecomponentid` ='$moduleComponentId' AND `page_module` = '$page_module' AND `upload_filename`= '" . ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"], $upload_filename) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : "")) . "'";
 
-	$result = mysql_query($query) or displayerror(mysql_error() . "upload L:260");
-	if(mysql_num_rows($result)<1) return false;
-	$row = mysql_fetch_assoc($result);
+	$result = mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . "upload L:260");
+	if(mysqli_num_rows($result)<1) return false;
+	$row = mysqli_fetch_assoc($result);
 	$upload_fileid = $row['upload_fileid'];
 
 	$filename = str_repeat("0", (10 - strlen((string) $upload_fileid))) . $upload_fileid . "_" . $upload_filename;
@@ -325,8 +325,8 @@ function deleteFile( $moduleComponentId, $page_module, $upload_filename) {
 		$thumb_name = "thumb_".$upload_filename;
 		deleteFile($moduleComponentId,$page_module,$thumb_name);
 	}
-	mysql_query($query);
-	if (mysql_affected_rows() > 0) {
+	mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	if (mysqli_affected_rows($GLOBALS["___mysqli_ston"]) > 0) {
 	//	displayinfo("File data has been deleted from the database");
 		return true;
 	} else {

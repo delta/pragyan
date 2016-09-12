@@ -27,14 +27,14 @@ function getPageTemplate($pageId)
 {
  	
  	$query="SELECT `value` FROM `".MYSQL_DATABASE_PREFIX."global` WHERE `attribute`='allow_pagespecific_template'";
-	$result=mysql_query($query);
-	$row=mysql_fetch_row($result);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row=mysqli_fetch_row($result);
  	if($row[0]==0)
  		return DEF_TEMPLATE;
 
  	$query="SELECT `page_template` FROM `".MYSQL_DATABASE_PREFIX."pages` WHERE `page_id`='$pageId'";
-	$result=mysql_query($query);
-	$row=mysql_fetch_row($result);
+	$result=mysqli_query($GLOBALS["___mysqli_ston"], $query);
+	$row=mysqli_fetch_row($result);
  	if($row[0]=="")
  		return DEF_TEMPLATE;
  	return $row[0];
@@ -312,29 +312,29 @@ function handleTemplateManagement()
 	else if(isset($_POST['btn_uninstall']))		
 	{
 		$query = "SELECT `value` FROM `" . MYSQL_DATABASE_PREFIX . "global` WHERE attribute= 'default_template'";
-			$res   = mysql_query($query);
+			$res   = mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			$row1   = array();
-			$row1   = mysql_fetch_row($res);
+			$row1   = mysqli_fetch_row($res);
 		
 		if(!isset($_POST['Template']) || $_POST['Template']=="") return "";
 		
 		$toDelete = escape($_POST['Template']);
 		$query="SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . $toDelete . "'";
 		$query2 = "SELECT `page_id` FROM `" . MYSQL_DATABASE_PREFIX . "pages` WHERE `page_template` = '{$toDelete}' LIMIT 10";
-		$result2 = mysql_query($query2) or displayerror(mysql_error());
+		$result2 = mysqli_query($GLOBALS["___mysqli_ston"], $query2) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 		
 			if($row1[0] == $toDelete)
 			{
 				displayerror("The default template cannot be deleted! If you want to delete this template, first change the default template from 'Global Settings'.");
 			return "";
 			}
-		if(mysql_num_rows($result2)==0||isset($_POST['confirm'])) {
-			if($row = mysql_fetch_array(mysql_query($query)))
+		if(mysqli_num_rows($result2)==0||isset($_POST['confirm'])) {
+			if($row = mysqli_fetch_array(mysqli_query($GLOBALS["___mysqli_ston"], $query)))
 			{
 			$query="DELETE FROM `" . MYSQL_DATABASE_PREFIX . "templates` WHERE `template_name` = '" . $toDelete . "'";
-			mysql_query($query);
+			mysqli_query($GLOBALS["___mysqli_ston"], $query);
 			$query = "UPDATE `" . MYSQL_DATABASE_PREFIX . "pages` SET `page_template` = '".$row1[0]."' WHERE `page_template` = '".$toDelete."'";
-			mysql_query($query) or displayerror(mysql_error());
+			mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 			$templateDir = $sourceFolder . "/templates/" . $toDelete . "/";
 			if(file_exists($templateDir))
 				delDir($templateDir);
@@ -345,7 +345,7 @@ function handleTemplateManagement()
 				return "";
 		}}
 		$pageList = "";
-		while($row = mysql_fetch_assoc($result2))
+		while($row = mysqli_fetch_assoc($result2))
 			$pageList .= "/home" . getPagePath($row['page_id']) . "<br>";
 		
 		$templatename = safe_html($_POST['Template']);

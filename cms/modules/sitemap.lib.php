@@ -41,8 +41,8 @@ class sitemap implements module {
 		}
 		else {
 			$permQuery = 'SELECT `page_module`, `perm_action` FROM `' . MYSQL_DATABASE_PREFIX . 'permissionlist` WHERE `perm_id` = \'' . $permId."'";
-			$permResult = mysql_query($permQuery);
-			$permRow = mysql_fetch_row($permResult);
+			$permResult = mysqli_query($GLOBALS["___mysqli_ston"], $permQuery);
+			$permRow = mysqli_fetch_row($permResult);
 			$module = $permRow[0];
 			$action = $permRow[1];
 			$treeData .= $this->getNodeHtml($pageId, $userId, $module, $action, $urlRequestRoot . '/');
@@ -80,10 +80,10 @@ TREEDATA;
 			$htmlOut .= "<li><a href=\"$pagePath\">" . getPageTitle($pageId) . "</a>\n";
 
 			$childrenQuery = 'SELECT `page_id` FROM `' . MYSQL_DATABASE_PREFIX  . 'pages` WHERE `page_parentid` <> `page_id` AND `page_parentid` = \'' . $pageId . '\' AND `page_displayinsitemap` = 1';
-			$childrenResult = mysql_query($childrenQuery);
+			$childrenResult = mysqli_query($GLOBALS["___mysqli_ston"], $childrenQuery);
 
 			$childrenHtml = '';
-			while($childrenRow = mysql_fetch_row($childrenResult)) {
+			while($childrenRow = mysqli_fetch_row($childrenResult)) {
 					$childrenHtml .= $this->getNodeHtml($childrenRow[0], $userId, $module, $action, $pagePath);
 			}
 			if($childrenHtml != '') {
