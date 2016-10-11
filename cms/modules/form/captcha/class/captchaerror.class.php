@@ -26,12 +26,12 @@
 
   ******************************************************************/
 
-  class error
+  class captchaerror
   {
 
   	var $errors;
 
-  	function error ()
+  	function captchaerror ()
   	{
 
   	  $this->errors = array();
