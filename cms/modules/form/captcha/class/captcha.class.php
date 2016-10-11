@@ -27,7 +27,7 @@
   ******************************************************************/
 
   require('filter.class.php');
-  require('error.class.php');
+  require('captchaerror.class.php');
 
   class captcha
   {
@@ -59,12 +59,12 @@
       global $sourceFolder, $moduleFolder;
       $this->fontpath = "$sourceFolder/$moduleFolder/form/captcha/fonts/";
       $this->fonts    = $this->getFonts();
-      $errormgr       = new error;
+      $errormgr       = new captchaerror;
 
       if ($this->fonts == FALSE)
       {
 
-      	//$errormgr = new error;
+      	//$errormgr = new captchaerror;
       	$errormgr->addError('No fonts available!');
       	$errormgr->displayError();
 //      	die();
