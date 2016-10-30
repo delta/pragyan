@@ -668,12 +668,14 @@ if(!defined('__PRAGYAN_CMS'))
 
 	/** Register a user in form_regdata table*/
 	function registerUser($moduleCompId,$userId) {
+        if(empty($userId) || $userId == null) {
+            $userId = 'NULL';
+        }
 		$registeruser_query = "INSERT INTO `form_regdata` (`user_id` ,`page_modulecomponentid` ,`form_firstupdated` ,`form_lastupdated`) " .
-				"VALUES ('$userId', '$moduleCompId', CURRENT_TIMESTAMP , CURRENT_TIMESTAMP)";
+				"VALUES ($userId, '$moduleCompId', CURRENT_TIMESTAMP , CURRENT_TIMESTAMP)";
 		$registeruser_result = mysqli_query($GLOBALS["___mysqli_ston"], $registeruser_query);
-		if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0){
 
-
+		if($registeruser_result){
 			global $sourceFolder;
 			require_once($sourceFolder."/group.lib.php");
 			$groupId = getGroupIdFromFormId($moduleCompId);
