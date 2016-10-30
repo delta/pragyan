@@ -126,7 +126,7 @@ echo "
   
 
 if (isset($file) && $del==0) {
-	  if (eregi("gz",$file)) { 
+	  if (preg_match("/gz/i",$file)) { 
 		 @unlink($backup_path."backup.sql");
 		 $fp = @fopen($backup_path."backup.sql","w");
 		 fwrite ($fp,"");
@@ -183,7 +183,7 @@ if (isset($file) && $del==1) {
 		
 
 	while ($file = readdir ($dir)) { 
-		if ($file != "." && $file != ".." &&  (eregi("\.sql",$file) || eregi("\.gz",$file))){
+		if ($file != "." && $file != ".." &&  (preg_match("/\.sql/i",$file) || preg_match("/\.gz/i",$file))){
 			if($is_first==1){
 				echo "<tr> 
 				<td width=\"30%\" align=\"center\" class=\"greyHeading\"><b>File</b></td>

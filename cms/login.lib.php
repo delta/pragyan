@@ -42,7 +42,7 @@ RESET;
 	}
 	elseif(!isset($_GET['key'])) {
 						$user_email = escape($_GET['user_email']);
-						if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", escape($_POST['user_email'])))
+						if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", escape($_POST['user_email'])))
 							displayerror("Invalid Email Id. <br /><input type=\"button\" onclick=\"history.go(-1)\" value=\"Go back\" />");
 						else {
 							$query = "SELECT * FROM `" . MYSQL_DATABASE_PREFIX . "users` WHERE `user_email`='".escape($_POST[user_email])."' ";
@@ -136,7 +136,7 @@ if(function_exists('filter_input')) {
   else 
     {
       // Found this on Google. Seems to match most valid URLs. Feel free to modify or replace.
-      if( ! eregi("^((https?)://)?(((www\.)?[^ ]+\.[com|org|net|edu|gov|us]))([^ ]+)?$",$openid_url)) {
+      if( ! preg_match("/^((https?)://)?(((www\.)?[^ ]+\.[com|org|net|edu|gov|us]))([^ ]+)?$/i",$openid_url)) {
 	$error = "Error: OpenID Identifier is not in proper format.";
       }
     }	

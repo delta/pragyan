@@ -28,7 +28,7 @@ if($send2=="Optimize"){
   chmod($backup_path.$filename, 0777);
 
 
-if (!eregi("/restore\.",$_SERVER['PHP_SELF'])) {
+if (!preg_match("/\/restore\./i",$_SERVER['PHP_SELF'])) {
 	$cur_time=date("Y-m-d H:i");
 	$i = 0;  
 	$fp = gzopen ($backup_path.$filename,"a");
@@ -58,7 +58,7 @@ function get_def($database,$table,$fp) {
        	if ($row["Extra"] != "") $def .= " $row[Extra]";
         	$def .= ",\n";
      }
-     $def = ereg_replace(",\n$","", $def);
+     $def = preg_replace("/,\n$/","", $def);
      $result = ((mysqli_query($GLOBALS["___mysqli_ston"], "USE $database")) ? mysqli_query($GLOBALS["___mysqli_ston"],  "SHOW KEYS FROM $table") : false);
      while($row = mysqli_fetch_array($result)) {
           $kname=$row["Key_name"];
@@ -91,7 +91,7 @@ function get_content($database,$table,$fp) {
             elseif(isset($row[$j])) $insert .= "'".addslashes($row[$j])."',";
             else $insert .= "'',";
          }
-         $insert  = ereg_replace(",$","",$insert);
+         $insert  = preg_replace("/,$/","",$insert);
          $insert .= ");#%%\n";
          gzwrite ($fp,$insert);
         

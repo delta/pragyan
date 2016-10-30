@@ -89,7 +89,7 @@ REGISTRATIONFORM;
 				displayerror("Blank e-mail/password NOT allowed");
 				return;
 			}
-			elseif (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $_POST['txtUserEmail'])) {
+			elseif (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $_POST['txtUserEmail'])) {
 				displayerror("Invalid Email Id");
 				return;
 			}

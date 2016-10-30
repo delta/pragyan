@@ -58,7 +58,7 @@ function openid_endpoint($openid_url){
   else 
     {
       // Found this on Google. Seems to match most valid URLs. Feel free to modify or replace.
-      if( ! eregi("^((https?)://)?(((www\.)?[^ ]+\.[com|org|net|edu|gov|us]))([^ ]+)?$",$openid_url)) {
+      if( ! preg_match("/^((https?):\/\/)?(((www\.)?[^ ]+\.[com|org|net|edu|gov|us]))([^ ]+)?$/i",$openid_url)) {
 	$error = "Error: OpenID Identifier is not in proper format.";
       }
     }	
