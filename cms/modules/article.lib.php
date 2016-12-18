@@ -409,8 +409,8 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 			$CkForm =<<<Ck
 						<form action="./+edit" method="post">
 						<a name="editor"></a>
-<input type="button" id="show_plain" value="Plain Source" onclick="$('#show_plain').hide();$('#show_ckeditor').show();CKEDITOR.instances.CKEditor1.updateElement();CKEDITOR.instances.CKEditor1.destroy();document.getElementById('editor').value='plain';">
-<input type="button" id="show_ckeditor" value="CKEditor" style="display:none" onclick="$('#show_plain').show();$('#show_ckeditor').hide();CKEDITOR.add(CKEDITOR.editor.replace(document.getElementsByName('CKEditor1')[0]));document.getElementById('editor').value='ckeditor';">
+<input type="button" style="display:none" id="show_plain" value="Plain Source" onclick="$('#show_plain').hide();$('#show_ckeditor').show();CKEDITOR.instances.CKEditor1.updateElement();CKEDITOR.instances.CKEditor1.destroy();document.getElementById('editor').value='plain';">
+<input type="button" style="display:none" id="show_ckeditor" value="CKEditor" style="display:none" onclick="$('#show_plain').show();$('#show_ckeditor').hide();CKEDITOR.add(CKEDITOR.editor.replace(document.getElementsByName('CKEditor1')[0]));document.getElementById('editor').value='ckeditor';">
 
 						<input type="button" value="Cancel" onclick="submitarticleformCancel(this);"><input type="submit" value="Save"><input type="button" value="Preview" onclick="submitarticleformPreview(this)"><input type="button" value="Draft" onclick="submitarticleformDraft(this);">
                         To upload files and images, go to the <a href="#files">files section</a>.<br/>
@@ -421,7 +421,7 @@ Ck;
 
 
 			  $oCKEditor = new CKeditor();
-			  $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor4.4/";
+			  $oCKEditor->basePath = "$urlRequestRoot/$cmsFolder/$moduleFolder/article/ckeditor4.6/";
 			  $oCKEditor->config['width'] = '100%';
 			  $oCKEditor->config['height'] = '300';
 			  $oCKEditor->returnOutput = true;
