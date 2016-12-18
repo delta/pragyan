@@ -813,7 +813,7 @@ CREATE TABLE IF NOT EXISTS `pragyanV3_users` (
   `user_fullname` varchar(100) NOT NULL COMMENT 'User''s full name',
   `user_password` varchar(32) NOT NULL,
   `user_regdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_lastlogin` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_lastlogin` datetime NOT NULL ,
   `user_activated` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Used for email verification',
   `user_loginmethod` enum('openid','db','ldap','imap','ads') NOT NULL DEFAULT 'db' COMMENT 'Login Method',
   PRIMARY KEY (`user_id`)
