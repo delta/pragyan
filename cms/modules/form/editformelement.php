@@ -399,7 +399,8 @@ HTMLOUTPUT;
 		$updates = array();
 		foreach(FormElement::$fieldMap as $key => $value) {
 			if(isset($this->$value)) {
-				$updates[] = "`$key` = '". $this->$value . "'";
+                if($this->$value != '')
+                    $updates[] = "`$key` = '". $this->$value . "'";
 			}
 		}
 
