@@ -151,10 +151,10 @@ function validateEditEventData($pageModuleComponentId){
                     $postValue=escape($postValue);
             }
             //Query to insert into the db
+            //`event_form_id`='{$_POST['eventFormId']}',
             $editQuery="UPDATE `events_details` SET `event_name`='{$_POST['eventName']}', 
                                                     `event_date`='{$_POST['eventDate']}',
                                                     `event_cluster`='{$_POST['eventCluster']}',
-                                                    `event_form_id`='{$_POST['eventFormId']}',
                                                     `event_start_time`='{$_POST['eventStartTime']}',
                                                     `event_end_time`='{$_POST['eventEndTime']}',
                                                     `event_venue`='{$_POST['eventVenue']}',
