@@ -1,9 +1,14 @@
 <?php
 // Polyfill for mysql_result
 function mysqli_result($res, $row, $field=0) { 
-    $res->data_seek($row); 
-    $datarow = $res->fetch_array(); 
-    return $datarow[$field]; 
+    if($res === false) return null;
+    try {
+        $res->data_seek($row); 
+        $datarow = $res->fetch_array(); 
+        return $datarow[$field]; 
+    } catch(\Exception $e) {
+        return null;
+    }
 } 
 
 //Required For QMT
@@ -1267,7 +1272,7 @@ function syncExcelFile($pmcId,$eventId,$fileLoc){
         $getBookletIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $getBookletIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
         if(mysqli_num_rows($getBookletIdRes)>0 || 1)
           {
-    displaywarning("Am here");
+    //displaywarning("Am here");
           $bookletId = mysqli_result($getBookletIdRes, 0);
           $saveUserIdQuery = "INSERT INTO `events_participants`(`page_moduleComponentId`,`event_id`,`user_pid`,`user_team_id`) VALUES('{$pmcId}','{$eventId}','{$userPid}','{$i}')";
                     $saveUserIdRes = mysqli_query($GLOBALS["___mysqli_ston"], $saveUserIdQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
