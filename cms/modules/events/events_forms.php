@@ -41,7 +41,7 @@ $addForm=<<<FORM
 				<tr><th><label>Select the coordinates</label></th>
 				<input type="text" decsription="lat" name="lat" id="lat" value="" style="display:none;">
 				<input type="text" decsription="lng" name="lng" id="lng" value="" style="display:none;">
-				<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
+				<script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
 				<script src="$scriptFolder/googleMaps.js"></script>
 				<td><div id="addEventGoogleMap" style="width:500px;height:380px;"></div></td>
 				</tr>
@@ -126,7 +126,7 @@ $editForm=<<<FORM
 			<tr><th><label>Select the coordinates</label></th>
 			<input type="text" decsription="lat" name="lat"	 id="lat" style="display:none;" value="{$row[event_loc_y]}">
 			<input type="text" decsription="lng" name="lng" id="lng" style="display:none;" value="{$row[event_loc_x]}">
-			<script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
+			<script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
 			<script src="$scriptFolder/googleMaps.js"></script>
 			<td><div id="editEventGoogleMap" style="width:500px;height:380px;"></div></td>
 			</tr>

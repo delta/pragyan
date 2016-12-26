@@ -260,7 +260,7 @@ function showEventMap(){
     require_once("$sourceFolder/$moduleFolder/events/googleMapsConfig.php");
     $maps=<<<MAP1
             <script src="$scriptFolder/jquery.js"></script>
-            <script src="http://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
+            <script src="https://maps.googleapis.com/maps/api/js?sensor=false&key=".$googleMapsKey></script>
             <script src="$scriptFolder/googleMaps.js"></script>
       <style>@font-face{ font-family: myriadpro;src: url("myriadpro.woff");}  body{overflow:hidden;background:#C3AC7A;font-weight:bolder;font-size:1.6em;font-family:myriadpro}</style>
             <script src="$scriptFolder/events.js"></script>
