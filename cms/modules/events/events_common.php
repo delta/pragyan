@@ -1,4 +1,10 @@
 <?php
+// Polyfill for mysql_result
+function mysqli_result($res, $row, $field=0) { 
+    $res->data_seek($row); 
+    $datarow = $res->fetch_array(); 
+    return $datarow[$field]; 
+} 
 
 //Required For QMT
 function returnUserProfileDetails($userId){
@@ -1930,7 +1936,7 @@ function displayQA($pmcid){
 	$selectEventRes = mysqli_query($GLOBALS["___mysqli_ston"], $selectEventQuery) or displayerror(((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	if(mysqli_num_rows($selectEventRes) > 0){
 	$gotoaction='qa';
-	$selectEvent=searchParticipant($gotoaction,$pmcId,1);
+	$selectEvent=searchParticipant($gotoaction,$pmcid,1);
 		$selectEvent.= <<<FORM
 			<h3>Choose Event:</h3>
 			<form method="POST" action="./+qa&subaction=viewEvent">
