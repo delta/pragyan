@@ -366,6 +366,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 		return $patch;
 	}
 	public function getRevision($revisionNo) {
+        $revisionNo = escape($revisionNo);
 		$currentquery = "SELECT article_content FROM article_content WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
 		$currentresult = mysqli_query($GLOBALS["___mysqli_ston"], $currentquery);
 		$currentrow = mysqli_fetch_assoc($currentresult);
@@ -379,6 +380,7 @@ VALUES ('$this->moduleComponentId', '$revId','$diff','$this->userId')";
 	}
 	
 	public function getDraft($draftNo) {
+        $draftNo = escape($draftNo);
 		$currentquery = "SELECT draft_content FROM article_draft WHERE page_modulecomponentid='" . $this->moduleComponentId."'";
 		$currentresult = mysqli_query($GLOBALS["___mysqli_ston"], $currentquery);
 		$currentrow = mysqli_fetch_assoc($currentresult);
