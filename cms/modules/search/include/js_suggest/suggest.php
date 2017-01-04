@@ -37,10 +37,11 @@ if (!strpos($_GET['q'],' '))
 
 if ($suggest_history && $_GET['q']!='"')
 {
+    $sanitized_q = mysql_real_escape_string($_GET['q']);
 	$result = mysql_query($sql = "
 	SELECT 	query as keyword, max(results) as results
 	FROM {$mysql_table_prefix}query_log 
-	WHERE results > 0 AND (query LIKE '{$_GET['q']}%' OR query LIKE '\"{$_GET['q']}%') 
+	WHERE results > 0 AND (query LIKE '{$sanitized_q}%' OR query LIKE '\"{$sanitized_q}%') 
 	GROUP BY query ORDER BY results DESC
 	LIMIT $suggest_rows
 	");
@@ -60,6 +61,7 @@ if ($suggest_history && $_GET['q']!='"')
 
 if ($suggest_phrases) 
 {
+    $_GET['q'] = mysql_real_escape_string($_GET['q']);
 	$_GET['q'] = strtolower( str_replace('"','',$_GET['q'] ));
 	$_words = substr_count($_GET['q'],' ') + 1; 
 	
@@ -83,6 +85,7 @@ if ($suggest_phrases)
 
 elseif ($suggest_keywords)
 {
+    $_GET['q'] = mysql_real_escape_string($_GET['q']);
 	for ($i=0;$i<=15; $i++) {
 		$char = dechex($i);
 		$result = mysql_query($sql = "
