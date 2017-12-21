@@ -93,10 +93,10 @@ $DEBUGINFO = "";
 $cookieSupported = false; 
 
 ///Stores all the icons locations along with <img> tag, indexed by the icon name
-$ICONS = ""; 
+$ICONS = array(); 
 
 ///Stores all the icons locations without the <img> tag, indexed by the icon name
-$ICONS_SRC = ""; 
+$ICONS_SRC = array();
 
 ///Variables for storing widgets.
 $WIDGETS = array();
