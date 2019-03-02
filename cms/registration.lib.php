@@ -48,7 +48,7 @@ function getRegistrationForm() {
 	if(isset($_POST['user_email']))
 		$email_val = escape($_POST['user_email']);
 	if(isset($_POST['user_name']))
-		$name_val = escape($_POST['user_name']);
+		$name_val = htmlspecialchars(escape($_POST['user_name']));
 	if(isset($_POST['user_email']))
 		$fullname_val = escape($_POST['user_fullname']);
 	$reg_str =<<<REG
