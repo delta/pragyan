@@ -50,7 +50,7 @@ function getRegistrationForm() {
 	if(isset($_POST['user_name']))
 		$name_val = htmlspecialchars(escape($_POST['user_name']));
 	if(isset($_POST['user_email']))
-		$fullname_val = escape($_POST['user_fullname']);
+		$fullname_val = htmlspecialchars(escape($_POST['user_fullname']));
 	$reg_str =<<<REG
 <script language="javascript">
 			function checkPassword(inputhandler2) {
