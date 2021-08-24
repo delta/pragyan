@@ -19,7 +19,7 @@ Contributors
 ------------
 
 - Abhilash R
-- Sahil Ahuja
+- Sahil Ahuja (sahil87)
 - Anshu Prateek
 - Ankit Shrivastava
 - Abhishek Shrivastava (abhishekdelta)
