@@ -74,8 +74,8 @@ function profile($userId, $forEditRegistrant = false) {
 		return '';
 	}
 	$profileRow = mysqli_fetch_row($profileResult);
-	$newUserName = $userName = $profileRow[0];
-	$newUserFullname = $userFullname = $profileRow[1];
+	$newUserName = $userName = htmlspecialchars_decode($profileRow[0]);
+	$newUserFullname = $userFullname = htmlspecialchars_decode($profileRow[1]);
 	$userPassword = $profileRow[2];
 
 	require_once("$sourceFolder/$moduleFolder/form/registrationformsubmit.php");
@@ -93,12 +93,12 @@ function profile($userId, $forEditRegistrant = false) {
 			$updates = array();
 
 			if (isset($_POST['user_name']) && $_POST['user_name'] != '' && $_POST['user_name'] != $userName) {
-				$newUserName = escape($_POST['user_name']);
+				$newUserName = htmlspecialchars(escape($_POST['user_name']));
 				$updates[] = "`user_name` = '".$newUserName."'";
 			}
 			if (isset($_POST['user_fullname']) && $_POST['user_fullname'] != '' && $_POST['user_fullname'] != $userFullname) {
-				$newUserFullname = escape($_POST['user_fullname']);
-				$updates[] = "`user_fullname` = '".$newUserFullname."'";
+				$newUserFullname = htmlspecialchars(escape($_POST['user_fullname']));
+				$updates[] = "`user_fullname` = '".htmlspecialchars($newUserFullname)."'";
 			}
 			$errors = true;
 			if (!$forEditRegistrant && $_POST['user_newpassword'] != '') {
