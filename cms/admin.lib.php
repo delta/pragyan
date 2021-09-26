@@ -252,6 +252,14 @@ function setblacklist($domain="",$ip="")
 function delete_blacklist()
 {
 	$id = safe_html($_GET['del_black']);
+
+	if(!is_numeric($id))
+	{
+		// Check if "id" is a valid number 
+		echo "<script>alert('Error finding blacklisted record');</script>";
+		return 0;
+	}
+
 	$query = "DELETE FROM `".MYSQL_DATABASE_PREFIX."blacklist` WHERE `id` = '$id'";
 	$result =mysqli_query($GLOBALS["___mysqli_ston"], $query) or displayerror("Unable to Delete blacklist". ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)));
 	if(mysqli_affected_rows($GLOBALS["___mysqli_ston"])>0)	
@@ -336,6 +344,11 @@ function delDir($dirname) {
 }
 
 function getSuggestions($pattern) {
+
+	// This line prevents SQL injection by removing double 
+	// quotes from the string
+	$pattern = str_replace('"', "", $pattern);
+
 	$suggestionsQuery = "SELECT IF(user_email LIKE \"$pattern%\", 1, " .
 			"IF(`user_fullname` LIKE \"$pattern%\", 2, " .
 			"IF(`user_fullname` LIKE \"% $pattern%\", 3, " .
